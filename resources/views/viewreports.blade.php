@@ -6,23 +6,19 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <title>ReadEase</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            background: url('pic/bgr.jpg');
-            background-color: #e0f0ff;
-            background-size: cover; 
-            background-position: center; 
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }
+    body {
+      font-family: Arial, sans-serif;
+    }
 
   /* Header */
 header {
@@ -109,36 +105,101 @@ nav ul li:hover > a {
 }
 
 
-        /* Hero Section */
-        .hero {
-            color: white;
-            text-align: center;
-            padding: 110px 30px;
-            min-height: 400px;
-            display: flex;
-            justify-content: center;
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            position: relative;
-        }
+   /* Main content wrapper */
+   .report-container {
+      max-width: 1300px;
+      margin: 1rem auto;
+      padding: 3rem;
+      background:rgb(23, 150, 219);
+      border-radius: 10px;
+     
+    }
 
-        .hero .overlay {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 50px;
-            max-width: 900px;
-            margin: auto;
-            border-radius: 10px;
-        }
+    h2, h3 {
+      text-align: left;
+      margin: 0.5rem 0;
+      color:black;
+    }
+    .underline {
+      text-decoration: underline;
+    }  
+    
 
-        .hero h2 {
-            font-size: 36px;
-            margin-bottom: 10px;
-        }
+    /* Student cards container */
+    .student-wrapper {
+      background:skyblue;
+      border-radius: 15px;
+      padding: 2rem;
+      border: 2px solid black;
+      display: flex;
+      justify-content: space-around;
+      gap: 1rem;
+      flex-wrap: wrap;
+      
+    }
 
-        .hero p {
-            font-size: 18px;
-        }
+    /* Individual student card */
+    .student-column {
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin: 0.5rem;
+
+     
+      
+    }
+
+    .student-column h4 {
+      margin: 0;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: bold;
+      color: black;
+    }
+
+    /* Container for each chart + label */
+    .section-box {
+    position: relative;
+    background: #f7fcff;
+    border-radius: 10px;
+    padding: 1rem 0.8rem 1.5rem; /* Add space at bottom for the label */
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid black;
+  overflow: visible;
+}
+
+    .chart-section {
+      margin-bottom: 0.3rem;
+    }
+
+    /* Label under each chart */
+    .label-box {
+      position: absolute;
+      bottom:-0.8rem; /* Aligns directly on the bottom edge */
+      left: 50%;
+      transform: translate(-50%); /* Pushes it 50% below the bottom edge */
+      background: #bfe3f7;
+      text-align: center;
+      padding: 0.25rem 1rem;
+      border-radius: 5px;
+      font-size: 0.85rem;
+      color:black;
+      font-weight: normal;
+      border: 1px solid black;
+      white-space: nowrap;
+      font-style: italic;
+    }
+
+
+    .bold-value{
+      font-weight: bold;
+    }
+    /* Chart canvas responsive */
+    canvas {
+      max-height: 80px;
+      width: 100% !important;
+    }
 
  /*footer*/
 .footerA{
@@ -286,14 +347,184 @@ footer{
     </nav>
 
     <main>
-        <section class="hero">
-            <div class="overlay">
-                <h2>Mission</h2>
-                <p>This is created to provide classroom teachers a tool for measuring and describing reading 
-                   performance. It is an assessment tool composed of graded passages designed to determine a student's 
-                   reading level. The Phil-IRI only provides an approximation of the learner's abilities.</p>
-            </div>
-        </section>
+
+      <!-- REPORT SECTION FOR STUDENTS -->
+<div class="report-container">
+  <h2>STUDENT FILIPINO REPORTS</h2>
+  <h3>Grade 7 Students : <span class="underline">SECTION NARRA</span></h3>
+
+  <?php
+  // STUDENT DATA (normally from a database)
+  $results = DB::select('select * from users');
+  // echo $results;
+  dump($results);
+  $students = [
+    [
+      'name' => 'AlbingA, Alexander Ven A.',
+      'reading_time' => 42,
+      'total_words' => 70,
+      'reading_speed' => '96 WPM',
+      'correct_answers' => 4,
+      'total_questions' => 6,
+      'comprehension' => 'Instructional',
+      'word_recognition' => 55,
+      'word_total' => 70,
+      'word_label' => 'Independent'
+    ],
+    // Additional students
+    [
+      'name' => 'Acobo, Glenn',
+      'reading_time' => 30,
+      'total_words' => 68,
+      'reading_speed' => '50 WPM',
+      'correct_answers' => 5,
+      'total_questions' => 6,
+      'comprehension' => 'Independent',
+      'word_recognition' => 15,
+      'correct reading' => 60,
+      'word_total' => 70,
+      'word_label' => 'Instructional'
+    ],
+    [
+      'name' => 'Adazas, Dexter',
+      'reading_time' => 30,
+      'total_words' => 70,
+      'reading_speed' => '90 WPM',
+      'correct_answers' => 3,
+      'total_questions' => 6,
+      'comprehension' => 'Instructional',
+      'word_recognition' => 45,
+      'word_total' => 70,
+      'word_label' => 'Instructional'
+    ]
+  ];
+  ?>
+<!-- STUDENT CARD DISPLAY -->
+<div class="student-wrapper">
+<?php foreach ($students as $i => $s): 
+  $id = "chart$i"; // unique chart ID for each student ?>
+  <div class="student-column">
+    <h4><?= ($i+1) . ". {$s['name']}" ?></h4>
+
+    <!-- READING SPEED CHART -->
+    <div class="section-box">
+      <div class="chart-section">
+        <canvas id="<?= $id ?>_reading"></canvas>
+        <div class="label-box italic-label">READING SPEED: <span class="bold-value"><?= $s['reading_speed'] ?></span></div>
+      </div>
+    </div>
+
+    <!-- COMPREHENSION CHART -->
+    <div class="section-box">
+      <div class="chart-section">
+        <canvas id="<?= $id ?>_comp"></canvas>
+        <div class="label-box italic-label">COMPREHENSION: <span class="bold-value"><?= $s['comprehension'] ?></span></div>
+      </div>
+    </div>
+
+    <!-- WORD RECOGNITION CHART -->
+    <div class="section-box">
+      <div class="chart-section">
+        <canvas id="<?= $id ?>_word"></canvas>
+        <div class="label-box italic-label">WORD READING: <span class="bold-value"><?= $s['word_label'] ?></span></div>
+      </div>
+    </div>
+  </div>
+<?php endforeach; ?>
+</div>
+</div>
+
+<!-- CHART.JS SCRIPT TO GENERATE STUDENT GRAPHS -->
+<script>
+<?php foreach ($students as $i => $s): ?>
+  const ctxR<?= $i ?> = document.getElementById('chart<?= $i ?>_reading');
+  const ctxC<?= $i ?> = document.getElementById('chart<?= $i ?>_comp');
+  const ctxW<?= $i ?> = document.getElementById('chart<?= $i ?>_word');
+
+  // Reading Speed Chart
+  new Chart(ctxR<?= $i ?>, {
+    type: 'bar',
+    data: {
+      labels: ['Reading Time', 'Total Words'],
+      datasets: [{
+        data: [<?= $s['reading_time'] ?>, <?= $s['total_words'] ?>],
+        backgroundColor: ['#247ba0', '#70c1b3']
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      plugins: { legend: { display: false } },
+      scales: {
+        x: {
+          beginAtZero: true,
+          max: <?= $s['total_words'] ?>
+        }
+      }
+    }
+  });
+
+  // Comprehension Chart
+  new Chart(ctxC<?= $i ?>, {
+    type: 'bar',
+    data: {
+      labels: ['Correct Answers', 'Total Questions'],
+      datasets: [{
+        data: [<?= $s['correct_answers'] ?>, <?= $s['total_questions'] ?>],
+        backgroundColor: ['#38B6FF', '#00d4ff']
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      plugins: { legend: { display: false } },
+      scales: { x: { beginAtZero: true } }
+    }
+  });
+  
+  // Word Reading
+
+new Chart(ctxW<?= $i ?>, {
+  type: 'bar',
+  data: {
+    labels: [
+      'Reading Miscues', 
+      'Correct Reading',
+      'Total Words'
+    ],
+    datasets: [{
+      data: [
+        <?= $s['word_total'] - $s['word_recognition'] ?>,
+        <?= $s['word_recognition'] ?>,
+        <?= $s['word_total'] ?>
+      ],
+      backgroundColor: ['#94d2bd', '#caf0f8', '#f0efeb']
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    plugins: {
+      legend: { display: false },
+      datalabels: {
+        display: function(context) {
+          return context.dataIndex === 1;
+        },
+        anchor: 'start',
+        align: 'left',
+        formatter: function() {
+          return 'Correct Reading';
+        },
+       
+      }
+    },
+   
+  },
+  plugins: [ChartDataLabels]
+});
+
+
+<?php endforeach; ?>
+</script>
+
+
 
 
         <div class="footerA row m-0">

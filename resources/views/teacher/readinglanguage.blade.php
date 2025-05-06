@@ -16,12 +16,15 @@
         }
 
         body {
-            background: url('pic/bgr.jpg');
-            background-color: #e0f0ff;
-            background-size: cover; 
-            background-position: center; 
-            background-repeat: no-repeat;
-            background-attachment: fixed;
+            background: url('{{ asset("pic/bgr.jpg") }}');
+    background-color: #e0f0ff;
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
         }
 
   /* Header */
@@ -181,12 +184,12 @@ footer{
 
     <nav>
         <ul>
-            <li><a href="{{ url('/home') }}">Home</a></li>
-            <li><a href="{{ url('/about') }}">About</a></li>
+            <li><a href="{{ route('teacher.dashboard') }}">Home</a></li>
+            <li><a href="{{ route('teacher.about') }}">About</a></li>
 
             <!-- Reading Languages with Side Dropdown -->
             <li class="dropdown-container">
-                <a href="{{ url('/readinglanguage') }}" id="readingLanguagesBtn">Reading Languages ▸</a>
+                <a href="{{ route('teacher.readinglanguage') }}" id="readingLanguagesBtn">Reading Languages ▸</a>
                 <ul class="dropdown-menu">
                     <!-- English -->
                 <li class="dropdown-container">
@@ -195,40 +198,38 @@ footer{
                             <li class="dropdown-container">  
                                 <a href="#">Grade 7▸</a>
                                 <ul class="dropdown-menu">
-                                <li><a href="{{ url('/english') }}#dao">Dao</a></li>
-                                    <li><a href="#">Mahugani</a></li>
-                                    <li><a href="#">Lawaan</a></li>
-                                    <li><a href="#">Narra</a></li>
+                                    <li><a href="{{ route('teacher.english') }}#narra">Narra</a></li>
+                                    <li><a href="{{ route('teacher.english-mahugani') }}#mahugani">Mahugani</a></li>
+                                    <li><a href="{{ route('teacher.english-lawaan') }}#lawaan">Lawaan</a></li>
+                                    <li><a href="{{ route('teacher.english-dao') }}#dao">Dao</a></li>
                                 </ul>
                             </li>
 
                             <li class="dropdown-container">
                                 <a href="#">Grade 8▸</a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#">Dao</a></li>
-                                    <li><a href="#">Mahugani</a></li>
-                                    <li><a href="#">Lawaan</a></li>
-                                    <li><a href="#">Narra</a></li>
+                                    <li><a href="#">Avocado</a></li>
+                                    <li><a href="#">Guava</a></li>
+                                    <li><a href="#">Duhat</a></li>
+                                    <li><a href="#">Mango</a></li>
                                 </ul>
                             </li>
 
                             <li class="dropdown-container">
                                 <a href="#">Grade 9▸</a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#">Dao</a></li>
-                                    <li><a href="#">Mahugani</a></li>
-                                    <li><a href="#">Lawaan</a></li>
-                                    <li><a href="#">Narra</a></li>
+                                    <li><a href="#">Gold</a></li>
+                                    <li><a href="#">Silver</a></li>
+                                    <li><a href="#">Zinc</a></li>
                                 </ul>
                             </li>
 
                             <li class="dropdown-container">
                                 <a href="#">Grade 10▸</a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#">Dao</a></li>
-                                    <li><a href="#">Mahugani</a></li>
-                                    <li><a href="#">Lawaan</a></li>
-                                    <li><a href="#">Narra</a></li>
+                                    <li><a href="#">Galileo</a></li>
+                                    <li><a href="#">Newton</a></li>
+                                    <li><a href="#">Edison</a></li>
                                 </ul>
                             </li>
                             
@@ -242,43 +243,41 @@ footer{
                             <li class="dropdown-container">
                                 <a href="#">Grade 7▸</a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="{{ url('/filipino') }}#dao">Dao</a></li>
-                                    <li><a href="#">Mahugani</a></li>
-                                    <li><a href="#">Lawaan</a></li>
-                                    <li><a href="#">Narra</a></li>
+                                    <li><a href="{{ route('teacher.filipino') }}#narra">Narra</a></li>
+                                    <li><a href="{{ route('teacher.filipino-mahugani') }}#mahugani">Mahugani</a></li>
+                                    <li><a href="{{ route('teacher.filipino-lawaan') }}#lawaan">Lawaan</a></li>
+                                    <li><a href="{{ route('teacher.filipino-dao') }}#dao">Dao</a></li>
                                 </ul>
                             </li>
 
                             <li class="dropdown-container">
                                 <a href="#">Grade 8▸</a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#">Dao</a></li>
-                                    <li><a href="#">Mahugani</a></li>
-                                    <li><a href="#">Lawaan</a></li>
-                                    <li><a href="#">Narra</a></li>
+                                    <li><a href="#">Avocado</a></li>
+                                    <li><a href="#">Guava</a></li>
+                                    <li><a href="#">Duhat</a></li>
+                                    <li><a href="#">Mango</a></li>
                                 </ul>
                             </li>
 
                             <li class="dropdown-container">
                                 <a href="#">Grade 9▸</a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#">Dao</a></li>
-                                    <li><a href="#">Mahugani</a></li>
-                                    <li><a href="#">Lawaan</a></li>
-                                    <li><a href="#">Narra</a></li>
+                                    <li><a href="#">Gold</a></li>
+                                    <li><a href="#">Silver</a></li>
+                                    <li><a href="#">Zinc</a></li>
                                 </ul>
                             </li>
 
                             <li class="dropdown-container">
                                 <a href="#">Grade 10▸</a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#">Dao</a></li>
-                                    <li><a href="#">Mahugani</a></li>
-                                    <li><a href="#">Lawaan</a></li>
-                                    <li><a href="#">Narra</a></li>
+                                    <li><a href="#">Galileo</a></li>
+                                    <li><a href="#">Newton</a></li>
+                                    <li><a href="#">Edison</a></li>
                                 </ul>
-                    </li>
-                </ul>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </li>

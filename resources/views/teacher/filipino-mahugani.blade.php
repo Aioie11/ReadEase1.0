@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <title>Students</title>
@@ -115,24 +116,21 @@
             margin-bottom: 15px;
         }
 
-        .content input[type=text] {
-            padding: 6px;
-            border-radius: 20px;
-            font-size: 15px;
-            padding: 6px 10px;
-            width: 50%;
-        }
+        .input-group input[type="text"] {
+    border-right: none;
+}
 
-        .content .view {
-            margin-top: 10px;
-            padding: 6px 10px;
-            border-radius: 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            font-size: 13px;
-            cursor: pointer;
-        }
+.input-group .btn {
+    border-left: none;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    font-size: 14px;
+    padding: 6px 15px;
+}
+
         
         .student-list {
             margin-top: 20px;
@@ -212,6 +210,9 @@
             border-radius: 10px;
             width: 70%;
         }
+
+        .passage { background-color: #9DD4F0; color: black; }
+        .questions { background-color: #5EC0F2; color: black; }
     </style>
 </head>
 <body>
@@ -228,8 +229,8 @@
 
 <nav>
     <ul>
-        <li><a href="{{ url('/home') }}">Home</a></li>
-        <li><a href="{{ url('/about') }}">About</a></li>
+        <li><a href="{{ route('teacher.dashboard') }}">Home</a></li>
+        <li><a href="{{ route('teacher.about') }}">About</a></li>
         <li class="dropdown-container">
             <a href="#">Reading Languages ▸</a>
             <ul class="dropdown-menu">
@@ -323,7 +324,6 @@
 
 <section class="hero">
     <div class="content">
-        <a id="dao"></a>
         <h2>TALATA SA PAGBASA</h2>
         <p>Narito ang isang kwento tungkol sa isang batang babae na nagngangalang Maria.
                Sa isang maliit na bayan sa tabi ng bundok, nakatira siya sa kanyang lola at lolo.
@@ -332,22 +332,26 @@
                niyang maligaya ang kanyang mga lolo at lola. Mahilig din siya sa pagbabasa ng mga aklat, lalo na
                ang mga kuwento tungkol sa kalikasan. Pinapangarap niyang maging isang guro balang araw upang matulungan
                ang mga batang katulad niya na nais matuto at magkaroon ng magandang kinabukasan.</p>
-        <input type="text" placeholder="Find Student"> 
-        <button class="view">View Reports</button>
+           <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+    <div class="input-group" style="max-width: 400px;">
+        <input type="text" id="searchInput" class="form-control rounded-start-pill" placeholder="Find Student">
+        <button class="btn btn-primary rounded-end-pill" onclick="searchStudent()">
+            <i class="fas fa-search"></i>
+        </button>
+    </div>
+    <a href="{{ route('teacher.viewreports') }}" class="btn btn-success rounded-pill ms-2">
+        <i class="fas fa-file-alt"></i> View Reports
+    </a>
+</div>
+
         <div class="student-list">
-            <h3>Grade 7 Students : SECTION NARRA</h3>
-            <div class="student">
-                1. Albiniga, Alexander V.A.
-                <div class="controls">
-                    <input type="number" placeholder="Miscues" style="width: 100px; margin-right: 10px; padding: 5px; border-radius: 5px;">
-                    <button class="start">Start Time</button>
-                    <button class="stop">Stop Time</button>
-                    <button class="reset">Reset Time</button>
-                </div>
+            <h3>Grade 7 Students : SECTION Mahugani</h3>
+            <div id="studentContainer">
+                <!-- Student information will be displayed here -->
             </div>
             <div class="feedback">
-                <label for="feedback-Alexander">Feedback:</label>
-                <textarea id="feedback-Alexander" rows="3" placeholder="Write feedback here..."></textarea>
+                <label for="feedback">Feedback:</label>
+                <textarea id="feedback" rows="3" placeholder="Write feedback here..."></textarea>
                 <button class="submit-feedback">Submit Feedback</button>
             </div>
         </div>
@@ -486,6 +490,87 @@
         student.querySelector('.start').addEventListener('click', () => startTimer(name, display));
         student.querySelector('.stop').addEventListener('click', () => stopTimer(name));
         student.querySelector('.reset').addEventListener('click', () => resetTimer(name, display));
+    });
+
+    function searchStudent() {
+        const searchInput = document.getElementById('searchInput');
+        const searchTerm = searchInput.value.trim();
+        const studentContainer = document.getElementById('studentContainer');
+
+        if (!searchTerm) {
+            studentContainer.innerHTML = '<p class="text-danger">Please enter a student name to search</p>';
+            return;
+        }
+
+        studentContainer.innerHTML = '<p>Searching...</p>';
+
+        fetch(`/teacher/search-student?query=${encodeURIComponent(searchTerm)}&section=Mahugani`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(students => {
+            if (students && students.length > 0) {
+                let html = '';
+                students.forEach(student => {
+                    html += `
+                        <div class="student">
+                            <div class="student-info">
+                                <h4>${student.name}</h4>
+                                <p>Section: ${student.section}</p>
+                                <p>Grade Level: ${student.grade_level}</p>
+                            </div>
+                            <div class="controls">
+                                <input type="number" placeholder="Miscues" style="width: 100px; margin-right: 10px; padding: 5px; border-radius: 5px;">
+                                <button class="start">Start Time</button>
+                                <button class="stop">Stop Time</button>
+                                <button class="reset">Reset Time</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                studentContainer.innerHTML = html;
+
+                // Re-attach timer event listeners for each student
+                document.querySelectorAll('.student').forEach(studentDiv => {
+                    const name = studentDiv.querySelector('h4').textContent;
+                    const display = document.createElement('span');
+                    display.textContent = "00:00:00";
+                    display.style.marginRight = "15px";
+                    display.style.fontWeight = "bold";
+                    const controls = studentDiv.querySelector('.controls');
+                    controls.insertBefore(display, controls.querySelector('.start'));
+
+                    const miscuesInput = studentDiv.querySelector('input[type="number"]');
+                    handleMiscues(name, miscuesInput);
+
+                    studentDiv.querySelector('.start').addEventListener('click', () => startTimer(name, display));
+                    studentDiv.querySelector('.stop').addEventListener('click', () => stopTimer(name));
+                    studentDiv.querySelector('.reset').addEventListener('click', () => resetTimer(name, display));
+                });
+            } else {
+                studentContainer.innerHTML = '<p class="text-warning">No students found in Mahugani section with that name</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            studentContainer.innerHTML = '<p class="text-danger">Error searching for students. Please try again.</p>';
+        });
+    }
+
+    // Add event listener for Enter key
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            searchStudent();
+        }
     });
 </script>
 

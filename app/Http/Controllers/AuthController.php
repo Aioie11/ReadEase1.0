@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
-class LoginController extends Controller
+class AuthController extends Controller
 {
     public function showLoginForm()
     {
@@ -16,22 +17,13 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+            'email' => 'required|email',
+            'password' => 'required',
         ]);
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            
-            // Redirect based on user role
-            if (Auth::user()->role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            } else if (Auth::user()->role === 'teacher') {
-                return redirect()->route('teacher.dashboard');
-            }
-            
-            // Default redirect if role is not specified
-            return redirect()->intended('/');
+            return redirect()->route('home');
         }
 
         return back()->withErrors([
@@ -47,3 +39,4 @@ class LoginController extends Controller
         return redirect('/');
     }
 }
+

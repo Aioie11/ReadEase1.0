@@ -3,104 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <!-- <link rel="stylesheet" href="{{ asset('css/Students.css') }}"> -->
     <title>Students</title>
-</head>
     <style>
-{
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        header {
+            align-items: center;
+            padding: 15px 30px;
+            background: linear-gradient(to right, #38B6FF, white 50%, #38B6FF);
+        }
 
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
 
-/* Header */
-header {
-    align-items: center;
-    padding: 15px 30px;
-    background: linear-gradient(to right, #38B6FF, white 50%, #38B6FF);
-}
+        .logo {
+            width: 50px;
+            margin-right: 10px;
+        }
 
-.logo-container {
-    display: flex;
-    align-items: center;
-}
+        .title h1 {
+            font-size: 24px;
+        }
 
-.logo {
-    width: 50px;
-    margin-right: 10px;
-}
+        .title p {
+            font-size: 14px;
+        }
 
-.title h1 {
-    font-size: 24px;
-}
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            background-color: #0032A0;
+        }
 
-.title p {
-    font-size: 14px;
-}
-
-/* Navigation */
-nav ul {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    background-color: #0032A0;
-}
-
-nav ul li {
-    position: relative;
-    margin: 0 20px;
-}
-
-nav ul li a {
-    text-decoration: none;
-    color: white;
-    font-size: 18px;
-    padding: 10px;
-}
-
-nav ul li:hover > a {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 5px;
-}
-
-/* Dropdown Container */
-.dropdown-container {
-    position: relative;
-}
-
-.dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 100%;
-    background-color: white;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 165px;
-    z-index: 1;
-}
-
-.dropdown-menu a {
-    display: block;
-    color: #003366;
-    padding: 5px;
-}
-
-.dropdown-menu a:hover {
-    background-color: #f0f0f0;
-}
-
-/* Hero Section */
-.hero {
-            padding: 20px 20px;
+        nav ul li {
             position: relative;
+            margin: 0 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+            padding: 10px;
+        }
+
+        nav ul li:hover > a {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+        }
+
+        .dropdown-container {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 100%;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 165px;
+            z-index: 1;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            color: #003366;
+            padding: 5px;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f0f0f0;
+        }
+
+        .dropdown-container:hover > .dropdown-menu {
+            display: block;
+        }
+
+        .hero {
+            padding: 20px;
         }
 
         .hero .content {
@@ -113,7 +108,6 @@ nav ul li:hover > a {
 
         .hero h2 {
             font-size: 24px;
-            margin-top: -3%;
             margin-bottom: 15px;
         }
 
@@ -122,21 +116,29 @@ nav ul li:hover > a {
             margin-bottom: 15px;
         }
 
-        .content {
-            padding: 20px;
-        }
-
         .content input[type=text] {
             padding: 6px;
             border-radius: 20px;
-            margin-top: 8px;
-            margin-right: 10px;
             font-size: 15px;
+            padding: 6px 10px;
+            width: 50%;
         }
 
+        .content .view {
+            margin-top: 10px;
+            padding: 6px 10px;
+            border-radius: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        
         .student-list {
             margin-top: 20px;
         }
+
         .student {
             display: flex;
             justify-content: space-between;
@@ -146,6 +148,7 @@ nav ul li:hover > a {
             margin: 5px 0;
             border-radius: 5px;
         }
+
         .student .controls button {
             margin-left: 5px;
             padding: 5px 10px;
@@ -157,17 +160,14 @@ nav ul li:hover > a {
         .student a {
             margin-left: 5px;
             padding: 5px 10px;
-            border: none;
+            background-color: #FFC107;
+            color: #fff;
             border-radius: 5px;
-            cursor: pointer;
-            background-color: #FFC107; color: #fff;
         }
-
 
         .start { background-color: #4CAF50; color: #fff; }
         .stop { background-color: #2196F3; color: #fff; }
         .reset { background-color: #f44336; color: #fff; }
-        .question { background-color: #FFC107; color: #fff; }
 
         .feedback {
             margin-top: 10px;
@@ -175,7 +175,6 @@ nav ul li:hover > a {
 
         .feedback label {
             display: block;
-            margin-bottom: 5px;
             font-weight: bold;
         }
 
@@ -193,44 +192,30 @@ nav ul li:hover > a {
             color: white;
             border: none;
             border-radius: 5px;
-            cursor: pointer;
         }
 
- /*footer*/
- .footerA{
-    padding: 40px 20px;
-    color: white;
-    background-color:  #0032A0;
-}
+        .footerA {
+            padding: 40px 20px;
+            color: white;
+            background-color: #0032A0;
+        }
 
-.footerSL{
-    align-items: center;
-}
+        footer {
+            text-align: center;
+            background: linear-gradient(to right, #38B6FF, white 50%, #38B6FF);
+            color: black;
+            padding: 10px 0;
+        }
 
-footer{
-    text-align: center;
-    background: linear-gradient(to right, #38B6FF, white 50%, #38B6FF);
-    color: black;
-    padding: 10px 0;
-}
+        .btnsearch {
+            border: none;
+            padding: 5.8px 15px;
+            border-radius: 10px;
+            width: 70%;
+        }
 
-.btnsearch{
-    border: none;
-    padding: 5.8px 15px;
-    border-radius: 10px;
-    width: 70%;
-}
-
-
-.passage {
-    background-color: #9DD4F0;
-    color: black; 
-  }
-
-.questions {
-    background-color: #5EC0F2;
-    color: black; 
-}
+        .passage { background-color: #9DD4F0; color: black; }
+        .questions { background-color: #5EC0F2; color: black; }
     </style>
 </head>
 <body>
@@ -245,259 +230,344 @@ footer{
     </div>
 </header>
 
-
-    <nav>
-        <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-
-            <!-- Reading Languages with Side Dropdown -->
-            <li class="dropdown-container">
-                <a href="#" id="readingLanguagesBtn">Reading Languages ▸</a>
-                <ul class="dropdown-menu">
-                    <!-- English -->
+<nav>
+    <ul>
+        <li><a href="{{ url('/home') }}">Home</a></li>
+        <li><a href="{{ url('/about') }}">About</a></li>
+        <li class="dropdown-container">
+            <a href="#">Reading Languages ▸</a>
+            <ul class="dropdown-menu">
                 <li class="dropdown-container">
-                        <a href="#" id="englishBtn">English▸</a>
-                        <ul class="dropdown-menu">
-                            <li class="dropdown-container">
-                                <a href="#">Grade 7▸</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Dao</a></li>
-                                    <li><a href="#">Mahugani</a></li>
-                                    <li><a href="#">Lawaan</a></li>
-                                    <li><a href="#">Narra</a></li>
-                                </ul>
-                            </li>
+                    <a href="#">English ▸</a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-container">
+                            <a href="#">Grade 7 ▸</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Dao</a></li>
+                                <li><a href="#">Mahugani</a></li>
+                                <li><a href="#">Lawaan</a></li>
+                                <li><a href="#">Narra</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-container">
+                            <a href="#">Grade 8 ▸</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Dao</a></li>
+                                <li><a href="#">Mahugani</a></li>
+                                <li><a href="#">Lawaan</a></li>
+                                <li><a href="#">Narra</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-container">
+                            <a href="#">Grade 9 ▸</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Dao</a></li>
+                                <li><a href="#">Mahugani</a></li>
+                                <li><a href="#">Lawaan</a></li>
+                                <li><a href="#">Narra</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-container">
+                            <a href="#">Grade 10 ▸</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Dao</a></li>
+                                <li><a href="#">Mahugani</a></li>
+                                <li><a href="#">Lawaan</a></li>
+                                <li><a href="#">Narra</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
 
-                            <li class="dropdown-container">
-                                <a href="#">Grade 8▸</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Dao</a></li>
-                                    <li><a href="#">Mahugani</a></li>
-                                    <li><a href="#">Lawaan</a></li>
-                                    <li><a href="#">Narra</a></li>
-                                </ul>
-                            </li>
-
-                            <li class="dropdown-container">
-                                <a href="#">Grade 9▸</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Dao</a></li>
-                                    <li><a href="#">Mahugani</a></li>
-                                    <li><a href="#">Lawaan</a></li>
-                                    <li><a href="#">Narra</a></li>
-                                </ul>
-                            </li>
-
-                            <li class="dropdown-container">
-                                <a href="#">Grade 10▸</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Dao</a></li>
-                                    <li><a href="#">Mahugani</a></li>
-                                    <li><a href="#">Lawaan</a></li>
-                                    <li><a href="#">Narra</a></li>
-                                </ul>
-                            </li>
-                            
-                        </ul>
-                    </li>
-                    
-                    <!-- Filipino -->
                 <li class="dropdown-container">
-                        <a href="#" id="englishBtn">Filipino▸</a>
-                        <ul class="dropdown-menu">
-                            <li class="dropdown-container">
-                                <a href="#">Grade 7▸</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="filipino.php#dao">Dao</a></li>
-                                    <li><a href="#">Mahugani</a></li>
-                                    <li><a href="#">Lawaan</a></li>
-                                    <li><a href="#">Narra</a></li>
-                                </ul>
-                            </li>
+                    <a href="#">Filipino ▸</a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-container">
+                            <a href="#">Grade 7 ▸</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="filipino.php#dao">Dao</a></li>
+                                <li><a href="#">Mahugani</a></li>
+                                <li><a href="#">Lawaan</a></li>
+                                <li><a href="#">Narra</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-container">
+                            <a href="#">Grade 8 ▸</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Dao</a></li>
+                                <li><a href="#">Mahugani</a></li>
+                                <li><a href="#">Lawaan</a></li>
+                                <li><a href="#">Narra</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-container">
+                            <a href="#">Grade 9 ▸</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Dao</a></li>
+                                <li><a href="#">Mahugani</a></li>
+                                <li><a href="#">Lawaan</a></li>
+                                <li><a href="#">Narra</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-container">
+                            <a href="#">Grade 10 ▸</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Dao</a></li>
+                                <li><a href="#">Mahugani</a></li>
+                                <li><a href="#">Lawaan</a></li>
+                                <li><a href="#">Narra</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</nav>
 
-                            <li class="dropdown-container">
-                                <a href="#">Grade 8▸</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Dao</a></li>
-                                    <li><a href="#">Mahugani</a></li>
-                                    <li><a href="#">Lawaan</a></li>
-                                    <li><a href="#">Narra</a></li>
-                                </ul>
-                            </li>
-
-                            <li class="dropdown-container">
-                                <a href="#">Grade 9▸</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Dao</a></li>
-                                    <li><a href="#">Mahugani</a></li>
-                                    <li><a href="#">Lawaan</a></li>
-                                    <li><a href="#">Narra</a></li>
-                                </ul>
-                            </li>
-
-                            <li class="dropdown-container">
-                                <a href="#">Grade 10▸</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Dao</a></li>
-                                    <li><a href="#">Mahugani</a></li>
-                                    <li><a href="#">Lawaan</a></li>
-                                    <li><a href="#">Narra</a></li>
-                                </ul>
-                    </li>
-                </ul>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </nav>
-
-
-    <section class="hero">
+<section class="hero">
     <div class="content">
-    <a id="dao"></a> <!-- Anchor Tag for Dao Section -->
-            <h2>Online Reading Passage</h2>
-            <p>Telling Time Humans have used different objects to tell time. In the beginning, they used an hourglass.
-               This is a cylindrical glass with a narrow center which allows sand to flow from its upper to its lower 
-               portion. Once all the sand has trickled to the lower portion, one knows that an hour has passed. Using 
-               the same idea, water clocks were constructed to measure time by having water flow through a narrow passage 
-               from one container to another. On the other hand, sundials allowed people to estimate an hour by looking at 
-               the position of the shadow cast by the sun on a plate. At night, people measured time by checking the alignment 
-               of the stars in the sky. None of these were accurate, though. The clock was the first accurate instrument or telling time.</p>
-            <input type="text" placeholder="Find Student"> 
-            <button>View Reports</button>
-            
-            <div class="student-list">
-                <h3>Grade 7 Students : SECTION NARRA</h3>
-                <div class="student">
-                    1. Albiniga, Alexander V.A.
-                    <div class="controls">
-                        <button class="start">Start Time</button>
-                        <button class="stop">Stop Time</button>
-                        <button class="reset">Reset Time</button>
-                        </div>
-                </div>
-                <div class="feedback">
-                        <label for="feedback-Alexander">Feedback:</label>
-                        <textarea id="feedback-Alexander" rows="3" placeholder="Write feedback here..."></textarea>
-                        <button class="submit-feedback">Submit Feedback</button>
-                </div>
+        <a id="dao"></a>
+        <h2>Online Reading Passage</h2>
+        <p>Telling Time Humans have used different objects to tell time. In the beginning, they used an hourglass.
+           This is a cylindrical glass with a narrow center which allows sand to flow from its upper to its lower 
+           portion. Once all the sand has trickled to the lower portion, one knows that an hour has passed. Using 
+           the same idea, water clocks were constructed to measure time by having water flow through a narrow passage 
+           from one container to another. On the other hand, sundials allowed people to estimate an hour by looking at 
+           the position of the shadow cast by the sun on a plate. At night, people measured time by checking the alignment 
+           of the stars in the sky. None of these were accurate, though. The clock was the first accurate instrument or telling time.</p>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Find Student" class="search-input"> 
+            <button class="search-btn" onclick="searchStudent()">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+        <button class="view">View Reports</button>
+        <div class="student-list">
+            <h3>Grade 7 Students : SECTION NARRA</h3>
+            <div id="studentContainer">
+                <!-- Student information will be displayed here -->
+            </div>
+            <div class="feedback">
+                <label for="feedback">Feedback:</label>
+                <textarea id="feedback" rows="3" placeholder="Write feedback here..."></textarea>
+                <button class="submit-feedback">Submit Feedback</button>
+            </div>
+        </div>
+    </div>
+</section>
 
-    </section>
-
-    
-
-    <div class="footerA row m-0">
-            <div class="col-md-4">
-                <h2>VISION</h2>
-                <p class="pjust">The Philippine Informal Reading Inventory (Phil-IRI) is an initiative of the Bureau of Learning Delivery,
+<div class="footerA row m-0">
+    <div class="col-md-4">
+        <h2>VISION</h2>
+        <p class="pjust">The Philippine Informal Reading Inventory (Phil-IRI) is an initiative of the Bureau of Learning Delivery,
                    Department of Education that directly addresses its thrust to make every Filipino child a reader.
                    The Philippine Informal Reading Inventory (Phil-IRI) is an initiative of the Bureau of Learning Delivery,
                    Department of Education that directly addresses its thrust to make every Filipino child a reader.</p>
-            </div>
+    </div>
+    <div class="col-md-4 text-center">
+        <img src="{{ asset('pic/slogo.png') }}" height="148" width="150" alt="ReadEase Logo">
+        <p class="mt-2">Calingcaguing National Highschool</p>
+    </div>
+    <div class="col-md-4 foot">
+        <form>
+            <input class="btnsearch" type="text" placeholder="Search..">
+            <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+        </form><br>
+        <p><img src="{{ asset('pic/location.png') }}" height="25px"> Calingcaguing, Banug, Philippines</p>
+        <p><img src="{{ asset('pic/mail.png') }}" height="25px"> calingcaguingnationalhighschool@gmail.com</p>
+        <p><img src="{{ asset('pic/phone.png') }}" height="25px"> (053)-545-0025</p>
+    </div>
+</div>
 
-            <div class="col-md-4 d-flex flex-column align-items-center justify-content-center">
-                <img src="{{ asset('pic/slogo.png') }}" height="148" width="150" alt="ReadEase Logo">
-                <p class="mt-2">Calingcaguing National Highschool</p>
-            </div>
+<footer>
+    <p class="fw-bold mb-0">&copy; 2025 ReadEase | All Rights Reserved</p>
+</footer>
 
-            <div class="col-md-4 foot">
-                <form>
-                    <input class ="btnsearch" type="text" placeholder="Search.." aria-label="Search">
-                    <button class="btn btn-primary" type="submit">
-                    <i class="fas fa-search"></i>
-                </button>
-                </form><br>
-            
-                <p><img src="{{ asset('pic/location.png') }}" height="25px" weight = "25px"> Calingcaguing, Banug, Philippines, 6519<p>
-                <p><img src="{{ asset('pic/mail.png ') }}" height="25px" weight = "25px"> calingcaguingnationalhighschool@gmail.com<p>
-                <p><img src="{{ asset('pic/phone.png') }}" height="25px" weight = "25px"> (053)-545-0025<p>
-            </div>
-        </div>
-    </main>
-
-    <footer>
-        <p class ="fw-bold mb-0" class="copyright">&copy; 2025 ReadEase | All Rights Reserved</p>
-    </footer>
-
-    <script>
-        // Timer Object to Track Multiple Timers
+<script>
+    // Timer logic
     const timers = {};
+    const readingData = {};
 
-// Function to Start or Resume Timer
-function startTimer(studentName, displayElement) {
-    if (!timers[studentName]) {
-        // Start new timer if none exists
-        timers[studentName] = {
-            elapsedTime: 0,   // Tracks paused time
-            startTime: Date.now(),  
-            interval: setInterval(() => {
-                const elapsedTime = Date.now() - timers[studentName].startTime + timers[studentName].elapsedTime;
-                displayElement.textContent = formatTime(elapsedTime);
-            }, 1000)
-        };
-    } else if (!timers[studentName].interval) {
-        // Resume timer if stopped
-        timers[studentName].startTime = Date.now();
-        timers[studentName].interval = setInterval(() => {
-            const elapsedTime = Date.now() - timers[studentName].startTime + timers[studentName].elapsedTime;
-            displayElement.textContent = formatTime(elapsedTime);
-        }, 1000);
+    function startTimer(name, display) {
+        if (!timers[name]) {
+            timers[name] = {
+                elapsedTime: 0,
+                startTime: Date.now(),
+                interval: setInterval(() => {
+                    const elapsed = Date.now() - timers[name].startTime + timers[name].elapsedTime;
+                    display.textContent = formatTime(elapsed);
+                }, 1000)
+            };
+        } else if (!timers[name].interval) {
+            timers[name].startTime = Date.now();
+            timers[name].interval = setInterval(() => {
+                const elapsed = Date.now() - timers[name].startTime + timers[name].elapsedTime;
+                display.textContent = formatTime(elapsed);
+            }, 1000);
+        }
     }
-}
 
-// Function to Stop Timer
-function stopTimer(studentName) {
-    if (timers[studentName] && timers[studentName].interval) {
-        clearInterval(timers[studentName].interval);
-        timers[studentName].interval = null; // Mark as paused
-        // Save elapsed time for resuming later
-        timers[studentName].elapsedTime += Date.now() - timers[studentName].startTime;
+    function stopTimer(name) {
+        if (timers[name]?.interval) {
+            clearInterval(timers[name].interval);
+            timers[name].interval = null;
+            timers[name].elapsedTime += Date.now() - timers[name].startTime;
+            // Store the reading time in seconds
+            readingData[name] = {
+                ...readingData[name],
+                reading_time: Math.floor(timers[name].elapsedTime / 1000)
+            };
+            submitReadingData(name);
+        }
     }
-}
 
-// Function to Reset Timer
-function resetTimer(studentName, displayElement) {
-    if (timers[studentName]) {
-        clearInterval(timers[studentName].interval);
-        delete timers[studentName];
+    function resetTimer(name, display) {
+        clearInterval(timers[name]?.interval);
+        delete timers[name];
+        display.textContent = "00:00:00";
     }
-    displayElement.textContent = "00:00:00";
-}
 
-// Format Time into hh:mm:ss
-function formatTime(ms) {
-    const totalSeconds = Math.floor(ms / 1000);
-    const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
-    const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
-    const seconds = String(totalSeconds % 60).padStart(2, '0');
-    return `${hours}:${minutes}:${seconds}`;
-}
+    function formatTime(ms) {
+        const total = Math.floor(ms / 1000);
+        const h = String(Math.floor(total / 3600)).padStart(2, '0');
+        const m = String(Math.floor((total % 3600) / 60)).padStart(2, '0');
+        const s = String(total % 60).padStart(2, '0');
+        return `${h}:${m}:${s}`;
+    }
 
-// Attach event listeners to each student's controls
-document.querySelectorAll('.student').forEach(student => {
-    const studentName = student.textContent.trim().split('.')[1].trim();
-    const displayElement = document.createElement('span');
-    displayElement.textContent = "00:00:00";
-    displayElement.style.marginRight = "15px";
-    displayElement.style.fontWeight = "bold";
+    function handleMiscues(name, input) {
+        input.addEventListener('input', function() {
+            const value = parseInt(this.value) || 0;
+            if (value >= 0) {
+                readingData[name] = {
+                    ...readingData[name],
+                    miscues: value,
+                    student_name: name,
+                    total_words: 70, // Assuming 70 words in the passage
+                    correct_answers: 4, // Default value, can be changed
+                    total_questions: 6 // Default value, can be changed
+                };
+            }
+        });
+    }
 
-    // Insert Timer Display Before Start Button
-    const controlsDiv = student.querySelector('.controls');
-    controlsDiv.insertBefore(displayElement, controlsDiv.querySelector('.start'));
+    function submitReadingData(name) {
+        if (readingData[name]) {
+            fetch('/update-reading', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify(readingData[name])
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                // Redirect to reports page after successful submission
+                window.location.href = '/reports';
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    }
 
-    student.querySelector('.start').addEventListener('click', () => startTimer(studentName, displayElement));
-    student.querySelector('.stop').addEventListener('click', () => stopTimer(studentName));
-    student.querySelector('.reset').addEventListener('click', () => resetTimer(studentName, displayElement));
-});
-        // // Dropdown logic for main and submenus
-        // document.querySelectorAll('.dropdown-container > a').forEach(link => {
-        //     link.addEventListener('click', function(e) {
-        //         e.preventDefault();
-        //         const submenu = this.nextElementSibling;
-        //         submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
-        //     });
-        // });
-    </script>
+    document.querySelectorAll('.student').forEach(student => {
+        const name = student.textContent.trim().split('.')[1].trim();
+        const display = document.createElement('span');
+        display.textContent = "00:00:00";
+        display.style.marginRight = "15px";
+        display.style.fontWeight = "bold";
+        const controls = student.querySelector('.controls');
+        controls.insertBefore(display, controls.querySelector('.start'));
+        
+        const miscuesInput = student.querySelector('input[type="number"]');
+        handleMiscues(name, miscuesInput);
+        
+        student.querySelector('.start').addEventListener('click', () => startTimer(name, display));
+        student.querySelector('.stop').addEventListener('click', () => stopTimer(name));
+        student.querySelector('.reset').addEventListener('click', () => resetTimer(name, display));
+    });
+
+    function searchStudent() {
+        const searchInput = document.getElementById('searchInput');
+        const searchTerm = searchInput.value.trim();
+        const studentContainer = document.getElementById('studentContainer');
+
+        if (!searchTerm) {
+            studentContainer.innerHTML = '<p class="text-danger">Please enter a student name to search</p>';
+            return;
+        }
+
+        studentContainer.innerHTML = '<p>Searching...</p>';
+
+        fetch('/search-student', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({ search: searchTerm })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(student => {
+            if (student) {
+                studentContainer.innerHTML = `
+                    <div class="student">
+                        <div class="student-info">
+                            <h4>${student.name}</h4>
+                            <p>Section: ${student.section}</p>
+                            <p>Grade Level: ${student.grade_level}</p>
+                        </div>
+                        <div class="controls">
+                            <input type="number" placeholder="Miscues" style="width: 100px; margin-right: 10px; padding: 5px; border-radius: 5px;">
+                            <button class="start">Start Time</button>
+                            <button class="stop">Stop Time</button>
+                            <button class="reset">Reset Time</button>
+                        </div>
+                    </div>
+                `;
+
+                // Re-attach timer event listeners for the new student
+                const studentDiv = studentContainer.querySelector('.student');
+                const name = student.name;
+                const display = document.createElement('span');
+                display.textContent = "00:00:00";
+                display.style.marginRight = "15px";
+                display.style.fontWeight = "bold";
+                const controls = studentDiv.querySelector('.controls');
+                controls.insertBefore(display, controls.querySelector('.start'));
+
+                const miscuesInput = studentDiv.querySelector('input[type="number"]');
+                handleMiscues(name, miscuesInput);
+
+                studentDiv.querySelector('.start').addEventListener('click', () => startTimer(name, display));
+                studentDiv.querySelector('.stop').addEventListener('click', () => stopTimer(name));
+                studentDiv.querySelector('.reset').addEventListener('click', () => resetTimer(name, display));
+            } else {
+                studentContainer.innerHTML = '<p class="text-warning">No student found with that name</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            studentContainer.innerHTML = '<p class="text-danger">Error searching for student. Please try again.</p>';
+        });
+    }
+
+    // Add event listener for Enter key
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            searchStudent();
+        }
+    });
+</script>
+
 </body>
 </html>
