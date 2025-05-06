@@ -5,6 +5,8 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\ReadingController;
 use Illuminate\Http\Request;
 
 // Home Route
@@ -66,17 +68,13 @@ Route::middleware(['auth'])->group(function () {
         })->name('teacher.filipino-mahugani');
 
         
-        Route::get('/viewreports', function (Request $request) {
-            $section = $request->query('section', 'narra');
-            $language = $request->query('language', 'english');
-            return view('teacher.viewreports', [
-                'section' => $section,
-                'language' => $language
-            ]);
-        })->name('teacher.viewreports');
+        Route::get('/viewreports', [ReportsController::class, 'index'])->name('teacher.viewreports');
 
         // Add search route for teachers
         Route::get('/search-student', [StudentController::class, 'search'])->name('teacher.search-student');
+
+        // Add the update-reading route
+        Route::post('/update-reading', [ReadingController::class, 'updateReading'])->name('reading.update');
     });
 
     // Admin Routes

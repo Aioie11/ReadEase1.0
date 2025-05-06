@@ -415,11 +415,24 @@
             clearInterval(timers[name].interval);
             timers[name].interval = null;
             timers[name].elapsedTime += Date.now() - timers[name].startTime;
+            
+            // Ensure readingData has the necessary fields
+            if (!readingData[name]) {
+                readingData[name] = {
+                    student_name: name,
+                    total_words: 70, // Default value
+                    total_questions: 6, // Default value
+                    correct_answers: 0 // Default value
+                };
+            }
+            
             // Store the reading time in seconds
-            readingData[name] = {
-                ...readingData[name],
-                reading_time: Math.floor(timers[name].elapsedTime / 1000)
-            };
+            readingData[name].reading_time = Math.floor(timers[name].elapsedTime / 1000);
+            
+            // Debug log
+            console.log('Stopping timer for:', name);
+            console.log('Current reading data:', readingData[name]);
+            
             submitReadingData(name);
         }
     }
@@ -456,23 +469,70 @@
 
     function submitReadingData(name) {
         if (readingData[name]) {
-            fetch('/update-reading', {
+            // Calculate reading speed (words per minute)
+            const readingSpeed = Math.round((readingData[name].total_words / (readingData[name].reading_time / 60)));
+            
+            // Calculate word recognition percentage
+            const wordRecognition = Math.round((readingData[name].total_words - readingData[name].miscues) / readingData[name].total_words * 100);
+            
+            // Determine word reading level
+            let wordLabel = 'Frustration';
+            if (wordRecognition >= 98) {
+                wordLabel = 'Independent';
+            } else if (wordRecognition >= 90) {
+                wordLabel = 'Instructional';
+            }
+
+            // Determine comprehension level
+            let comprehension = 'Frustration';
+            const comprehensionScore = (readingData[name].correct_answers / readingData[name].total_questions) * 100;
+            if (comprehensionScore >= 90) {
+                comprehension = 'Independent';
+            } else if (comprehensionScore >= 70) {
+                comprehension = 'Instructional';
+            }
+
+            const dataToSend = {
+                ...readingData[name],
+                reading_speed: `${readingSpeed} WPM`,
+                word_recognition: wordRecognition,
+                word_label: wordLabel,
+                comprehension: comprehension,
+                section: 'narra',
+                language: 'english'
+            };
+
+            // Debug log
+            console.log('Sending data:', dataToSend);
+
+            fetch('/teacher/update-reading', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 },
-                body: JSON.stringify(readingData[name])
+                body: JSON.stringify(dataToSend)
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 console.log('Success:', data);
-                // Redirect to reports page after successful submission
-                window.location.href = '/reports';
+                // Show success message
+                alert('Reading data saved successfully!');
+                // Redirect to reports page
+                window.location.href = '/teacher/viewreports?section=narra&language=english';
             })
             .catch((error) => {
-                console.error('Error:', error);
+                console.error('Error details:', error);
+                alert('Error saving reading data: ' + error.message);
             });
+        } else {
+            console.error('No reading data available for student:', name);
+            alert('No reading data available to save. Please ensure you have started the timer and entered miscues.');
         }
     }
 

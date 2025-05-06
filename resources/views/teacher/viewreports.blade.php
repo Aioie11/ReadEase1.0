@@ -321,99 +321,61 @@ footer{
   <h2>STUDENT {{ strtoupper($language) }} REPORTS</h2>
   <h3>Grade 7 Students : <span class="underline">SECTION {{ strtoupper($section) }}</span></h3>
 
-  <?php
-  // STUDENT DATA (normally from a database)
+  <!-- STUDENT CARD DISPLAY -->
+  <div class="student-wrapper">
+  @if($students->count() > 0)
+    @foreach($students as $i => $student)
+      <div class="student-column">
+        <h4>{{ $i + 1 }}. {{ $student->student_name }}</h4>
 
-  $students = [
-    [
-      'name' => 'AlbingA, Alexander Ven A.',
-      'reading_time' => 42,
-      'total_words' => 70,
-      'reading_speed' => '96 WPM',
-      'correct_answers' => 4,
-      'total_questions' => 6,
-      'comprehension' => 'Instructional',
-      'word_recognition' => 55,
-      'word_total' => 70,
-      'word_label' => 'Independent'
-    ],
-    // Additional students
-    [
-      'name' => 'Acobo, Glenn',
-      'reading_time' => 30,
-      'total_words' => 68,
-      'reading_speed' => '50 WPM',
-      'correct_answers' => 5,
-      'total_questions' => 6,
-      'comprehension' => 'Independent',
-      'word_recognition' => 15,
-      'correct reading' => 60,
-      'word_total' => 70,
-      'word_label' => 'Instructional'
-    ],
-    [
-      'name' => 'Adazas, Dexter',
-      'reading_time' => 30,
-      'total_words' => 70,
-      'reading_speed' => '90 WPM',
-      'correct_answers' => 3,
-      'total_questions' => 6,
-      'comprehension' => 'Instructional',
-      'word_recognition' => 45,
-      'word_total' => 70,
-      'word_label' => 'Instructional'
-    ]
-  ];
-  ?>
-<!-- STUDENT CARD DISPLAY -->
-<div class="student-wrapper">
-<?php foreach ($students as $i => $s): 
-  $id = "chart$i"; // unique chart ID for each student ?>
-  <div class="student-column">
-    <h4><?= ($i+1) . ". {$s['name']}" ?></h4>
+        <!-- READING SPEED CHART -->
+        <div class="section-box">
+          <div class="chart-section">
+            <canvas id="chart{{ $i }}_reading"></canvas>
+            <div class="label-box italic-label">READING SPEED: <span class="bold-value">{{ $student->reading_speed }}</span></div>
+          </div>
+        </div>
 
-    <!-- READING SPEED CHART -->
-    <div class="section-box">
-      <div class="chart-section">
-        <canvas id="<?= $id ?>_reading"></canvas>
-        <div class="label-box italic-label">READING SPEED: <span class="bold-value"><?= $s['reading_speed'] ?></span></div>
+        <!-- COMPREHENSION CHART -->
+        <div class="section-box">
+          <div class="chart-section">
+            <canvas id="chart{{ $i }}_comp"></canvas>
+            <div class="label-box italic-label">COMPREHENSION: <span class="bold-value">{{ $student->comprehension }}</span></div>
+          </div>
+        </div>
+
+        <!-- WORD RECOGNITION CHART -->
+        <div class="section-box">
+          <div class="chart-section">
+            <canvas id="chart{{ $i }}_word"></canvas>
+            <div class="label-box italic-label">WORD READING: <span class="bold-value">{{ $student->word_label }}</span></div>
+          </div>
+        </div>
       </div>
+    @endforeach
+  @else
+    <div class="alert alert-info w-100 text-center">
+      No reading data available for {{ strtoupper($section) }} section in {{ strtoupper($language) }}.
     </div>
-
-    <!-- COMPREHENSION CHART -->
-    <div class="section-box">
-      <div class="chart-section">
-        <canvas id="<?= $id ?>_comp"></canvas>
-        <div class="label-box italic-label">COMPREHENSION: <span class="bold-value"><?= $s['comprehension'] ?></span></div>
-      </div>
-    </div>
-
-    <!-- WORD RECOGNITION CHART -->
-    <div class="section-box">
-      <div class="chart-section">
-        <canvas id="<?= $id ?>_word"></canvas>
-        <div class="label-box italic-label">WORD READING: <span class="bold-value"><?= $s['word_label'] ?></span></div>
-      </div>
-    </div>
+  @endif
   </div>
-<?php endforeach; ?>
-</div>
 </div>
 
 <!-- CHART.JS SCRIPT TO GENERATE STUDENT GRAPHS -->
+@if($students->count() > 0)
 <script>
-<?php foreach ($students as $i => $s): ?>
-  const ctxR<?= $i ?> = document.getElementById('chart<?= $i ?>_reading');
-  const ctxC<?= $i ?> = document.getElementById('chart<?= $i ?>_comp');
-  const ctxW<?= $i ?> = document.getElementById('chart<?= $i ?>_word');
+@foreach($students as $i => $student)
+  const ctxR{{ $i }} = document.getElementById('chart{{ $i }}_reading');
+  const ctxC{{ $i }} = document.getElementById('chart{{ $i }}_comp');
+  const ctxW{{ $i }} = document.getElementById('chart{{ $i }}_word');
 
   // Reading Speed Chart
-  new Chart(ctxR<?= $i ?>, {
+  new Chart(ctxR{{ $i }}, {
     type: 'bar',
     data: {
       labels: ['Reading Time', 'Total Words'],
       datasets: [{
-        data: [<?= $s['reading_time'] ?>, <?= $s['total_words'] ?>],
+        data: [{{ $student->reading_time }}, {{ $student->total_words }}],
         backgroundColor: ['#247ba0', '#70c1b3']
       }]
     },
@@ -423,19 +385,19 @@ footer{
       scales: {
         x: {
           beginAtZero: true,
-          max: <?= $s['total_words'] ?>
+          max: {{ $student->total_words }}
         }
       }
     }
   });
 
   // Comprehension Chart
-  new Chart(ctxC<?= $i ?>, {
+  new Chart(ctxC{{ $i }}, {
     type: 'bar',
     data: {
       labels: ['Correct Answers', 'Total Questions'],
       datasets: [{
-        data: [<?= $s['correct_answers'] ?>, <?= $s['total_questions'] ?>],
+        data: [{{ $student->correct_answers }}, {{ $student->total_questions }}],
         backgroundColor: ['#38B6FF', '#00d4ff']
       }]
     },
@@ -446,49 +408,41 @@ footer{
     }
   });
   
-  // Word Reading
-
-new Chart(ctxW<?= $i ?>, {
-  type: 'bar',
-  data: {
-    labels: [
-      'Reading Miscues', 
-      'Correct Reading',
-      'Total Words'
-    ],
-    datasets: [{
-      data: [
-        <?= $s['word_total'] - $s['word_recognition'] ?>,
-        <?= $s['word_recognition'] ?>,
-        <?= $s['word_total'] ?>
-      ],
-      backgroundColor: ['#94d2bd', '#caf0f8', '#f0efeb']
-    }]
-  },
-  options: {
-    indexAxis: 'y',
-    plugins: {
-      legend: { display: false },
-      datalabels: {
-        display: function(context) {
-          return context.dataIndex === 1;
-        },
-        anchor: 'start',
-        align: 'left',
-        formatter: function() {
-          return 'Correct Reading';
-        },
-       
+  // Word Reading Chart
+  new Chart(ctxW{{ $i }}, {
+    type: 'bar',
+    data: {
+      labels: ['Reading Miscues', 'Correct Reading', 'Total Words'],
+      datasets: [{
+        data: [
+          {{ $student->miscues }},
+          {{ $student->total_words - $student->miscues }},
+          {{ $student->total_words }}
+        ],
+        backgroundColor: ['#94d2bd', '#caf0f8', '#f0efeb']
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      plugins: {
+        legend: { display: false },
+        datalabels: {
+          display: function(context) {
+            return context.dataIndex === 1;
+          },
+          anchor: 'start',
+          align: 'left',
+          formatter: function() {
+            return 'Correct Reading';
+          }
+        }
       }
     },
-   
-  },
-  plugins: [ChartDataLabels]
-});
-
-
-<?php endforeach; ?>
+    plugins: [ChartDataLabels]
+  });
+@endforeach
 </script>
+@endif
 
 
 
