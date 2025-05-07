@@ -9,10 +9,40 @@ use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\ReadingController;
 use Illuminate\Http\Request;
 
+//student part
+use App\Http\Controllers\StudentAnswerEnglishController;
+use App\Http\Controllers\StudentAnswerTagalogController;
+
+Route::post('/student/add', [StudentAnswerEnglishController::class, 'store']);
+Route::post('/student/add', [StudentAnswerTagalogController::class, 'store']);
+
 // Home Route
 Route::get('/', function () {
     return view('home');
 });
+
+Route::get('/main', function () {
+    return view('main');
+});
+
+Route::get('/about', function () {
+    return view('about');
+});
+
+Route::get('/students-eng', function () {
+    return view('students-eng');
+});
+
+Route::get('/students-tag', function () {
+    return view('students-tag');
+});
+
+Route::get('/students-results', function () {
+    return view('students-results');
+});
+
+
+
 
 // Authentication Routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
