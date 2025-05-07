@@ -16,7 +16,12 @@ use App\Http\Controllers\StudentAnswerTagalogController;
 Route::post('/student/add', [StudentAnswerEnglishController::class, 'store']);
 Route::post('/student/add', [StudentAnswerTagalogController::class, 'store']);
 
+// Home Route
 Route::get('/', function () {
+    return view('home');
+});
+
+Route::get('/main', function () {
     return view('main');
 });
 
@@ -37,10 +42,7 @@ Route::get('/students-results', function () {
 });
 
 
-// Home Route
-Route::get('/', function () {
-    return view('home');
-});
+
 
 // Authentication Routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
