@@ -477,7 +477,7 @@
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${user.name}</td>
-                <td>${user.role === 'admin' ? 'CRUD Anything' : 'Teacher Profile'}</td>
+                <td>${user.role === 'admin' ? 'CRUD Anything' : user.role === 'student' ? 'Student Profile' : 'Teacher Profile'}</td>
                 <td>${new Date(user.created_at).toLocaleDateString()}</td>
                 <td>${user.email}</td>
                 <td class="action-buttons">

@@ -1,4 +1,4 @@
-@extends('2hf')
+@extends('student.2hf')
 
 @section('content')
         <div>

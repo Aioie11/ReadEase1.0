@@ -46,17 +46,30 @@ class StudentController extends Controller
         $query = $request->input('query');
         $section = $request->input('section');
         
+        \Log::info('Search request received', [
+            'query' => $query,
+            'section' => $section
+        ]);
+
         $students = Student::where(function($q) use ($query) {
             $q->whereRaw('LOWER(first_name) LIKE ?', ['%' . strtolower($query) . '%'])
               ->orWhereRaw('LOWER(last_name) LIKE ?', ['%' . strtolower($query) . '%'])
-              ->orWhereRaw('LOWER(student_number) LIKE ?', ['%' . strtolower($query) . '%']);
+              ->orWhereRaw('LOWER(CONCAT(last_name, ", ", first_name)) LIKE ?', ['%' . strtolower($query) . '%'])
+              ->orWhereRaw('LOWER(CONCAT(first_name, " ", last_name)) LIKE ?', ['%' . strtolower($query) . '%']);
         })
-        ->where('section', $section)
+        ->when($section, function($q) use ($section) {
+            return $q->where('section', $section);
+        })
         ->get()
         ->map(function($student) {
-            $student->name = $student->last_name . ', ' . $student->first_name . ' ' . $student->middle_name;
+            $student->name = $student->last_name . ', ' . $student->first_name . ' ' . ($student->middle_name ? $student->middle_name : '');
             return $student;
         });
+
+        \Log::info('Search results', [
+            'count' => $students->count(),
+            'students' => $students->toArray()
+        ]);
 
         return response()->json($students);
     }

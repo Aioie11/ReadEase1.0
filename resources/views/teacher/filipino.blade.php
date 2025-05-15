@@ -14,6 +14,11 @@
             box-sizing: border-box;
         }
 
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+        }
+
         header {
             align-items: center;
             padding: 15px 30px;
@@ -55,140 +60,216 @@
         nav ul li a {
             text-decoration: none;
             color: white;
-            font-size: 18px;
-            padding: 10px;
+            font-size: 16px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
         }
 
         nav ul li:hover > a {
             background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
-        }
-
-        .dropdown-container {
-            position: relative;
+            transform: translateY(-2px);
         }
 
         .dropdown-menu {
             display: none;
             position: absolute;
-            top: 0;
-            left: 100%;
+            top: 100%;
+            left: 0;
             background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 165px;
-            z-index: 1;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 200px;
+            z-index: 1000;
+            padding: 10px 0;
+            transition: all 0.3s ease;
         }
 
         .dropdown-menu a {
+            color: #333;
+            padding: 10px 20px;
             display: block;
-            color: #003366;
-            padding: 5px;
+            transition: all 0.3s ease;
         }
 
         .dropdown-menu a:hover {
-            background-color: #f0f0f0;
-        }
-
-        .dropdown-container:hover > .dropdown-menu {
-            display: block;
+            background-color: #f0f7ff;
+            color: #0032A0;
+            transform: translateX(5px);
         }
 
         .hero {
-            padding: 20px;
+            padding: 30px;
         }
 
         .hero .content {
-            background: rgba(67, 77, 170, 0.5);
-            padding: 50px;
+            background: white;
+            padding: 40px;
             max-width: 1500px;
             margin: auto;
-            border-radius: 10px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
         }
 
         .hero h2 {
-            font-size: 24px;
-            margin-bottom: 15px;
+            font-size: 28px;
+            color: #0032A0;
+            margin-bottom: 20px;
+            font-weight: 600;
         }
 
         .hero p {
-            font-size: 18px;
-            margin-bottom: 15px;
+            font-size: 16px;
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+
+        .input-group {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-radius: 50px;
+            overflow: hidden;
         }
 
         .input-group input[type="text"] {
-    border-right: none;
-}
+            border: 1px solid #e0e0e0;
+            padding: 12px 20px;
+            font-size: 15px;
+        }
 
-.input-group .btn {
-    border-left: none;
-}
+        .input-group .btn {
+            padding: 12px 25px;
+            background: #0032A0;
+            border: none;
+            transition: all 0.3s ease;
+        }
 
-.btn-success {
-    background-color: #28a745;
-    border-color: #28a745;
-    font-size: 14px;
-    padding: 6px 15px;
-}
+        .input-group .btn:hover {
+            background: #002080;
+            transform: translateY(-2px);
+        }
 
-        
+        .btn-success {
+            background: #28a745;
+            padding: 12px 25px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
         .student-list {
-            margin-top: 20px;
+            margin-top: 30px;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .student-list h3 {
+            color: #0032A0;
+            font-size: 22px;
+            margin-bottom: 20px;
+            font-weight: 600;
         }
 
         .student {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #f0f8ff;
-            padding: 10px 15px;
-            margin: 5px 0;
-            border-radius: 5px;
+            background-color: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .student:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .student .controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
         }
 
         .student .controls button {
-            margin-left: 5px;
-            padding: 5px 10px;
+            padding: 8px 15px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
         }
 
-        .student a {
-            margin-left: 5px;
-            padding: 5px 10px;
-            background-color: #FFC107;
-            color: #fff;
-            border-radius: 5px;
+        .student .controls button:hover {
+            transform: translateY(-2px);
         }
 
-        .start { background-color: #4CAF50; color: #fff; }
-        .stop { background-color: #2196F3; color: #fff; }
-        .reset { background-color: #f44336; color: #fff; }
+        .start { 
+            background-color: #4CAF50; 
+            color: white;
+        }
+        .stop { 
+            background-color: #2196F3; 
+            color: white;
+        }
+        .reset { 
+            background-color: #f44336; 
+            color: white;
+        }
 
         .feedback {
-            margin-top: 10px;
+            margin-top: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
         .feedback label {
             display: block;
-            font-weight: bold;
+            font-weight: 600;
+            color: #0032A0;
+            margin-bottom: 10px;
         }
 
         .feedback textarea {
             width: 100%;
+            border: 1px solid #e0e0e0;
             border-radius: 8px;
-            padding: 8px;
+            padding: 12px;
             resize: vertical;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .feedback textarea:focus {
+            border-color: #0032A0;
+            box-shadow: 0 0 0 2px rgba(0, 50, 160, 0.1);
+            outline: none;
         }
 
         .submit-feedback {
-            margin-top: 5px;
-            padding: 5px 10px;
-            background-color: #007bff;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #0032A0;
             color: white;
             border: none;
             border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-feedback:hover {
+            background-color: #002080;
+            transform: translateY(-2px);
         }
 
         .footerA {
@@ -211,8 +292,32 @@
             width: 70%;
         }
 
-        .passage { background-color: #9DD4F0; color: black; }
-        .questions { background-color: #5EC0F2; color: black; }
+        /* Animation for student list */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .student {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Responsive design improvements */
+        @media (max-width: 768px) {
+            .hero .content {
+                padding: 20px;
+            }
+
+            .student {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .student .controls {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -229,10 +334,8 @@
 
 <nav>
     <ul>
-        <li><a href="{{ route('teacher.dashboard') }}">Home</a></li>
-        <li><a href="{{ route('teacher.about') }}">About</a></li>
         <li class="dropdown-container">
-            <a href="#">Reading Languages ▸</a>
+        <a href="{{ route('teacher.readinglanguage') }}" id="readingLanguagesBtn">Reading Languages ▸</a>
             <ul class="dropdown-menu">
                 <li class="dropdown-container">
                     <a href="#">English ▸</a>
@@ -319,11 +422,25 @@
                 </li>
             </ul>
         </li>
+        <li><a href="{{ route('teacher.viewreports') }}">View Reports</a></li>
     </ul>
 </nav>
 
 <section class="hero">
     <div class="content">
+    <h3 class="mb-4" style="color: #0032A0;">Grade 7 Students : SECTION NARRA</h3>
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
+            <div class="input-group" style="max-width: 400px;">
+                <input type="text" id="searchInput" class="form-control rounded-start-pill" placeholder="Find Student">
+                <button class="btn btn-primary rounded-end-pill" onclick="searchStudent()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <a href="{{ route('teacher.viewreports') }}" class="btn btn-success rounded-pill" style="margin-left: auto; padding: 10px 10px;">
+                <i class="fas fa-file-alt"></i> View Reports
+            </a>
+        </div>
+
         <a id="dao"></a>
         <h2>TALATA SA PAGBASA</h2>
         <p>Narito ang isang kwento tungkol sa isang batang babae na nagngangalang Maria.
@@ -333,20 +450,7 @@
                niyang maligaya ang kanyang mga lolo at lola. Mahilig din siya sa pagbabasa ng mga aklat, lalo na
                ang mga kuwento tungkol sa kalikasan. Pinapangarap niyang maging isang guro balang araw upang matulungan
                ang mga batang katulad niya na nais matuto at magkaroon ng magandang kinabukasan.</p>
-           <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-    <div class="input-group" style="max-width: 400px;">
-        <input type="text" id="searchInput" class="form-control rounded-start-pill" placeholder="Find Student">
-        <button class="btn btn-primary rounded-end-pill" onclick="searchStudent()">
-            <i class="fas fa-search"></i>
-        </button>
-    </div>
-    <a href="{{ route('teacher.viewreports') }}" class="btn btn-success rounded-pill ms-2">
-        <i class="fas fa-file-alt"></i> View Reports
-    </a>
-</div>
 
-        <div class="student-list">
-            <h3>Grade 7 Students : SECTION NARRA</h3>
             <div id="studentContainer">
                 <!-- Student information will be displayed here -->
             </div>
@@ -355,7 +459,6 @@
                 <textarea id="feedback" rows="3" placeholder="Write feedback here..."></textarea>
                 <button class="submit-feedback">Submit Feedback</button>
             </div>
-        </div>
     </div>
 </section>
 
@@ -415,11 +518,24 @@
             clearInterval(timers[name].interval);
             timers[name].interval = null;
             timers[name].elapsedTime += Date.now() - timers[name].startTime;
+            
+            // Ensure readingData has the necessary fields
+            if (!readingData[name]) {
+                readingData[name] = {
+                    student_name: name,
+                    total_words: 70, // Default value
+                    total_questions: 6, // Default value
+                    correct_answers: 0 // Default value
+                };
+            }
+            
             // Store the reading time in seconds
-            readingData[name] = {
-                ...readingData[name],
-                reading_time: Math.floor(timers[name].elapsedTime / 1000)
-            };
+            readingData[name].reading_time = Math.floor(timers[name].elapsedTime / 1000);
+            
+            // Debug log
+            console.log('Stopping timer for:', name);
+            console.log('Current reading data:', readingData[name]);
+            
             submitReadingData(name);
         }
     }
@@ -456,23 +572,70 @@
 
     function submitReadingData(name) {
         if (readingData[name]) {
-            fetch('/update-reading', {
+            // Calculate reading speed (words per minute)
+            const readingSpeed = Math.round((readingData[name].total_words / (readingData[name].reading_time / 60)));
+            
+            // Calculate word recognition percentage
+            const wordRecognition = Math.round((readingData[name].total_words - readingData[name].miscues) / readingData[name].total_words * 100);
+            
+            // Determine word reading level
+            let wordLabel = 'Frustration';
+            if (wordRecognition >= 98) {
+                wordLabel = 'Independent';
+            } else if (wordRecognition >= 90) {
+                wordLabel = 'Instructional';
+            }
+
+            // Determine comprehension level
+            let comprehension = 'Frustration';
+            const comprehensionScore = (readingData[name].correct_answers / readingData[name].total_questions) * 100;
+            if (comprehensionScore >= 90) {
+                comprehension = 'Independent';
+            } else if (comprehensionScore >= 70) {
+                comprehension = 'Instructional';
+            }
+
+            const dataToSend = {
+                ...readingData[name],
+                reading_speed: `${readingSpeed} WPM`,
+                word_recognition: wordRecognition,
+                word_label: wordLabel,
+                comprehension: comprehension,
+                section: 'narra',
+                language: 'Filipino'
+            };
+
+            // Debug log
+            console.log('Sending data:', dataToSend);
+
+            fetch('/teacher/update-reading', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 },
-                body: JSON.stringify(readingData[name])
+                body: JSON.stringify(dataToSend)
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 console.log('Success:', data);
-                // Redirect to reports page after successful submission
-                window.location.href = '/reports';
+                // Show success message
+                alert('Reading data saved successfully!');
+                // Redirect to reports page
+                window.location.href = '/teacher/viewreports?section=narra&language=Filipino';
             })
             .catch((error) => {
-                console.error('Error:', error);
+                console.error('Error details:', error);
+                alert('Error saving reading data: ' + error.message);
             });
+        } else {
+            console.error('No reading data available for student:', name);
+            alert('No reading data available to save. Please ensure you have started the timer and entered miscues.');
         }
     }
 

@@ -13,8 +13,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\StudentAnswerEnglishController;
 use App\Http\Controllers\StudentAnswerTagalogController;
 
-Route::post('/student/add', [StudentAnswerEnglishController::class, 'store']);
-Route::post('/student/add', [StudentAnswerTagalogController::class, 'store']);
+Route::post('/student/add/english', [StudentAnswerEnglishController::class, 'store'])->name('student.add.english');
+Route::post('/student/add/tagalog', [StudentAnswerTagalogController::class, 'store'])->name('student.add.tagalog');
 
 // Home Route
 Route::get('/', function () {
@@ -57,6 +57,10 @@ Route::middleware(['auth'])->group(function () {
             return view('teacher.dashboard');
         })->name('teacher.dashboard');
 
+        Route::get('/students', function () {
+            return view('teacher.students');
+        })->name('teacher.students');
+
         Route::get('/about', function () {
             return view('teacher.about');
         })->name('teacher.about');
@@ -64,6 +68,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/readinglanguage', function () {
             return view('teacher.readinglanguage');
         })->name('teacher.readinglanguage');
+
+        Route::get('/passage', function () {
+            return view('teacher.passsage');
+        })->name('teacher.passage');
 
         Route::get('/english', function () {
             return view('teacher.english');
@@ -97,7 +105,6 @@ Route::middleware(['auth'])->group(function () {
             return view('teacher.filipino-mahugani');
         })->name('teacher.filipino-mahugani');
 
-        
         Route::get('/viewreports', [ReportsController::class, 'index'])->name('teacher.viewreports');
 
         // Add search route for teachers
@@ -136,6 +143,31 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/users/{user}', [ProfileController::class, 'update']);
         Route::delete('/users/{user}', [ProfileController::class, 'destroy']);
     });
+
+    // Student Routes
+    Route::get('/main', function () {
+        return view('student.main');
+    })->name('student.main');
+
+    Route::get('/home', function () {
+        return view('student.home');
+    })->name('student.home');
+
+    Route::get('/about', function () {
+        return view('student.about');
+    })->name('student.about');
+
+    Route::get('/students-eng', function () {
+        return view('student.students-eng');
+    })->name('student.students-eng');
+
+    Route::get('/students-tag', function () {
+        return view('student.students-tag');
+    })->name('student.students-tag');   
+
+    Route::get('/students-results', function () {
+        return view('student.students-results');
+    })->name('student.students-results');
 });
 
 
@@ -146,4 +178,7 @@ Route::get('/viewreports', function () {
 Route::get('/log', function () {
     return view('log'); // This is your homepage
 });
+
+
+
 

@@ -468,7 +468,7 @@
             .then(data => {
                 console.log('Success:', data);
                 // Redirect to reports page after successful submission
-                window.location.href = '/reports';
+                window.location.href = '/teacher/viewreports?section=dao&language=English';
             })
             .catch((error) => {
                 console.error('Error:', error);

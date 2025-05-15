@@ -14,7 +14,7 @@ class ProfileController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
-            'role' => 'required|in:teacher,admin',
+            'role' => 'required|in:teacher,admin,student',
         ]);
         $validated['password'] = Hash::make($validated['password']);
         $user = User::create($validated);
@@ -32,7 +32,7 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'role' => 'required|in:teacher,admin',
+            'role' => 'required|in:teacher,admin,student',
         ]);
         if ($request->filled('password')) {
             $validated['password'] = Hash::make($request->password);

@@ -3,379 +3,804 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <title>ReadEase</title>
+    <title>ReadEase - Teacher Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        :root {
+            /* Primary - Main UI and Brand Elements */
+            --primary: #0E61BA;
+            --primary-light: #3b82f6;
+            --primary-dark: #0d4b94;
+            
+            /* Secondary - Navigation and Secondary UI */
+            --secondary: #6CC24A;
+            --secondary-light: #7ed56f;
+            
+            /* Accent - Buttons and Highlights */
+            --accent: #F9A602;
+            --accent-light: #fbbf24;
+            
+            /* Neutral - Backgrounds */
+            --neutral: #F4F4F4;
+            --neutral-light: #ffffff;
+            --neutral-dark: #e5e5e5;
+            
+            /* Text - Main Text and Headings */
+            --text: #232323;
+            --text-light: #4b5563;
+            
+            /* Gradients */
+            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            --gradient-secondary: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
+            --gradient-accent: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            
+            /* Shadows */
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            
+            --transition: all 0.3s ease;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            background: url('{{ asset("pic/bgr.jpg") }}');
-    background-color: #e0f0ff;
-    background-size: cover; 
-    background-position: center; 
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--neutral);
         }
 
-  /* Header */
-header {
-    align-items: center;
-    padding: 15px 30px;
-    background: linear-gradient(to right, #38B6FF, white 50%, #38B6FF);
-}
+        /* Header Styles */
+        header {
+            background: var(--primary);
+            padding: 1rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
 
-.logo-container {
-    display: flex;
-    align-items: center;
-}
-
-.logo {
-    width: 50px;
-    margin-right: 10px;
-}
-
-.title h1 {
-    font-size: 24px;
-}
-
-.title p {
-    font-size: 14px;
-}
-
-/* Navigation */
-nav ul {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    background-color: #0032A0;
-}
-
-nav ul li {
-    position: relative;
-    margin: 0 20px;
-}
-
-nav ul li a {
-    text-decoration: none;
-    color: white;
-    font-size: 18px;
-    padding: 10px;
-}
-
-nav ul li:hover > a {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 5px;
-}
-
-/* Nested dropdowns open beside their parent */
-.dropdown-menu {
-    display: none;
-    position: absolute;
-    left: 100%;
-    top: 0;
-    background-color: white;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    min-width: 160px;
-    z-index: 1000;
-}
-
-.dropdown-container {
-    position: relative;
-}
-
-.dropdown-menu a {
-    color: #003366;
-    padding: 8px 12px;
-    display: block;
-    text-decoration: none;
-    white-space: nowrap;
-}
-
-.dropdown-menu a:hover {
-    background-color: #f2f2f2;
-}
-
-
-        /* Hero Section */
-        .hero {
-            color: white;
-            text-align: center;
-            padding: 110px 30px;
-            min-height: 400px;
+        .header-container {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--neutral-light);
+            text-decoration: none;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--neutral-light);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
             justify-content: center;
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
+            font-weight: 600;
+        }
+
+        /* Dashboard Content */
+        .dashboard {
+            padding: 6rem 5% 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-header h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-header p {
+            color: var(--text-light);
+        }
+
+        /* Grade Levels Grid */
+        .grade-levels {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .grade-card {
+            background: var(--neutral-light);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            cursor: pointer;
             position: relative;
+            overflow: hidden;
         }
 
-        .hero .overlay {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 50px;
-            max-width: 900px;
-            margin: auto;
-            border-radius: 10px;
+        .grade-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
         }
 
-        .hero h2 {
-            font-size: 36px;
-            margin-bottom: 10px;
+        .grade-card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .hero p {
-            font-size: 18px;
+        .grade-card h2 i {
+            color: var(--accent);
         }
 
- /*footer*/
-.footerA{
-    padding: 40px 20px;
-    color: white;
-    background-color:  #0032A0;
-}
+        .sections-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
 
-.footerSL{
-    align-items: center;
-}
+        .section-item {
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            background: var(--neutral);
+            transition: var(--transition);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-footer{
-    text-align: center;
-    background: linear-gradient(to right, #38B6FF, white 50%, #38B6FF);
-    color: black;
-    padding: 10px 0;
-}
+        .section-item:hover {
+            background: var(--secondary);
+            color: var(--neutral-light);
+        }
 
-.btnsearch{
-    border: none;
-    padding: 5.8px 15px;
-    border-radius: 10px;
-    width: 70%;
-}
+        .section-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
 
+        .section-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+        }
 
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .action-card {
+            background: var(--neutral-light);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            background: var(--primary);
+            color: var(--neutral-light);
+        }
+
+        .action-card i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .action-card:hover i {
+            color: var(--neutral-light);
+        }
+
+        /* Recent Activity */
+        .recent-activity {
+            background: var(--neutral-light);
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .activity-header h2 {
+            color: var(--primary);
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--neutral-dark);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--neutral);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+
+        .activity-details {
+            flex: 1;
+        }
+
+        .activity-time {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 280px;
+            background: var(--primary);
+            padding: 1.5rem;
+            transition: var(--transition);
+            z-index: 1001;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .sidebar-header {
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo {
+            color: var(--neutral-light);
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .sidebar-logo i {
+            color: var(--accent);
+            font-size: 1.8rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            color: var(--neutral-light);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 1rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.7;
+        }
+
+        .nav-item {
+            margin-bottom: 0.3rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            color: var(--neutral-light);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--secondary);
+            color: var(--neutral-light);
+            transform: translateX(5px);
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .nav-link .badge {
+            margin-left: auto;
+            background: var(--accent);
+            color: var(--neutral-light);
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .teacher-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--neutral-light);
+        }
+
+        .teacher-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .teacher-info {
+            flex: 1;
+        }
+
+        .teacher-name {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .teacher-role {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* Adjust main content for sidebar */
+        .main-content {
+            margin-left: 250px;
+            transition: var(--transition);
+        }
+
+        /* Adjust header for sidebar */
+        header {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            header {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+        }
+
+        /* Menu Toggle Button */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--neutral-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
     </style>
 </head>
 <body>
-<header>
-    <div class="d-flex align-items-center gap-2">
-        <img src="{{ asset('pic/logo .png') }}" height="90" width="100" alt="ReadEase Logo">
-        <div class="title lh-sm"> 
-            <p class="fs-3 fw-bold mb-1">ReadEase</p> 
-            <p class="fs-5 mb-0">Smarter Reading assessments for Better teaching!</p> 
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="#" class="sidebar-logo">
+                <i class="fas fa-book-reader"></i>
+                ReadEase
+            </a>
+        </div>
+        <nav>
+            <ul class="nav-menu">
+                <div class="nav-section">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-tasks"></i>
+                            Assessments
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-users"></i>
+                            Students
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('teacher.viewreports') }}" class="nav-link active">
+                            <i class="fas fa-users"></i>
+                            <span>View Reports</span>
+                        </a>
+                    </div>
+                </div>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="teacher-profile">
+                <div class="teacher-avatar">T</div>
+                <div class="teacher-info">
+                    <div class="teacher-name">Teacher Name</div>
+                    <div class="teacher-role">English Teacher</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="user-info">
+                <span>Welcome, Teacher</span>
+                <div class="user-avatar">T</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <h1>Teacher Dashboard</h1>
+                <p>Manage your classes and track student progress</p>
+            </div>
+
+            <!-- Quick Actions -->
+
+            <!-- Grade Levels -->
+            <div class="grade-levels">
+                <!-- Grade 7 -->
+                <div class="grade-card">
+                    <h2><i class="fas fa-graduation-cap"></i> Grade 7</h2>
+                    <ul class="sections-list">
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade7', 'section' => 'narra', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Narra</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    25 Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade7', 'section' => 'lawaan', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Lawaan</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    28 Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade7', 'section' => 'dao', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Dao</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    30 Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade7', 'section' => 'mahugani', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Mahugani</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    27 Students
+                                </span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Grade 8 -->
+                <div class="grade-card">
+                    <h2><i class="fas fa-graduation-cap"></i> Grade 8</h2>
+                    <ul class="sections-list">
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade8', 'section' => 'guava', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Guava</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    32 Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade8', 'section' => 'duhat', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Duhat</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    29 Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade8', 'section' => 'avocado', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Avocado</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    27 Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade8', 'section' => 'mango', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Mango</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    27 Students
+                                </span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Grade 9 -->
+                <div class="grade-card">
+                    <h2><i class="fas fa-graduation-cap"></i> Grade 9</h2>
+                    <ul class="sections-list">
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade9', 'section' => 'zinc', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Zinc</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    32 Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade9', 'section' => 'gold', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Gold</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    29 Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade9', 'section' => 'silver', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Silver</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    27 Students
+                                </span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Grade 10 -->
+                <div class="grade-card">
+                    <h2><i class="fas fa-graduation-cap"></i> Grade 10</h2>
+                    <ul class="sections-list">
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade10', 'section' => 'newton', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Newton</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    32 Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade10', 'section' => 'galileo', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Galileo</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    29 Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade10', 'section' => 'edison', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Edison</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    27 Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade10', 'section' => 'edison', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                            <span>Section Einstien</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    27 Students
+                                </span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
-</header>
 
-    <nav>
-        <ul>
-            <li><a href="{{ route('teacher.dashboard') }}">Home</a></li>
-            <li><a href="{{ route('teacher.about') }}">About</a></li>
-
-            <!-- Reading Languages with Side Dropdown -->
-            <li class="dropdown-container">
-                <a href="{{ route('teacher.readinglanguage') }}" id="readingLanguagesBtn">Reading Languages ▸</a>
-                <ul class="dropdown-menu">
-                    <!-- English -->
-                <li class="dropdown-container">
-                        <a href="#" id="englishBtn">English▸</a>
-                        <ul class="dropdown-menu">
-                            <li class="dropdown-container">  
-                                <a href="#">Grade 7▸</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="{{ route('teacher.english') }}#narra">Narra</a></li>
-                                    <li><a href="{{ route('teacher.english-mahugani') }}#mahugani">Mahugani</a></li>
-                                    <li><a href="{{ route('teacher.english-lawaan') }}#lawaan">Lawaan</a></li>
-                                    <li><a href="{{ route('teacher.english-dao') }}#dao">Dao</a></li>
-                                </ul>
-                            </li>
-
-                            <li class="dropdown-container">
-                                <a href="#">Grade 8▸</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Avocado</a></li>
-                                    <li><a href="#">Guava</a></li>
-                                    <li><a href="#">Duhat</a></li>
-                                    <li><a href="#">Mango</a></li>
-                                </ul>
-                            </li>
-
-                            <li class="dropdown-container">
-                                <a href="#">Grade 9▸</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Gold</a></li>
-                                    <li><a href="#">Silver</a></li>
-                                    <li><a href="#">Zinc</a></li>
-                                </ul>
-                            </li>
-
-                            <li class="dropdown-container">
-                                <a href="#">Grade 10▸</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Galileo</a></li>
-                                    <li><a href="#">Newton</a></li>
-                                    <li><a href="#">Edison</a></li>
-                                </ul>
-                            </li>
-                            
-                        </ul>
-                    </li>
-                    
-                    <!-- Filipino -->
-                <li class="dropdown-container">
-                        <a href="#" id="englishBtn">Filipino▸</a>
-                        <ul class="dropdown-menu">
-                            <li class="dropdown-container">
-                                <a href="#">Grade 7▸</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="{{ route('teacher.filipino') }}#narra">Narra</a></li>
-                                    <li><a href="{{ route('teacher.filipino-mahugani') }}#mahugani">Mahugani</a></li>
-                                    <li><a href="{{ route('teacher.filipino-lawaan') }}#lawaan">Lawaan</a></li>
-                                    <li><a href="{{ route('teacher.filipino-dao') }}#dao">Dao</a></li>
-                                </ul>
-                            </li>
-
-                            <li class="dropdown-container">
-                                <a href="#">Grade 8▸</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Avocado</a></li>
-                                    <li><a href="#">Guava</a></li>
-                                    <li><a href="#">Duhat</a></li>
-                                    <li><a href="#">Mango</a></li>
-                                </ul>
-                            </li>
-
-                            <li class="dropdown-container">
-                                <a href="#">Grade 9▸</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Gold</a></li>
-                                    <li><a href="#">Silver</a></li>
-                                    <li><a href="#">Zinc</a></li>
-                                </ul>
-                            </li>
-
-                            <li class="dropdown-container">
-                                <a href="#">Grade 10▸</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Galileo</a></li>
-                                    <li><a href="#">Newton</a></li>
-                                    <li><a href="#">Edison</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </nav>
-
-    <main>
-        <section class="hero">
-            <div class="overlay">
-                <h2>Mission</h2>
-                <p>This is created to provide classroom teachers a tool for measuring and describing reading 
-                   performance. It is an assessment tool composed of graded passages designed to determine a student's 
-                   reading level. The Phil-IRI only provides an approximation of the learner's abilities.</p>
-            </div>
-        </section>
-
-
-        <div class="footerA row m-0">
-            <div class="col-md-4">
-                <h2>VISION</h2>
-                <p class="pjust">The Philippine Informal Reading Inventory (Phil-IRI) is an initiative of the Bureau of Learning Delivery,
-                   Department of Education that directly addresses its thrust to make every Filipino child a reader.
-                   The Philippine Informal Reading Inventory (Phil-IRI) is an initiative of the Bureau of Learning Delivery,
-                   Department of Education that directly addresses its thrust to make every Filipino child a reader.</p>
-            </div>
-
-            <div class="col-md-4 d-flex flex-column align-items-center justify-content-center">
-                <img src="{{ asset('pic/slogo.png') }}" height="148" width="150" alt="ReadEase Logo">
-                <p class="mt-2">Calingcaguing National Highschool</p>
-            </div>
-
-            <div class="col-md-4 foot">
-                <form>
-                    <input class ="btnsearch" type="text" placeholder="Search.." aria-label="Search">
-                    <button class="btn btn-primary" type="submit">
-                    <i class="fas fa-search"></i>
-                </button>
-                </form><br>
-            
-                <p><img src="{{ asset('pic/location.png') }}" height="25px" weight = "25px"> Calingcaguing, Banug, Philippines, 6519<p>
-                <p><img src="{{ asset('pic/mail.png ') }}" height="25px" weight = "25px"> calingcaguingnationalhighschool@gmail.com<p>
-                <p><img src="{{ asset('pic/phone.png') }}" height="25px" weight = "25px"> (053)-545-0025<p>
-            </div>
-        </div>
-    </main>
-
-    <footer>
-        <p class ="fw-bold mb-0" class="copyright">&copy; 2025 ReadEase | All Rights Reserved</p>
-    </footer>
-
-        <!-- <div class="vision-contact">
-            <div class="vision">
-                <h2>VISION</h2>
-                <p>The Philippine Informal Reading Inventory (Phil-IRI) is an initiative of the Bureau of Learning Delivery,
-                   Department of Education that directly addresses its thrust to make every Filipino child a reader.</p>
-            </div>
-
-            <div class="calingcaguing"><img src="school.png" alt="SkimVett Logo" class="logo"></div> 
-
-            <div class="contact-info">
-                <input type="text" placeholder="Search..">
-                <p><img src="{{ asset('pic/location.png') }}" height="50px" weight = "50px"> Calingcaguing, Barugo, Philippines, 6519<p>
-                <p><img src="{{ asset('pic/mail.png ') }}"> calingcaguingnationalhighschool@gmail.com<p>
-                <p><img src="{{ asset('pic/phone.png') }}"> (053)-545-0025<p>
-            </div>
-        </div>
-    </main>
-
-    <footer>
-        <p class ="fw-bold mb-0" class="copyright">&copy; 2025 ReadEase | All Rights Reserved</p>
-    </footer> -->
     <script>
-    // Handle dropdown toggle logic
-    document.querySelectorAll('nav .dropdown-container > a').forEach(link => {
-        link.addEventListener('click', function (e) {
-            e.preventDefault();
-            const menu = this.nextElementSibling;
+        // Add hover effect for grade cards
+        document.querySelectorAll('.grade-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-5px)';
+                card.style.boxShadow = 'var(--shadow-lg)';
+            });
 
-            // Toggle this menu only
-            if (menu) {
-                menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-            }
-
-            // Optional: close other open dropdowns at the same level
-            const siblings = this.parentElement.parentElement.querySelectorAll('.dropdown-menu');
-            siblings.forEach(sibling => {
-                if (sibling !== menu) sibling.style.display = 'none';
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+                card.style.boxShadow = 'var(--shadow-md)';
             });
         });
-    });
 
-    // Close dropdowns when clicking outside
-    window.addEventListener('click', function (e) {
-        if (!e.target.closest('nav')) {
-            document.querySelectorAll('.dropdown-menu').forEach(menu => menu.style.display = 'none');
-        }
-    });
-</script>
+        // Add click event for sections
+        document.querySelectorAll('.section-item').forEach(section => {
+            section.addEventListener('click', () => {
+                // Add your section click handling logic here
+                console.log('Section clicked:', section.querySelector('.section-info span').textContent);
+            });
+        });
 
+        // Add click event for quick action cards
+        document.querySelectorAll('.action-card').forEach(card => {
+            card.addEventListener('click', () => {
+                // Add your action card click handling logic here
+                console.log('Action clicked:', card.querySelector('h3').textContent);
+            });
+        });
+
+        // Add sidebar toggle functionality
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+        const header = document.querySelector('header');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        // Add active state to nav links
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+            });
+        });
+    </script>
 </body>
 </html>

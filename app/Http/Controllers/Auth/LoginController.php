@@ -24,10 +24,14 @@ class LoginController extends Controller
             $request->session()->regenerate();
             
             // Redirect based on user role
-            if (Auth::user()->role === 'admin') {
+            $user = Auth::user();
+            
+            if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard');
-            } else if (Auth::user()->role === 'teacher') {
-                return redirect()->route('teacher.dashboard');
+            } else if ($user->role === 'teacher') {
+                return redirect()->route('teacher.readinglanguage');
+            } else if ($user->role === 'student') {
+                return redirect()->route('student.main');
             }
             
             // Default redirect if role is not specified

@@ -10,6 +10,18 @@
     <script src="{{ asset('js/students.js') }}" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>ReadEase</title>
+    <style>
+        body {
+            background-image: url("{{ asset('pic/bgd1.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            }
+        .card {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+    </style>
 </head>
 <body>
 
@@ -27,24 +39,24 @@
 
 <nav>
         <ul>
-            <li><a href="{{ url('/') }}">HOME</a></li>
-            <li><a href="{{ url('/about') }}">ABOUT</a></li>
+            <li><a href="{{ route('student.main') }}">Main</a></li>
+            <li><a href="{{ route('student.about') }}">ABOUT</a></li>
 
             <li class="dropdown-container">
                 <a href="#" id="readingLanguagesBtn">READING LANGUAGES </a>
                 <ul class="dropdown-menu">
                     <li class="dropdown-container">
-                    <a href="{{ url('/students-eng') }}" >English</a>
+                    <a href="{{ route('student.students-eng') }}" >English</a>
                     </li>   
 
                     <li class="dropdown-container">
-                        <a href="{{ url('/students-tag') }}" id="englishBtn">Filipino</a>
+                        <a href="{{ route('student.students-tag') }}" id="englishBtn">Filipino</a>
                     </li>
                     
                 </ul>
             </li>
 
-            <li><a href="{{ url('/students-results') }}">RESULTS</a></li>
+            <li><a href="{{ route('student.students-results') }}">RESULTS</a></li>
         </ul>
     </nav>
 </div>
