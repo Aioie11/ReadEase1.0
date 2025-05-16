@@ -9,16 +9,21 @@ use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\ReadingController;
 use Illuminate\Http\Request;
 
+<<<<<<< Updated upstream
 //student part
 use App\Http\Controllers\StudentAnswerEnglishController;
 use App\Http\Controllers\StudentAnswerTagalogController;
 
 Route::post('/student/add/english', [StudentAnswerEnglishController::class, 'store'])->name('student.add.english');
 Route::post('/student/add/tagalog', [StudentAnswerTagalogController::class, 'store'])->name('student.add.tagalog');
+=======
+Route::post('/student/add', [StudentAnswerEnglishController::class, 'store']);
+Route::post('/student/add', [StudentAnswerTagalogController::class, 'store']);
+>>>>>>> Stashed changes
 
 // Home Route
 Route::get('/', function () {
-    return view('home');
+    return view('auth.login');  
 });
 
 Route::get('/main', function () {
@@ -179,6 +184,34 @@ Route::get('/log', function () {
     return view('log'); // This is your homepage
 });
 
+<<<<<<< Updated upstream
+=======
+// student routes
+
+Route::get('/stud-dash', function () {
+    return view('admin.students.stud-dash');
+});
+
+Route::get('/stud-eng', function () {
+    return view('admin.students.stud-eng');
+});
+
+Route::get('/stud-fil', function () {
+    return view('admin.students.stud-fil');
+});
+
+Route::get('/stud-reports', function () {
+    return view('admin.students.stud-reports');
+});
+
+Route::get('/head', function () {
+    return view('admin.students.head');
+});
+
+
+
+
+>>>>>>> Stashed changes
 
 
 
