@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 // Home Route
 Route::get('/', function () {
-    return view('home');
+    return view('auth.login');
 });
 
 // Authentication Routes
@@ -106,6 +106,13 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/users/{user}', [ProfileController::class, 'update']);
         Route::delete('/users/{user}', [ProfileController::class, 'destroy']);
     });
+
+    // Student Routes
+    Route::prefix('student')->group(function () {
+        Route::get('/dashboard', function () {
+            return view('student.stud-dash');
+        })->name('student.dashboard');
+    });
 });
 
 
@@ -116,4 +123,22 @@ Route::get('/viewreports', function () {
 Route::get('/log', function () {
     return view('log'); // This is your homepage
 });
+
+// Student Routes
+Route::get('/stud-dash', function () {
+    return view('student.stud-dash');
+});
+
+Route::get('/stud-eng', function () {
+    return view('student.stud-eng');
+});
+
+Route::get('/stud-fil', function () {
+    return view('student.stud-fil');
+});
+
+Route::get('/stud-reports', function () {
+    return view('student.stud-reports');
+});
+
 

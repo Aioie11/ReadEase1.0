@@ -180,35 +180,54 @@
         }
 
         .profile-table .action-buttons { 
-            text-align: center;
-            white-space: nowrap;
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
         }
 
         .profile-table .action-buttons button { 
-            background: none; 
-            border: none; 
-            padding: 8px 12px; 
-            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
             font-weight: 500;
-            transition: all 0.3s ease;
-            border-radius: 5px;
-            margin: 0 3px;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
         }
 
         .profile-table .action-buttons button.access { 
-            color: #4CAF50;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-color: #c8e6c9;
         }
 
         .profile-table .action-buttons button.edit { 
-            color: #2196F3;
+            background-color: #e3f2fd;
+            color: #1565c0;
+            border-color: #bbdefb;
         }
 
         .profile-table .action-buttons button.delete { 
-            color: #f44336;
+            background-color: #ffebee;
+            color: #c62828;
+            border-color: #ffcdd2;
         }
 
         .profile-table .action-buttons button:hover {
-            background-color: rgba(0,0,0,0.05);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .profile-table .action-buttons button.access:hover { 
+            background-color: #c8e6c9;
+        }
+
+        .profile-table .action-buttons button.edit:hover { 
+            background-color: #bbdefb;
+        }
+
+        .profile-table .action-buttons button.delete:hover { 
+            background-color: #ffcdd2;
         }
 
         /* Modal Styles */
@@ -221,12 +240,13 @@
             height: 100%;
             background: rgba(0,0,0,0.5);
             z-index: 1000;
-            backdrop-filter: blur(5px);
+            overflow-y: auto;
+            padding: 20px;
         }
 
         .modal-content {
             background: white;
-            margin: 5% auto;
+            margin: 20px auto;
             padding: 35px;
             width: 500px;
             border-radius: 15px;
@@ -302,6 +322,10 @@
             margin-top: 30px;
             padding-top: 20px;
             border-top: 1px solid #eee;
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding-bottom: 10px;
         }
 
         .button-group button {
@@ -384,11 +408,11 @@
             <table class="profile-table">
                 <thead>
                     <tr>
+                        <th>User ID</th>
                         <th>Profile Name</th>
                         <th>Description</th>
                         <th>Date Created</th>
-                        <th>Created By</th>
-                        <th>Actions</th>
+                        <th style="text-align: center;">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="profileTableBody">
@@ -418,12 +442,38 @@
                 </div>
                 <div class="form-group">
                     <label for="profileRole">Role</label>
-                    <select id="profileRole" name="role" required>
+                    <select id="profileRole" name="role" required onchange="toggleStudentFields(this.value)">
                         <option value="">Select Role</option>
                         <option value="admin">Administrator</option>
                         <option value="teacher">Teacher</option>
                         <option value="student">Student</option>
                     </select>
+                </div>
+                <div id="studentFields" style="display: none;">
+                    <div class="form-group">
+                        <label for="profileGrade">Grade Level</label>
+                        <select id="profileGrade" name="grade" class="student-field">
+                            <option value="">Select Grade Level</option>
+                            <option value="7">Grade 7</option>
+                            <option value="8">Grade 8</option>
+                            <option value="9">Grade 9</option>
+                            <option value="10">Grade 10</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="profileSection">Section</label>
+                        <select id="profileSection" name="section" class="student-field">
+                            <option value="">Select Section</option>
+                            <option value="A">Section A</option>
+                            <option value="B">Section B</option>
+                            <option value="C">Section C</option>
+                            <option value="D">Section D</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="profileUserId">User ID</label>
+                    <input type="text" id="profileUserId" name="userId" required placeholder="Enter User ID (e.g., ADMIN123)">
                 </div>
                 <div class="button-group">
                     <button type="button" class="cancel-btn" onclick="closeProfileModal()">Cancel</button>
@@ -454,12 +504,38 @@
                 </div>
                 <div class="form-group">
                     <label for="editProfileRole">Role</label>
-                    <select id="editProfileRole" name="role" required>
+                    <select id="editProfileRole" name="role" required onchange="toggleEditStudentFields(this.value)">
                         <option value="">Select Role</option>
                         <option value="admin">Administrator</option>
                         <option value="teacher">Teacher</option>
                         <option value="student">Student</option>
                     </select>
+                </div>
+                <div id="editStudentFields" style="display: none;">
+                    <div class="form-group">
+                        <label for="editProfileGrade">Grade Level</label>
+                        <select id="editProfileGrade" name="grade" class="student-field">
+                            <option value="">Select Grade Level</option>
+                            <option value="7">Grade 7</option>
+                            <option value="8">Grade 8</option>
+                            <option value="9">Grade 9</option>
+                            <option value="10">Grade 10</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProfileSection">Section</label>
+                        <select id="editProfileSection" name="section" class="student-field">
+                            <option value="">Select Section</option>
+                            <option value="A">Section A</option>
+                            <option value="B">Section B</option>
+                            <option value="C">Section C</option>
+                            <option value="D">Section D</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editProfileUserId">User ID</label>
+                    <input type="text" id="editProfileUserId" name="userId" required placeholder="Enter User ID (e.g., ADMIN123)">
                 </div>
                 <div class="button-group">
                     <button type="button" class="cancel-btn" onclick="closeEditProfileModal()">Cancel</button>
@@ -470,20 +546,65 @@
     </div>
 
     <script>
+    function toggleStudentFields(role) {
+        const studentFields = document.getElementById('studentFields');
+        const studentInputs = studentFields.getElementsByClassName('student-field');
+        
+        if (role === 'student') {
+            studentFields.style.display = 'block';
+            Array.from(studentInputs).forEach(input => input.required = true);
+        } else {
+            studentFields.style.display = 'none';
+            Array.from(studentInputs).forEach(input => input.required = false);
+        }
+    }
+
+    function toggleEditStudentFields(role) {
+        const studentFields = document.getElementById('editStudentFields');
+        const studentInputs = studentFields.getElementsByClassName('student-field');
+        
+        if (role === 'student') {
+            studentFields.style.display = 'block';
+            Array.from(studentInputs).forEach(input => input.required = true);
+        } else {
+            studentFields.style.display = 'none';
+            Array.from(studentInputs).forEach(input => input.required = false);
+        }
+    }
+
+    function openEditProfileModal(id, name, userId, role, grade = '', section = '') {
+        document.getElementById('editProfileId').value = id;
+        document.getElementById('editProfileName').value = name;
+        document.getElementById('editProfileUserId').value = userId;
+        document.getElementById('editProfileRole').value = role;
+        
+        if (role === 'student') {
+            document.getElementById('editStudentFields').style.display = 'block';
+            document.getElementById('editProfileGrade').value = grade;
+            document.getElementById('editProfileSection').value = section;
+        } else {
+            document.getElementById('editStudentFields').style.display = 'none';
+        }
+        
+        document.getElementById('editProfileModal').style.display = 'block';
+    }
+
     function renderProfiles(users) {
         const tbody = document.getElementById('profileTableBody');
         tbody.innerHTML = '';
         users.forEach(user => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
+                <td><span style="font-weight:bold; color:#004aad;">${user.userId}</span></td>
                 <td>${user.name}</td>
-                <td>${user.role === 'admin' ? 'CRUD Anything' : 'Teacher Profile'}</td>
+                <td>${user.role === 'admin' ? 'CRUD Anything' : user.role === 'student' ? 'Student Profile' : 'Teacher Profile'}</td>
                 <td>${new Date(user.created_at).toLocaleDateString()}</td>
-                <td>${user.email}</td>
-                <td class="action-buttons">
-                    <button class="access">Access</button>
-                    <button class="edit" onclick="openEditProfileModal(${user.id}, '${user.name}', '${user.email}', '${user.role}')">Edit</button>
-                    <button class="delete" onclick="deleteProfile(${user.id})">Delete</button>
+                <td>
+                    <div class="action-buttons">
+                        <button class="access" title="Access Profile">Access</button>
+                        <button class="edit" title="Edit Profile" onclick="openEditProfileModal(${user.id}, '${user.name}', '${user.userId}', '${user.role}', '${user.grade || ''}', '${user.section || ''}')">Edit</button>
+                        <button class="delete" title="Delete Profile" onclick="deleteProfile(${user.id})">Delete</button>
+                    </div>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -536,14 +657,6 @@
         });
     });
 
-    function openEditProfileModal(id, name, email, role) {
-        document.getElementById('editProfileId').value = id;
-        document.getElementById('editProfileName').value = name;
-        document.getElementById('editProfileEmail').value = email;
-        document.getElementById('editProfilePassword').value = '';
-        document.getElementById('editProfileRole').value = role;
-        document.getElementById('editProfileModal').style.display = 'block';
-    }
     function closeEditProfileModal() {
         document.getElementById('editProfileModal').style.display = 'none';
     }
@@ -582,27 +695,38 @@
 
     function deleteProfile(id) {
         if (!confirm('Are you sure you want to delete this profile?')) return;
+        
         fetch(`/admin/users/${id}`, {
             method: 'DELETE',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
             }
         })
         .then(response => {
-            if (!response.ok) return response.json().then(err => Promise.reject(err));
+            if (!response.ok) {
+                return response.json().then(err => Promise.reject(err));
+            }
             return response.json();
         })
         .then(data => {
-            alert('Profile deleted successfully!');
-            loadProfiles();
+            if (data.success) {
+                alert('Profile deleted successfully!');
+                loadProfiles();
+            } else {
+                throw new Error(data.message || 'Failed to delete profile');
+            }
         })
         .catch(error => {
-            let msg = 'An error occurred.';
-            if (error.errors) {
-                msg = Object.values(error.errors).flat().join('\n');
+            console.error('Delete error:', error);
+            let errorMessage = 'An error occurred while deleting the profile.';
+            if (error.message) {
+                errorMessage = error.message;
+            } else if (error.errors) {
+                errorMessage = Object.values(error.errors).flat().join('\n');
             }
-            alert(msg);
+            alert(errorMessage);
         });
     }
     </script>

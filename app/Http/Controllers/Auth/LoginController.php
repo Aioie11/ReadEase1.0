@@ -16,7 +16,7 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
+            'userId' => ['required'],
             'password' => ['required'],
         ]);
 
@@ -28,6 +28,8 @@ class LoginController extends Controller
                 return redirect()->route('admin.dashboard');
             } else if (Auth::user()->role === 'teacher') {
                 return redirect()->route('teacher.dashboard');
+            } else if (Auth::user()->role === 'student') {
+                return redirect()->route('student.dashboard');
             }
             
             // Default redirect if role is not specified
@@ -35,8 +37,8 @@ class LoginController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
+            'userId' => 'The provided credentials do not match our records.',
+        ])->onlyInput('userId');
     }
 
     public function logout(Request $request)

@@ -12,243 +12,216 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
         body {
-            display: flex;
             min-height: 100vh;
-            background: #e3f2fd;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e3f2fd 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .left-panel {
+        .login-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 2rem;
+            display: flex;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .brand-section {
             flex: 1;
+            padding: 3rem;
+            background: linear-gradient(135deg, #004aad 0%, #38B6FF 100%);
+            color: white;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-        }
-
-        header {
+            justify-content: center;
             align-items: center;
-            padding: 15px 30px;
-            background: linear-gradient(to right, #38B6FF, white 50%, #38B6FF);
+            text-align: center;
         }
 
-        .title h1 {
-            font-size: 24px;
+        .brand-logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 2rem;
+            filter: brightness(0) invert(1);
         }
 
-        .title p {
-            font-size: 14px;
+        .brand-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .brand-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .login-section {
+            flex: 1;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-form {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .login-title {
+            font-size: 2rem;
+            color: #004aad;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 2px solid #e3e3e3;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #004aad;
+            box-shadow: 0 0 0 4px rgba(0, 74, 173, 0.1);
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: #999;
         }
 
         .login-btn {
-            background-color: #004aad;
+            width: 100%;
+            padding: 1rem;
+            background: #004aad;
             color: white;
-            padding: 5px 15px;
             border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            margin-left: 600px;
-            margin-top: -200px;
-        }
-
-        .hero {
-            background: url('pic/bg.jpg') no-repeat center center/cover;
-            height: 350px;
-            color: white;
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-
-        
-         /*footer*/
-
-.vision {
-    padding: 15px;
-    color: white;
-    font-size: 14px;
-    text-align: justify;
-    background-color: #0032A0;
-}
-.footerA{
-
-    color: white;
-    background-color:  #0032A0;
-}
-
-.footerSL{
-    align-items: center;
-}
-
-footer{
-    text-align: center;
-    background: linear-gradient(to right, #38B6FF, white 50%, #38B6FF);
-    color: black;
-    padding: 10px 0;
-}
-
-.btnsearch{
-    margin-top: 30px;
-    border: none;
-    padding: 5.8px 10px;
-    border-radius: 10px;
-    width: 70%;
-}
-
-.foot p {
-    font-size: 12px;
-    color:rgb(255, 255, 255);
-    margin: 0;
-    padding: 5px 0;
-}
-
-        .right-panel {
-            width: 35%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: white;
-        }
-
-        .login-card {
-            background: #bbb7b7;
             border-radius: 12px;
-            padding: 30px;
-            width: 100%;
-            max-width: 350px;
-        }
-
-        .login-card h2 {
-            margin-bottom: 20px;
-            font-size: 20px;
-            color: #003366;
-            text-align: center;
-        }
-
-        .login-card input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-        }
-
-        .forgot {
-            font-size: 12px;
-            text-align: right;
-            color: #007bff;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .login-card button {
-            width: 100%;
-            padding: 10px;
-            background: #29a8ff;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
+        .login-btn:hover {
+            background: #003d8f;
+            transform: translateY(-2px);
         }
 
-        .test-accounts {
-            margin-top: 20px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 6px;
-            font-size: 12px;
-            color: #666;
+        .forgot-password {
+            text-align: right;
+            margin-top: 1rem;
         }
 
-        .test-accounts p {
-            margin: 5px 0;
+        .forgot-password a {
+            color: #004aad;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .forgot-password a:hover {
+            color: #003d8f;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+                margin: 1rem;
+            }
+
+            .brand-section {
+                padding: 2rem;
+            }
+
+            .login-section {
+                padding: 2rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="left-panel">
-    <header class="d-flex justify-content-between align-items-center px-4 py-2"
-        style="background: linear-gradient(to right, #38B6FF, white 50%, #38B6FF);">
-    
-    <!-- Logo and Text -->
-    <div class="d-flex align-items-center">
-        <img src="{{ asset('pic/logo .png') }}" height="80" width="80" alt="SkimVett Logo" class="me-3">
-        <div class="lh-sm">
-            <h1 class="fs-4 fw-bold mb-1">SkimVett</h1>
-            <p class="fs-6 mb-0">Smarter Reading assessments for Better teaching!</p>
+    <div class="login-container">
+        <div class="brand-section">
+            <img src="{{ asset('pic/logo .png') }}" alt="ReadEase Logo" height="100px" width="100px"><br>
+            <h1 class="brand-title">ReadEase</h1>
+            <p class="brand-subtitle">Smarter Reading assessments for Better teaching!</p>
         </div>
-    </div>
-
-    <!-- Login Button -->
-    <a href="{{ url('/login') }}">
-        <button class="btn px-4 py-2 rounded-pill text-white fw-semibold" 
-                style="background-color: #004aad; border: none;">
-            LOG IN
-        </button>
-    </a>
-</header>
-
-
-        <section class="hero">
-            <h1>Read More to Influence future!</h1>
-            <p>Efficient reading will be taught throughout Philippines to make young individuals learn through reading and its comprehensiveness</p>
-        </section>
-
-        <div class="footerA row m-0">
-            <div class="col-md-4 vision">
-                <h2>VISION</h2>
-                <p class="pjust">The Philippine Informal Reading Inventory (Phil-IRI) is an initiative of the Bureau of Learning Delivery,
-                   Department of Education that directly addresses its thrust to make every Filipino child a reader.
-                   The Philippine Informal Reading Inventory (Phil-IRI) is an initiative of the Bureau of Learning Delivery,
-                   Department of Education that directly addresses its thrust to make every Filipino child a reader.</p>
-            </div>
-
-            <div class="col-md-4 d-flex flex-column align-items-center justify-content-center">
-                <img src="{{ asset('pic/slogo.png') }}" height="140" width="140" alt="ReadEase Logo">
-                <p class="mt-2">Calingcaguing National Highschool</p>
-            </div>
-
-            <div class="col-md-4 foot">
-                <form>
-                    <input class ="btnsearch" type="text" placeholder="Search.." aria-label="Search">
-                    <button class="btn btn-primary" type="submit">
-                    <i class="fas fa-search"></i>
-                </button>
-                </form><br>
-            
-                <p><img src="{{ asset('pic/location.png') }}" height="20px" weight = "15px"> Calingcaguing, Banug, Philippines, 6519<p>
-                <p><img src="{{ asset('pic/mail.png ') }}" height="20px" weight = "15px"> calingcaguingnationalhighschool@gmail.com<p>
-                <p><img src="{{ asset('pic/phone.png') }}" height="20px" weight = "15px"> (053)-545-0025<p>
-            </div>
-        </div>
-    </main>
-
-    <footer>
-        <p class ="fw-bold mb-0" class="copyright">&copy; 2025 ReadEase | All Rights Reserved</p>
-    </footer>
-    </div>
-
-    <div class="right-panel">
-        <form method="POST" action="{{ route('login.post') }}" class="login-card">
-            @csrf
-            @if($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+        
+        <div class="login-section">
+            <form method="POST" action="{{ route('login.post') }}" class="login-form">
+                @csrf
+                @if($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                
+                <h2 class="login-title">Welcome!</h2>
+                
+                <div class="form-group">
+                    <input type="text" 
+                           name="userId" 
+                           id="userId" 
+                           class="form-control" 
+                           placeholder="User ID" 
+                           required>
                 </div>
-            @endif
-            <h2>Log In to your Account</h2>
-            <input type="email" name="email" id="email" placeholder="Email" required />
-            <input type="password" name="password" id="password" placeholder="Password" required />
-            <div class="forgot">Forgot Password?</div>
-            <button type="submit">Log In</button>
-        </form>
+                
+                <div class="form-group">
+                    <input type="password" 
+                           name="password" 
+                           id="password" 
+                           class="form-control" 
+                           placeholder="Password" 
+                           required>
+                </div>
+                
+                <button type="submit" class="login-btn">Log In</button>
+                
+                <div class="forgot-password">
+                    <a href="#">Forgot Password?</a>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 
