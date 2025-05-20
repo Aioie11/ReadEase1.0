@@ -97,9 +97,10 @@ Route::middleware(['auth'])->group(function () {
             return view('admin.testManagement');
         })->name('admin.test-management');  
 
-        Route::get('/settings', function () {
-            return view('admin.setting');
-        })->name('admin.settings');
+        Route::get('/user-management', function () {
+            return view('admin.userManagement');
+        })->name('admin.user-management');
+
 
         Route::post('/users', [ProfileController::class, 'store']);
         Route::get('/users', [ProfileController::class, 'index']);

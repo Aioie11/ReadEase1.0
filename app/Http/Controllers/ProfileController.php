@@ -17,7 +17,7 @@ class ProfileController extends Controller
             'password' => 'required|string|min:6',
             'role' => 'required|in:admin,teacher,student',
             'grade' => 'required_if:role,student|nullable|in:7,8,9,10',
-            'section' => 'required_if:role,student|nullable|in:A,B,C,D',
+            'section' => 'required_if:role,student|nullable|in:Narra,Dao,Lawaan,Mahugani,Molave,Talisay,Yakal,Kamagong,Acacia,Mahogany',
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -45,7 +45,7 @@ class ProfileController extends Controller
             'userId' => 'required|string|unique:users,userId,' . $user->id,
             'role' => 'required|in:admin,teacher,student',
             'grade' => 'required_if:role,student|nullable|in:7,8,9,10',
-            'section' => 'required_if:role,student|nullable|in:A,B,C,D',
+            'section' => 'required_if:role,student|nullable|in:Narra,Dao,Lawaan,Mahugani,Molave,Talisay,Yakal,Kamagong,Acacia,Mahogany',
         ]);
 
         if ($request->filled('password')) {

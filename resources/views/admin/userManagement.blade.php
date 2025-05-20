@@ -1,151 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Settings</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root {
-            /* Primary - Main UI and Brand Elements */
-            --primary: #0E61BA;
-            --primary-light: #3b82f6;
-            --primary-dark: #0d4b94;
-            
-            /* Secondary - Navigation and Secondary UI */
-            --secondary: #6CC24A;
-            --secondary-light: #7ed56f;
-            
-            /* Accent - Buttons and Highlights */
-            --accent: #F9A602;
-            --accent-light: #fbbf24;
-            
-            /* Neutral - Backgrounds */
-            --neutral: #F4F4F4;
-            --neutral-light: #ffffff;
-            --neutral-dark: #e5e5e5;
-            
-            /* Text - Main Text and Headings */
-            --text: #232323;
-            --text-light: #4b5563;
-            
-            /* Gradients */
-            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            --gradient-secondary: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
-            --gradient-accent: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
-            
-            /* Shadows */
-            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
-            
-            --transition: all 0.3s ease;
-        }
+@extends('layouts.head-ad')
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+@section('title', 'User Management')
 
-        body {
-            line-height: 1.6;
-            color: var(--text);
-            background-color: var(--neutral);
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            height: 100vh;
-            width: 280px;
-            background: var(--primary);
-            padding: 1.5rem;
-            transition: var(--transition);
-            z-index: 1001;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .sidebar-header {
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .sidebar-logo {
-            color: var(--neutral-light);
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .sidebar-logo img {
-            height: 45px;
-            width: 45px;
-            object-fit: contain;
-        }
-
-        .nav-menu {
-            list-style: none;
-            margin-bottom: 2rem;
-        }
-
-        .nav-item {
-            margin-bottom: 0.3rem;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.8rem 1rem;
-            color: var(--neutral-light);
-            text-decoration: none;
-            border-radius: 8px;
-            transition: var(--transition);
-            font-size: 0.95rem;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            background: var(--secondary);
-            color: var(--neutral-light);
-            transform: translateX(5px);
-        }
-
-        .nav-link i {
-            width: 20px;
-            text-align: center;
-            font-size: 1.1rem;
-        }
-
-        /* Header Styles */
-        header {
-            background: var(--primary);
-            padding: 1rem 5%;
-            position: fixed;
-            width: calc(100% - 280px);
-            margin-left: 280px;
-            top: 0;
-            z-index: 1000;
-            box-shadow: var(--shadow-md);
-        }
-
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
+@section('content')
+<style>   
+        /* User Info Styles */
         .user-info {
             display: flex;
             align-items: center;
@@ -496,64 +355,6 @@
         }
     </style>
 </head>
-
-<body>
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <a href="{{ url('/') }}" class="sidebar-logo">
-                <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo">
-                <span>ReadEase</span>
-            </a>
-        </div>
-        <nav>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="{{ route('admin.dashboard') }}" class="nav-link">
-                        <i class="fas fa-tachometer-alt"></i>
-                        Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.test-management') }}" class="nav-link">
-                        <i class="fas fa-tasks"></i>
-                        Test Management
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.student-records') }}" class="nav-link">
-                        <i class="fas fa-users"></i>
-                        Student Record
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.reports') }}" class="nav-link">
-                        <i class="fas fa-chart-line"></i>
-                        Reports
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.settings') }}" class="nav-link active">
-                        <i class="fas fa-cog"></i>
-                        Settings
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </aside>
-
-    <!-- Header -->
-    <header>
-        <div class="header-container">
-            <button class="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="user-info">
-                <span>Welcome, Admin</span>
-            </div>
-        </div>
-    </header>
-
     <!-- Main Content -->
     <main class="main-content">
         <div class="settings-content">
@@ -612,7 +413,7 @@
                 <div id="studentFields" style="display: none;">
                     <div class="form-group">
                         <label for="profileGrade">Grade Level</label>
-                        <select id="profileGrade" name="grade" class="student-field">
+                        <select id="profileGrade" name="grade" class="student-field" onchange="updateSections(this.value)">
                             <option value="">Select Grade Level</option>
                             <option value="7">Grade 7</option>
                             <option value="8">Grade 8</option>
@@ -624,10 +425,6 @@
                         <label for="profileSection">Section</label>
                         <select id="profileSection" name="section" class="student-field">
                             <option value="">Select Section</option>
-                            <option value="A">Section A</option>
-                            <option value="B">Section B</option>
-                            <option value="C">Section C</option>
-                            <option value="D">Section D</option>
                         </select>
                     </div>
                 </div>
@@ -674,7 +471,7 @@
                 <div id="editStudentFields" style="display: none;">
                     <div class="form-group">
                         <label for="editProfileGrade">Grade Level</label>
-                        <select id="editProfileGrade" name="grade" class="student-field">
+                        <select id="editProfileGrade" name="grade" class="student-field" onchange="updateEditSections(this.value)">
                             <option value="">Select Grade Level</option>
                             <option value="7">Grade 7</option>
                             <option value="8">Grade 8</option>
@@ -686,10 +483,6 @@
                         <label for="editProfileSection">Section</label>
                         <select id="editProfileSection" name="section" class="student-field">
                             <option value="">Select Section</option>
-                            <option value="A">Section A</option>
-                            <option value="B">Section B</option>
-                            <option value="C">Section C</option>
-                            <option value="D">Section D</option>
                         </select>
                     </div>
                 </div>
@@ -706,6 +499,49 @@
     </div>
 
     <script>
+    // Add this new function to handle section options
+    function updateSections(grade) {
+        const sectionSelect = document.getElementById('profileSection');
+        sectionSelect.innerHTML = '<option value="">Select Section</option>';
+        
+        const sections = {
+            '7': ['Narra', 'Dao', 'Lawaan', 'Mahugani'],
+            '8': ['Molave', 'Talisay', 'Yakal', 'Kamagong'],
+            '9': ['Acacia', 'Narra', 'Dao', 'Lawaan'],
+            '10': ['Mahogany', 'Molave', 'Talisay', 'Yakal']
+        };
+
+        if (grade && sections[grade]) {
+            sections[grade].forEach(section => {
+                const option = document.createElement('option');
+                option.value = section;
+                option.textContent = section;
+                sectionSelect.appendChild(option);
+            });
+        }
+    }
+
+    function updateEditSections(grade) {
+        const sectionSelect = document.getElementById('editProfileSection');
+        sectionSelect.innerHTML = '<option value="">Select Section</option>';
+        
+        const sections = {
+            '7': ['Narra', 'Dao', 'Lawaan', 'Mahugani'],
+            '8': ['Molave', 'Talisay', 'Yakal', 'Kamagong'],
+            '9': ['Acacia', 'Narra', 'Dao', 'Lawaan'],
+            '10': ['Mahogany', 'Molave', 'Talisay', 'Yakal']
+        };
+
+        if (grade && sections[grade]) {
+            sections[grade].forEach(section => {
+                const option = document.createElement('option');
+                option.value = section;
+                option.textContent = section;
+                sectionSelect.appendChild(option);
+            });
+        }
+    }
+
     function toggleStudentFields(role) {
         const studentFields = document.getElementById('studentFields');
         const studentInputs = studentFields.getElementsByClassName('student-field');
@@ -713,6 +549,8 @@
         if (role === 'student') {
             studentFields.style.display = 'block';
             Array.from(studentInputs).forEach(input => input.required = true);
+            // Reset sections when role changes
+            document.getElementById('profileSection').innerHTML = '<option value="">Select Section</option>';
         } else {
             studentFields.style.display = 'none';
             Array.from(studentInputs).forEach(input => input.required = false);
@@ -726,6 +564,8 @@
         if (role === 'student') {
             studentFields.style.display = 'block';
             Array.from(studentInputs).forEach(input => input.required = true);
+            // Reset sections when role changes
+            document.getElementById('editProfileSection').innerHTML = '<option value="">Select Section</option>';
         } else {
             studentFields.style.display = 'none';
             Array.from(studentInputs).forEach(input => input.required = false);
@@ -741,6 +581,8 @@
         if (role === 'student') {
             document.getElementById('editStudentFields').style.display = 'block';
             document.getElementById('editProfileGrade').value = grade;
+            // Update sections based on grade
+            updateEditSections(grade);
             document.getElementById('editProfileSection').value = section;
         } else {
             document.getElementById('editStudentFields').style.display = 'none';
@@ -790,30 +632,47 @@
     document.getElementById('addProfileForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
+        
+        // Convert FormData to JSON
+        const data = {};
+        formData.forEach((value, key) => {
+            data[key] = value;
+        });
+
         fetch('/admin/users', {
             method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
             },
-            body: formData
+            body: JSON.stringify(data)
         })
         .then(response => {
-            if (!response.ok) return response.json().then(err => Promise.reject(err));
+            if (!response.ok) {
+                return response.json().then(err => Promise.reject(err));
+            }
             return response.json();
         })
         .then(data => {
-            alert('Profile added successfully!');
-            closeProfileModal();
-            document.getElementById('addProfileForm').reset();
-            loadProfiles(); // Refresh the table
+            if (data.success) {
+                alert('Profile added successfully!');
+                closeProfileModal();
+                document.getElementById('addProfileForm').reset();
+                loadProfiles(); // Refresh the table
+            } else {
+                throw new Error(data.message || 'Failed to add profile');
+            }
         })
         .catch(error => {
-            let msg = 'An error occurred.';
+            console.error('Error:', error);
+            let errorMessage = 'An error occurred while adding the profile.';
             if (error.errors) {
-                msg = Object.values(error.errors).flat().join('\n');
+                errorMessage = Object.values(error.errors).flat().join('\n');
+            } else if (error.message) {
+                errorMessage = error.message;
             }
-            alert(msg);
+            alert(errorMessage);
         });
     });
 

@@ -1,4 +1,4 @@
-@extends('student.head')
+@extends('layouts.head-stud')
 
 @section('title', 'Student Results')
 

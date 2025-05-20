@@ -1,151 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Student Records</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root {
-            /* Primary - Main UI and Brand Elements */
-            --primary: #0E61BA;
-            --primary-light: #3b82f6;
-            --primary-dark: #0d4b94;
-            
-            /* Secondary - Navigation and Secondary UI */
-            --secondary: #6CC24A;
-            --secondary-light: #7ed56f;
-            
-            /* Accent - Buttons and Highlights */
-            --accent: #F9A602;
-            --accent-light: #fbbf24;
-            
-            /* Neutral - Backgrounds */
-            --neutral: #F4F4F4;
-            --neutral-light: #ffffff;
-            --neutral-dark: #e5e5e5;
-            
-            /* Text - Main Text and Headings */
-            --text: #232323;
-            --text-light: #4b5563;
-            
-            /* Gradients */
-            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            --gradient-secondary: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
-            --gradient-accent: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
-            
-            /* Shadows */
-            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
-            
-            --transition: all 0.3s ease;
-        }
+@extends('layouts.head-ad')
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+@section('title', 'Student Record')
 
-        body {
-            line-height: 1.6;
-            color: var(--text);
-            background-color: var(--neutral);
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            height: 100vh;
-            width: 280px;
-            background: var(--primary);
-            padding: 1.5rem;
-            transition: var(--transition);
-            z-index: 1001;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .sidebar-header {
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .sidebar-logo {
-            color: var(--neutral-light);
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .sidebar-logo img {
-            height: 45px;
-            width: 45px;
-            object-fit: contain;
-        }
-
-        .nav-menu {
-            list-style: none;
-            margin-bottom: 2rem;
-        }
-
-        .nav-item {
-            margin-bottom: 0.3rem;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.8rem 1rem;
-            color: var(--neutral-light);
-            text-decoration: none;
-            border-radius: 8px;
-            transition: var(--transition);
-            font-size: 0.95rem;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            background: var(--secondary);
-            color: var(--neutral-light);
-            transform: translateX(5px);
-        }
-
-        .nav-link i {
-            width: 20px;
-            text-align: center;
-            font-size: 1.1rem;
-        }
-
-        /* Header Styles */
-        header {
-            background: var(--primary);
-            padding: 1rem 5%;
-            position: fixed;
-            width: calc(100% - 280px);
-            margin-left: 280px;
-            top: 0;
-            z-index: 1000;
-            box-shadow: var(--shadow-md);
-        }
-
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
+@section('content')
+<style>
         .user-info {
             display: flex;
             align-items: center;
@@ -678,62 +536,6 @@
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <a href="{{ url('/') }}" class="sidebar-logo">
-                <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo">
-                <span>ReadEase</span>
-            </a>
-        </div>
-        <nav>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="{{ route('admin.dashboard') }}" class="nav-link">
-                        <i class="fas fa-tachometer-alt"></i>
-                        Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.test-management') }}" class="nav-link">
-                        <i class="fas fa-tasks"></i>
-                        Test Management
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.student-records') }}" class="nav-link active">
-                        <i class="fas fa-users"></i>
-                        Student Record
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.reports') }}" class="nav-link">
-                        <i class="fas fa-chart-line"></i>
-                        Reports
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.settings') }}" class="nav-link">
-                        <i class="fas fa-cog"></i>
-                        Settings
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </aside>
-
-    <!-- Header -->
-    <header>
-        <div class="header-container">
-            <button class="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="user-info">
-                <span>Welcome, Admin</span>
-            </div>
-        </div>
-    </header>
-
     <!-- Main Content -->
     <main class="main-content">
         <!-- Search and Add Student Section -->
@@ -924,6 +726,74 @@
                         <button type="button" class="clear-btn" onclick="clearForm()">Clear Form</button>
                         <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
                         <button type="submit" class="save-btn">Save Student</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Edit Modal -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closeModal('editModal')">&times;</span>
+                <h2>Edit Student Record</h2>
+                <form id="editStudentForm" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" id="edit-student-id" name="student_id">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-lastName">Last Name</label>
+                            <input type="text" id="edit-lastName" name="last_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-firstName">First Name</label>
+                            <input type="text" id="edit-firstName" name="first_name" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-middleName">Middle Name</label>
+                            <input type="text" id="edit-middleName" name="middle_name">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-gender">Gender</label>
+                            <select id="edit-gender" name="gender" required>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-gradeLevel">Grade Level</label>
+                            <select id="edit-gradeLevel" name="grade_level" required onchange="updateEditSections()">
+                                <option value="7">Grade 7</option>
+                                <option value="8">Grade 8</option>
+                                <option value="9">Grade 9</option>
+                                <option value="10">Grade 10</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-section">Section</label>
+                            <select id="edit-section" name="section" required>
+                                <option value="">Select Section</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-testStatus">Test Status</label>
+                            <select id="edit-testStatus" name="test_status" required>
+                                <option value="not_started">Not Started</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button type="button" class="cancel-btn" onclick="closeModal('editModal')">Cancel</button>
+                        <button type="submit" class="save-btn">Update Student</button>
                     </div>
                 </form>
             </div>
@@ -1218,15 +1088,119 @@
 
         // Add these functions to your existing JavaScript
         function openEditModal(id, lastName, firstName, middleName, gender, gradeLevel, section, status) {
-            document.getElementById('addStudentModal').style.display = 'block';
-            document.getElementById('lastName').value = lastName;
-            document.getElementById('firstName').value = firstName;
-            document.getElementById('middleName').value = middleName;
-            document.getElementById('gender').value = gender;
-            document.getElementById('gradeLevel').value = gradeLevel;
-            document.getElementById('testStatus').value = status;
-            updateSections();
-            document.getElementById('section').value = section;
+            const modal = document.getElementById('editModal');
+            modal.style.display = 'block';
+            
+            // Set form values
+            document.getElementById('edit-student-id').value = id;
+            document.getElementById('edit-lastName').value = lastName;
+            document.getElementById('edit-firstName').value = firstName;
+            document.getElementById('edit-middleName').value = middleName || '';
+            document.getElementById('edit-gender').value = gender;
+            document.getElementById('edit-gradeLevel').value = gradeLevel;
+            document.getElementById('edit-testStatus').value = status;
+            
+            // Update sections based on grade level
+            updateEditSections();
+            
+            // Set the section value after sections are populated
+            setTimeout(() => {
+                document.getElementById('edit-section').value = section;
+            }, 100);
+        }
+
+        function updateEditSections() {
+            const gradeLevel = document.getElementById('edit-gradeLevel').value;
+            const sectionSelect = document.getElementById('edit-section');
+            
+            // Clear existing options
+            sectionSelect.innerHTML = '<option value="">Select Section</option>';
+            
+            // Add new options based on grade level
+            if (gradeLevel && gradeSections[gradeLevel]) {
+                gradeSections[gradeLevel].forEach(section => {
+                    const option = document.createElement('option');
+                    option.value = section;
+                    option.textContent = section;
+                    sectionSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Add event listener for edit form submission
+        document.getElementById('editStudentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const studentId = document.getElementById('edit-student-id').value;
+            
+            fetch(`/admin/students/${studentId}`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update the table row with new data
+                const row = document.querySelector(`tr[data-student-id="${studentId}"]`);
+                if (row) {
+                    row.querySelector('td:nth-child(1)').textContent = `${formData.get('last_name')}, ${formData.get('first_name')} ${formData.get('middle_name')}`;
+                    row.querySelector('td:nth-child(2)').textContent = formData.get('gender');
+                    row.querySelector('td:nth-child(3)').textContent = `Grade ${formData.get('grade_level')}`;
+                    
+                    // Update status badge
+                    const status = formData.get('test_status');
+                    const statusClass = getStatusClass(status);
+                    const statusText = getStatusText(status);
+                    const statusIcon = getStatusIcon(status);
+                    
+                    const statusCell = row.querySelector('td:nth-child(4)');
+                    statusCell.innerHTML = `
+                        <span class="status-badge ${statusClass}">
+                            <i class="fas ${statusIcon} status-icon"></i>
+                            ${statusText}
+                        </span>
+                    `;
+                }
+                
+                // Close modal and show success message
+                closeModal('editModal');
+                alert('Student record updated successfully!');
+                
+                // Refresh the page to show updated data
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating the student record. Please try again.');
+            });
+        });
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Update window click handler
+        window.onclick = function(event) {
+            const addModal = document.getElementById('addStudentModal');
+            const editModal = document.getElementById('editModal');
+            const confirmationModal = document.getElementById('confirmationModal');
+            
+            if (event.target === addModal) {
+                closeModal('addStudentModal');
+            }
+            if (event.target === editModal) {
+                closeModal('editModal');
+            }
+            if (event.target === confirmationModal) {
+                closeConfirmationModal();
+            }
         }
 
         // Helper functions for status
@@ -1265,3 +1239,4 @@
     </script>
 </body>
 </html>
+@endsection
