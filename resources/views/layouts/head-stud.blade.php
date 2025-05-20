@@ -480,6 +480,36 @@
             font-size: 1.5rem;
             cursor: pointer;
             padding: 0.5rem;
+            z-index: 1002;
+            margin-left: auto;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+                position: relative;
+                right: 0;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            header {
+                margin-left: 0;
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -538,12 +568,12 @@
     <!-- Header -->
     <header>
         <div class="header-container">
-            <button class="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
             <div class="user-info">
                 <span>Welcome, Student</span>
             </div>
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </header>
 
@@ -581,22 +611,27 @@
         });
 
         // Add sidebar toggle functionality
-        const menuToggle = document.querySelector('.menu-toggle');
+        const menuToggle = document.getElementById('menuToggle');
         const sidebar = document.querySelector('.sidebar');
-        const mainContent = document.querySelector('.main-content');
-        const header = document.querySelector('header');
 
         menuToggle.addEventListener('click', () => {
             sidebar.classList.toggle('active');
         });
 
-        // Add active state to nav links
-        const navLinks = document.querySelectorAll('.nav-link');
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                navLinks.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-            });
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('active');
+            }
         });
     </script>
 </body>
