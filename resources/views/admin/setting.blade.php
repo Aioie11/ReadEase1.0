@@ -5,69 +5,166 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Settings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        :root {
+            /* Primary - Main UI and Brand Elements */
+            --primary: #0E61BA;
+            --primary-light: #3b82f6;
+            --primary-dark: #0d4b94;
+            
+            /* Secondary - Navigation and Secondary UI */
+            --secondary: #6CC24A;
+            --secondary-light: #7ed56f;
+            
+            /* Accent - Buttons and Highlights */
+            --accent: #F9A602;
+            --accent-light: #fbbf24;
+            
+            /* Neutral - Backgrounds */
+            --neutral: #F4F4F4;
+            --neutral-light: #ffffff;
+            --neutral-dark: #e5e5e5;
+            
+            /* Text - Main Text and Headings */
+            --text: #232323;
+            --text-light: #4b5563;
+            
+            /* Gradients */
+            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            --gradient-secondary: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
+            --gradient-accent: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            
+            /* Shadows */
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            
+            --transition: all 0.3s ease;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
 
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-        }
-
-        .container { 
-            display: flex; 
-            min-height: 100vh;
+        body {
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--neutral);
         }
 
         /* Sidebar Styles */
-        .sidebar { 
-            width: 250px; 
-            background: linear-gradient(180deg, #e0f2f7 0%, #b2ebf2 100%);
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 280px;
+            background: var(--primary);
+            padding: 1.5rem;
+            transition: var(--transition);
+            z-index: 1001;
+            box-shadow: var(--shadow-lg);
         }
 
-        .sidebar ul { 
-            list-style: none; 
-            padding: 0;
-            margin-top: 20px;
+        .sidebar-header {
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .sidebar li { 
-            padding: 12px 15px;
-            margin-bottom: 5px;
+        .sidebar-logo {
+            color: var(--neutral-light);
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-logo img {
+            height: 45px;
+            width: 45px;
+            object-fit: contain;
+        }
+
+        .nav-menu {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .nav-item {
+            margin-bottom: 0.3rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            color: var(--neutral-light);
+            text-decoration: none;
             border-radius: 8px;
-            transition: all 0.3s ease;
+            transition: var(--transition);
+            font-size: 0.95rem;
         }
 
-        .sidebar li:hover { 
-            background-color: rgba(255,255,255,0.2);
+        .nav-link:hover, .nav-link.active {
+            background: var(--secondary);
+            color: var(--neutral-light);
             transform: translateX(5px);
         }
 
-        .sidebar a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            display: block;
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
         }
 
-        .logo { 
-            width: 120px; 
-            height: 120px; 
-            margin: 0 auto 20px;
-            display: block;
+        /* Header Styles */
+        header {
+            background: var(--primary);
+            padding: 1rem 5%;
+            position: fixed;
+            width: calc(100% - 280px);
+            margin-left: 280px;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
         }
 
-        /* Main Content Styles */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--neutral-light);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 6rem 5% 2rem;
+            transition: var(--transition);
+        }
+
+        /* Existing Settings Styles */
         .settings-content { 
             flex: 1; 
             padding: 30px;
-            background-color: #f8f9fa;
+            background-color: var(--neutral);
         }
 
         .settings-header { 
@@ -76,31 +173,30 @@
             align-items: center; 
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 2px solid #e9ecef;
+            border-bottom: 2px solid var(--neutral-dark);
         }
 
         .settings-header h2 { 
-            color: #2c3e50;
+            color: var(--text);
             font-size: 28px;
             font-weight: 600;
         }
 
         .add-profile-button { 
-            background: linear-gradient(135deg, #4CAF50, #45a049);
+            background: var(--gradient-secondary);
             color: white; 
             padding: 12px 25px; 
             border: none; 
             border-radius: 8px; 
             cursor: pointer;
             font-weight: 500;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: var(--transition);
+            box-shadow: var(--shadow-md);
         }
 
         .add-profile-button:hover { 
-            background: linear-gradient(135deg, #45a049, #4CAF50);
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: var(--shadow-lg);
         }
 
         /* Search Bar Styles */
@@ -108,29 +204,29 @@
             display: flex; 
             align-items: center;
             margin-bottom: 25px;
-            background: white;
+            background: var(--neutral-light);
             padding: 15px;
             border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: var(--shadow-sm);
         }
 
         .search-bar input[type="text"] { 
             flex: 1;
             padding: 12px 20px;
-            border: 1px solid #e0e0e0;
+            border: 1px solid var(--neutral-dark);
             border-radius: 8px;
             font-size: 14px;
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
 
         .search-bar input[type="text"]:focus {
             outline: none;
-            border-color: #4CAF50;
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(14, 97, 186, 0.1);
         }
 
         .search-bar button { 
-            background: linear-gradient(135deg, #5EC0F2, #4a90e2);
+            background: var(--gradient-primary);
             color: white; 
             padding: 12px 25px; 
             border: none; 
@@ -138,13 +234,12 @@
             cursor: pointer;
             margin-left: 10px;
             font-weight: 500;
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
 
         .search-bar button:hover { 
-            background: linear-gradient(135deg, #4a90e2, #5EC0F2);
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-md);
         }
 
         /* Table Styles */
@@ -152,10 +247,10 @@
             width: 100%; 
             border-collapse: separate;
             border-spacing: 0;
-            background: white;
+            background: var(--neutral-light);
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: var(--shadow-sm);
         }
 
         .profile-table th, 
@@ -165,18 +260,18 @@
         }
 
         .profile-table th { 
-            background: #f8f9fa;
+            background: var(--neutral);
             font-weight: 600;
-            color: #2c3e50;
-            border-bottom: 2px solid #e9ecef;
+            color: var(--text);
+            border-bottom: 2px solid var(--neutral-dark);
         }
 
         .profile-table tbody tr { 
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
 
         .profile-table tbody tr:hover { 
-            background-color: #f8f9fa;
+            background-color: var(--neutral);
         }
 
         .profile-table .action-buttons { 
@@ -191,7 +286,7 @@
             border-radius: 6px;
             font-size: 13px;
             font-weight: 500;
-            transition: all 0.2s ease;
+            transition: var(--transition);
             border: 1px solid transparent;
         }
 
@@ -215,19 +310,7 @@
 
         .profile-table .action-buttons button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .profile-table .action-buttons button.access:hover { 
-            background-color: #c8e6c9;
-        }
-
-        .profile-table .action-buttons button.edit:hover { 
-            background-color: #bbdefb;
-        }
-
-        .profile-table .action-buttons button.delete:hover { 
-            background-color: #ffcdd2;
+            box-shadow: var(--shadow-sm);
         }
 
         /* Modal Styles */
@@ -245,17 +328,16 @@
         }
 
         .modal-content {
-            background: white;
+            background: var(--neutral-light);
             margin: 20px auto;
             padding: 35px;
-            width: 500px;
-            border-radius: 15px;
-            position: relative;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            max-width: 600px;
         }
 
         .modal-content h2 {
-            color: #2c3e50;
+            color: var(--text);
             margin-bottom: 30px;
             text-align: center;
             font-size: 24px;
@@ -272,7 +354,7 @@
             transform: translateX(-50%);
             width: 60px;
             height: 3px;
-            background: linear-gradient(135deg, #4CAF50, #45a049);
+            background: var(--gradient-secondary);
             border-radius: 2px;
         }
 
@@ -283,7 +365,7 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: #555;
+            color: var(--text-light);
             font-weight: 500;
             font-size: 14px;
         }
@@ -292,19 +374,19 @@
         .form-group select {
             width: 100%;
             padding: 12px 15px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--neutral-dark);
             border-radius: 8px;
             font-size: 14px;
-            transition: all 0.3s ease;
-            background-color: #f8f9fa;
+            transition: var(--transition);
+            background-color: var(--neutral);
         }
 
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
-            border-color: #4CAF50;
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
-            background-color: white;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(14, 97, 186, 0.1);
+            background-color: var(--neutral-light);
         }
 
         .form-group select {
@@ -321,11 +403,7 @@
             justify-content: flex-end;
             margin-top: 30px;
             padding-top: 20px;
-            border-top: 1px solid #eee;
-            position: sticky;
-            bottom: 0;
-            background: white;
-            padding-bottom: 10px;
+            border-top: 1px solid var(--neutral-dark);
         }
 
         .button-group button {
@@ -334,32 +412,31 @@
             border-radius: 8px;
             cursor: pointer;
             font-weight: 500;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             text-transform: uppercase;
             letter-spacing: 0.5px;
             font-size: 14px;
         }
 
         .save-btn {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
+            background: var(--gradient-secondary);
             color: white;
         }
 
         .save-btn:hover {
-            background: linear-gradient(135deg, #45a049, #4CAF50);
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-md);
         }
 
         .cancel-btn {
-            background: #e9ecef;
-            color: #333;
+            background: var(--neutral);
+            color: var(--text);
         }
 
         .cancel-btn:hover {
-            background: #dee2e6;
+            background: var(--neutral-dark);
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-sm);
         }
 
         .close {
@@ -368,8 +445,8 @@
             top: 20px;
             font-size: 28px;
             cursor: pointer;
-            color: #666;
-            transition: all 0.3s ease;
+            color: var(--text-light);
+            transition: var(--transition);
             width: 32px;
             height: 32px;
             display: flex;
@@ -379,23 +456,106 @@
         }
 
         .close:hover {
-            color: #333;
-            background-color: #f8f9fa;
+            color: var(--text);
+            background-color: var(--neutral);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            header {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+        }
+
+        /* Menu Toggle Button */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--neutral-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="sidebar">
-            <img src="{{ asset('pic/logo .png') }}" alt="Logo" class="logo">
-            <ul>
-                <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                <li><a href="{{ route('admin.test-management') }}">Test Management</a></li>
-                <li><a href="{{ route('admin.student-records') }}">Student Record</a></li>
-                <li><a href="{{ route('admin.reports') }}">Reports</a></li>
-                <li><a href="{{ route('admin.settings') }}">Settings</a></li>
-            </ul>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="{{ url('/') }}" class="sidebar-logo">
+                <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo">
+                <span>ReadEase</span>
+            </a>
         </div>
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="{{ route('admin.dashboard') }}" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.test-management') }}" class="nav-link">
+                        <i class="fas fa-tasks"></i>
+                        Test Management
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.student-records') }}" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        Student Record
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.reports') }}" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        Reports
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.settings') }}" class="nav-link active">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="user-info">
+                <span>Welcome, Admin</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
         <div class="settings-content">
             <div class="settings-header">
                 <h2>User Management</h2>
@@ -420,7 +580,7 @@
                 </tbody>
             </table>
         </div>
-    </div>
+    </main>
 
     <!-- Add Profile Modal -->
     <div id="addProfileModal" class="modal">
@@ -729,6 +889,16 @@
             alert(errorMessage);
         });
     }
+
+    // Add sidebar toggle functionality
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content');
+    const header = document.querySelector('header');
+
+    menuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+    });
     </script>
 </body>
 </html>

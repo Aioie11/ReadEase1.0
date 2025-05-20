@@ -5,336 +5,582 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-   
+        :root {
+            /* Primary - Main UI and Brand Elements */
+            --primary: #0E61BA;
+            --primary-light: #3b82f6;
+            --primary-dark: #0d4b94;
+            
+            /* Secondary - Navigation and Secondary UI */
+            --secondary: #6CC24A;
+            --secondary-light: #7ed56f;
+            
+            /* Accent - Buttons and Highlights */
+            --accent: #F9A602;
+            --accent-light: #fbbf24;
+            
+            /* Neutral - Backgrounds */
+            --neutral: #F4F4F4;
+            --neutral-light: #ffffff;
+            --neutral-dark: #e5e5e5;
+            
+            /* Text - Main Text and Headings */
+            --text: #232323;
+            --text-light: #4b5563;
+            
+            /* Gradients */
+            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            --gradient-secondary: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
+            --gradient-accent: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            
+            /* Shadows */
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            
+            --transition: all 0.3s ease;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            min-height: 100vh;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--neutral);
         }
 
+        /* Sidebar Styles */
         .sidebar {
-            width: 250px;
-            background: linear-gradient(180deg, #e0f2f7 0%, #b2ebf2 100%);
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 280px;
+            background: var(--primary);
+            padding: 1.5rem;
+            transition: var(--transition);
+            z-index: 1001;
+            box-shadow: var(--shadow-lg);
         }
 
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-            margin-top: 20px;
+        .sidebar-header {
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .sidebar li {
-            padding: 12px 15px;
-            margin-bottom: 5px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .sidebar li:hover {
-            background-color: rgba(255,255,255,0.2);
-            transform: translateX(5px);
-        }
-
-        .sidebar a {
+        .sidebar-logo {
+            color: var(--neutral-light);
+            font-size: 1.5rem;
+            font-weight: 700;
             text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .logo {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 20px;
-            display: block;
+        .sidebar-logo img {
+            height: 45px;
+            width: 45px;
+            object-fit: contain;
+        }
+
+        .nav-menu {
+            list-style: none;
+            margin-bottom: 2rem;
         }
 
         .nav-item {
+            margin-bottom: 0.3rem;
+        }
+
+        .nav-link {
             display: flex;
             align-items: center;
-            padding: 10px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            color: #333;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            color: var(--neutral-light);
             text-decoration: none;
+            border-radius: 8px;
+            transition: var(--transition);
+            font-size: 0.95rem;
         }
 
-        .nav-item:hover {
-            background-color: rgba(255, 255, 255, 0.2);
+        .nav-link:hover, .nav-link.active {
+            background: var(--secondary);
+            color: var(--neutral-light);
+            transform: translateX(5px);
         }
 
-        .nav-item i {
-            margin-right: 10px;
-            font-style: normal;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
+        .nav-link i {
             width: 20px;
-            display: inline-block;
             text-align: center;
+            font-size: 1.1rem;
         }
 
-        .user-controls span {
-            font-size: 16px;
-            margin-left: 15px;
-            cursor: pointer;
-            color: white;
+        /* Header Styles */
+        header {
+            background: var(--primary);
+            padding: 1rem 5%;
+            position: fixed;
+            width: calc(100% - 280px);
+            margin-left: 280px;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
         }
 
-        /* Main content styles */
-        .main-content {
-            flex: 1;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-
-        .header {
-            background-color: #003399;
-            color: white;
-            padding: 15px;
+        .header-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
-        .content-box {
-            background-color: white;
-            padding: 20px;
-            margin: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        /* Grade selection styles */
-        .grade-selector {
-            background-color: #87CEEB;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
+        .user-info {
             display: flex;
             align-items: center;
+            gap: 1rem;
+            color: var(--neutral-light);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 6rem 5% 2rem;
+            transition: var(--transition);
+        }
+
+        /* Content Box */
+        .content-box {
+            background: var(--neutral-light);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+        }
+
+        /* Admin Controls */
+        .admin-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary);
+            color: var(--neutral-light);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .admin-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .admin-btn.delete {
+            background: #dc2626;
+        }
+
+        .admin-btn.delete:hover {
+            background: #b91c1c;
+        }
+
+        /* Grade Selector */
+        .grade-selector {
+            background: var(--neutral);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
         .grade-selector select {
-            margin-left: 10px;
-            padding: 5px;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--neutral-dark);
+            border-radius: 6px;
+            background: var(--neutral-light);
+            color: var(--text);
+            font-size: 0.95rem;
         }
 
-        /* Reading passage styles */
+        /* Subject Selection */
+        .subject-selection {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .subject-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            background: var(--neutral);
+            color: var(--text);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .subject-btn:hover, .subject-btn.active {
+            background: var(--primary);
+            color: var(--neutral-light);
+        }
+
+        /* Reading Passage */
         .reading-passage {
-            background-color: white;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 5px;
+            background: var(--neutral-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
         }
 
-        /* Question styles */
+        .reading-passage h3 {
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        /* Questions Section */
+        .questions-section {
+            background: var(--neutral-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .questions-section h3 {
+            color: var(--text);
+            margin-bottom: 1.5rem;
+        }
+
         .question {
-            background-color: #E6F3F7;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 5px;
+            background: var(--neutral);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
         }
 
         .radio-option {
             display: block;
-            margin: 10px 0;
-            padding: 10px;
-            background-color: white;
-            border-radius: 5px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: var(--neutral-light);
+            border-radius: 6px;
             cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .radio-option:hover {
+            background: var(--primary-light);
+            color: var(--neutral-light);
         }
 
         .text-input {
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 1rem;
+            border: 1px solid var(--neutral-dark);
+            border-radius: 6px;
+            margin: 0.5rem 0;
+            font-size: 0.95rem;
         }
 
-        /* Button styles */
+        /* Button Group */
         .button-group {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 1rem;
+            margin-top: 1.5rem;
         }
 
         .submit-btn {
-            padding: 10px 20px;
-            background-color: #87CEEB;
+            padding: 0.8rem 1.5rem;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
+            background: var(--primary);
+            color: var(--neutral-light);
             cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
         }
 
         .clear-btn {
-            padding: 10px 20px;
-            background-color: transparent;
-            border: none;
-            color: #87CEEB;
+            padding: 0.8rem 1.5rem;
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--primary);
             cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
         }
 
-        /* Subject button styles */
-        .subject-btn {
-            padding: 8px 16px;
-            margin: 0 10px;
-            border: none;
-            background-color: #E6F3F7;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+        .clear-btn:hover {
+            background: var(--primary);
+            color: var(--neutral-light);
         }
 
-        .subject-btn.active {
-            background-color: #87CEEB;
-            color: white;
-        }
-
-        .subject-btn:hover {
-            background-color: #87CEEB;
-            color: white;
-        }
-
-        /* Admin control buttons */
-        .admin-controls {
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #f5f5f5;
-            border-radius: 5px;
-        }
-
-        .admin-btn {
-            padding: 8px 16px;
-            margin: 0 10px;
-            border: none;
-            background-color: #5EC0F2;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .admin-btn:hover {
-            background-color: #4BA3D8;
-        }
-
-        .admin-btn.delete {
-            background-color: #ff6b6b;
-        }
-
-        .admin-btn.delete:hover {
-            background-color: #ff5252;
-        }
-
-        /* Modal styles */
+        /* Modal Styles */
         .modal {
             display: none;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 50%;
-            background-color:  #38B6FF;
-           
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1002;
+            overflow-y: auto;
         }
 
         .modal-content {
             position: relative;
-            background-color: white;
-            margin: 10% auto;
-            padding: 20px;
-            width: 70%;
+            background: var(--neutral-light);
+            margin: 2rem auto;
+            padding: 2rem;
+            width: 90%;
             max-width: 600px;
-            border-radius: 5px;
-            box-shadow:  #38B6FF;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: var(--neutral);
+            border-radius: 4px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
         }
 
         .close-modal {
-            position: absolute;
-            right: 20px;
-            top: 10px;
-            font-size: 24px;
+            position: sticky;
+            top: 0;
+            right: 1.5rem;
+            float: right;
+            font-size: 1.5rem;
             cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+            background: var(--neutral-light);
+            padding: 0.5rem;
+            z-index: 1;
+        }
+
+        .close-modal:hover {
+            color: var(--text);
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 1.5rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-weight: 500;
         }
 
         .form-group input[type="text"],
         .form-group textarea,
         .form-group select {
             width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 0.8rem;
+            border: 1px solid var(--neutral-dark);
+            border-radius: 6px;
+            font-size: 0.95rem;
         }
 
         .question-container {
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 4px;
+            background: var(--neutral);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
         }
 
-        /* Responsive design */
+        /* Menu Toggle Button */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--neutral-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            body {
-                flex-direction: column;
+            .sidebar {
+                transform: translateX(-100%);
             }
 
-            .sidebar {
-                width: 100%;
-                padding: 10px;
+            .sidebar.active {
+                transform: translateX(0);
             }
 
             .main-content {
-                padding: 10px;
+                margin-left: 0;
             }
+
+            header {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .admin-controls {
+                flex-direction: column;
+            }
+
+            .subject-selection {
+                flex-direction: column;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+
+        /* Add these new styles */
+        .options-list {
+            margin-top: 1rem;
+        }
+
+        .option-item {
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            background: var(--neutral);
+            border-radius: 6px;
+            color: var(--text);
+        }
+
+        .text-answer {
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            background: var(--neutral);
+            border-radius: 6px;
+            color: var(--text);
+            font-style: italic;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: var(--neutral);
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            color: var(--text-light);
+            font-size: 1.1rem;
         }
     </style>
 </head>
 
 <body>
-        <div class="sidebar">
-            <div class="sidebar-logo">
-                <img src="{{ asset('pic/logo .png') }}" alt="Logo" class="logo">
-            </div>
-            <ul>
-                <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                <li><a href="{{ route('admin.test-management') }}">Test Management</a></li>
-                <li><a href="{{ route('admin.student-records') }}">Student Record</a></li>
-                <li><a href="{{ route('admin.reports') }}">Reports</a></li>
-                <li><a href="{{ route('admin.settings') }}">Settings</a></li>
-            </ul>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="{{ url('/') }}" class="sidebar-logo">
+                <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo">
+                <span>ReadEase</span>
+            </a>
         </div>
-    <!-- Main Content Area -->
-    <main class="main-content">
-        <header class="header">
-            <h1>TEST MANAGEMENT</h1>
-            <div class="user-controls">
-                <span>♪</span>
-                <span>○</span>
-            </div>
-        </header>
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="{{ route('admin.dashboard') }}" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.test-management') }}" class="nav-link active">
+                        <i class="fas fa-tasks"></i>
+                        Test Management
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.student-records') }}" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        Student Record
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.reports') }}" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        Reports
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.settings') }}" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
 
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="user-info">
+                <span>Welcome, Admin</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
         <div class="content-box">
-            <h2> QUESTIONS</h2>
+            <h2 style="margin-bottom: 2rem;">QUESTIONS</h2>
             
             <!-- Admin Controls -->
             <div class="admin-controls">
@@ -345,7 +591,7 @@
 
             <!-- Grade Selection Dropdowns -->
             <div class="grade-selector">
-                <i>○</i>
+                <i class="fas fa-graduation-cap"></i>
                 <select>
                     <option>GRADE 7</option>
                     <option>GRADE 8</option>
@@ -362,57 +608,26 @@
 
             <!-- Reading Passage -->
             <div class="reading-passage">
-                <h3>Online Reading Passage</h3>
-                <p>Telling Time Humans have used different objects to tell time. In the beginning, they used an hourglass. This is a cylindrical glass with a narrow center which allows sand to flow from its upper to its lower portion. Once all the sand has trickled to the lower portion, one knows that an hour has passed. Using the same idea, water clocks were constructed to measure time by having water flow through a narrow passage from one container to another. On the other hand, sundials allowed people to estimate an hour by looking at the position of the shadow cast by the sun on a plate. At night, people measured time by checking the alignment of the stars in the sky. None of these were accurate, though. The clock was the first accurate instrument or telling time.</p>
+                <h3>Reading Passage</h3>
+                <div class="empty-state">
+                    <i class="fas fa-book"></i>
+                    <p>No reading passage added yet. Click "Add New Reading Material" to create content.</p>
+                </div>
             </div>
 
             <!-- Questions Section -->
             <div class="questions-section">
-                <h3>READING COMPREHENSION QUESTIONS</h3>
+                <h3>Reading Comprehension Questions</h3>
                 
-                <!-- Question 1 -->
-                <div class="question">
-                    <p>1. Which of the following ways of telling time made use of sand?</p>
-                    <label class="radio-option">
-                        <input type="radio" name="q1"> Water Clocks
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="q1"> Hourglass
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="q1"> Sundials
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="q1"> Stars
-                    </label>
-                </div>
-
-                <!-- Question 2 -->
-                <div class="question">
-                    <p>2. Which of the following ways of telling time made use of sand?</p>
-                    <label class="radio-option">
-                        <input type="radio" name="q2"> Water Clocks
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="q2"> Hourglass
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="q2"> Sundials
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="q2"> Stars
-                    </label>
-                </div>
-
-                <!-- Question 3 -->
-                <div class="question">
-                    <p>3. Which of the following ways of telling time made use of sand?</p>
-                    <input type="text" class="text-input" placeholder="Type your answere here">
+                <!-- Empty State -->
+                <div class="empty-state">
+                    <i class="fas fa-question-circle"></i>
+                    <p>No questions added yet. Click "Add New Reading Material" to create questions.</p>
                 </div>
 
                 <!-- Button Group -->
                 <div class="button-group">
-                    <button class="submit-btn">Submit</button>
+                    <button class="submit-btn">Save Questions</button>
                     <button class="clear-btn">Clear Form</button>
                 </div>
             </div>
@@ -453,7 +668,9 @@
                     <h3>Questions</h3>
                     <button type="button" class="admin-btn" onclick="addQuestion()">Add Question</button>
                 </div>
-                <button type="submit" class="admin-btn">Save Reading Material</button>
+                <div style="margin-top: 2rem;">
+                    <button type="submit" class="admin-btn">Save Reading Material</button>
+                </div>
             </form>
         </div>
     </div>
@@ -463,7 +680,37 @@
             <span class="close-modal" onclick="closeModal('editModal')">&times;</span>
             <h2>Edit Reading Material</h2>
             <form id="editForm">
-                <!-- Similar form fields as create modal -->
+                <div class="form-group">
+                    <label for="edit-grade">Grade Level:</label>
+                    <select id="edit-grade" required>
+                        <option value="7">Grade 7</option>
+                        <option value="8">Grade 8</option>
+                        <option value="9">Grade 9</option>
+                        <option value="10">Grade 10</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-subject">Subject:</label>
+                    <select id="edit-subject" required>
+                        <option value="english">English</option>
+                        <option value="filipino">Filipino</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-title">Reading Title:</label>
+                    <input type="text" id="edit-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-content">Reading Content:</label>
+                    <textarea id="edit-content" rows="6" required></textarea>
+                </div>
+                <div id="editQuestionsContainer">
+                    <h3>Questions</h3>
+                    <button type="button" class="admin-btn" onclick="addEditQuestion()">Add Question</button>
+                </div>
+                <div style="margin-top: 2rem;">
+                    <button type="submit" class="admin-btn">Save Changes</button>
+                </div>
             </form>
         </div>
     </div>
@@ -513,27 +760,6 @@
 
             console.log('Form data:', formData);
             // Add your form submission logic here
-            // For example, send to server using fetch:
-            /*
-            fetch('submit_test.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                alert('Test submitted successfully!');
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('Error submitting test. Please try again.');
-            });
-            */
-            
-            // Temporary success message
             alert('Test submitted successfully!');
         });
 
@@ -563,7 +789,6 @@
         }
 
         function openEditModal() {
-            // Populate form with selected reading material data
             document.getElementById('editModal').style.display = 'block';
         }
 
@@ -590,11 +815,13 @@
                 <div class="multiple-choice-options">
                     <div class="form-group">
                         <label>Options (one per line):</label>
-                        <textarea name="options[]" rows="4"></textarea>
+                        <textarea name="options[]" rows="4" placeholder="Enter each option on a new line"></textarea>
                     </div>
                     <div class="form-group">
                         <label>Correct Answer:</label>
-                        <input type="text" name="correct[]">
+                        <select name="correct[]">
+                            <option value="">Select correct answer</option>
+                        </select>
                     </div>
                 </div>
                 <button type="button" class="admin-btn delete" onclick="removeQuestion(this)">Remove Question</button>
@@ -613,26 +840,7 @@
 
         function deleteSelected() {
             if (confirm('Are you sure you want to delete the selected reading material?')) {
-                // Add your delete logic here
                 console.log('Deleting selected reading material');
-                /*
-                fetch('delete_reading.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ id: selectedId })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success:', data);
-                    // Refresh the page or update the UI
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error deleting reading material');
-                });
-                */
             }
         }
 
@@ -641,22 +849,6 @@
             e.preventDefault();
             const formData = new FormData(this);
             console.log('Creating new reading material');
-            /*
-            fetch('create_reading.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                closeModal('createModal');
-                // Refresh the page or update the UI
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error creating reading material');
-            });
-            */
         });
 
         // Close modals when clicking outside
@@ -665,6 +857,116 @@
                 event.target.style.display = 'none';
             }
         }
+
+        // Add sidebar toggle functionality
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+        const header = document.querySelector('header');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        // Update the select options when options textarea changes
+        function updateCorrectAnswerOptions(textarea) {
+            const select = textarea.parentElement.nextElementSibling.querySelector('select');
+            const options = textarea.value.split('\n').filter(option => option.trim() !== '');
+            
+            // Clear existing options except the first one
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
+            
+            // Add new options
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.trim();
+                optionElement.textContent = option.trim();
+                select.appendChild(optionElement);
+            });
+        }
+
+        // Add event listener to options textarea
+        document.addEventListener('input', function(e) {
+            if (e.target.name === 'options[]') {
+                updateCorrectAnswerOptions(e.target);
+            }
+        });
+
+        function addEditQuestion() {
+            const container = document.getElementById('editQuestionsContainer');
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question-container';
+            questionDiv.innerHTML = `
+                <div class="form-group">
+                    <label>Question:</label>
+                    <input type="text" name="edit-questions[]" required>
+                </div>
+                <div class="form-group">
+                    <label>Question Type:</label>
+                    <select name="edit-questionTypes[]" onchange="toggleEditAnswerType(this)">
+                        <option value="multiple">Multiple Choice</option>
+                        <option value="text">Text Answer</option>
+                    </select>
+                </div>
+                <div class="multiple-choice-options">
+                    <div class="form-group">
+                        <label>Options (one per line):</label>
+                        <textarea name="edit-options[]" rows="4" placeholder="Enter each option on a new line"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Correct Answer:</label>
+                        <select name="edit-correct[]">
+                            <option value="">Select correct answer</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="button" class="admin-btn delete" onclick="removeEditQuestion(this)">Remove Question</button>
+            `;
+            container.appendChild(questionDiv);
+        }
+
+        function removeEditQuestion(button) {
+            button.parentElement.remove();
+        }
+
+        function toggleEditAnswerType(select) {
+            const multipleChoiceDiv = select.parentElement.nextElementSibling;
+            multipleChoiceDiv.style.display = select.value === 'multiple' ? 'block' : 'none';
+        }
+
+        // Update the select options when options textarea changes for edit form
+        document.addEventListener('input', function(e) {
+            if (e.target.name === 'edit-options[]') {
+                updateEditCorrectAnswerOptions(e.target);
+            }
+        });
+
+        function updateEditCorrectAnswerOptions(textarea) {
+            const select = textarea.parentElement.nextElementSibling.querySelector('select');
+            const options = textarea.value.split('\n').filter(option => option.trim() !== '');
+            
+            // Clear existing options except the first one
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
+            
+            // Add new options
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.trim();
+                optionElement.textContent = option.trim();
+                select.appendChild(optionElement);
+            });
+        }
+
+        // Form submission handlers
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            console.log('Updating reading material');
+        });
     </script>
 </body>
 
