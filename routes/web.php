@@ -7,19 +7,20 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\ReadingController;
+use App\Http\Controllers\ReadingMaterialController;
 use Illuminate\Http\Request;
 
-<<<<<<< Updated upstream
-//student part
-use App\Http\Controllers\StudentAnswerEnglishController;
-use App\Http\Controllers\StudentAnswerTagalogController;
 
-Route::post('/student/add/english', [StudentAnswerEnglishController::class, 'store'])->name('student.add.english');
-Route::post('/student/add/tagalog', [StudentAnswerTagalogController::class, 'store'])->name('student.add.tagalog');
-=======
+// //student part
+// use App\Http\Controllers\StudentAnswerEnglishController;
+// use App\Http\Controllers\StudentAnswerTagalogController;
+
+// Route::post('/student/add/english', [StudentAnswerEnglishController::class, 'store'])->name('student.add.english');
+// Route::post('/student/add/tagalog', [StudentAnswerTagalogController::class, 'store'])->name('student.add.tagalog');
+
 Route::post('/student/add', [StudentAnswerEnglishController::class, 'store']);
 Route::post('/student/add', [StudentAnswerTagalogController::class, 'store']);
->>>>>>> Stashed changes
+
 
 // Home Route
 Route::get('/', function () {
@@ -135,6 +136,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', function () {
             return view('student.stud-dash');
         })->name('student.dashboard');
+    });
+
+    // Reading Materials Routes
+    Route::prefix('api')->group(function () {
+        Route::post('/reading-materials', [ReadingMaterialController::class, 'store'])->name('reading-materials.store');
+        Route::get('/reading-materials/{grade}/{subject}', [ReadingMaterialController::class, 'getByGradeAndSubject'])->name('reading-materials.get-by-grade-subject');
+        Route::put('/reading-materials/{id}', [ReadingMaterialController::class, 'update'])->name('reading-materials.update');
+        Route::delete('/reading-materials/{id}', [ReadingMaterialController::class, 'destroy'])->name('reading-materials.destroy');
     });
 });
 

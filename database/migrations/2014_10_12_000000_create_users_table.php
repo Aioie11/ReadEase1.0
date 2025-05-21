@@ -14,6 +14,8 @@ return new class extends Migration
             $table->string('userId')->unique();
             $table->string('password');
             $table->string('role')->default('teacher');
+            $table->string('grade')->nullable();
+            $table->string('section')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
