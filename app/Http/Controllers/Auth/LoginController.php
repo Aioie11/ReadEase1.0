@@ -20,27 +20,35 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            
-            // Redirect based on user role
-            $user = Auth::user();
-            
-            if ($user->role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            } else if (Auth::user()->role === 'teacher') {
-                return redirect()->route('teacher.dashboard');
-            } else if (Auth::user()->role === 'student') {
-                return redirect()->route('student.dashboard');
-            }
-            
-            // Default redirect if role is not specified
-            return redirect()->intended('/');
+        // Find user by userId
+        $user = \App\Models\User::where('userId', $credentials['userId'])->first();
+
+        if (!$user) {
+            return back()->withErrors([
+                'userId' => 'The provided user ID does not exist.',
+            ])->onlyInput('userId');
         }
 
-        return back()->withErrors([
-            'userId' => 'The provided credentials do not match our records.',
-        ])->onlyInput('userId');
+        if (!\Illuminate\Support\Facades\Hash::check($credentials['password'], $user->password)) {
+            return back()->withErrors([
+                'password' => 'The provided password is incorrect.',
+            ])->onlyInput('userId');
+        }
+
+        Auth::login($user);
+        $request->session()->regenerate();
+        
+        // Redirect based on user role
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } else if ($user->role === 'teacher') {
+            return redirect()->route('teacher.dashboard');
+        } else if ($user->role === 'student') {
+            return redirect()->route('student.dashboard');
+        }
+        
+        // Default redirect if role is not specified
+        return redirect()->intended('/');
     }
 
     public function logout(Request $request)

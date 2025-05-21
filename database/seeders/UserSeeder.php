@@ -25,16 +25,16 @@ class UserSeeder extends Seeder
         // Teacher User
         User::create([
             'name' => 'Test Teacher',
-            'userId' => 'TCH456',
-            'password' => Hash::make('password123'),
+            'userId' => 'TECH123',
+            'password' => Hash::make('tech123'),
             'role' => 'teacher'
         ]);
 
         // Student User
         User::create([
             'name' => 'Test Student',
-            'userId' => 'STU789',
-            'password' => Hash::make('student123'),
+            'userId' => 'STUD123',
+            'password' => Hash::make('stud123'),
             'role' => 'student'
         ]);
     }

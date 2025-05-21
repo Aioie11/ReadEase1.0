@@ -3,6 +3,7 @@
 @section('title', 'Test Management')
 
 @section('content')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <style>
 
         .user-info {
@@ -406,10 +407,10 @@
             <div class="grade-selector">
                 <i class="fas fa-graduation-cap"></i>
                 <select>
-                    <option>GRADE 7</option>
-                    <option>GRADE 8</option>
-                    <option>GRADE 9</option>
-                    <option>GRADE 10</option>
+                    <option value="7">GRADE 7</option>
+                    <option value="8">GRADE 8</option>
+                    <option value="9">GRADE 9</option>
+                    <option value="10">GRADE 10</option>
                 </select>
             </div>
 
@@ -529,11 +530,142 @@
     </div>
 
     <script>
+        // Function to fetch and display reading materials
+        function fetchAndDisplayReadingMaterials() {
+            const selectedGrade = document.querySelector('.grade-selector select').value;
+            const selectedSubjectButton = document.querySelector('.subject-btn.active');
+            const selectedSubject = selectedSubjectButton ? selectedSubjectButton.dataset.subject : null;
+
+            if (!selectedGrade || !selectedSubject) {
+                console.log('Grade or subject not selected.');
+                // Optionally, show the empty state if no grade/subject is selected initially
+                 document.querySelector('.reading-passage').innerHTML = `
+                    <h3>Reading Passage</h3>
+                    <div class="empty-state">
+                        <i class="fas fa-book"></i>
+                        <p>Select a grade and subject to view reading materials.</p>
+                    </div>
+                `;
+                 document.querySelector('.questions-section').innerHTML = `
+                    <h3>Reading Comprehension Questions</h3>
+                    <div class="empty-state">
+                        <i class="fas fa-question-circle"></i>
+                        <p>Select a grade and subject to view questions.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            console.log(`Fetching materials for Grade: ${selectedGrade}, Subject: ${selectedSubject}`);
+
+            // Show a loading state
+            const readingPassageDiv = document.querySelector('.reading-passage');
+            const questionsSectionDiv = document.querySelector('.questions-section');
+            readingPassageDiv.innerHTML = '<h3>Reading Passage</h3><div class="empty-state"><i class="fas fa-sync fa-spin"></i><p>Loading...</p></div>';
+            questionsSectionDiv.innerHTML = '<h3>Reading Comprehension Questions</h3><div class="empty-state"><i class="fas fa-sync fa-spin"></i><p>Loading...</p></div>';
+
+            // Get CSRF token
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            fetch(`/api/reading-materials/${selectedGrade}/${selectedSubject}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': token
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Fetched data:', data);
+                if (data && data.length > 0) {
+                    // Display Reading Passage
+                    const material = data[0];
+                    readingPassageDiv.innerHTML = `
+                        <h3>${material.title}</h3>
+                        <div class="reading-content">
+                            <p>${material.content}</p>
+                        </div>
+                    `;
+
+                    // Display Questions
+                    let questionsHtml = '<h3>Reading Comprehension Questions</h3>';
+                    if (material.questions && material.questions.length > 0) {
+                        material.questions.forEach(question => {
+                            questionsHtml += `
+                                <div class="question">
+                                    <p><strong>${question.question}</strong></p>
+                            `;
+                            if (question.type === 'multiple' && question.options) {
+                                questionsHtml += '<div class="options-list">';
+                                question.options.forEach(option => {
+                                    questionsHtml += `<div class="option-item">${option}</div>`;
+                                });
+                                questionsHtml += '</div>';
+                            } else if (question.type === 'text') {
+                                questionsHtml += `<div class="text-answer">Correct Answer: ${question.correct_answer}</div>`;
+                            }
+                            questionsHtml += `</div>`;
+                        });
+                    } else {
+                        questionsHtml += `
+                            <div class="empty-state">
+                                <i class="fas fa-question-circle"></i>
+                                <p>No questions available for this reading material.</p>
+                            </div>
+                        `;
+                    }
+                    questionsSectionDiv.innerHTML = questionsHtml;
+                } else {
+                    // Display empty state if no data
+                    readingPassageDiv.innerHTML = `
+                        <h3>Reading Passage</h3>
+                        <div class="empty-state">
+                            <i class="fas fa-book"></i>
+                            <p>No reading passage added yet. Click "Add New Reading Material" to create content.</p>
+                        </div>
+                    `;
+                    questionsSectionDiv.innerHTML = `
+                        <h3>Reading Comprehension Questions</h3>
+                        <div class="empty-state">
+                            <i class="fas fa-question-circle"></i>
+                            <p>No questions added yet. Click "Add New Reading Material" to create questions.</p>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching reading materials:', error);
+                // Display error state
+                readingPassageDiv.innerHTML = `
+                    <h3>Reading Passage</h3>
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle" style="color: #dc2626;"></i>
+                        <p style="color: #dc2626;">Error loading reading materials: ${error.message}</p>
+                    </div>
+                `;
+                questionsSectionDiv.innerHTML = `
+                    <h3>Reading Comprehension Questions</h3>
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle" style="color: #dc2626;"></i>
+                        <p style="color: #dc2626;">Error loading questions: ${error.message}</p>
+                    </div>
+                `;
+            });
+        }
+
         // Grade selector functionality
         document.querySelector('.grade-selector select').addEventListener('change', function(e) {
             const selectedGrade = e.target.value;
             console.log('Selected grade:', selectedGrade);
             // Add your grade change logic here
+            fetchAndDisplayReadingMaterials(); // Call the new function
         });
 
         // Subject button functionality
@@ -547,33 +679,121 @@
                 const subject = this.dataset.subject;
                 console.log('Selected subject:', subject);
                 // Add your subject change logic here
+                fetchAndDisplayReadingMaterials(); // Call the new function
             });
         });
 
-        // Form submission handling
-        document.querySelector('.submit-btn').addEventListener('click', function(e) {
+        // Initial load: Select a default subject (e.g., English) and fetch data
+        document.addEventListener('DOMContentLoaded', function() {
+            const defaultSubjectButton = document.querySelector('.subject-btn[data-subject="english"]');
+            if (defaultSubjectButton) {
+                defaultSubjectButton.classList.add('active');
+            }
+            fetchAndDisplayReadingMaterials();
+        });
+
+        // Form submission handlers
+        document.getElementById('createForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Collect form data
-            const formData = {
-                grade: document.querySelector('.grade-selector select').value,
-                subject: document.querySelector('.subject-btn.active')?.dataset.subject,
-                answers: {
-                    q1: document.querySelector('input[name="q1"]:checked')?.value,
-                    q2: document.querySelector('input[name="q2"]:checked')?.value,
-                    q3: document.querySelector('.text-input').value
-                }
-            };
-
             // Validate form
-            if (!formData.answers.q1 || !formData.answers.q2 || !formData.answers.q3) {
-                alert('Please answer all questions before submitting.');
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const grade = document.getElementById('grade').value;
+            const subject = document.getElementById('subject').value;
+            
+            if (!title || !content || !grade || !subject) {
+                alert('Please fill in all required fields');
                 return;
             }
 
-            console.log('Form data:', formData);
-            // Add your form submission logic here
-            alert('Test submitted successfully!');
+            const questionContainers = document.querySelectorAll('#questionsContainer .question-container');
+            if (questionContainers.length === 0) {
+                alert('Please add at least one question');
+                return;
+            }
+
+            const formData = {
+                title: title,
+                content: content,
+                grade_level: grade,
+                subject: subject,
+                questions: []
+            };
+
+            // Collect questions
+            questionContainers.forEach(container => {
+                const questionText = container.querySelector('input[name="questions[]"]').value;
+                const questionType = container.querySelector('select[name="questionTypes[]"]').value;
+                const options = container.querySelector('textarea[name="options[]"]').value.split('\n').filter(opt => opt.trim());
+                const correctAnswer = container.querySelector('select[name="correct[]"]').value;
+
+                if (!questionText || !questionType || !correctAnswer) {
+                    alert('Please fill in all question fields');
+                    return;
+                }
+
+                if (questionType === 'multiple' && options.length < 2) {
+                    alert('Multiple choice questions must have at least 2 options');
+                    return;
+                }
+
+                formData.questions.push({
+                    question: questionText,
+                    type: questionType,
+                    options: questionType === 'multiple' ? options : null,
+                    correct_answer: correctAnswer
+                });
+            });
+
+            // Show loading state
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.disabled = true;
+            submitButton.textContent = 'Saving...';
+
+            // Send to server
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            fetch('/api/reading-materials', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(formData),
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 419) {
+                        throw new Error('CSRF token mismatch. Please refresh the page and try again.');
+                    }
+                    return response.json().then(err => Promise.reject(err));
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert('Reading material saved successfully!');
+                    closeModal('createModal');
+                    // Clear the form
+                    this.reset();
+                    // Refresh the display
+                    fetchAndDisplayReadingMaterials();
+                } else {
+                    throw new Error(data.message || 'Failed to save reading material');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error: ' + (error.message || 'Failed to create reading material'));
+            })
+            .finally(() => {
+                // Reset button state
+                submitButton.disabled = false;
+                submitButton.textContent = originalText;
+            });
         });
 
         // Clear form functionality
@@ -656,13 +876,6 @@
                 console.log('Deleting selected reading material');
             }
         }
-
-        // Form submission handlers
-        document.getElementById('createForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            console.log('Creating new reading material');
-        });
 
         // Close modals when clicking outside
         window.onclick = function(event) {
@@ -784,4 +997,3 @@
 </body>
 
 </html>
-@endsection
