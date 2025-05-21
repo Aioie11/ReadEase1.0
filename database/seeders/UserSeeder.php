@@ -14,12 +14,10 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-
-        
         // Admin User
         User::create([
             'name' => 'Admin User',
-            'email' => 'admin@example.com',
+            'userId' => 'ADMIN123',
             'password' => Hash::make('admin123'),
             'role' => 'admin'
         ]);
@@ -27,7 +25,7 @@ class UserSeeder extends Seeder
         // Teacher User
         User::create([
             'name' => 'Test Teacher',
-            'email' => 'teacher@example.com',
+            'userId' => 'TCH456',
             'password' => Hash::make('password123'),
             'role' => 'teacher'
         ]);
@@ -35,19 +33,9 @@ class UserSeeder extends Seeder
         // Student User
         User::create([
             'name' => 'Test Student',
-            'email' => 'student@example.com',
+            'userId' => 'STU789',
             'password' => Hash::make('student123'),
             'role' => 'student'
         ]);
-
-        
-
-    User::create([
-        'name' => 'Test Student',
-        'email' => 'test@example.com',
-        'password' => Hash::make('test123'),
-        'role' => 'student'
-    ]);
-}
-
+    }
 }

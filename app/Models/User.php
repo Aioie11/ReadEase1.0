@@ -21,7 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role'
+        'role',
+        'userId',
+        'grade',
+        'section',
     ];
 
     /**
@@ -44,5 +47,10 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    
+    public static function generateUserId($role)
+    {
+        $prefix = strtoupper(substr($role, 0, 3));
+        $random = strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 5));
+        return $prefix . $random;
+    }
 }

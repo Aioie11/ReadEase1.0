@@ -1,224 +1,222 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Student Records</title>
-    <style>
-        /* Reset default styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+@extends('layouts.head-ad')
 
-        body {
-            font-family: Arial, sans-serif;
+@section('title', 'Student Record')
+
+@section('content')
+<style>
+        .user-info {
             display: flex;
-            min-height: 100vh;
+            align-items: center;
+            gap: 1rem;
+            color: var(--neutral-light);
         }
 
-        /* Sidebar styles */
-        .sidebar {
-            width: 200px;
-            background-color: #e0f2f7;
-            padding: 20px;
-            box-sizing: border-box;
-          
-        }
-
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .sidebar li {
-            padding: 10px;
-            cursor: pointer;
-            border-bottom: 1px solid #b0bec5;
-        }
-
-        .sidebar li:hover {
-            background-color: #b2ebf2;
-        }
-
-        .sidebar a {
-            text-decoration: none;
-            color: #333;
-        }
-
-        .logo {
-            width: 100px;
-            height: 100px;
-            margin-left: 50px;
-        }
-
-        /* Main content styles */
+        /* Main Content */
         .main-content {
-            flex: 1;
-            background-color: #f5f5f5;
+            margin-left: 280px;
+            padding: 6rem 5% 2rem;
+            transition: var(--transition);
         }
 
-        /* Header styles */
-        .header {
-            background-color: #003399;
-            color: white;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .user-controls {
-            display: flex;
-            gap: 15px;
-        }
-
-        .user-controls span {
-            cursor: pointer;
-            font-size: 20px;
-        }
-
-        /* Search and add student section */
+        /* Search Section */
         .search-section {
-            padding: 20px;
+            background: var(--neutral-light);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: white;
+            gap: 1rem;
         }
 
         .search-box {
             flex: 1;
-            margin-right: 20px;
             position: relative;
         }
 
         .search-box input {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding-right: 30px;
+            padding: 0.8rem 1rem;
+            padding-right: 3rem;
+            border: 1px solid var(--neutral-dark);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(14, 97, 186, 0.1);
         }
 
         .search-box button {
             position: absolute;
-            right: 10px;
+            right: 1rem;
             top: 50%;
             transform: translateY(-50%);
-            border: none;
             background: none;
+            border: none;
+            color: var(--text-light);
             cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .search-box button:hover {
+            color: var(--primary);
         }
 
         .add-student-btn {
-            padding: 8px 16px;
-            background-color: #87CEEB;
+            padding: 0.8rem 1.5rem;
+            background: var(--primary);
+            color: var(--neutral-light);
             border: none;
-            border-radius: 5px;
-            color: #333;
+            border-radius: 8px;
             cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        /* Students masterlist section */
+        .add-student-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Masterlist Section */
         .masterlist-section {
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
+            background: var(--neutral-light);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
         }
 
         .masterlist-header {
-            background: linear-gradient(135deg, #87CEEB, #4a90e2);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
         }
 
         .masterlist-header h2 {
-            font-size: 24px;
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            color: var(--primary);
+            font-size: 1.8rem;
+            font-weight: 600;
         }
 
-        /* Grade section styles */
+        /* Grade Section */
         .grade-section {
-            background-color: white;
-            margin-bottom: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+            background: var(--neutral-light);
+            border-radius: 12px;
             overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
         }
 
         .grade-header {
-            background: linear-gradient(135deg, #87CEEB, #4a90e2);
-            color: white;
-            padding: 15px 20px;
+            background: var(--primary);
+            color: var(--neutral-light);
+            padding: 1.2rem 1.5rem;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+            justify-content: space-between;
+            transition: var(--transition);
         }
 
         .grade-header:hover {
-            background: linear-gradient(135deg, #4a90e2, #87CEEB);
+            background: var(--primary-dark);
         }
 
         .grade-header i {
-            margin-right: 15px;
-            font-size: 20px;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .grade-header.collapsed i {
+            transform: rotate(-90deg);
+        }
+
+        .student-list {
+            display: none;
+            padding: 1rem;
+        }
+
+        .student-list.active {
+            display: block;
         }
 
         .section-group {
-            margin: 15px;
-            background: white;
+            margin-bottom: 1rem;
+            background: var(--neutral);
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         .section-header {
-            background: #f8f9fa;
-            color: #333;
-            padding: 12px 20px;
-            margin: 0;
-            font-size: 1.1em;
-            border-bottom: 2px solid #e9ecef;
-            font-weight: 600;
+            background: var(--primary-light);
+            color: var(--neutral-light);
+            padding: 1rem 1.2rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
         }
 
+        .section-header:hover {
+            background: var(--primary-dark);
+        }
+
+        .section-header i {
+            transition: transform 0.3s ease;
+        }
+
+        .section-header.collapsed i {
+            transform: rotate(-90deg);
+        }
+
+        .section-content {
+            display: none;
+            padding: 1rem;
+            background: var(--neutral-light);
+        }
+
+        .section-content.active {
+            display: block;
+        }
+
+        /* Student Table */
         .student-table {
             width: 100%;
             border-collapse: collapse;
-            background: white;
-            margin: 0;
+            background: var(--neutral-light);
         }
 
         .student-table th {
-            background: #f8f9fa;
-            color: #333;
-            font-weight: 600;
-            padding: 12px 15px;
+            background: var(--neutral);
+            color: var(--text);
+            font-weight: 500;
+            padding: 1rem;
             text-align: left;
-            border-bottom: 2px solid #e9ecef;
+            border-bottom: 2px solid var(--neutral-dark);
         }
 
         .student-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #e9ecef;
-            color: #444;
+            padding: 1rem;
+            border-bottom: 1px solid var(--neutral-dark);
+            color: var(--text);
         }
 
         .student-table tr:hover {
-            background-color: #f8f9fa;
+            background: var(--neutral);
         }
 
-        /* Modal styles */
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -226,258 +224,332 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1002;
+            overflow-y: auto;
         }
 
         .modal-content {
-            background-color: white;
-            margin: 3% auto;
-            padding: 35px;
-            width: 700px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal-content h2 {
-            color: #333;
-            margin-bottom: 30px;
-            text-align: center;
-            font-size: 26px;
-            font-weight: 600;
             position: relative;
-            padding-bottom: 15px;
+            background: var(--neutral-light);
+            margin: 2rem auto;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
-        .modal-content h2:after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(135deg, #87CEEB, #4a90e2);
-            border-radius: 2px;
+        .modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: var(--neutral);
+            border-radius: 4px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        .close {
+            position: sticky;
+            top: 0;
+            right: 1.5rem;
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+            background: var(--neutral-light);
+            padding: 0.5rem;
+            z-index: 1;
+        }
+
+        .close:hover {
+            color: var(--text);
         }
 
         .form-row {
             display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
+            gap: 1rem;
+            margin-bottom: 1rem;
         }
 
         .form-group {
             flex: 1;
-            margin-bottom: 20px;
+            margin-bottom: 1rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
-            color: #555;
+            margin-bottom: 0.5rem;
+            color: var(--text);
             font-weight: 500;
-            font-size: 14px;
         }
 
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            background-color: #f8f9fa;
+            padding: 0.8rem;
+            border: 1px solid var(--neutral-dark);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: var(--transition);
         }
 
         .form-group input:focus,
         .form-group select:focus {
-            border-color: #87CEEB;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.2);
-            background-color: white;
-        }
-
-        .form-group input::placeholder {
-            color: #999;
-        }
-
-        .form-group select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23555' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 15px center;
-            padding-right: 40px;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(14, 97, 186, 0.1);
         }
 
         .button-group {
             display: flex;
-            gap: 15px;
+            gap: 1rem;
             justify-content: flex-end;
-            margin-top: 35px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--neutral-dark);
         }
 
         .button-group button {
-            padding: 12px 28px;
+            padding: 0.8rem 1.5rem;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 500;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            transition: var(--transition);
         }
 
         .save-btn {
-            background: linear-gradient(135deg, #87CEEB, #4a90e2);
-            color: white;
+            background: var(--primary);
+            color: var(--neutral-light);
         }
 
         .save-btn:hover {
-            background: linear-gradient(135deg, #4a90e2, #87CEEB);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: var(--primary-dark);
+            transform: translateY(-2px);
         }
 
         .clear-btn {
-            background: #ff6b6b;
-            color: white;
+            background: #dc2626;
+            color: var(--neutral-light);
         }
 
         .clear-btn:hover {
-            background: #ff5252;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: #b91c1c;
+            transform: translateY(-2px);
         }
 
         .cancel-btn {
-            background: #e9ecef;
-            color: #333;
+            background: var(--neutral);
+            color: var(--text);
         }
 
         .cancel-btn:hover {
-            background: #dee2e6;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: var(--neutral-dark);
+            transform: translateY(-2px);
         }
 
-        .close {
-            position: absolute;
-            right: 25px;
-            top: 20px;
-            font-size: 28px;
+        /* Menu Toggle Button */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--neutral-light);
+            font-size: 1.5rem;
             cursor: pointer;
-            color: #666;
-            transition: all 0.3s ease;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
+            padding: 0.5rem;
         }
 
-        .close:hover {
-            color: #333;
-            background-color: #f8f9fa;
-        }
-
-        /* Responsive design */
+        /* Responsive Design */
         @media (max-width: 768px) {
-            body {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            header {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .search-section {
                 flex-direction: column;
             }
 
-            .sidebar {
-                width: 100%;
-                height: auto;
-            }
-
-            .student-info {
-                grid-template-columns: repeat(2, 1fr);
+            .form-row {
+                flex-direction: column;
+                gap: 0;
             }
         }
 
-        .student-table {
+        /* Add these styles to your existing CSS */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-start;
+        }
+
+        .edit-btn, .delete-btn {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .edit-btn {
+            background: var(--primary);
+            color: var(--neutral-light);
+        }
+
+        .edit-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .delete-btn {
+            background: #dc2626;
+            color: var(--neutral-light);
+        }
+
+        .delete-btn:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        /* Confirmation Modal Styles */
+        .confirmation-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            border-collapse: collapse;
-            background: #e3f2fd;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        .student-table th, .student-table td {
-            padding: 10px 12px;
-            text-align: left;
-        }
-        .student-table th {
-            background: #b2ebf2;
-            font-weight: bold;
-            border-bottom: 2px solid #90caf9;
-        }
-        .student-table tr:nth-child(even) {
-            background: #f5fafd;
-        }
-        .student-table tr:hover {
-            background: #e1f5fe;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1002;
         }
 
-        .section-group {
-            margin-bottom: 20px;
-            background: white;
-            border-radius: 5px;
-            overflow: hidden;
+        .confirmation-content {
+            position: relative;
+            background: var(--neutral-light);
+            margin: 15% auto;
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
         }
 
-        .section-header {
-            background: #87CEEB;
-            color: #333;
-            padding: 10px 15px;
-            margin: 0;
-            font-size: 1.1em;
-            border-bottom: 2px solid #90caf9;
+        .confirmation-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
         }
 
-        .student-table {
-            margin: 0;
-            border-radius: 0;
+        .confirm-delete {
+            background: #dc2626;
+            color: var(--neutral-light);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .confirm-delete:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        .cancel-delete {
+            background: var(--neutral);
+            color: var(--text);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .cancel-delete:hover {
+            background: var(--neutral-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Add these styles to your existing CSS */
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .status-completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-in-progress {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-not-started {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .status-icon {
+            font-size: 0.8rem;
         }
     </style>
 </head>
 <body>
-    <!-- Sidebar Navigation -->
-    <div class="sidebar">
-        <ul>
-        <img src="{{ asset('pic/logo .png') }}" alt="Logo" class="logo">
-            <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-            <li><a href="{{ route('admin.test-management') }}">Test Management</a></li>
-            <li><a href="{{ route('admin.student-records') }}">Student Record</a></li>
-            <li><a href="{{ route('admin.reports') }}">Reports</a></li>
-            <li><a href="{{ route('admin.settings') }}">Settings</a></li>
-        </ul>
-    </div>
-
-    <!-- Main Content Area -->
+    <!-- Main Content -->
     <main class="main-content">
-        <header class="header">
-            <h1>STUDENT RECORDS</h1>
-            <div class="user-controls">
-                <span>♪</span>
-                <span>○</span>
-            </div>
-        </header>
-
         <!-- Search and Add Student Section -->
         <section class="search-section">
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Find Student">
-                <button onclick="searchStudents()">🔍</button>
+                <button onclick="searchStudents()">
+                    <i class="fas fa-search"></i>
+                </button>
             </div>
-            <button class="add-student-btn" onclick="openAddStudentModal()">+ Add Student</button>
+            <button class="add-student-btn" onclick="openAddStudentModal()">
+                <i class="fas fa-plus"></i>
+                Add Student
+            </button>
         </section>
 
         <!-- Students Masterlist Section -->
@@ -488,8 +560,9 @@
 
             @foreach([7, 8, 9, 10] as $grade)
             <div class="grade-section">
-                <div class="grade-header" onclick="toggleGrade('grade{{ $grade }}')">
-                    <i>👤</i> GRADE {{ $grade }}
+                <div class="grade-header collapsed" onclick="toggleGrade('grade{{ $grade }}')">
+                    <span>GRADE {{ $grade }}</span>
+                    <i class="fas fa-chevron-down"></i>
                 </div>
                 <div id="grade{{ $grade }}" class="student-list">
                     @if(isset($students[$grade]) && count($students[$grade]))
@@ -513,29 +586,76 @@
 
                         @foreach($sections as $section)
                             <div class="section-group">
-                                <h3 class="section-header">{{ $section }}</h3>
-                                <table class="student-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Gender</th>
-                                            <th>Grade Level</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($students[$grade]->where('section', $section) as $student)
+                                <div class="section-header collapsed" onclick="toggleSection('section-{{ $grade }}-{{ $section }}')">
+                                    <span>{{ $section }}</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div id="section-{{ $grade }}-{{ $section }}" class="section-content">
+                                    <table class="student-table">
+                                        <thead>
                                             <tr>
-                                                <td>{{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}</td>
-                                                <td>{{ $student->gender }}</td>
-                                                <td>Grade {{ $student->grade_level }}</td>
+                                                <th>Name</th>
+                                                <th>Gender</th>
+                                                <th>Grade Level</th>
+                                                <th>Test Status</th>
+                                                <th>Actions</th>
                                             </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($students[$grade]->where('section', $section) as $student)
+                                                <tr>
+                                                    <td>{{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}</td>
+                                                    <td>{{ $student->gender }}</td>
+                                                    <td>Grade {{ $student->grade_level }}</td>
+                                                    <td>
+                                                        @php
+                                                            $status = $student->test_status ?? 'not_started';
+                                                            $statusClass = '';
+                                                            $statusText = '';
+                                                            $statusIcon = '';
+                                                            
+                                                            switch($status) {
+                                                                case 'completed':
+                                                                    $statusClass = 'status-completed';
+                                                                    $statusText = 'Completed';
+                                                                    $statusIcon = 'fa-check-circle';
+                                                                    break;
+                                                                case 'in_progress':
+                                                                    $statusClass = 'status-in-progress';
+                                                                    $statusText = 'In Progress';
+                                                                    $statusIcon = 'fa-clock';
+                                                                    break;
+                                                                default:
+                                                                    $statusClass = 'status-not-started';
+                                                                    $statusText = 'Not Started';
+                                                                    $statusIcon = 'fa-circle';
+                                                                    break;
+                                                            }
+                                                        @endphp
+                                                        <span class="status-badge {{ $statusClass }}">
+                                                            <i class="fas {{ $statusIcon }} status-icon"></i>
+                                                            {{ $statusText }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="action-buttons">
+                                                            <button class="edit-btn" onclick="openEditModal('{{ $student->id }}', '{{ $student->last_name }}', '{{ $student->first_name }}', '{{ $student->middle_name }}', '{{ $student->gender }}', '{{ $student->grade_level }}', '{{ $student->section }}', '{{ $status }}')">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button class="delete-btn" onclick="confirmDelete('{{ $student->id }}', '{{ $student->last_name }}, {{ $student->first_name }}')">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         @endforeach
                     @else
-                        <div style="padding: 10px; color: #888;">No students in this grade.</div>
+                        <div style="padding: 1rem; color: var(--text-light);">No students in this grade.</div>
                     @endif
                 </div>
             </div>
@@ -592,6 +712,16 @@
                             </select>
                         </div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="testStatus">Test Status</label>
+                            <select id="testStatus" name="test_status" required>
+                                <option value="not_started">Not Started</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="button-group">
                         <button type="button" class="clear-btn" onclick="clearForm()">Clear Form</button>
                         <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
@@ -600,14 +730,105 @@
                 </form>
             </div>
         </div>
+
+        <!-- Edit Modal -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closeModal('editModal')">&times;</span>
+                <h2>Edit Student Record</h2>
+                <form id="editStudentForm" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" id="edit-student-id" name="student_id">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-lastName">Last Name</label>
+                            <input type="text" id="edit-lastName" name="last_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-firstName">First Name</label>
+                            <input type="text" id="edit-firstName" name="first_name" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-middleName">Middle Name</label>
+                            <input type="text" id="edit-middleName" name="middle_name">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-gender">Gender</label>
+                            <select id="edit-gender" name="gender" required>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-gradeLevel">Grade Level</label>
+                            <select id="edit-gradeLevel" name="grade_level" required onchange="updateEditSections()">
+                                <option value="7">Grade 7</option>
+                                <option value="8">Grade 8</option>
+                                <option value="9">Grade 9</option>
+                                <option value="10">Grade 10</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-section">Section</label>
+                            <select id="edit-section" name="section" required>
+                                <option value="">Select Section</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-testStatus">Test Status</label>
+                            <select id="edit-testStatus" name="test_status" required>
+                                <option value="not_started">Not Started</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button type="button" class="cancel-btn" onclick="closeModal('editModal')">Cancel</button>
+                        <button type="submit" class="save-btn">Update Student</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add Confirmation Modal -->
+        <div id="confirmationModal" class="confirmation-modal">
+            <div class="confirmation-content">
+                <h3>Confirm Delete</h3>
+                <p>Are you sure you want to delete this student?</p>
+                <p id="studentToDelete" style="font-weight: 500; margin: 1rem 0;"></p>
+                <div class="confirmation-buttons">
+                    <button class="cancel-delete" onclick="closeConfirmationModal()">Cancel</button>
+                    <button class="confirm-delete" onclick="deleteStudent()">Delete</button>
+                </div>
+            </div>
+        </div>
     </main>
 
     <script>
         // Toggle grade sections
         function toggleGrade(gradeId) {
             const gradeElement = document.getElementById(gradeId);
-            const currentDisplay = gradeElement.style.display;
-            gradeElement.style.display = currentDisplay === 'none' ? 'block' : 'none';
+            const gradeHeader = gradeElement.previousElementSibling;
+            
+            gradeElement.classList.toggle('active');
+            gradeHeader.classList.toggle('collapsed');
+            
+            // If closing the grade, also close all its sections
+            if (!gradeElement.classList.contains('active')) {
+                const sections = gradeElement.querySelectorAll('.section-content');
+                const headers = gradeElement.querySelectorAll('.section-header');
+                sections.forEach(section => section.classList.remove('active'));
+                headers.forEach(header => header.classList.add('collapsed'));
+            }
         }
 
         // Define sections for each grade level
@@ -712,6 +933,7 @@
             console.log('Gender:', formValues.gender);
             console.log('Grade Level:', formValues.grade_level);
             console.log('Section:', formValues.section);
+            console.log('Test Status:', formValues.test_status);
             
             fetch('/admin/students', {
                 method: 'POST',
@@ -736,7 +958,12 @@
                 const gradeElement = document.getElementById(`grade${gradeLevel}`);
                 
                 if (gradeElement) {
-                    // Create new student item HTML
+                    // Create new student item HTML with status
+                    const status = data.student.test_status || 'not_started';
+                    const statusClass = getStatusClass(status);
+                    const statusText = getStatusText(status);
+                    const statusIcon = getStatusIcon(status);
+                    
                     const newStudentHtml = `
                         <div class="student-item">
                             <img src="placeholder-profile.png" alt="Profile" class="student-profile">
@@ -746,6 +973,10 @@
                                 <span>${data.student.first_name}</span>
                                 <span>${data.student.middle_name || ''}</span>
                                 <span>${data.student.gender}</span>
+                                <span class="status-badge ${statusClass}">
+                                    <i class="fas ${statusIcon} status-icon"></i>
+                                    ${statusText}
+                                </span>
                             </div>
                         </div>
                     `;
@@ -790,6 +1021,222 @@
                 searchStudents();
             }
         });
+
+        // Add sidebar toggle functionality
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+        const header = document.querySelector('header');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        // Add these functions to your existing JavaScript
+        let studentToDeleteId = null;
+
+        function confirmDelete(id, name) {
+            studentToDeleteId = id;
+            document.getElementById('studentToDelete').textContent = name;
+            document.getElementById('confirmationModal').style.display = 'block';
+        }
+
+        function closeConfirmationModal() {
+            document.getElementById('confirmationModal').style.display = 'none';
+            studentToDeleteId = null;
+        }
+
+        function deleteStudent() {
+            if (!studentToDeleteId) return;
+
+            fetch(`/admin/students/${studentToDeleteId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => Promise.reject(err));
+                }
+                return response.json();
+            })
+            .then(data => {
+                closeConfirmationModal();
+                // Remove the student row from the table
+                const row = document.querySelector(`tr[data-student-id="${studentToDeleteId}"]`);
+                if (row) {
+                    row.remove();
+                }
+                // Show success message
+                alert('Student deleted successfully');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to delete student. Please try again.');
+            });
+        }
+
+        // Close confirmation modal when clicking outside
+        window.onclick = function(event) {
+            const confirmationModal = document.getElementById('confirmationModal');
+            if (event.target == confirmationModal) {
+                closeConfirmationModal();
+            }
+        }
+
+        // Add these functions to your existing JavaScript
+        function openEditModal(id, lastName, firstName, middleName, gender, gradeLevel, section, status) {
+            const modal = document.getElementById('editModal');
+            modal.style.display = 'block';
+            
+            // Set form values
+            document.getElementById('edit-student-id').value = id;
+            document.getElementById('edit-lastName').value = lastName;
+            document.getElementById('edit-firstName').value = firstName;
+            document.getElementById('edit-middleName').value = middleName || '';
+            document.getElementById('edit-gender').value = gender;
+            document.getElementById('edit-gradeLevel').value = gradeLevel;
+            document.getElementById('edit-testStatus').value = status;
+            
+            // Update sections based on grade level
+            updateEditSections();
+            
+            // Set the section value after sections are populated
+            setTimeout(() => {
+                document.getElementById('edit-section').value = section;
+            }, 100);
+        }
+
+        function updateEditSections() {
+            const gradeLevel = document.getElementById('edit-gradeLevel').value;
+            const sectionSelect = document.getElementById('edit-section');
+            
+            // Clear existing options
+            sectionSelect.innerHTML = '<option value="">Select Section</option>';
+            
+            // Add new options based on grade level
+            if (gradeLevel && gradeSections[gradeLevel]) {
+                gradeSections[gradeLevel].forEach(section => {
+                    const option = document.createElement('option');
+                    option.value = section;
+                    option.textContent = section;
+                    sectionSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Add event listener for edit form submission
+        document.getElementById('editStudentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const studentId = document.getElementById('edit-student-id').value;
+            
+            fetch(`/admin/students/${studentId}`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update the table row with new data
+                const row = document.querySelector(`tr[data-student-id="${studentId}"]`);
+                if (row) {
+                    row.querySelector('td:nth-child(1)').textContent = `${formData.get('last_name')}, ${formData.get('first_name')} ${formData.get('middle_name')}`;
+                    row.querySelector('td:nth-child(2)').textContent = formData.get('gender');
+                    row.querySelector('td:nth-child(3)').textContent = `Grade ${formData.get('grade_level')}`;
+                    
+                    // Update status badge
+                    const status = formData.get('test_status');
+                    const statusClass = getStatusClass(status);
+                    const statusText = getStatusText(status);
+                    const statusIcon = getStatusIcon(status);
+                    
+                    const statusCell = row.querySelector('td:nth-child(4)');
+                    statusCell.innerHTML = `
+                        <span class="status-badge ${statusClass}">
+                            <i class="fas ${statusIcon} status-icon"></i>
+                            ${statusText}
+                        </span>
+                    `;
+                }
+                
+                // Close modal and show success message
+                closeModal('editModal');
+                alert('Student record updated successfully!');
+                
+                // Refresh the page to show updated data
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating the student record. Please try again.');
+            });
+        });
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Update window click handler
+        window.onclick = function(event) {
+            const addModal = document.getElementById('addStudentModal');
+            const editModal = document.getElementById('editModal');
+            const confirmationModal = document.getElementById('confirmationModal');
+            
+            if (event.target === addModal) {
+                closeModal('addStudentModal');
+            }
+            if (event.target === editModal) {
+                closeModal('editModal');
+            }
+            if (event.target === confirmationModal) {
+                closeConfirmationModal();
+            }
+        }
+
+        // Helper functions for status
+        function getStatusClass(status) {
+            switch(status) {
+                case 'completed': return 'status-completed';
+                case 'in_progress': return 'status-in-progress';
+                default: return 'status-not-started';
+            }
+        }
+
+        function getStatusText(status) {
+            switch(status) {
+                case 'completed': return 'Completed';
+                case 'in_progress': return 'In Progress';
+                default: return 'Not Started';
+            }
+        }
+
+        function getStatusIcon(status) {
+            switch(status) {
+                case 'completed': return 'fa-check-circle';
+                case 'in_progress': return 'fa-clock';
+                default: return 'fa-circle';
+            }
+        }
+
+        // Add this function to your existing JavaScript
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const header = section.previousElementSibling;
+            
+            section.classList.toggle('active');
+            header.classList.toggle('collapsed');
+        }
     </script>
 </body>
 </html>
+@endsection

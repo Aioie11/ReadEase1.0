@@ -23,27 +23,7 @@ Route::post('/student/add', [StudentAnswerTagalogController::class, 'store']);
 
 // Home Route
 Route::get('/', function () {
-    return view('auth.login');  
-});
-
-Route::get('/main', function () {
-    return view('main');
-});
-
-Route::get('/about', function () {
-    return view('about');
-});
-
-Route::get('/students-eng', function () {
-    return view('students-eng');
-});
-
-Route::get('/students-tag', function () {
-    return view('students-tag');
-});
-
-Route::get('/students-results', function () {
-    return view('students-results');
+    return view('auth.login');
 });
 
 
@@ -139,9 +119,10 @@ Route::middleware(['auth'])->group(function () {
             return view('admin.testManagement');
         })->name('admin.test-management');  
 
-        Route::get('/settings', function () {
-            return view('admin.setting');
-        })->name('admin.settings');
+        Route::get('/user-management', function () {
+            return view('admin.userManagement');
+        })->name('admin.user-management');
+
 
         Route::post('/users', [ProfileController::class, 'store']);
         Route::get('/users', [ProfileController::class, 'index']);
@@ -150,29 +131,11 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Student Routes
-    Route::get('/main', function () {
-        return view('student.main');
-    })->name('student.main');
-
-    Route::get('/home', function () {
-        return view('student.home');
-    })->name('student.home');
-
-    Route::get('/about', function () {
-        return view('student.about');
-    })->name('student.about');
-
-    Route::get('/students-eng', function () {
-        return view('student.students-eng');
-    })->name('student.students-eng');
-
-    Route::get('/students-tag', function () {
-        return view('student.students-tag');
-    })->name('student.students-tag');   
-
-    Route::get('/students-results', function () {
-        return view('student.students-results');
-    })->name('student.students-results');
+    Route::prefix('student')->group(function () {
+        Route::get('/dashboard', function () {
+            return view('student.stud-dash');
+        })->name('student.dashboard');
+    });
 });
 
 
@@ -184,34 +147,21 @@ Route::get('/log', function () {
     return view('log'); // This is your homepage
 });
 
-<<<<<<< Updated upstream
-=======
-// student routes
-
+// Student Routes
 Route::get('/stud-dash', function () {
-    return view('admin.students.stud-dash');
+    return view('student.stud-dash');
 });
 
 Route::get('/stud-eng', function () {
-    return view('admin.students.stud-eng');
+    return view('student.stud-eng');
 });
 
 Route::get('/stud-fil', function () {
-    return view('admin.students.stud-fil');
+    return view('student.stud-fil');
 });
 
 Route::get('/stud-reports', function () {
-    return view('admin.students.stud-reports');
+    return view('student.stud-reports');
 });
-
-Route::get('/head', function () {
-    return view('admin.students.head');
-});
-
-
-
-
->>>>>>> Stashed changes
-
 
 
