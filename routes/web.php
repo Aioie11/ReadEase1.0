@@ -171,4 +171,6 @@ Route::get('/stud-reports', function () {
     return view('student.stud-reports');
 });
 
+Route::get('/admin/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.dashboard');
+
 

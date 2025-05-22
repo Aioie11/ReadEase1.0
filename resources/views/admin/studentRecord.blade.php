@@ -533,6 +533,12 @@
         .status-icon {
             font-size: 0.8rem;
         }
+
+        .student-table-scroll {
+            max-height: 300px;
+            overflow-y: auto;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -591,66 +597,68 @@
                                     <i class="fas fa-chevron-down"></i>
                                 </div>
                                 <div id="section-{{ $grade }}-{{ $section }}" class="section-content">
-                                    <table class="student-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>Gender</th>
-                                                <th>Grade Level</th>
-                                                <th>Test Status</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($students[$grade]->where('section', $section) as $student)
+                                    <div class="student-table-scroll">
+                                        <table class="student-table">
+                                            <thead>
                                                 <tr>
-                                                    <td>{{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}</td>
-                                                    <td>{{ $student->gender }}</td>
-                                                    <td>Grade {{ $student->grade_level }}</td>
-                                                    <td>
-                                                        @php
-                                                            $status = $student->test_status ?? 'not_started';
-                                                            $statusClass = '';
-                                                            $statusText = '';
-                                                            $statusIcon = '';
-                                                            
-                                                            switch($status) {
-                                                                case 'completed':
-                                                                    $statusClass = 'status-completed';
-                                                                    $statusText = 'Completed';
-                                                                    $statusIcon = 'fa-check-circle';
-                                                                    break;
-                                                                case 'in_progress':
-                                                                    $statusClass = 'status-in-progress';
-                                                                    $statusText = 'In Progress';
-                                                                    $statusIcon = 'fa-clock';
-                                                                    break;
-                                                                default:
-                                                                    $statusClass = 'status-not-started';
-                                                                    $statusText = 'Not Started';
-                                                                    $statusIcon = 'fa-circle';
-                                                                    break;
-                                                            }
-                                                        @endphp
-                                                        <span class="status-badge {{ $statusClass }}">
-                                                            <i class="fas {{ $statusIcon }} status-icon"></i>
-                                                            {{ $statusText }}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <div class="action-buttons">
-                                                            <button class="edit-btn" onclick="openEditModal('{{ $student->id }}', '{{ $student->last_name }}', '{{ $student->first_name }}', '{{ $student->middle_name }}', '{{ $student->gender }}', '{{ $student->grade_level }}', '{{ $student->section }}', '{{ $status }}')">
-                                                                <i class="fas fa-edit"></i>
-                                                            </button>
-                                                            <button class="delete-btn" onclick="confirmDelete('{{ $student->id }}', '{{ $student->last_name }}, {{ $student->first_name }}')">
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
-                                                        </div>
-                                                    </td>
+                                                    <th>Name</th>
+                                                    <th>Gender</th>
+                                                    <th>Grade Level</th>
+                                                    <th>Test Status</th>
+                                                    <th>Actions</th>
                                                 </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($students[$grade]->where('section', $section) as $student)
+                                                    <tr>
+                                                        <td>{{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}</td>
+                                                        <td>{{ $student->gender }}</td>
+                                                        <td>Grade {{ $student->grade_level }}</td>
+                                                        <td>
+                                                            @php
+                                                                $status = $student->test_status ?? 'not_started';
+                                                                $statusClass = '';
+                                                                $statusText = '';
+                                                                $statusIcon = '';
+                                                                
+                                                                switch($status) {
+                                                                    case 'completed':
+                                                                        $statusClass = 'status-completed';
+                                                                        $statusText = 'Completed';
+                                                                        $statusIcon = 'fa-check-circle';
+                                                                        break;
+                                                                    case 'in_progress':
+                                                                        $statusClass = 'status-in-progress';
+                                                                        $statusText = 'In Progress';
+                                                                        $statusIcon = 'fa-clock';
+                                                                        break;
+                                                                    default:
+                                                                        $statusClass = 'status-not-started';
+                                                                        $statusText = 'Not Started';
+                                                                        $statusIcon = 'fa-circle';
+                                                                        break;
+                                                                }
+                                                            @endphp
+                                                            <span class="status-badge {{ $statusClass }}">
+                                                                <i class="fas {{ $statusIcon }} status-icon"></i>
+                                                                {{ $statusText }}
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <div class="action-buttons">
+                                                                <button class="edit-btn" onclick="openEditModal('{{ $student->id }}', '{{ $student->last_name }}', '{{ $student->first_name }}', '{{ $student->middle_name }}', '{{ $student->gender }}', '{{ $student->grade_level }}', '{{ $student->section }}', '{{ $status }}')">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </button>
+                                                                <button class="delete-btn" onclick="confirmDelete('{{ $student->id }}', '{{ $student->last_name }}, {{ $student->first_name }}')">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
