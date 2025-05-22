@@ -11,14 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reading_materials', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->text('content');
-            $table->string('grade_level');
-            $table->string('subject');
+        Schema::table('reading_materials', function (Blueprint $table) {
             $table->boolean('is_published')->default(false);
-            $table->timestamps();
+            $table->timestamp('published_at')->nullable();
         });
     }
 
@@ -27,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reading_materials');
+        Schema::table('reading_materials', function (Blueprint $table) {
+            $table->dropColumn(['is_published', 'published_at']);
+        });
     }
 };

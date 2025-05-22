@@ -142,8 +142,10 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('api')->group(function () {
         Route::post('/reading-materials', [ReadingMaterialController::class, 'store'])->name('reading-materials.store');
         Route::get('/reading-materials/{grade}/{subject}', [ReadingMaterialController::class, 'getByGradeAndSubject'])->name('reading-materials.get-by-grade-subject');
+        Route::get('/reading-materials/admin/{grade}/{subject}', [ReadingMaterialController::class, 'getByGradeAndSubjectForAdmin'])->name('reading-materials.get-by-grade-subject-admin');
         Route::put('/reading-materials/{id}', [ReadingMaterialController::class, 'update'])->name('reading-materials.update');
         Route::delete('/reading-materials/{id}', [ReadingMaterialController::class, 'destroy'])->name('reading-materials.destroy');
+        Route::post('/reading-materials/{id}/publish', [ReadingMaterialController::class, 'publish'])->name('reading-materials.publish');
     });
 });
 
@@ -161,13 +163,9 @@ Route::get('/stud-dash', function () {
     return view('student.stud-dash');
 });
 
-Route::get('/stud-eng', function () {
-    return view('student.stud-eng');
-});
-
-Route::get('/stud-fil', function () {
-    return view('student.stud-fil');
-});
+// Reading Material Routes for Students
+Route::get('/stud-eng', [ReadingMaterialController::class, 'getPublishedMaterial'])->name('student.students-eng');
+Route::get('/stud-fil', [ReadingMaterialController::class, 'getPublishedMaterial'])->name('student.students-fil');
 
 Route::get('/stud-reports', function () {
     return view('student.stud-reports');
