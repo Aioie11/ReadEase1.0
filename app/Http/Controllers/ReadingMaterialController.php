@@ -198,7 +198,7 @@ class ReadingMaterialController extends Controller
         }
     }
 
-    public function getPublishedMaterial($grade = '7', $subject = 'english')
+    public function getPublishedMaterial($grade = null, $subject = 'english')
     {
         try {
             // Get the current route name to determine which view to use
@@ -211,6 +211,15 @@ class ReadingMaterialController extends Controller
                 $subject = 'english';
             }
 
+            // Get the authenticated user's grade level
+            $user = auth()->user();
+            if (!$user) {
+                return redirect()->route('login');
+            }
+
+            // Use the user's grade level instead of the passed parameter
+            $grade = $user->grade;
+
             $readingMaterial = ReadingMaterial::with('questions')
                 ->where('grade_level', $grade)
                 ->where('subject', $subject)
@@ -221,12 +230,14 @@ class ReadingMaterialController extends Controller
             if (!$readingMaterial) {
                 return view($subject === 'english' ? 'student.stud-eng' : 'student.stud-fil', [
                     'readingMaterial' => null,
-                    'error' => 'No published reading material found.'
+                    'error' => 'No published reading material found for your grade level.',
+                    'user' => $user
                 ]);
             }
 
             return view($subject === 'english' ? 'student.stud-eng' : 'student.stud-fil', [
-                'readingMaterial' => $readingMaterial
+                'readingMaterial' => $readingMaterial,
+                'user' => $user
             ]);
         } catch (\Exception $e) {
             \Log::error('Error fetching published material: ' . $e->getMessage());

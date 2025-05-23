@@ -276,24 +276,14 @@
             <!-- Recent Test Results Section -->
             <section class="report-section">
                 <h2 class="section-title">RECENT TEST RESULTS</h2>
-                <div class="month-title">FEBRUARY 2025</div>
+                <div class="month-title">{{ now()->format('F Y') }}</div>
                 <div class="pie-charts-container">
+                    @foreach([7, 8, 9, 10] as $grade)
                     <div class="chart-wrapper">
-                        <div class="chart-title">GRADE 7</div>
-                        <canvas id="grade7Chart"></canvas>
+                        <div class="chart-title">GRADE {{ $grade }}</div>
+                        <canvas id="grade{{ $grade }}Chart"></canvas>
                     </div>
-                    <div class="chart-wrapper">
-                        <div class="chart-title">GRADE 8</div>
-                        <canvas id="grade8Chart"></canvas>
-                    </div>
-                    <div class="chart-wrapper">
-                        <div class="chart-title">GRADE 9</div>
-                        <canvas id="grade9Chart"></canvas>
-                    </div>
-                    <div class="chart-wrapper">
-                        <div class="chart-title">GRADE 10</div>
-                        <canvas id="grade10Chart"></canvas>
-                    </div>
+                    @endforeach
                 </div>
             </section>
 
@@ -301,22 +291,12 @@
             <section class="report-section">
                 <h2 class="section-title">COMPARISON CHART</h2>
                 <div class="comparison-charts-container">
+                    @foreach(['august', 'september', 'october', 'november'] as $month)
                     <div class="chart-wrapper">
-                        <div class="month-title">AUGUST 2024</div>
-                        <canvas id="augustChart"></canvas>
+                        <div class="month-title">{{ strtoupper($month) }} {{ now()->year }}</div>
+                        <canvas id="{{ $month }}Chart"></canvas>
                     </div>
-                    <div class="chart-wrapper">
-                        <div class="month-title">SEPTEMBER 2024</div>
-                        <canvas id="septemberChart"></canvas>
-                    </div>
-                    <div class="chart-wrapper">
-                        <div class="month-title">OCTOBER 2024</div>
-                        <canvas id="octoberChart"></canvas>
-                    </div>
-                    <div class="chart-wrapper">
-                        <div class="month-title">NOVEMBER 2024</div>
-                        <canvas id="novemberChart"></canvas>
-                    </div>
+                    @endforeach
                 </div>
             </section>
         </div>
@@ -324,119 +304,82 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Pie Chart Data
-        const pieChartData = {
-            labels: ['Beginner', 'Intermediate', 'Advance'],
-            datasets: [{
-                data: [30, 45, 25],
-                backgroundColor: [
-                    '#32CD32',
-                    '#90EE90',
-                    '#98FB98'
-                ]
-            }]
-        };
-
-        // Pie Chart Options
-        const pieChartOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                }
+        // Function to fetch reading level data
+        async function fetchReadingLevelData() {
+            try {
+                const response = await fetch('/api/reading-levels/stats');
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error fetching reading level data:', error);
+                return null;
             }
-        };
+        }
 
-        // Create Pie Charts
-        const gradeIds = ['grade7', 'grade8', 'grade9', 'grade10'];
-        gradeIds.forEach(id => {
-            const ctx = document.getElementById(id + 'Chart').getContext('2d');
-            new Chart(ctx, {
-                type: 'pie',
-                data: pieChartData,
-                options: pieChartOptions
-            });
-        });
-
-        // Bar Chart Data
-        const barChartData = {
-            labels: ['January', 'February', 'March', 'April', 'May'],
-            datasets: [{
-                data: [35, 45, 55, 65, 80],
-                backgroundColor: '#0066cc',
-                barThickness: 30,
-                borderRadius: 4
-            }]
-        };
-
-        // Bar Chart Options
-        const barChartOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 100,
-                    grid: {
-                        display: true,
-                        color: '#f0f0f0'
-                    },
-                    ticks: {
-                        stepSize: 20
-                    }
-                },
-                x: {
-                    grid: {
-                        display: false
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            animation: {
-                duration: 2000,
-                easing: 'easeInOutQuart'
-            }
-        };
-
-        // Create Bar Charts with different data for each month
-        const months = ['august', 'september', 'october', 'november'];
-        const monthlyData = {
-            august: [10, 40, 30, 90, 70],
-            september: [35, 45, 55, 65, 75],
-            october: [40, 50, 60, 70, 80],
-            november: [45, 55, 65, 75, 85]
-        };
-
-        months.forEach(month => {
-            const ctx = document.getElementById(month + 'Chart').getContext('2d');
-            const monthData = {
-                ...barChartData,
-                datasets: [{
-                    ...barChartData.datasets[0],
-                    data: monthlyData[month]
-                }]
+        // Function to create pie charts
+        function createPieCharts(data) {
+            const gradeIds = ['grade7', 'grade8', 'grade9', 'grade10'];
+            const colors = {
+                beginner: '#32CD32',
+                intermediate: '#90EE90',
+                advanced: '#98FB98'
             };
-            new Chart(ctx, {
-                type: 'bar',
-                data: monthData,
-                options: barChartOptions
+
+            gradeIds.forEach((id, index) => {
+                const grade = index + 7;
+                const ctx = document.getElementById(id + 'Chart').getContext('2d');
+                
+                // Get data for both English and Filipino subjects
+                const englishData = data[grade]?.english || { beginner: 0, intermediate: 0, advanced: 0 };
+                const filipinoData = data[grade]?.filipino || { beginner: 0, intermediate: 0, advanced: 0 };
+
+                // Combine the data
+                const combinedData = {
+                    beginner: englishData.beginner + filipinoData.beginner,
+                    intermediate: englishData.intermediate + filipinoData.intermediate,
+                    advanced: englishData.advanced + filipinoData.advanced
+                };
+
+                new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Beginner', 'Intermediate', 'Advanced'],
+                        datasets: [{
+                            data: [
+                                combinedData.beginner,
+                                combinedData.intermediate,
+                                combinedData.advanced
+                            ],
+                            backgroundColor: [
+                                colors.beginner,
+                                colors.intermediate,
+                                colors.advanced
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
             });
-        });
+        }
 
-        // Add sidebar toggle functionality
-        const menuToggle = document.querySelector('.menu-toggle');
-        const sidebar = document.querySelector('.sidebar');
-        const mainContent = document.querySelector('.main-content');
-        const header = document.querySelector('header');
+        // Initialize charts with real data
+        async function initializeCharts() {
+            const readingLevelData = await fetchReadingLevelData();
+            if (readingLevelData) {
+                createPieCharts(readingLevelData);
+            }
+        }
 
-        menuToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-        });
+        // Call initialization function when page loads
+        document.addEventListener('DOMContentLoaded', initializeCharts);
     </script>
 </body>
 

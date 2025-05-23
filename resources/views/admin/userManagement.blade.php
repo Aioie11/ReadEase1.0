@@ -390,8 +390,16 @@
             <h2>Add New User</h2>
             <form id="addProfileForm">
                 <div class="form-group">
-                    <label for="profileName">Full Name</label>
-                    <input type="text" id="profileName" name="name" required placeholder="Enter full name">
+                    <label for="profileLastName">Last Name</label>
+                    <input type="text" id="profileLastName" name="lastName" required placeholder="Enter last name">
+                </div>
+                <div class="form-group">
+                    <label for="profileFirstName">First Name</label>
+                    <input type="text" id="profileFirstName" name="firstName" required placeholder="Enter first name">
+                </div>
+                <div class="form-group">
+                    <label for="profileMiddleInitial">Middle Initial</label>
+                    <input type="text" id="profileMiddleInitial" name="middleInitial" maxlength="1" placeholder="Enter middle initial">
                 </div>
                 <div class="form-group">
                     <label for="profileEmail">Email Address</label>
@@ -427,10 +435,19 @@
                             <option value="">Select Section</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="profileGender">Gender</label>
+                        <select id="profileGender" name="gender" class="student-field" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="profileUserId">User ID</label>
-                    <input type="text" id="profileUserId" name="userId" required placeholder="Enter User ID (e.g., ADMIN123)">
+                    <input type="text" id="profileUserId" name="userId" required placeholder="Enter Admin ID, Teacher ID, or Student ID">
                 </div>
                 <div class="button-group">
                     <button type="button" class="cancel-btn" onclick="closeProfileModal()">Cancel</button>
@@ -485,10 +502,19 @@
                             <option value="">Select Section</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="editProfileGender">Gender</label>
+                        <select id="editProfileGender" name="gender" class="student-field" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="editProfileUserId">User ID</label>
-                    <input type="text" id="editProfileUserId" name="userId" required placeholder="Enter User ID (e.g., ADMIN123)">
+                    <input type="text" id="editProfileUserId" name="userId" required placeholder="Enter Admin ID, Teacher ID, or Student ID">
                 </div>
                 <div class="button-group">
                     <button type="button" class="cancel-btn" onclick="closeEditProfileModal()">Cancel</button>
@@ -505,10 +531,10 @@
         sectionSelect.innerHTML = '<option value="">Select Section</option>';
         
         const sections = {
-            '7': ['Narra', 'Dao', 'Lawaan', 'Mahugani'],
-            '8': ['Molave', 'Talisay', 'Yakal', 'Kamagong'],
-            '9': ['Acacia', 'Narra', 'Dao', 'Lawaan'],
-            '10': ['Mahogany', 'Molave', 'Talisay', 'Yakal']
+            '7': ['Narra', 'Dao', 'Mahugani', 'Lawaan'],
+            '8': ['Avocado', 'Guava', 'Duhat', 'Mango'],
+            '9': ['Gold', 'Silver', 'Zinc'],
+            '10': ['Galileo', 'Edison', 'Newton']
         };
 
         if (grade && sections[grade]) {
@@ -526,10 +552,10 @@
         sectionSelect.innerHTML = '<option value="">Select Section</option>';
         
         const sections = {
-            '7': ['Narra', 'Dao', 'Lawaan', 'Mahugani'],
-            '8': ['Molave', 'Talisay', 'Yakal', 'Kamagong'],
-            '9': ['Acacia', 'Narra', 'Dao', 'Lawaan'],
-            '10': ['Mahogany', 'Molave', 'Talisay', 'Yakal']
+            '7': ['Narra', 'Dao', 'Mahugani', 'Lawaan'],
+            '8': ['Avocado', 'Guava', 'Duhat', 'Mango'],
+            '9': ['Gold', 'Silver', 'Zinc'],
+            '10': ['Galileo', 'Edison', 'Newton']
         };
 
         if (grade && sections[grade]) {
@@ -572,7 +598,7 @@
         }
     }
 
-    function openEditProfileModal(id, name, userId, role, grade = '', section = '') {
+    function openEditProfileModal(id, name, userId, role, grade = '', section = '', gender = '') {
         document.getElementById('editProfileId').value = id;
         document.getElementById('editProfileName').value = name;
         document.getElementById('editProfileUserId').value = userId;
@@ -584,6 +610,7 @@
             // Update sections based on grade
             updateEditSections(grade);
             document.getElementById('editProfileSection').value = section;
+            document.getElementById('editProfileGender').value = gender;
         } else {
             document.getElementById('editStudentFields').style.display = 'none';
         }
@@ -604,7 +631,7 @@
                 <td>
                     <div class="action-buttons">
                         <button class="access" title="Access Profile">Access</button>
-                        <button class="edit" title="Edit Profile" onclick="openEditProfileModal(${user.id}, '${user.name}', '${user.userId}', '${user.role}', '${user.grade || ''}', '${user.section || ''}')">Edit</button>
+                        <button class="edit" title="Edit Profile" onclick="openEditProfileModal(${user.id}, '${user.name}', '${user.userId}', '${user.role}', '${user.grade || ''}', '${user.section || ''}', '${user.gender || ''}')">Edit</button>
                         <button class="delete" title="Delete Profile" onclick="deleteProfile(${user.id})">Delete</button>
                     </div>
                 </td>
@@ -638,6 +665,17 @@
         formData.forEach((value, key) => {
             data[key] = value;
         });
+
+        // Combine name fields
+        const lastName = data.lastName;
+        const firstName = data.firstName;
+        const middleInitial = data.middleInitial;
+        data.name = `${lastName}, ${firstName}${middleInitial ? ` ${middleInitial}.` : ''}`;
+        
+        // Remove the individual name fields
+        delete data.lastName;
+        delete data.firstName;
+        delete data.middleInitial;
 
         fetch('/admin/users', {
             method: 'POST',

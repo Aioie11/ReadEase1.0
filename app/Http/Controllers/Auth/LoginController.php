@@ -38,6 +38,10 @@ class LoginController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
         
+        // Set session data
+        session(['user_id' => $user->id]);
+        session(['user_role' => $user->role]);
+        
         // Redirect based on user role
         if ($user->role === 'admin') {
             return redirect()->route('admin.dashboard');

@@ -526,7 +526,7 @@
             <ul class="nav-menu">
                 <div class="nav-section">
                     <li class="nav-item">
-                        <a href="{{ url('/stud-dash') }}" class="nav-link">
+                        <a href="{{ route('student.dashboard') }}" class="nav-link">
                             <i class="fas fa-tachometer-alt"></i>
                             Dashboard
                         </a>
@@ -556,10 +556,10 @@
 
         <div class="sidebar-footer">
             <div class="student-profile">
-                <div class="student-avatar">A</div>
+                <div class="student-avatar">{{ isset($user) ? strtoupper(substr($user->name, 0, 1)) : 'A' }}</div>
                 <div class="student-info">
-                    <div class="student-name">Alexander Ven A. Alibanga</div>
-                    <div class="student-role">Grade 7 • Section Narra</div>
+                    <div class="student-name">{{ isset($user) ? $user->name : 'Student Name' }}</div>
+                    <div class="student-role">{{ isset($user) ? 'Grade ' . $user->grade . ' • Section ' . $user->section : 'Grade 7 • Section Narra' }}</div>
                 </div>
             </div>
         </div>

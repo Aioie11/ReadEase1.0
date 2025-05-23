@@ -8,6 +8,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\ReadingController;
 use App\Http\Controllers\ReadingMaterialController;
+use App\Http\Controllers\ReadingLevelController;
+use App\Http\Controllers\StudentDashboardController;
 use Illuminate\Http\Request;
 
 
@@ -36,7 +38,7 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Protected Routes
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['web'])->group(function () {
     // Teacher Routes
     Route::prefix('teacher')->group(function () {
         Route::get('/dashboard', function () {
@@ -133,9 +135,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Student Routes
     Route::prefix('student')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('student.stud-dash');
-        })->name('student.dashboard');
+        Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('student.dashboard');
+        Route::get('/reports', [StudentDashboardController::class, 'reports'])->name('student.reports');
     });
 
     // Reading Materials Routes
@@ -146,6 +147,8 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/reading-materials/{id}', [ReadingMaterialController::class, 'update'])->name('reading-materials.update');
         Route::delete('/reading-materials/{id}', [ReadingMaterialController::class, 'destroy'])->name('reading-materials.destroy');
         Route::post('/reading-materials/{id}/publish', [ReadingMaterialController::class, 'publish'])->name('reading-materials.publish');
+        Route::get('/reading-levels/stats', [ReadingLevelController::class, 'getReadingLevelStats'])->name('reading-levels.stats');
+        Route::post('/reading-levels', [ReadingLevelController::class, 'store'])->name('reading-levels.store');
     });
 });
 
@@ -159,9 +162,7 @@ Route::get('/log', function () {
 });
 
 // Student Routes
-Route::get('/stud-dash', function () {
-    return view('student.stud-dash');
-});
+Route::get('/stud-dash', [StudentDashboardController::class, 'index'])->name('student.dashboard');
 
 // Reading Material Routes for Students
 Route::get('/stud-eng', [ReadingMaterialController::class, 'getPublishedMaterial'])->name('student.students-eng');
