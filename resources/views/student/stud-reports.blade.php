@@ -6,6 +6,12 @@
     <!-- Main Content -->
     <div class="main-content">
         <div class="dashboard">
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
 
             <!-- English Language Results -->
             <div class="results-section">
@@ -28,7 +34,7 @@
                         </div>
                         <div class="reading-metrics">
                             <p><strong>Instructional Level</strong></p>
-                            <p>7 out of 10 correct answers</p>
+                            <p>{{ session('score', 7) }} out of {{ session('total_questions', 10) }} correct answers</p>
                         </div>
                     </div>
 
@@ -768,7 +774,7 @@
             data: {
                 labels: ['Correct Answers', 'Total Questions'],
                 datasets: [{
-                    data: [7, 10],
+                    data: [{{ session('score', 7) }}, {{ session('total_questions', 10) }}],
                     backgroundColor: [
                         'rgba(75, 192, 192, 0.8)',
                         'rgba(255, 159, 64, 0.8)'

@@ -515,17 +515,18 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('admin.reports') }}" class="nav-link">
-                        <i class="fas fa-chart-line"></i>
-                        Reports
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a href="{{ route('admin.user-management') }}" class="nav-link">
                         <i class="fas fa-user-cog"></i>
                         User Management
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.reports') }}" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        Reports
+                    </a>
+                </li>
+                
             </ul>
         </nav>
     </aside>

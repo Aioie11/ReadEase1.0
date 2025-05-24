@@ -11,60 +11,74 @@
                 <p>Read each passage and answer the questions given.</p>
             </div>
 
-            <form action="{{ url('student/add') }}" method="post">
-            {{ csrf_field() }}
-            <div class="grade-card">
-                <h2><i class="fas fa-book-open"></i> Reading Passage</h2>
-                
-                <!-- Reading Passage -->
-                <div class="passage-container">
-                    @if(isset($readingMaterial))
-                        <h3>{{ $readingMaterial->title }}</h3>
-                        <div class="passage">
-                            <p>{{ $readingMaterial->content }}</p>
-                        </div>
-                    @else
-                        <div class="passage">
-                            <p>No reading material available at the moment.</p>
-                        </div>
-                    @endif
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+            @endif
 
-                <!-- Questions -->
-                <div class="questions-container">
-                    <h3>Questions</h3>
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            <form action="{{ route('student.add.english') }}" method="post">
+                @csrf
+                <div class="grade-card">
+                    <h2><i class="fas fa-book-open"></i> Reading Passage</h2>
                     
-                    @if(isset($readingMaterial) && $readingMaterial->questions)
-                        @foreach($readingMaterial->questions as $index => $question)
-                            <div class="question-card">
-                                <p class="question">{{ $index + 1 }}. {{ $question->question }}</p>
-                                <div class="choices">
-                                    @if($question->type === 'multiple' && $question->options)
-                                        @foreach($question->options as $option)
-                                            <label class="choice">
-                                                <input type="radio" name="c{{ $index + 1 }}" value="{{ $option }}">
-                                                <span>{{ $option }}</span>
-                                            </label>
-                                        @endforeach
-                                    @else
-                                        <div class="choice">
-                                            <input type="text" name="c{{ $index + 1 }}" class="form-control" placeholder="Enter your answer">
-                                        </div>
-                                    @endif
-                                </div>
+                    <!-- Reading Passage -->
+                    <div class="passage-container">
+                        @if(isset($readingMaterial))
+                            <h3>{{ $readingMaterial->title }}</h3>
+                            <div class="passage">
+                                <p>{{ $readingMaterial->content }}</p>
                             </div>
-                        @endforeach
-                    @else
-                        <div class="question-card">
-                            <p>No questions available for this reading material.</p>
-                        </div>
-                    @endif
+                        @else
+                            <div class="passage">
+                                <p>No reading material available at the moment.</p>
+                            </div>
+                        @endif
+                    </div>
 
-                    <div class="submit-container">
-                        <button type="submit" class="submit-btn">Submit Answers</button>
+                    <!-- Questions -->
+                    <div class="questions-container">
+                        <h3>Questions</h3>
+                        
+                        @if(isset($readingMaterial) && $readingMaterial->questions)
+                            @foreach($readingMaterial->questions as $index => $question)
+                                <div class="question-card">
+                                    <p class="question">{{ $index + 1 }}. {{ $question->question }}</p>
+                                    <div class="choices">
+                                        @if($question->type === 'multiple' && $question->options)
+                                            @foreach($question->options as $option)
+                                                <label class="choice">
+                                                    <input type="radio" name="c{{ $index + 1 }}" value="{{ $option }}" required>
+                                                    <span>{{ $option }}</span>
+                                                </label>
+                                            @endforeach
+                                        @else
+                                            <div class="choice">
+                                                <input type="text" name="c{{ $index + 1 }}" class="form-control" placeholder="Enter your answer" required>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="question-card">
+                                <p>No questions available for this reading material.</p>
+                            </div>
+                        @endif
+
+                        <div class="submit-container">
+                            <button type="submit" class="submit-btn">Submit Answers</button>
+                        </div>
                     </div>
                 </div>
-            </div>
             </form>
         </div>
     </div>
@@ -147,6 +161,48 @@
         .submit-btn:hover {
             background-color: #0d47a1;
             transform: translateY(-2px);
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .alert-dismissible {
+            padding-right: 4rem;
+        }
+
+        .btn-close {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 1.25rem;
+            background: transparent;
+            border: 0;
+            cursor: pointer;
+        }
+
+        .fade {
+            transition: opacity .15s linear;
+        }
+
+        .fade.show {
+            opacity: 1;
         }
     </style>
 @endsection
