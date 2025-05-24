@@ -13,7 +13,14 @@ class ReadingMaterial extends Model
         'title',
         'content',
         'grade_level',
-        'subject'
+        'subject',
+        'is_published',
+        'published_at'
+    ];
+
+    protected $casts = [
+        'is_published' => 'boolean',
+        'published_at' => 'datetime'
     ];
 
     public function questions()

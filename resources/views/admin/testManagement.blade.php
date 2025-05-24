@@ -401,6 +401,7 @@
                 <button class="admin-btn" onclick="openCreateModal()">Add New Reading Material</button>
                 <button class="admin-btn" onclick="openEditModal()">Edit Selected</button>
                 <button class="admin-btn delete" onclick="deleteSelected()">Delete Selected</button>
+                <button class="admin-btn" style="background: #10B981;" onclick="publishMaterial()">Publish</button>
             </div>
 
             <!-- Grade Selection Dropdowns -->
@@ -538,15 +539,15 @@
 
             if (!selectedGrade || !selectedSubject) {
                 console.log('Grade or subject not selected.');
-                // Optionally, show the empty state if no grade/subject is selected initially
-                 document.querySelector('.reading-passage').innerHTML = `
+                // Show empty state
+                document.querySelector('.reading-passage').innerHTML = `
                     <h3>Reading Passage</h3>
                     <div class="empty-state">
                         <i class="fas fa-book"></i>
                         <p>Select a grade and subject to view reading materials.</p>
                     </div>
                 `;
-                 document.querySelector('.questions-section').innerHTML = `
+                document.querySelector('.questions-section').innerHTML = `
                     <h3>Reading Comprehension Questions</h3>
                     <div class="empty-state">
                         <i class="fas fa-question-circle"></i>
@@ -556,9 +557,7 @@
                 return;
             }
 
-            console.log(`Fetching materials for Grade: ${selectedGrade}, Subject: ${selectedSubject}`);
-
-            // Show a loading state
+            // Show loading state
             const readingPassageDiv = document.querySelector('.reading-passage');
             const questionsSectionDiv = document.querySelector('.questions-section');
             readingPassageDiv.innerHTML = '<h3>Reading Passage</h3><div class="empty-state"><i class="fas fa-sync fa-spin"></i><p>Loading...</p></div>';
@@ -567,7 +566,8 @@
             // Get CSRF token
             const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-            fetch(`/api/reading-materials/${selectedGrade}/${selectedSubject}`, {
+            // Use a different endpoint for admin panel that shows all materials
+            fetch(`/api/reading-materials/admin/${selectedGrade}/${selectedSubject}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -822,7 +822,125 @@
         }
 
         function openEditModal() {
-            document.getElementById('editModal').style.display = 'block';
+            const selectedGrade = document.querySelector('.grade-selector select').value;
+            const selectedSubjectButton = document.querySelector('.subject-btn.active');
+            const selectedSubject = selectedSubjectButton ? selectedSubjectButton.dataset.subject : null;
+
+            if (!selectedGrade || !selectedSubject) {
+                alert('Please select a grade and subject first');
+                return;
+            }
+
+            // Get CSRF token
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            // Fetch the current reading material using the admin endpoint
+            fetch(`/api/reading-materials/admin/${selectedGrade}/${selectedSubject}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': token
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.length > 0) {
+                    const material = data[0];
+                    document.getElementById('edit-grade').value = material.grade_level;
+                    document.getElementById('edit-subject').value = material.subject;
+                    document.getElementById('edit-title').value = material.title;
+                    document.getElementById('edit-content').value = material.content;
+                    const questionsContainer = document.getElementById('editQuestionsContainer');
+                    questionsContainer.innerHTML = '<h3>Questions</h3>';
+                    material.questions.forEach(question => {
+                        const questionDiv = document.createElement('div');
+                        questionDiv.className = 'question-container';
+                        if (question.type === 'multiple') {
+                            questionDiv.innerHTML = `
+                                <div class="form-group">
+                                    <label>Question:</label>
+                                    <input type="text" name="edit-questions[]" value="${question.question}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Question Type:</label>
+                                    <select name="edit-questionTypes[]" onchange="toggleEditAnswerType(this)">
+                                        <option value="multiple" selected>Multiple Choice</option>
+                                        <option value="text">Text Answer</option>
+                                    </select>
+                                </div>
+                                <div class="multiple-choice-options" style="display: block">
+                                    <div class="form-group">
+                                        <label>Options (one per line):</label>
+                                        <textarea name="edit-options[]" rows="4" placeholder="Enter each option on a new line">${question.options ? question.options.join('\n') : ''}</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Correct Answer:</label>
+                                        <select name="edit-correct[]">
+                                            <option value="">Select correct answer</option>
+                                            ${question.options ? question.options.map(opt => 
+                                                `<option value="${opt}" ${opt === question.correct_answer ? 'selected' : ''}>${opt}</option>`
+                                            ).join('') : ''}
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="button" class="admin-btn delete" onclick="removeEditQuestion(this)">Remove Question</button>
+                            `;
+                        } else {
+                            questionDiv.innerHTML = `
+                                <div class="form-group">
+                                    <label>Question:</label>
+                                    <input type="text" name="edit-questions[]" value="${question.question}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Question Type:</label>
+                                    <select name="edit-questionTypes[]" onchange="toggleEditAnswerType(this)">
+                                        <option value="multiple">Multiple Choice</option>
+                                        <option value="text" selected>Text Answer</option>
+                                    </select>
+                                </div>
+                                <div class="multiple-choice-options" style="display: none">
+                                    <div class="form-group">
+                                        <label>Options (one per line):</label>
+                                        <textarea name="edit-options[]" rows="4" placeholder="Enter each option on a new line"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Correct Answer:</label>
+                                        <select name="edit-correct[]">
+                                            <option value="">Select correct answer</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Correct Answer (Text):</label>
+                                    <input type="text" name="edit-correct-text[]" value="${question.correct_answer || ''}" placeholder="Enter correct answer">
+                                </div>
+                                <button type="button" class="admin-btn delete" onclick="removeEditQuestion(this)">Remove Question</button>
+                            `;
+                        }
+                        questionsContainer.appendChild(questionDiv);
+                    });
+                    const addButton = document.createElement('button');
+                    addButton.type = 'button';
+                    addButton.className = 'admin-btn';
+                    addButton.textContent = 'Add Question';
+                    addButton.onclick = addEditQuestion;
+                    questionsContainer.appendChild(addButton);
+                    document.getElementById('editModal').style.display = 'block';
+                } else {
+                    alert('No reading material found for the selected grade and subject');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error loading reading material: ' + error.message);
+            });
         }
 
         function closeModal(modalId) {
@@ -872,9 +990,77 @@
         }
 
         function deleteSelected() {
-            if (confirm('Are you sure you want to delete the selected reading material?')) {
-                console.log('Deleting selected reading material');
+            const selectedGrade = document.querySelector('.grade-selector select').value;
+            const selectedSubjectButton = document.querySelector('.subject-btn.active');
+            const selectedSubject = selectedSubjectButton ? selectedSubjectButton.dataset.subject : null;
+
+            if (!selectedGrade || !selectedSubject) {
+                alert('Please select a grade and subject first');
+                return;
             }
+
+            if (!confirm('Are you sure you want to delete the reading material for Grade ' + selectedGrade + ' ' + selectedSubject + '? This action cannot be undone.')) {
+                return;
+            }
+
+            // Get CSRF token
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            // First, get the material ID using the admin endpoint
+            fetch(`/api/reading-materials/admin/${selectedGrade}/${selectedSubject}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': token
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.length > 0) {
+                    const materialId = data[0].id;
+                    // Now delete the material
+                    return fetch(`/api/reading-materials/${materialId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': token
+                        },
+                        credentials: 'same-origin'
+                    });
+                } else {
+                    throw new Error('No reading material found to delete');
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 419) {
+                        throw new Error('CSRF token mismatch. Please refresh the page and try again.');
+                    }
+                    return response.json().then(err => Promise.reject(err));
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert('Reading material deleted successfully!');
+                    // Refresh the display
+                    fetchAndDisplayReadingMaterials();
+                } else {
+                    throw new Error(data.message || 'Failed to delete reading material');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error: ' + (error.message || 'Failed to delete reading material'));
+            });
         }
 
         // Close modals when clicking outside
@@ -990,9 +1176,202 @@
         // Form submission handlers
         document.getElementById('editForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const formData = new FormData(this);
-            console.log('Updating reading material');
+            
+            // Validate form
+            const title = document.getElementById('edit-title').value;
+            const content = document.getElementById('edit-content').value;
+            const grade = document.getElementById('edit-grade').value;
+            const subject = document.getElementById('edit-subject').value;
+            
+            if (!title || !content || !grade || !subject) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            const questionContainers = document.querySelectorAll('#editQuestionsContainer .question-container');
+            if (questionContainers.length === 0) {
+                alert('Please add at least one question');
+                return;
+            }
+
+            const formData = {
+                title: title,
+                content: content,
+                grade_level: grade,
+                subject: subject,
+                questions: []
+            };
+
+            // Collect questions
+            questionContainers.forEach(container => {
+                const questionText = container.querySelector('input[name="edit-questions[]"]').value;
+                const questionType = container.querySelector('select[name="edit-questionTypes[]"]').value;
+                const options = container.querySelector('textarea[name="edit-options[]"]').value.split('\n').filter(opt => opt.trim());
+                const correctAnswer = container.querySelector('select[name="edit-correct[]"]').value;
+
+                if (!questionText || !questionType || !correctAnswer) {
+                    alert('Please fill in all question fields');
+                    return;
+                }
+
+                if (questionType === 'multiple' && options.length < 2) {
+                    alert('Multiple choice questions must have at least 2 options');
+                    return;
+                }
+
+                formData.questions.push({
+                    question: questionText,
+                    type: questionType,
+                    options: questionType === 'multiple' ? options : null,
+                    correct_answer: correctAnswer
+                });
+            });
+
+            // Show loading state
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.disabled = true;
+            submitButton.textContent = 'Saving...';
+
+            // Get the material ID from the current selection
+            const selectedGrade = document.querySelector('.grade-selector select').value;
+            const selectedSubjectButton = document.querySelector('.subject-btn.active');
+            const selectedSubject = selectedSubjectButton ? selectedSubjectButton.dataset.subject : null;
+
+            // Send to server
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            fetch(`/api/reading-materials/admin/${selectedGrade}/${selectedSubject}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': token
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                    const materialId = data[0].id;
+                    return fetch(`/api/reading-materials/${materialId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': token,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(formData),
+                        credentials: 'same-origin'
+                    });
+                } else {
+                    throw new Error('No reading material found to update');
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 419) {
+                        throw new Error('CSRF token mismatch. Please refresh the page and try again.');
+                    }
+                    return response.json().then(err => Promise.reject(err));
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert('Reading material updated successfully!');
+                    closeModal('editModal');
+                    // Refresh the display
+                    fetchAndDisplayReadingMaterials();
+                } else {
+                    throw new Error(data.message || 'Failed to update reading material');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error: ' + (error.message || 'Failed to update reading material'));
+            })
+            .finally(() => {
+                // Reset button state
+                submitButton.disabled = false;
+                submitButton.textContent = originalText;
+            });
         });
+
+        // Publish functionality
+        function publishMaterial() {
+            const selectedGrade = document.querySelector('.grade-selector select').value;
+            const selectedSubjectButton = document.querySelector('.subject-btn.active');
+            const selectedSubject = selectedSubjectButton ? selectedSubjectButton.dataset.subject : null;
+
+            if (!selectedGrade || !selectedSubject) {
+                alert('Please select a grade and subject first');
+                return;
+            }
+
+            if (!confirm('Are you sure you want to publish this reading material? This will make it available to students.')) {
+                return;
+            }
+
+            // Get CSRF token
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            // First, get the material ID using the admin endpoint
+            fetch(`/api/reading-materials/admin/${selectedGrade}/${selectedSubject}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': token
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.length > 0) {
+                    const materialId = data[0].id;
+                    // Now publish the material
+                    return fetch(`/api/reading-materials/${materialId}/publish`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': token,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({}), // Send empty object as body
+                        credentials: 'same-origin'
+                    });
+                } else {
+                    throw new Error('No reading material found to publish');
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 419) {
+                        throw new Error('CSRF token mismatch. Please refresh the page and try again.');
+                    }
+                    return response.json().then(err => Promise.reject(err));
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert('Reading material published successfully!');
+                    // Refresh the display to show updated status
+                    fetchAndDisplayReadingMaterials();
+                } else {
+                    throw new Error(data.message || 'Failed to publish reading material');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error: ' + (error.message || 'Failed to publish reading material'));
+            });
+        }
     </script>
 </body>
 

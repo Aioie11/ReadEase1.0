@@ -22,4 +22,19 @@ class Student extends Model
     protected $casts = [
         'grade_level' => 'integer'
     ];
+
+    public function englishAnswers()
+    {
+        return $this->hasMany(StudentAnswerEnglish::class, 'student_id', 'student_number');
+    }
+
+    public function tagalogAnswers()
+    {
+        return $this->hasMany(StudentAnswerTagalog::class, 'student_id', 'student_number');
+    }
+
+    public function readingAssessments()
+    {
+        return $this->hasMany(ReadingAssessment::class, 'student_name', 'student_number');
+    }
 }

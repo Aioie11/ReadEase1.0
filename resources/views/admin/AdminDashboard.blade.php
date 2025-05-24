@@ -154,15 +154,15 @@
         <div class="dashboard-metrics">
             <div class="metric-card">
                 <h2>Total Tests</h2>
-                <p>491</p>
+                <p>{{ $totalTests }}</p>
             </div>
             <div class="metric-card">
                 <h2>Number of Students</h2>
-                <p>500</p>
+                <p>{{ $totalStudents }}</p>
             </div>
             <div class="metric-card">
                 <h2>Top Listeners</h2>
-                <p>100</p>
+                <p>{{ $topListeners }}</p>
             </div>
         </div>
 

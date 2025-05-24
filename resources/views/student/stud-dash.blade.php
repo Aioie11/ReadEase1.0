@@ -12,8 +12,8 @@
                     <div class="profile-header">
                         <img src="{{ asset('pic/profile.png') }}" alt="Student Profile" class="profile-image">
                         <div class="profile-info">
-                            <h2>Alibanga, Alexander Ven A.</h2>
-                            <p>Grade 7: Section Narra</p>
+                            <h2>{{ $user->name }}</h2>
+                            <p>Grade {{ $user->grade }}: Section {{ $user->section }}</p>
                         </div>
                     </div>
                 </div>

@@ -533,6 +533,12 @@
         .status-icon {
             font-size: 0.8rem;
         }
+
+        .student-table-scroll {
+            max-height: 300px;
+            overflow-y: auto;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -591,66 +597,68 @@
                                     <i class="fas fa-chevron-down"></i>
                                 </div>
                                 <div id="section-{{ $grade }}-{{ $section }}" class="section-content">
-                                    <table class="student-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>Gender</th>
-                                                <th>Grade Level</th>
-                                                <th>Test Status</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($students[$grade]->where('section', $section) as $student)
+                                    <div class="student-table-scroll">
+                                        <table class="student-table">
+                                            <thead>
                                                 <tr>
-                                                    <td>{{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}</td>
-                                                    <td>{{ $student->gender }}</td>
-                                                    <td>Grade {{ $student->grade_level }}</td>
-                                                    <td>
-                                                        @php
-                                                            $status = $student->test_status ?? 'not_started';
-                                                            $statusClass = '';
-                                                            $statusText = '';
-                                                            $statusIcon = '';
-                                                            
-                                                            switch($status) {
-                                                                case 'completed':
-                                                                    $statusClass = 'status-completed';
-                                                                    $statusText = 'Completed';
-                                                                    $statusIcon = 'fa-check-circle';
-                                                                    break;
-                                                                case 'in_progress':
-                                                                    $statusClass = 'status-in-progress';
-                                                                    $statusText = 'In Progress';
-                                                                    $statusIcon = 'fa-clock';
-                                                                    break;
-                                                                default:
-                                                                    $statusClass = 'status-not-started';
-                                                                    $statusText = 'Not Started';
-                                                                    $statusIcon = 'fa-circle';
-                                                                    break;
-                                                            }
-                                                        @endphp
-                                                        <span class="status-badge {{ $statusClass }}">
-                                                            <i class="fas {{ $statusIcon }} status-icon"></i>
-                                                            {{ $statusText }}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <div class="action-buttons">
-                                                            <button class="edit-btn" onclick="openEditModal('{{ $student->id }}', '{{ $student->last_name }}', '{{ $student->first_name }}', '{{ $student->middle_name }}', '{{ $student->gender }}', '{{ $student->grade_level }}', '{{ $student->section }}', '{{ $status }}')">
-                                                                <i class="fas fa-edit"></i>
-                                                            </button>
-                                                            <button class="delete-btn" onclick="confirmDelete('{{ $student->id }}', '{{ $student->last_name }}, {{ $student->first_name }}')">
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
-                                                        </div>
-                                                    </td>
+                                                    <th>Name</th>
+                                                    <th>Gender</th>
+                                                    <th>Grade Level</th>
+                                                    <th>Test Status</th>
+                                                    <th>Actions</th>
                                                 </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($students[$grade]->where('section', $section) as $student)
+                                                    <tr>
+                                                        <td>{{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}</td>
+                                                        <td>{{ $student->gender }}</td>
+                                                        <td>Grade {{ $student->grade_level }}</td>
+                                                        <td>
+                                                            @php
+                                                                $status = $student->test_status ?? 'not_started';
+                                                                $statusClass = '';
+                                                                $statusText = '';
+                                                                $statusIcon = '';
+                                                                
+                                                                switch($status) {
+                                                                    case 'completed':
+                                                                        $statusClass = 'status-completed';
+                                                                        $statusText = 'Completed';
+                                                                        $statusIcon = 'fa-check-circle';
+                                                                        break;
+                                                                    case 'in_progress':
+                                                                        $statusClass = 'status-in-progress';
+                                                                        $statusText = 'In Progress';
+                                                                        $statusIcon = 'fa-clock';
+                                                                        break;
+                                                                    default:
+                                                                        $statusClass = 'status-not-started';
+                                                                        $statusText = 'Not Started';
+                                                                        $statusIcon = 'fa-circle';
+                                                                        break;
+                                                                }
+                                                            @endphp
+                                                            <span class="status-badge {{ $statusClass }}">
+                                                                <i class="fas {{ $statusIcon }} status-icon"></i>
+                                                                {{ $statusText }}
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <div class="action-buttons">
+                                                                <button class="edit-btn" onclick="openEditModal('{{ $student->id }}', '{{ $student->last_name }}', '{{ $student->first_name }}', '{{ $student->middle_name }}', '{{ $student->gender }}', '{{ $student->grade_level }}', '{{ $student->section }}', '{{ $status }}')">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </button>
+                                                                <button class="delete-btn" onclick="confirmDelete('{{ $student->id }}', '{{ $student->last_name }}, {{ $student->first_name }}')">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
@@ -874,49 +882,79 @@
 
         // Search functionality
         function searchStudents() {
-            const query = document.getElementById('searchInput').value.trim();
-            fetch(`/admin/students/search?query=${encodeURIComponent(query)}`)
-                .then(response => response.json())
-                .then(data => {
-                    // Clear all grade tables
-                    [7,8,9,10].forEach(grade => {
-                        const gradeElement = document.getElementById(`grade${grade}`);
-                        if (gradeElement) gradeElement.innerHTML = '';
-                    });
-
-                    // Render filtered students
-                    Object.keys(data).forEach(grade => {
-                        const students = data[grade];
-                        const gradeElement = document.getElementById(`grade${grade}`);
-                        if (gradeElement && students.length > 0) {
-                            let tableHtml = `
-                                <table class="student-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Section</th>
-                                            <th>Gender</th>
-                                            <th>Grade Level</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                            `;
-                            students.forEach(student => {
-                                tableHtml += `
-                                    <tr>
-                                        <td>${student.last_name}, ${student.first_name} ${student.middle_name || ''}</td>
-                                        <td>${student.section}</td>
-                                        <td>${student.gender}</td>
-                                        <td>Grade ${student.grade_level}</td>
-                                    </tr>
-                                `;
-                            });
-                            tableHtml += '</tbody></table>';
-                            gradeElement.innerHTML = tableHtml;
-                        }
-                    });
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            
+            // Get all student rows from all tables
+            const allRows = document.querySelectorAll('.student-table tbody tr');
+            
+            // Hide all grade sections first
+            document.querySelectorAll('.grade-section').forEach(gradeSection => {
+                gradeSection.style.display = 'none';
+            });
+            
+            // If search is empty, show all sections and return
+            if (!query) {
+                document.querySelectorAll('.grade-section').forEach(gradeSection => {
+                    gradeSection.style.display = 'block';
                 });
+                return;
+            }
+            
+            // Track which grade sections have matching students
+            const matchingGrades = new Set();
+            
+            // Search through all rows
+            allRows.forEach(row => {
+                const nameCell = row.querySelector('td:first-child');
+                const name = nameCell.textContent.toLowerCase();
+                
+                if (name.includes(query)) {
+                    // Show the row
+                    row.style.display = '';
+                    
+                    // Find the parent grade section and show it
+                    const gradeSection = row.closest('.grade-section');
+                    if (gradeSection) {
+                        gradeSection.style.display = 'block';
+                        matchingGrades.add(gradeSection);
+                        
+                        // Expand the grade section
+                        const gradeHeader = gradeSection.querySelector('.grade-header');
+                        const studentList = gradeSection.querySelector('.student-list');
+                        if (gradeHeader && studentList) {
+                            gradeHeader.classList.remove('collapsed');
+                            studentList.classList.add('active');
+                        }
+                        
+                        // Find and expand the section containing the student
+                        const sectionGroup = row.closest('.section-group');
+                        if (sectionGroup) {
+                            const sectionHeader = sectionGroup.querySelector('.section-header');
+                            const sectionContent = sectionGroup.querySelector('.section-content');
+                            if (sectionHeader && sectionContent) {
+                                sectionHeader.classList.remove('collapsed');
+                                sectionContent.classList.add('active');
+                            }
+                        }
+                    }
+                } else {
+                    // Hide the row if it doesn't match
+                    row.style.display = 'none';
+                }
+            });
+            
+            // Hide grade sections that have no matching students
+            document.querySelectorAll('.grade-section').forEach(gradeSection => {
+                if (!matchingGrades.has(gradeSection)) {
+                    gradeSection.style.display = 'none';
+                }
+            });
         }
+
+        // Add event listener for search input
+        document.getElementById('searchInput').addEventListener('input', function() {
+            searchStudents();
+        });
 
         // Form submission
         document.getElementById('addStudentForm').addEventListener('submit', function(e) {
@@ -1015,12 +1053,6 @@
                 closeModal();
             }
         }
-
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                searchStudents();
-            }
-        });
 
         // Add sidebar toggle functionality
         const menuToggle = document.querySelector('.menu-toggle');
