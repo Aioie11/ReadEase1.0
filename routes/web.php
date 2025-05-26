@@ -152,14 +152,6 @@ Route::middleware(['web'])->group(function () {
 });
 
 
-Route::get('/viewreports', function () {
-    return view('viewreports');
-});
-
-Route::get('/log', function () {
-    return view('log'); // This is your homepage
-});
-
 // Student Routes
 Route::get('/stud-dash', [StudentDashboardController::class, 'index'])->name('student.dashboard');
 
@@ -175,4 +167,7 @@ Route::get('/admin/dashboard', [App\Http\Controllers\AdminController::class, 'da
 
 Route::post('/student/add/english', [StudentAnswerEnglishController::class, 'store'])->name('student.add.english');
 
+Route::get('/teacher/studentManagement', function () {
+    return view('teacher.studentManagement');
+});
 

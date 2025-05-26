@@ -25,7 +25,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('student.add.english') }}" method="post">
+            <form id="answerForm" action="{{ route('student.add.english') }}" method="post">
                 @csrf
                 <div class="grade-card">
                     <h2><i class="fas fa-book-open"></i> Reading Passage</h2>
@@ -75,11 +75,34 @@
                         @endif
 
                         <div class="submit-container">
-                            <button type="submit" class="submit-btn">Submit Answers</button>
+                            <button type="button" class="submit-btn" onclick="confirmSubmit()">Submit Answers</button>
                         </div>
                     </div>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="modal">
+        <div class="confirmation-content">
+            <h2>Confirm Submission</h2>
+            <p>Are you sure you want to submit your answers? This action cannot be undone.</p>
+            <div class="confirmation-buttons">
+                <button class="confirm-submit" onclick="submitForm()">Submit</button>
+                <button class="cancel-submit" onclick="closeConfirmationModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="confirmation-content">
+            <h2>Success!</h2>
+            <p>Your answers have been submitted successfully.</p>
+            <div class="confirmation-buttons">
+                <button class="confirm-submit" onclick="closeSuccessModal()">OK</button>
+            </div>
         </div>
     </div>
 
@@ -163,6 +186,80 @@
             transform: translateY(-2px);
         }
 
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .confirmation-content {
+            background: var(--neutral-light);
+            margin: 15% auto;
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+        }
+
+        .confirmation-content h2 {
+            color: var(--text);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .confirmation-content p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .confirmation-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .confirm-submit {
+            background: var(--primary);
+            color: var(--neutral-light);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .confirm-submit:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .cancel-submit {
+            background: var(--neutral);
+            color: var(--text);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .cancel-submit:hover {
+            background: var(--neutral-dark);
+            transform: translateY(-2px);
+        }
+
         .alert {
             padding: 15px;
             margin-bottom: 20px;
@@ -205,4 +302,58 @@
             opacity: 1;
         }
     </style>
+
+    <script>
+        function confirmSubmit() {
+            document.getElementById('confirmationModal').style.display = 'block';
+        }
+
+        function closeConfirmationModal() {
+            document.getElementById('confirmationModal').style.display = 'none';
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').style.display = 'none';
+            window.location.href = "{{ route('student.reports') }}";
+        }
+
+        function submitForm() {
+            const form = document.getElementById('answerForm');
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                closeConfirmationModal();
+                if (data.success) {
+                    document.getElementById('successModal').style.display = 'block';
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while submitting your answers. Please try again.');
+            });
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const confirmationModal = document.getElementById('confirmationModal');
+            const successModal = document.getElementById('successModal');
+            if (event.target === confirmationModal) {
+                closeConfirmationModal();
+            }
+            if (event.target === successModal) {
+                closeSuccessModal();
+            }
+        }
+    </script>
 @endsection

@@ -396,14 +396,14 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .student-profile {
+        .admin-profile {
             display: flex;
             align-items: center;
             gap: 1rem;
             color: var(--neutral-light);
         }
 
-        .student-avatar {
+        .admin-avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -414,11 +414,11 @@
             font-weight: 600;
         }
 
-        .student-info {
+        .admin-info {
             flex: 1;
         }
 
-        .student-name {
+        .admin-name {
             font-weight: 600;
             margin-bottom: 0.2rem;
             font-size: 1rem;
@@ -429,7 +429,7 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
-        .student-role {
+        .admin-role {
             font-size: 0.85rem;
             opacity: 0.9;
             color: #e0e0e0;
@@ -498,13 +498,13 @@
             <ul class="nav-menu">
                 <li class="nav-item">
                     <a href="{{ route('admin.dashboard') }}" class="nav-link">
-                        <i class="fas fa-tachometer-alt"></i>
+                        <i class="fas fa-home"></i>
                         Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('admin.test-management') }}" class="nav-link">
-                        <i class="fas fa-tasks"></i>
+                        <i class="fas fa-file-alt"></i>
                         Test Management
                     </a>
                 </li>
@@ -526,9 +526,18 @@
                         Reports
                     </a>
                 </li>
-                
             </ul>
         </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile">
+                <div class="admin-avatar">{{ Auth::user() ? strtoupper(substr(Auth::user()->name, 0, 1)) : 'A' }}</div>
+                <div class="admin-info">
+                    <div class="admin-name">{{ Auth::user() ? Auth::user()->name : 'Admin' }}</div>
+                    <div class="admin-role">Administrator</div>
+                </div>
+            </div>
+        </div>
     </aside>
 
     <!-- Header -->
@@ -542,7 +551,6 @@
             </div>
         </div>
     </header>
-
 
     @yield ('content')
     

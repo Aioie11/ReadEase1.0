@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Default Title')</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -395,14 +396,14 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .student-profile {
+        .admin-profile {
             display: flex;
             align-items: center;
             gap: 1rem;
             color: var(--neutral-light);
         }
 
-        .student-avatar {
+        .admin-avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -413,11 +414,11 @@
             font-weight: 600;
         }
 
-        .student-info {
+        .admin-info {
             flex: 1;
         }
 
-        .student-name {
+        .admin-name {
             font-weight: 600;
             margin-bottom: 0.2rem;
             font-size: 1rem;
@@ -428,7 +429,7 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
-        .student-role {
+        .admin-role {
             font-size: 0.85rem;
             opacity: 0.9;
             color: #e0e0e0;
@@ -480,41 +481,12 @@
             font-size: 1.5rem;
             cursor: pointer;
             padding: 0.5rem;
-            z-index: 1002;
-            margin-left: auto;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .menu-toggle {
-                display: block;
-                position: relative;
-                right: 0;
-            }
-
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-            }
-
-            header {
-                margin-left: 0;
-                width: 100%;
-            }
         }
     </style>
 </head>
 <body>
     <!-- Sidebar -->
+    
     <aside class="sidebar">
         <div class="sidebar-header">
             <a href="{{ url('/') }}" class="sidebar-logo">
@@ -524,42 +496,34 @@
         </div>
         <nav>
             <ul class="nav-menu">
-                <div class="nav-section">
-                    <li class="nav-item">
-                        <a href="{{ route('student.dashboard') }}" class="nav-link">
-                            <i class="fas fa-home"></i>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url('/stud-eng') }}" class="nav-link">
-                            <i class="fas fa-question"></i>
-                            English Questions
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url('/stud-fil') }}" class="nav-link">
-                            <i class="fas fa-question"></i>
-                            Filipino Questions
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url('/stud-reports') }}" class="nav-link">
-                            <i class="fas fa-chart-line"></i>
-                            Reports
-                        </a>
-                    </li>
-                </div>
-                </div>
+                <li class="nav-item">
+                    <a href="{{ route('teacher.dashboard') }}" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('teacher.dashboard') }}" class="nav-link">
+                        <i class="fas fa-tasks"></i>
+                        Student Management
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                        <a href="{{ route('teacher.dashboard') }}" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        Reports
+                    </a>
+                </li>
             </ul>
         </nav>
 
         <div class="sidebar-footer">
-            <div class="student-profile">
-                <div class="student-avatar">{{ isset($user) ? strtoupper(substr($user->name, 0, 1)) : 'A' }}</div>
-                <div class="student-info">
-                    <div class="student-name">{{ isset($user) ? $user->name : 'Student Name' }}</div>
-                    <div class="student-role">{{ isset($user) ? 'Grade ' . $user->grade . ' • Section ' . $user->section : 'Grade 7 • Section Narra' }}</div>
+            <div class="admin-profile">
+                <div class="admin-avatar">{{ Auth::user() ? strtoupper(substr(Auth::user()->name, 0, 1)) : 'A' }}</div>
+                <div class="admin-info">
+                    <div class="admin-name">{{ Auth::user() ? Auth::user()->name : 'Admin' }}</div>
+                    <div class="admin-role">Teacher</div>
                 </div>
             </div>
         </div>
@@ -568,15 +532,14 @@
     <!-- Header -->
     <header>
         <div class="header-container">
-            <div class="user-info">
-                <span>Welcome, Student</span>
-            </div>
-            <button class="menu-toggle" id="menuToggle">
+            <button class="menu-toggle">
                 <i class="fas fa-bars"></i>
             </button>
+            <div class="user-info">
+                <span>Welcome, Teacher</span>
+            </div>
         </div>
     </header>
-
 
     @yield ('content')
     
@@ -611,27 +574,22 @@
         });
 
         // Add sidebar toggle functionality
-        const menuToggle = document.getElementById('menuToggle');
+        const menuToggle = document.querySelector('.menu-toggle');
         const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+        const header = document.querySelector('header');
 
         menuToggle.addEventListener('click', () => {
             sidebar.classList.toggle('active');
         });
 
-        // Close sidebar when clicking outside on mobile
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth <= 768) {
-                if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
-                    sidebar.classList.remove('active');
-                }
-            }
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768) {
-                sidebar.classList.remove('active');
-            }
+        // Add active state to nav links
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+            });
         });
     </script>
 </body>
