@@ -26,12 +26,16 @@
 }
 
 .logo {
-  font-size: 1.7em;
-  font-weight: bold;
-  padding: 24px 0 16px 32px;
-  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
 }
 
+.logo img {
+  height: 40px;
+  width: auto;
+}
+
+.logo span {
 .sidebar ul {
   list-style: none;
   padding: 0 0 0 0;
@@ -242,7 +246,9 @@ tbody tr:not(:last-child) {
 </head>
 <body>
   <div class="sidebar">
-    <div class="logo">ReadEase</div>
+    <div class="logo">
+      <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo">
+    </div>
     <ul>
       <li><button id="dashboardBtn"><span class="icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L10 4l7 5.5V17a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><path d="M9 21V12h2v9"/></svg></span>Dashboard</button></li>
       <li><button id="assessmentsBtn"><span class="icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="14" rx="2"/><path d="M8 2v4m4-4v4"/><path d="M4 10h12"/></svg></span>Assessments</button></li>

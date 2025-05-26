@@ -190,34 +190,15 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach($recentTests as $test)
                     <tr>
-                        <td>Aliah Lyca Condino</td>
-                        <td>Reading Test</td>
-                        <td>87%</td>
-                        <td>October 05, 2025</td>
-                        <td>Complete</td>
+                        <td>{{ $test->student_name }}</td>
+                        <td>{{ $test->test_type }}</td>
+                        <td>{{ $test->score }}%</td>
+                        <td>{{ $test->created_at->format('F d, Y') }}</td>
+                        <td>{{ $test->status }}</td>
                     </tr>
-                    <tr>
-                        <td>Aliah Lyca Condino</td>
-                        <td>Comprehension Test</td>
-                        <td>95%</td>
-                        <td>September 04, 2025</td>
-                        <td>Complete</td>
-                    </tr>
-                    <tr>
-                        <td>Aliah Lyca Condino</td>
-                        <td>Comprehension Test</td>
-                        <td>92%</td>
-                        <td>February 14, 2025</td>
-                        <td>Complete</td>
-                    </tr>
-                    <tr>
-                        <td>Aliah Lyca Condino</td>
-                        <td>Comprehension Test</td>
-                        <td>92%</td>
-                        <td>February 14, 2025</td>
-                        <td>Complete</td>
-                    </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>

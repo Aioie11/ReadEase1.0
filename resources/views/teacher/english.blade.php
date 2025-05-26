@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <title>Students</title>
+    <title>ReadEase - English Reading</title>
     <style>
         * {
             margin: 0;
@@ -324,7 +324,7 @@
 
 <header>
     <div class="d-flex align-items-center gap-2">
-        <img src="{{ asset('pic/logo .png') }}" height="90" width="100" alt="ReadEase Logo">
+        <img src="{{ asset('pic/RElogo.png') }}" height="90" width="100" alt="ReadEase Logo">
         <div class="title lh-sm"> 
             <p class="fs-3 fw-bold mb-1">ReadEase</p> 
             <p class="fs-5 mb-0">Smarter Reading assessments for Better teaching!</p> 
@@ -471,7 +471,7 @@
                    Department of Education that directly addresses its thrust to make every Filipino child a reader.</p>
     </div>
     <div class="col-md-4 text-center">
-        <img src="{{ asset('pic/slogo.png') }}" height="148" width="150" alt="ReadEase Logo">
+        <img src="{{ asset('pic/RElogo.png') }}" height="148" width="150" alt="ReadEase Logo">
         <p class="mt-2">Calingcaguing National Highschool</p>
     </div>
     <div class="col-md-4 foot">

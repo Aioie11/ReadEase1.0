@@ -906,9 +906,11 @@
             // Search through all rows
             allRows.forEach(row => {
                 const nameCell = row.querySelector('td:first-child');
-                const name = nameCell.textContent.toLowerCase();
+                const fullName = nameCell.textContent.toLowerCase();
+                const [lastName, firstName] = fullName.split(',').map(part => part.trim());
                 
-                if (name.includes(query)) {
+                // Check if either last name or first name contains the search query
+                if (lastName.includes(query) || firstName.includes(query)) {
                     // Show the row
                     row.style.display = '';
                     

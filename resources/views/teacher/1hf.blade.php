@@ -8,7 +8,7 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="{{ asset('js/students.js') }}" defer></script>
-    <title>ReadEase</title>
+    <title>ReadEase - Student Assessment</title>
     <style>
         /*css.students.php*/
 /*main*/
@@ -160,7 +160,7 @@ footer{
 
 <header>
 <div class="d-flex align-items-center gap-2">
-        <img src="{{ asset('pic/logo .png') }}" height="90" width="100" alt="ReadEase Logo">
+        <img src="{{ asset('pic/RElogo.png') }}" height="90" width="100" alt="ReadEase Logo">
         <div class="title lh-sm"> 
             <p class="fs-3 fw-bold mb-1">ReadEase</p> 
             <p class="fs-5 mb-0">Smarter Reading assessments for Better teaching!</p> 
@@ -283,7 +283,7 @@ footer{
             </div>
 
             <div class="col-md-4 d-flex flex-column align-items-center justify-content-center">
-                <img src="{{ asset('pic/slogo.png') }}" height="148" width="150" alt="ReadEase Logo">
+                <img src="{{ asset('pic/RElogo.png') }}" height="148" width="150" alt="ReadEase Logo">
                 <p class="mt-2">Calingcaguing National Highschool</p>
             </div>
 

@@ -10,6 +10,7 @@ use App\Http\Controllers\ReadingController;
 use App\Http\Controllers\ReadingMaterialController;
 use App\Http\Controllers\ReadingLevelController;
 use App\Http\Controllers\StudentDashboardController;
+use App\Http\Controllers\TeacherController;
 use Illuminate\Http\Request;
 
 
@@ -41,9 +42,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware(['web'])->group(function () {
     // Teacher Routes
     Route::prefix('teacher')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('teacher.dashboard');
-        })->name('teacher.dashboard');
+        Route::get('/dashboard', [TeacherController::class, 'dashboard'])->name('teacher.dashboard');
 
         Route::get('/students', function () {
             return view('teacher.students');

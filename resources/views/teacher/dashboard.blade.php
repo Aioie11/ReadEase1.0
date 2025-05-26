@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReadEase - Teacher Dashboard</title>
+    <title>ReadEase - Reading Language</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -76,10 +76,19 @@
         }
 
         .logo {
-            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .logo span {
+            font-size: 1.5rem;
             font-weight: 700;
-            color: var(--neutral-light);
-            text-decoration: none;
+            margin-left: 0.8rem;
         }
 
         .user-info {
@@ -292,105 +301,98 @@
             left: 0;
             top: 0;
             height: 100vh;
-            width: 280px;
+            width: 250px;
             background: var(--primary);
-            padding: 1.5rem;
-            transition: var(--transition);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
             z-index: 1001;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 2px 0 8px #0001;
         }
 
         .sidebar-header {
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .sidebar-logo {
-            color: var(--neutral-light);
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-decoration: none;
+            padding: 2rem 1.5rem 1rem 1.5rem;
+            border-bottom: 1px solid #ffffff22;
             display: flex;
             align-items: center;
             gap: 0.8rem;
         }
 
-        .sidebar-logo i {
-            color: var(--accent);
-            font-size: 1.8rem;
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+            margin-left: 0.5rem;
         }
 
+        .sidebar-logo img {
+            height: 40px;
+            width: 40px;
+            object-fit: contain;
+        }
+
+        .sidebar-logo span {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff !important;
+            letter-spacing: 0.5px;
+        }
+
+        /* Navigation Styles */
         .nav-menu {
             list-style: none;
-            margin-bottom: 2rem;
-        }
-
-        .nav-section {
-            margin-bottom: 1.5rem;
-        }
-
-        .nav-section-title {
-            color: var(--neutral-light);
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 0 1rem;
-            margin-bottom: 0.5rem;
-            opacity: 0.7;
+            padding: 0;
+            margin: 2rem 0 0 0;
+            flex: 1;
         }
 
         .nav-item {
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.7rem;
         }
 
         .nav-link {
             display: flex;
             align-items: center;
             gap: 0.8rem;
-            padding: 0.8rem 1rem;
-            color: var(--neutral-light);
+            padding: 0.9rem 1.5rem;
+            color: #fff;
             text-decoration: none;
             border-radius: 8px;
+            font-size: 1.08rem;
+            font-weight: 500;
             transition: var(--transition);
-            font-size: 0.95rem;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            background: var(--secondary);
-            color: var(--neutral-light);
-            transform: translateX(5px);
+            background: transparent;
         }
 
         .nav-link i {
-            width: 20px;
+            font-size: 1.2rem;
+            width: 22px;
             text-align: center;
-            font-size: 1.1rem;
         }
 
-        .nav-link .badge {
-            margin-left: auto;
-            background: var(--accent);
-            color: var(--neutral-light);
-            padding: 0.2rem 0.5rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
+        .nav-link.active, .nav-link:focus, .nav-link.selected {
+            background: #388ee7;
+            color: #fff;
+            font-weight: 700;
+            box-shadow: 0 2px 8px #0002;
+        }
+
+        .nav-link:hover {
+            background: #2196f3;
+            color: #fff;
         }
 
         .sidebar-footer {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
             padding: 1.5rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid #ffffff22;
+            color: #e3e3e3;
         }
 
         .teacher-profile {
             display: flex;
             align-items: center;
             gap: 1rem;
-            color: var(--neutral-light);
         }
 
         .teacher-avatar {
@@ -402,6 +404,7 @@
             align-items: center;
             justify-content: center;
             font-weight: 600;
+            color: #fff;
         }
 
         .teacher-info {
@@ -470,56 +473,46 @@
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <a href="#" class="sidebar-logo">
-                <i class="fas fa-book-reader"></i>
-                ReadEase
+            <a href="{{ route('teacher.dashboard') }}" class="sidebar-logo">
+                <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo">
+                <span>ReadEase</span>
             </a>
         </div>
         <nav>
             <ul class="nav-menu">
-                <div class="nav-section">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link active">
-                            <i class="fas fa-tachometer-alt"></i>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="fas fa-tasks"></i>
-                            Assessments
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="fas fa-users"></i>
-                            Students
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="fas fa-chart-bar"></i>
-                            Reports
-                        </a>
-                    </li>
-                </div>
-
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="fas fa-calendar-alt"></i>
-                            Schedule
-                        </a>
-                    </li>
-                </div>
+                <li class="nav-item">
+                    <a href="{{ route('teacher.dashboard') }}" class="nav-link active">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-tasks"></i>
+                        Assessments
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        Students
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('teacher.viewreports') }}" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>View Reports</span>
+                    </a>
+                </li>
             </ul>
         </nav>
 
         <div class="sidebar-footer">
             <div class="teacher-profile">
-                <div class="teacher-avatar">T</div>
+                <div class="teacher-avatar">{{ substr(auth()->user()->name, 0, 1) }}</div>
                 <div class="teacher-info">
-                    <div class="teacher-name">Teacher Name</div>
-                    <div class="teacher-role">English Teacher</div>
+                    <div class="teacher-name">{{ auth()->user()->name }}</div>
+                    <div class="teacher-role">Grade {{ auth()->user()->grade }} Teacher</div>
                 </div>
             </div>
         </div>
@@ -550,60 +543,50 @@
 
             <!-- Grade Levels -->
             <div class="grade-levels">
-                <!-- Grade 1 -->
+                <!-- Grade 7 -->
                 <div class="grade-card">
                     <h2><i class="fas fa-graduation-cap"></i> Grade 7</h2>
                     <ul class="sections-list">
-                        <li class="section-item">
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade7', 'section' => 'narra', 'language' => 'english']) }}'">
                             <div class="section-info">
                                 <i class="fas fa-book"></i>
-                                <span>Section A</span>
+                                <span>Section Narra</span>
                             </div>
                             <div class="section-stats">
                                 <span class="stat-item">
                                     <i class="fas fa-user"></i>
                                     25 Students
                                 </span>
-                               
                             </div>
                         </li>
-                        <li class="section-item">
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade7', 'section' => 'lawaan', 'language' => 'english']) }}'">
                             <div class="section-info">
                                 <i class="fas fa-book"></i>
-                                <span>Section B</span>
+                                <span>Section Lawaan</span>
                             </div>
                             <div class="section-stats">
                                 <span class="stat-item">
                                     <i class="fas fa-user"></i>
                                     28 Students
                                 </span>
-                               
                             </div>
                         </li>
-                    </ul>
-                </div>
-
-                <!-- Grade 2 -->
-                <div class="grade-card">
-                    <h2><i class="fas fa-graduation-cap"></i> Grade 8</h2>
-                    <ul class="sections-list">
-                        <li class="section-item">
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade7', 'section' => 'dao', 'language' => 'english']) }}'">
                             <div class="section-info">
                                 <i class="fas fa-book"></i>
-                                <span>Section A</span>
+                                <span>Section Dao</span>
                             </div>
                             <div class="section-stats">
                                 <span class="stat-item">
                                     <i class="fas fa-user"></i>
                                     30 Students
                                 </span>
-                               
                             </div>
                         </li>
-                        <li class="section-item">
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade7', 'section' => 'mahugani', 'language' => 'english']) }}'">
                             <div class="section-info">
                                 <i class="fas fa-book"></i>
-                                <span>Section B</span>
+                                <span>Section Mahugani</span>
                             </div>
                             <div class="section-stats">
                                 <span class="stat-item">
@@ -615,14 +598,14 @@
                     </ul>
                 </div>
 
-                <!-- Grade 3 -->
+                <!-- Grade 8 -->
                 <div class="grade-card">
-                    <h2><i class="fas fa-graduation-cap"></i> Grade 9</h2>
+                    <h2><i class="fas fa-graduation-cap"></i> Grade 8</h2>
                     <ul class="sections-list">
-                        <li class="section-item">
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade8', 'section' => 'guava', 'language' => 'english']) }}'">
                             <div class="section-info">
                                 <i class="fas fa-book"></i>
-                                <span>Section A</span>
+                                <span>Section Guava</span>
                             </div>
                             <div class="section-stats">
                                 <span class="stat-item">
@@ -631,10 +614,10 @@
                                 </span>
                             </div>
                         </li>
-                        <li class="section-item">
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade8', 'section' => 'duhat', 'language' => 'english']) }}'">
                             <div class="section-info">
                                 <i class="fas fa-book"></i>
-                                <span>Section B</span>
+                                <span>Section Duhat</span>
                             </div>
                             <div class="section-stats">
                                 <span class="stat-item">
@@ -643,39 +626,130 @@
                                 </span>
                             </div>
                         </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade8', 'section' => 'avocado', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Avocado</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    27 Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade8', 'section' => 'mango', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Mango</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    27 Students
+                                </span>
+                            </div>
+                        </li>
                     </ul>
                 </div>
-            </div>
 
-            <!-- Grade 3 -->
-            <div class="grade-card">
-                <h2><i class="fas fa-graduation-cap"></i> Grade 10</h2>
-                <ul class="sections-list">
-                    <li class="section-item">
-                        <div class="section-info">
-                            <i class="fas fa-book"></i>
-                            <span>Section A</span>
-                        </div>
-                        <div class="section-stats">
-                            <span class="stat-item">
-                                <i class="fas fa-user"></i>
-                                32 Students
-                            </span>
-                        </div>
-                    </li>
-                    <li class="section-item">
-                        <div class="section-info">
-                            <i class="fas fa-book"></i>
-                            <span>Section B</span>
-                        </div>
-                        <div class="section-stats">
-                            <span class="stat-item">
-                                <i class="fas fa-user"></i>
-                                29 Students
-                            </span>
-                        </div>
-                    </li>
-                </ul>
+                <!-- Grade 9 -->
+                <div class="grade-card">
+                    <h2><i class="fas fa-graduation-cap"></i> Grade 9</h2>
+                    <ul class="sections-list">
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade9', 'section' => 'zinc', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Zinc</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    32 Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade9', 'section' => 'gold', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Gold</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    29 Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade9', 'section' => 'silver', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Silver</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    27 Students
+                                </span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Grade 10 -->
+                <div class="grade-card">
+                    <h2><i class="fas fa-graduation-cap"></i> Grade 10</h2>
+                    <ul class="sections-list">
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade10', 'section' => 'newton', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Newton</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    32 Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade10', 'section' => 'galileo', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Galileo</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    29 Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade10', 'section' => 'edison', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Edison</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    27 Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade10', 'section' => 'edison', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                            <span>Section Einstien</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    27 Students
+                                </span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

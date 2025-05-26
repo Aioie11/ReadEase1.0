@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReadEase - Teacher Dashboard</title>
+    <title>ReadEase - Reading Language</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -76,10 +76,19 @@
         }
 
         .logo {
-            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .logo span {
+            font-size: 1.5rem;
             font-weight: 700;
-            color: var(--neutral-light);
-            text-decoration: none;
+            margin-left: 0.8rem;
         }
 
         .user-info {
@@ -470,10 +479,10 @@
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <a href="#" class="sidebar-logo">
-                <i class="fas fa-book-reader"></i>
-                ReadEase
-            </a>
+            <div class="logo">
+                <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo">
+                <span>ReadEase</span>
+            </div>
         </div>
         <nav>
             <ul class="nav-menu">

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReadEase - Teacher Dashboard</title>
+    <title>ReadEase - Teacher Reports</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,16 +11,16 @@
     <style>
         :root {
             /* Primary - Main UI and Brand Elements */
-            --primary: #0E61BA;
-            --primary-light: #3b82f6;
-            --primary-dark: #0d4b94;
+            --primary: #1976d2;
+            --primary-light: #2196f3;
+            --primary-dark: #1565c0;
             
             /* Secondary - Navigation and Secondary UI */
-            --secondary: #6CC24A;
-            --secondary-light: #7ed56f;
+            --secondary: #43a047;
+            --secondary-light: #66bb6a;
             
             /* Accent - Buttons and Highlights */
-            --accent: #F9A602;
+            --accent: #fbc02d;
             --accent-light: #fbbf24;
             
             /* Neutral - Backgrounds */
@@ -30,7 +30,7 @@
             
             /* Text - Main Text and Headings */
             --text: #232323;
-            --text-light: #4b5563;
+            --text-light: #e3e3e3;
             
             /* Gradients */
             --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
@@ -63,10 +63,11 @@
             background: var(--primary);
             padding: 1rem 5%;
             position: fixed;
-            width: 100%;
+            width: calc(100% - 250px);
             top: 0;
             z-index: 1000;
             box-shadow: var(--shadow-md);
+            margin-left: 250px;
         }
 
         .header-container {
@@ -78,10 +79,13 @@
         }
 
         .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--neutral-light);
-            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
         }
 
         .user-info {
@@ -108,89 +112,129 @@
             left: 0;
             top: 0;
             height: 100vh;
-            width: 280px;
+            width: 250px;
             background: var(--primary);
-            padding: 1.5rem;
-            transition: var(--transition);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
             z-index: 1001;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 2px 0 8px #0001;
         }
 
         .sidebar-header {
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .sidebar-logo {
-            color: var(--neutral-light);
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-decoration: none;
+            padding: 2rem 1.5rem 1rem 1.5rem;
+            border-bottom: 1px solid #ffffff22;
             display: flex;
             align-items: center;
             gap: 0.8rem;
         }
 
-        .sidebar-logo i {
-            color: var(--accent);
-            font-size: 1.8rem;
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+            margin-left: 0.5rem;
+        }
+
+        .sidebar-logo img {
+            height: 40px;
+            width: 40px;
+            object-fit: contain;
+        }
+
+        .sidebar-logo span {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff !important;
+            letter-spacing: 0.5px;
         }
 
         /* Navigation Styles */
         .nav-menu {
             list-style: none;
-            margin-bottom: 2rem;
             padding: 0;
-        }
-
-        .nav-section {
-            margin-bottom: 1.5rem;
+            margin: 2rem 0 0 0;
+            flex: 1;
         }
 
         .nav-item {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.7rem;
         }
 
         .nav-link {
             display: flex;
             align-items: center;
             gap: 0.8rem;
-            padding: 0.8rem 1rem;
-            color: var(--neutral-light);
+            padding: 0.9rem 1.5rem;
+            color: #fff;
             text-decoration: none;
             border-radius: 8px;
+            font-size: 1.08rem;
+            font-weight: 500;
             transition: var(--transition);
-            font-size: 0.95rem;
             background: transparent;
         }
 
-        .nav-link:hover {
-            background: var(--secondary);
-            color: var(--neutral-light);
-            transform: translateX(5px);
-        }
-
-        .nav-link.active {
-            background: var(--secondary);
-            color: var(--neutral-light);
-            transform: translateX(5px);
-            font-weight: 500;
-        }
-
         .nav-link i {
-            width: 20px;
+            font-size: 1.2rem;
+            width: 22px;
             text-align: center;
-            font-size: 1.1rem;
         }
 
-        .nav-link span {
+        .nav-link.active, .nav-link:focus, .nav-link.selected {
+            background: #388ee7;
+            color: #fff;
+            font-weight: 700;
+            box-shadow: 0 2px 8px #0002;
+        }
+
+        .nav-link:hover {
+            background: #2196f3;
+            color: #fff;
+        }
+
+        .sidebar-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #ffffff22;
+            color: #e3e3e3;
+        }
+
+        .teacher-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .teacher-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .teacher-info {
             flex: 1;
+        }
+
+        .teacher-name {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .teacher-role {
+            font-size: 0.8rem;
+            opacity: 0.8;
         }
 
         /* Main Content */
         .main-content {
-            margin-left: 280px;
+            margin-left: 250px;
             padding: 6rem 5% 2rem;
             transition: var(--transition);
         }
@@ -209,7 +253,7 @@
         }
 
         .report-header h2 {
-            color: var(--primary);
+            color: #fff !important;
             font-size: 1.8rem;
             margin-bottom: 0.5rem;
         }
@@ -267,11 +311,13 @@
         /* Responsive Design */
         @media (max-width: 768px) {
             .sidebar {
-                transform: translateX(-100%);
+                width: 100vw;
+                left: -100vw;
+                transition: left 0.3s;
             }
 
             .sidebar.active {
-                transform: translateX(0);
+                left: 0;
             }
 
             .main-content {
@@ -304,48 +350,46 @@
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <a href="#" class="sidebar-logo">
-                <i class="fas fa-book-reader"></i>
-                ReadEase
+            <a href="{{ route('teacher.dashboard') }}" class="sidebar-logo">
+                <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo">
+                <span>ReadEase</span>
             </a>
         </div>
         <nav>
             <ul class="nav-menu">
-                <div class="nav-section">
-                    <li class="nav-item">
-                        <a href="{{ route('teacher.readinglanguage') }}" class="nav-link">
-                            <i class="fas fa-tachometer-alt"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="fas fa-tasks"></i>
-                            <span>Assessments</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="fas fa-users"></i>
-                            <span>Students</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('teacher.viewreports') }}" class="nav-link active">
-                            <i class="fas fa-chart-bar"></i>
-                            <span>View Reports</span>
-                        </a>
-                    </li>
-                </div>
+                <li class="nav-item">
+                    <a href="{{ route('teacher.dashboard') }}" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-tasks"></i>
+                        Assessments
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        Students
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('teacher.viewreports') }}" class="nav-link active">
+                        <i class="fas fa-users"></i>
+                        <span>View Reports</span>
+                    </a>
+                </li>
             </ul>
         </nav>
 
         <div class="sidebar-footer">
             <div class="teacher-profile">
-                <div class="teacher-avatar">T</div>
+                <div class="teacher-avatar">{{ substr(auth()->user()->name, 0, 1) }}</div>
                 <div class="teacher-info">
-                    <div class="teacher-name">Teacher Name</div>
-                    <div class="teacher-role">English Teacher</div>
+                    <div class="teacher-name">{{ auth()->user()->name }}</div>
+                    <div class="teacher-role">Grade {{ auth()->user()->grade }} Teacher</div>
                 </div>
             </div>
         </div>
@@ -358,8 +402,8 @@
                 <i class="fas fa-bars"></i>
             </button>
             <div class="user-info">
-                <span>Welcome, Teacher</span>
-                <div class="user-avatar">T</div>
+                <span>Welcome, {{ auth()->user()->name }}</span>
+                <div class="user-avatar">{{ substr(auth()->user()->name, 0, 1) }}</div>
             </div>
         </div>
     </header>
