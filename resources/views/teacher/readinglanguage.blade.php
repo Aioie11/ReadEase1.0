@@ -484,12 +484,7 @@
                             Dashboard
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="fas fa-tasks"></i>
-                            Assessments
-                        </a>
-                    </li>
+
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="fas fa-users"></i>
@@ -499,7 +494,7 @@
                     <li class="nav-item">
                         <a href="{{ route('teacher.viewreports') }}" class="nav-link active">
                             <i class="fas fa-users"></i>
-                            <span>View Reports</span>
+                            <span>Reports</span>
                         </a>
                     </div>
                 </div>

@@ -1,509 +1,285 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReadEase - Teacher Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>ReadEase - Reading Progress Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <style>
-        :root {
-            /* Primary - Main UI and Brand Elements */
-            --primary: #0E61BA;
-            --primary-light: #3b82f6;
-            --primary-dark: #0d4b94;
-            
-            /* Secondary - Navigation and Secondary UI */
-            --secondary: #6CC24A;
-            --secondary-light: #7ed56f;
-            
-            /* Accent - Buttons and Highlights */
-            --accent: #F9A602;
-            --accent-light: #fbbf24;
-            
-            /* Neutral - Backgrounds */
-            --neutral: #F4F4F4;
-            --neutral-light: #ffffff;
-            --neutral-dark: #e5e5e5;
-            
-            /* Text - Main Text and Headings */
-            --text: #232323;
-            --text-light: #4b5563;
-            
-            /* Gradients */
-            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            --gradient-secondary: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
-            --gradient-accent: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
-            
-            /* Shadows */
-            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
-            
-            --transition: all 0.3s ease;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            line-height: 1.6;
-            color: var(--text);
-            background-color: var(--neutral);
-        }
-
-        /* Header Styles */
-        header {
-            background: var(--primary);
-            padding: 1rem 5%;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: var(--shadow-md);
-        }
-
-        .header-container {
             display: flex;
+            background-color: #f4f6fa;
+            color: #333;
+        }
+
+        aside {
+            width: 250px;
+            background-color: #0e3a8c;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
             justify-content: space-between;
-            align-items: center;
-            max-width: 1400px;
-            margin: 0 auto;
+            min-height: 100vh;
         }
 
         .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--neutral-light);
-            text-decoration: none;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            color: var(--neutral-light);
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            height: 100vh;
-            width: 280px;
-            background: var(--primary);
-            padding: 1.5rem;
-            transition: var(--transition);
-            z-index: 1001;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .sidebar-header {
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .sidebar-logo {
-            color: var(--neutral-light);
             font-size: 1.5rem;
-            font-weight: 700;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-
-        .sidebar-logo i {
-            color: var(--accent);
-            font-size: 1.8rem;
-        }
-
-        /* Navigation Styles */
-        .nav-menu {
-            list-style: none;
+            font-weight: bold;
             margin-bottom: 2rem;
-            padding: 0;
         }
 
-        .nav-section {
-            margin-bottom: 1.5rem;
-        }
-
-        .nav-item {
-            margin-bottom: 0.5rem;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.8rem 1rem;
-            color: var(--neutral-light);
+        .nav a {
+            color: white;
             text-decoration: none;
-            border-radius: 8px;
-            transition: var(--transition);
-            font-size: 0.95rem;
-            background: transparent;
+            margin: 1rem 0;
+            display: block;
+            padding: 0.5rem;
+            border-radius: 5px;
         }
 
-        .nav-link:hover {
-            background: var(--secondary);
-            color: var(--neutral-light);
-            transform: translateX(5px);
+        .nav a:hover, .nav .active {
+            background-color: #2563eb;
         }
 
-        .nav-link.active {
-            background: var(--secondary);
-            color: var(--neutral-light);
-            transform: translateX(5px);
-            font-weight: 500;
-        }
-
-        .nav-link i {
-            width: 20px;
-            text-align: center;
-            font-size: 1.1rem;
-        }
-
-        .nav-link span {
+        main {
             flex: 1;
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-left: 280px;
-            padding: 6rem 5% 2rem;
-            transition: var(--transition);
-        }
-
-        /* Report Container Styles */
-        .report-container {
-            background: var(--neutral-light);
-            border-radius: 15px;
             padding: 2rem;
-            box-shadow: var(--shadow-md);
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .filters input, .filters select, .filters button {
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 1rem;
             margin-bottom: 2rem;
         }
 
-        .report-header {
-            margin-bottom: 2rem;
-        }
-
-        .report-header h2 {
-            color: var(--primary);
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .report-header h3 {
-            color: var(--text-light);
-            font-size: 1.2rem;
-        }
-
-        /* Student Cards */
-        .student-wrapper {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .student-column {
-            background: var(--neutral-light);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .student-column h4 {
-            color: var(--primary);
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
-
-        .section-box {
-            background: var(--neutral);
-            border-radius: 10px;
+        .card {
+            background: white;
+            flex: 1;
             padding: 1rem;
-            margin-bottom: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .charts {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            background: white;
+            flex: 1;
+            padding: 1rem;
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .progress-bar {
+            width: 100px;
+            height: 10px;
+            border-radius: 5px;
+            background-color: #ddd;
             position: relative;
         }
 
-        .label-box {
-            position: absolute;
-            bottom: -0.8rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--accent);
-            color: var(--neutral-light);
-            padding: 0.25rem 1rem;
+        .progress-bar span {
+            display: block;
+            height: 100%;
             border-radius: 5px;
-            font-size: 0.85rem;
-            white-space: nowrap;
         }
 
-        .bold-value {
-            font-weight: 600;
-        }
+        .green { background-color: #4ade80; }
+        .yellow { background-color: #facc15; }
+        .red { background-color: #f87171; }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-            }
-
-            header {
-                margin-left: 0;
-                width: 100%;
-            }
-
-            .menu-toggle {
-                display: block;
-            }
-        }
-
-        /* Menu Toggle Button */
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--neutral-light);
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0.5rem;
-        }
     </style>
 </head>
+
 <body>
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <a href="#" class="sidebar-logo">
-                <i class="fas fa-book-reader"></i>
-                ReadEase
-            </a>
-        </div>
-        <nav>
-            <ul class="nav-menu">
-                <div class="nav-section">
-                    <li class="nav-item">
-                        <a href="{{ route('teacher.readinglanguage') }}" class="nav-link">
-                            <i class="fas fa-tachometer-alt"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="fas fa-tasks"></i>
-                            <span>Assessments</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="fas fa-users"></i>
-                            <span>Students</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('teacher.viewreports') }}" class="nav-link active">
-                            <i class="fas fa-chart-bar"></i>
-                            <span>View Reports</span>
-                        </a>
-                    </li>
-                </div>
-            </ul>
-        </nav>
-
-        <div class="sidebar-footer">
-            <div class="teacher-profile">
-                <div class="teacher-avatar">T</div>
-                <div class="teacher-info">
-                    <div class="teacher-name">Teacher Name</div>
-                    <div class="teacher-role">English Teacher</div>
-                </div>
+    <aside>
+        <div>
+            <div class="logo"><img src="{{ asset('Downloads/ReadEastlogo.png') }}" alt="ReadEase Logo"></div>
+            <div class="nav">
+                <a href="#">Dashboard</a>
+                <a href="#">Students</a>
+                <a class="active" href="#">Reports</a>
             </div>
         </div>
+        <div class="user">👤 Marie Dasian<br><small>Grade 7 Teacher</small></div>
     </aside>
+    <main>
+        <div class="topbar">
+            <div>
+                <h2>Welcome!</h2>
+            </div>
+            <div>🔔 🟡</div>
+        </div>
 
-    <!-- Header -->
-    <header>
-        <div class="header-container">
-            <button class="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="user-info">
-                <span>Welcome, Teacher</span>
-                <div class="user-avatar">T</div>
+        <div class="filters">
+            <select>
+                <option>English</option>
+            </select>
+            <select>
+                <option>Filipino</option>
+            </select>
+            <select>
+                <option>All Sections</option>
+                <option>Narra</option>
+                <option>Lawaan</option>
+                <option>Dao</option>
+                <option>Mahugani</option>
+            </select>
+            <select>
+                <option>All Grades</option>
+                <option>Grade 7</option>
+                <option>Grade 8</option>
+                <option>Grade 9</option>
+                <option>Grade 10</option>
+            </select>
+        </div>
+
+        <div class="stats">
+            <div class="card"<br>Average Reading Level<br><strong>Intermediate</strong> <span style="color:green;">+12%</span></div>
+            <div class="card"<br>Reading Speed (WPM)<br><strong>185</strong> <span style="color:green;">+8%</span></div>
+            <div class="card"<br>Comprehension Rate<br><strong>78%</strong> <span style="color:green;">+5%</span></div>
+        </div>
+
+        <div class="charts">
+            <div class="chart-container">
+                <h4>Reading Level Progress</h4>
+                <canvas id="levelChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h4>Reading Comprehension</h4>
+                <canvas id="compChart"></canvas>
             </div>
         </div>
-    </header>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="report-container">
-            <div class="report-header">
-                <h2>STUDENT {{ strtoupper($language) }} REPORTS</h2>
-                <h3>Grade 7 Students : <span class="underline">SECTION {{ strtoupper($section) }}</span></h3>
-            </div>
-
-            <!-- STUDENT CARD DISPLAY -->
-            <div class="student-wrapper">
-                @if($students->count() > 0)
-                    @foreach($students as $i => $student)
-                        <div class="student-column">
-                            <h4>{{ $i + 1 }}. {{ $student['student_name'] }}</h4>
-
-                            <!-- READING SPEED CHART -->
-                            <div class="section-box">
-                                <div class="chart-section">
-                                    <canvas id="chart{{ $i }}_reading"></canvas>
-                                    <div class="label-box">READING SPEED: <span class="bold-value">{{ $student['reading_speed'] }} WPM</span></div>
-                                </div>
-                            </div>
-
-                            <!-- COMPREHENSION CHART -->
-                            <div class="section-box">
-                                <div class="chart-section">
-                                    <canvas id="chart{{ $i }}_comp"></canvas>
-                                    <div class="label-box">COMPREHENSION: <span class="bold-value">{{ $student['comprehension'] }}</span></div>
-                                </div>
-                            </div>
-
-                            <!-- WORD RECOGNITION CHART -->
-                            <div class="section-box">
-                                <div class="chart-section">
-                                    <canvas id="chart{{ $i }}_word"></canvas>
-                                    <div class="label-box">WORD READING: <span class="bold-value">{{ $student['word_label'] }}</span></div>
-                                </div>
-                            </div>
-
-                            <!-- Assessment Details -->
-                            <div class="assessment-details">
-                                <p><strong>Reading Time:</strong> {{ number_format($student['reading_time'], 2) }} seconds</p>
-                                <p><strong>Miscues:</strong> {{ $student['miscues'] }}</p>
-                                <p><strong>Total Words:</strong> {{ $student['total_words'] }}</p>
-                                <p><strong>Assessment Date:</strong> {{ \Carbon\Carbon::parse($student['assessment_date'])->format('M d, Y h:i A') }}</p>
-                            </div>
-                        </div>
-                    @endforeach
-                @else
-                    <div class="alert alert-info w-100 text-center">
-                        No reading data available for {{ strtoupper($section) }} section in {{ strtoupper($language) }}.
-                    </div>
-                @endif
-            </div>
-        </div>
-    </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Grade</th>
+                    <th>Reading Level</th>
+                    <th>Books Read</th>
+                    <th>Reading Speed</th>
+                    <th>Comprehension</th>
+                    <th>Progress</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Emily Thompson</td>
+                    <td>Grade 7A</td>
+                    <td>Advanced</td>
+                    <td>12</td>
+                    <td>210 WPM</td>
+                    <td>92%</td>
+                    <td><div class="progress-bar"><span class="green" style="width: 90%;"></span></div></td>
+                </tr>
+                <tr>
+                    <td>James Wilson</td>
+                    <td>Grade 7B</td>
+                    <td>Intermediate</td>
+                    <td>8</td>
+                    <td>165 WPM</td>
+                    <td>78%</td>
+                    <td><div class="progress-bar"><span class="yellow" style="width: 60%;"></span></div></td>
+                </tr>
+                <tr>
+                    <td>Sophia Martinez</td>
+                    <td>Grade 8A</td>
+                    <td>Advanced</td>
+                    <td>15</td>
+                    <td>225 WPM</td>
+                    <td>95%</td>
+                    <td><div class="progress-bar"><span class="green" style="width: 95%;"></span></div></td>
+                </tr>
+                <tr>
+                    <td>Liam Johnson</td>
+                    <td>Grade 8B</td>
+                    <td>Beginner</td>
+                    <td>5</td>
+                    <td>120 WPM</td>
+                    <td>65%</td>
+                    <td><div class="progress-bar"><span class="red" style="width: 40%;"></span></div></td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
 
     <script>
-        // Chart.js initialization code
-        @if($students->count() > 0)
-        @foreach($students as $i => $student)
-            const ctxR{{ $i }} = document.getElementById('chart{{ $i }}_reading');
-            const ctxC{{ $i }} = document.getElementById('chart{{ $i }}_comp');
-            const ctxW{{ $i }} = document.getElementById('chart{{ $i }}_word');
-
-            // Reading Speed Chart
-            new Chart(ctxR{{ $i }}, {
-                type: 'bar',
-                data: {
-                    labels: ['Reading Time', 'Total Words'],
-                    datasets: [{
-                        data: [{{ $student['reading_time'] }}, {{ $student['total_words'] }}],
-                        backgroundColor: ['#247ba0', '#70c1b3']
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            max: {{ $student['total_words'] }}
-                        }
-                    }
-                }
-            });
-
-            // Word Reading Chart
-            new Chart(ctxW{{ $i }}, {
-                type: 'bar',
-                data: {
-                    labels: ['Reading Miscues', 'Correct Reading', 'Total Words'],
-                    datasets: [{
-                        data: [
-                            {{ $student['miscues'] }},
-                            {{ $student['total_words'] - $student['miscues'] }},
-                            {{ $student['total_words'] }}
-                        ],
-                        backgroundColor: ['#94d2bd', '#caf0f8', '#f0efeb']
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    plugins: {
-                        legend: { display: false },
-                        datalabels: {
-                            display: function(context) {
-                                return context.dataIndex === 1;
-                            },
-                            anchor: 'start',
-                            align: 'left',
-                            formatter: function() {
-                                return 'Correct Reading';
-                            }
-                        }
-                    }
-                },
-                plugins: [ChartDataLabels]
-            });
-        @endforeach
-        @endif
-
-        // Sidebar toggle functionality
-        const menuToggle = document.querySelector('.menu-toggle');
-        const sidebar = document.querySelector('.sidebar');
-        const mainContent = document.querySelector('.main-content');
-        const header = document.querySelector('header');
-
-        menuToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
+        const ctx1 = document.getElementById('levelChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [
+                    { label: 'Grade 7', data: [2, 2.4, 5, 3, 3.3], borderColor: '#3b82f6', fill: false },
+                    { label: 'Grade 8', data: [3, 3.2, 3.5, 3.8, 4], borderColor: '#06b6d4', fill: false },
+                    { label: 'Grade 9', data: [3.5, 3.6, 3, 3.9, 4.2], borderColor: '#f59e0b', fill: false },
+                    { label: 'Grade 10', data: [4, 4.5, 4.2, 4.3, 4.4], borderColor: '#ef4444', fill: false }
+                ]
+            }
         });
 
-        // Add active state to nav links
-        const navLinks = document.querySelectorAll('.nav-link');
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                navLinks.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-            });
+        const ctx2 = document.getElementById('compChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'],
+                datasets: [
+                    { label: 'Advance', data: [85, 86, 88, 89, 90, 91, 92, 94], borderColor: '#3b82f6', fill: false },
+                    { label: 'Average', data: [65, 67, 70, 72, 75, 77, 80, 83], borderColor: '#10b981', fill: false },
+                    { label: 'Beginner', data: [70, 57, 60, 63, 66, 69, 72, 75], borderColor: '#f59e0b', fill: false }
+                ]
+            }
         });
     </script>
 </body>
+
 </html>

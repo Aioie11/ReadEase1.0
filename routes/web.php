@@ -100,6 +100,11 @@ Route::middleware(['web'])->group(function () {
 
         // Add the update-reading route
         Route::post('/update-reading', [ReadingController::class, 'updateReading'])->name('reading.update');
+
+        // Add route for reading progress report
+        Route::get('/reading-progress', function () {
+            return view('teacher.report');
+        })->name('teacher.reading-progress');
     });
 
     // Admin Routes
