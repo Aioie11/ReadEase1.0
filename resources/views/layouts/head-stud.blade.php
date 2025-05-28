@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Default Title')</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -12,34 +14,34 @@
             --primary: #0E61BA;
             --primary-light: #3b82f6;
             --primary-dark: #0d4b94;
-            
+
             /* Secondary - Navigation and Secondary UI */
             --secondary: #6CC24A;
             --secondary-light: #7ed56f;
-            
+
             /* Accent - Buttons and Highlights */
             --accent: #F9A602;
             --accent-light: #fbbf24;
-            
+
             /* Neutral - Backgrounds */
             --neutral: #F4F4F4;
             --neutral-light: #ffffff;
             --neutral-dark: #e5e5e5;
-            
+
             /* Text - Main Text and Headings */
             --text: #232323;
             --text-light: #4b5563;
-            
+
             /* Gradients */
             --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             --gradient-secondary: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
             --gradient-accent: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
-            
+
             /* Shadows */
-            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
-            
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
             --transition: all 0.3s ease;
         }
 
@@ -82,11 +84,40 @@
             text-decoration: none;
         }
 
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+
         .user-info {
             display: flex;
             align-items: center;
             gap: 1rem;
             color: var(--neutral-light);
+            position: relative;
+            margin-left: auto;
+        }
+
+        /* User Dropdown Styles */
+        .user-dropdown {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .user-dropdown:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .user-avatar {
@@ -98,11 +129,98 @@
             align-items: center;
             justify-content: center;
             font-weight: 600;
+            font-size: 1rem;
+            color: var(--neutral-light);
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            line-height: 1.2;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            line-height: 1;
+        }
+
+        .dropdown-arrow {
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+
+        .user-dropdown.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Dropdown Menu */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--neutral-light);
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            margin-top: 0.5rem;
+        }
+
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            color: var(--text);
+            text-decoration: none;
+            transition: var(--transition);
+            border-bottom: 1px solid var(--neutral-dark);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: var(--neutral);
+            color: var(--primary);
+        }
+
+        .dropdown-item i {
+            width: 16px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .logout-item {
+            color: #dc3545;
+        }
+
+        .logout-item:hover {
+            background: #dc3545;
+            color: var(--neutral-light);
         }
 
         /* Dashboard Content */
         .dashboard {
-            padding: 6rem 5% 2rem;
+            padding: 7rem 5% 2rem;
             max-width: 1400px;
             margin: 0 auto;
         }
@@ -327,7 +445,7 @@
             background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .nav-menu {
@@ -365,7 +483,8 @@
             font-size: 0.95rem;
         }
 
-        .nav-link:hover, .nav-link.active {
+        .nav-link:hover,
+        .nav-link.active {
             background: var(--secondary);
             color: var(--neutral-light);
             transform: translateX(5px);
@@ -425,7 +544,7 @@
             background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .student-role {
@@ -438,6 +557,7 @@
         /* Adjust main content for sidebar */
         .main-content {
             margin-left: 250px;
+            padding-top: 5rem;
             transition: var(--transition);
         }
 
@@ -513,6 +633,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Sidebar -->
     <aside class="sidebar">
@@ -527,7 +648,7 @@
                 <div class="nav-section">
                     <li class="nav-item">
                         <a href="{{ route('student.dashboard') }}" class="nav-link">
-                            <i class="fas fa-tachometer-alt"></i>
+                            <i class="fas fa-home"></i>
                             Dashboard
                         </a>
                     </li>
@@ -559,7 +680,9 @@
                 <div class="student-avatar">{{ isset($user) ? strtoupper(substr($user->name, 0, 1)) : 'A' }}</div>
                 <div class="student-info">
                     <div class="student-name">{{ isset($user) ? $user->name : 'Student Name' }}</div>
-                    <div class="student-role">{{ isset($user) ? 'Grade ' . $user->grade . ' • Section ' . $user->section : 'Grade 7 • Section Narra' }}</div>
+                    <div class="student-role">
+                        {{ isset($user) ? 'Grade ' . $user->grade . ' • Section ' . $user->section : 'Grade 7 • Section Narra' }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -568,18 +691,53 @@
     <!-- Header -->
     <header>
         <div class="header-container">
-            <div class="user-info">
-                <span>Welcome, Student</span>
+            <div class="header-left">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
-            <button class="menu-toggle" id="menuToggle">
-                <i class="fas fa-bars"></i>
-            </button>
+            <div class="header-right">
+                <div class="user-info">
+                    <div class="user-dropdown" onclick="toggleUserDropdown()">
+                        <div class="user-avatar">
+                            {{ Auth::user() ? strtoupper(substr(Auth::user()->name, 0, 1)) : 'S' }}
+                        </div>
+                        <div class="user-details">
+                            <div class="user-name">{{ Auth::user() ? Auth::user()->name : 'Student Name' }}</div>
+                            <div class="user-role">
+                                {{ Auth::user() ? 'Grade ' . Auth::user()->grade . ' • Section ' . Auth::user()->section : 'Student' }}
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-down dropdown-arrow"></i>
+
+                        <!-- Dropdown Menu -->
+                        <div class="dropdown-menu" id="userDropdownMenu">
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-user"></i>
+                                <span>Profile</span>
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-cog"></i>
+                                <span>Settings</span>
+                            </a>
+                            <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                                @csrf
+                                <button type="submit" class="dropdown-item logout-item"
+                                    style="width: 100%; border: none; background: none; text-align: left;">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Logout</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
 
     @yield ('content')
-    
+
     <script>
         // Add hover effect for grade cards
         document.querySelectorAll('.grade-card').forEach(card => {
@@ -610,13 +768,35 @@
             });
         });
 
+        // User dropdown functionality
+        function toggleUserDropdown() {
+            const dropdown = document.querySelector('.user-dropdown');
+            const dropdownMenu = document.getElementById('userDropdownMenu');
+
+            dropdown.classList.toggle('active');
+            dropdownMenu.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+            const userDropdown = document.querySelector('.user-dropdown');
+            const dropdownMenu = document.getElementById('userDropdownMenu');
+
+            if (!userDropdown.contains(event.target)) {
+                userDropdown.classList.remove('active');
+                dropdownMenu.classList.remove('show');
+            }
+        });
+
         // Add sidebar toggle functionality
         const menuToggle = document.getElementById('menuToggle');
         const sidebar = document.querySelector('.sidebar');
 
-        menuToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-        });
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
 
         // Close sidebar when clicking outside on mobile
         document.addEventListener('click', (e) => {
@@ -635,4 +815,5 @@
         });
     </script>
 </body>
-</html> 
+
+</html>

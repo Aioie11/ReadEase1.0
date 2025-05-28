@@ -14,9 +14,14 @@ class ReadingAssessment extends Model
         'reading_time',
         'miscues',
         'total_words',
+        'correct_answers',
+        'total_questions',
+        'comprehension',
+        'correct_reading',
         'reading_speed',
         'section',
         'language',
+        'grade',
         'assessment_date'
     ];
 
@@ -24,7 +29,11 @@ class ReadingAssessment extends Model
         'reading_time' => 'float',
         'miscues' => 'integer',
         'total_words' => 'integer',
+        'correct_answers' => 'integer',
+        'total_questions' => 'integer',
+        'comprehension' => 'integer',
+        'correct_reading' => 'integer',
         'reading_speed' => 'integer',
         'assessment_date' => 'datetime'
     ];
-} 
+}
