@@ -4,7 +4,6 @@
 
 @section('content')
 <style>
-
         .user-info {
             display: flex;
             align-items: center;
@@ -30,14 +29,8 @@
         .metric-card {
             background: var(--neutral-light);
             padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow-md);
-            transition: var(--transition);
-        }
-
-        .metric-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .metric-card h2 {
@@ -52,22 +45,16 @@
             font-weight: 600;
         }
 
-        /* Charts Section */
-        .charts {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 1.5rem;
+        /* Chart Section */
+        .chart-section {
+            background: var(--neutral-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             margin-bottom: 2rem;
         }
 
-        .chart-card {
-            background: var(--neutral-light);
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow-md);
-        }
-
-        .chart-card h2 {
+        .chart-section h2 {
             color: var(--text);
             font-size: 1.2rem;
             margin-bottom: 1rem;
@@ -77,8 +64,8 @@
         .recent-tests {
             background: var(--neutral-light);
             padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow-md);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .recent-tests h2 {
@@ -107,43 +94,29 @@
             background: var(--neutral);
         }
 
+        .delete-btn {
+            background-color: #e53935;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .delete-btn:hover {
+            background-color: #c62828;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
             .main-content {
                 margin-left: 0;
             }
 
-            header {
-                margin-left: 0;
-                width: 100%;
-            }
-
-            .menu-toggle {
-                display: block;
-            }
-
-            .charts {
+            .dashboard-metrics {
                 grid-template-columns: 1fr;
             }
-        }
-
-        /* Menu Toggle Button */
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--neutral-light);
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0.5rem;
         }
     </style>
 </head>
@@ -166,14 +139,14 @@
             </div>
         </div>
 
-        <div class="charts">
-            <div class="chart-card">
-                <h2>Performance Trends</h2>
-                <canvas id="performanceChart"></canvas>
-            </div>
-            <div class="chart-card">
-                <h2>Reading Level Distribution</h2>
-                <canvas id="readingLevelChart"></canvas>
+        <div class="chart-section">
+            <h2>Reading Level Distribution By Grade</h2>
+            <canvas id="readingLevelChart"></canvas>
+            <div style="margin-top:1rem; font-size:0.95rem;">
+                <strong>Legend:</strong>
+                <span style="color:#4caf50; font-weight:bold;">■</span> Independent (Word Reading: 97-100, Comprehension: 80-100)
+                <span style="color:#ffb300; font-weight:bold; margin-left:1.5rem;">■</span> Instructional (Word Reading: 90-96, Comprehension: 59-79)
+                <span style="color:#e53935; font-weight:bold; margin-left:1.5rem;">■</span> Frustration (Word Reading: 89 BELOW, Comprehension: 58 BELOW)
             </div>
         </div>
 
@@ -187,6 +160,7 @@
                         <th>Score</th>
                         <th>Date</th>
                         <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -197,6 +171,13 @@
                         <td>{{ $test->score }}%</td>
                         <td>{{ $test->created_at->format('F d, Y') }}</td>
                         <td>{{ $test->status }}</td>
+                        <td>
+                            <form action="{{ route('admin.delete.test', $test->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete this test?')">Delete</button>
+                            </form>
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -207,75 +188,77 @@
     <!-- Include Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- JavaScript for Charts -->
+    <!-- JavaScript for Chart -->
     <script>
-        // Data for Performance Trends
-        const performanceData = {
-            labels: ['August', 'September', 'October', 'November'],
-            datasets: [{
-                label: 'Performance',
-                data: [80, 90, 70, 80],
-                backgroundColor: 'rgba(54,162,235,0.5)',
-                borderColor: 'rgba(54,162,235,1)',
-                borderWidth: 1
-            }]
-        };
+        const distribution = @json($readingLevelDistribution ?? []);
 
-        // Config for Performance Trends
-        const performanceConfig = {
-            type: 'line',
-            data: performanceData,
-            options: {
-                responsive: true
-            }
-        };
+        // Filter for grades 7-10
+        const grades = ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'];
+        const independent = grades.map(g => distribution[g]?.['Independent'] || 0);
+        const instructional = grades.map(g => distribution[g]?.['Instructional'] || 0);
+        const frustration = grades.map(g => distribution[g]?.['Frustration'] || 0);
 
-        // Render Performance Chart
-        new Chart(document.getElementById('performanceChart'), performanceConfig);
-
-        // Data for Reading Level Distribution
         const readingData = {
-            labels: ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'],
-            datasets: [{
-                label: 'Reading Level',
-                data: [30, 20, 40, 30],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)'
-                ],
-                borderWidth: 1
-            }]
+            labels: grades,
+            datasets: [
+                {
+                    label: 'Independent',
+                    data: independent,
+                    backgroundColor: '#4caf50',
+                    stack: 'Stack 0',
+                },
+                {
+                    label: 'Instructional',
+                    data: instructional,
+                    backgroundColor: '#ffb300',
+                    stack: 'Stack 0',
+                },
+                {
+                    label: 'Frustration',
+                    data: frustration,
+                    backgroundColor: '#e53935',
+                    stack: 'Stack 0',
+                }
+            ]
         };
 
-        // Config for Reading Level Distribution
+        // Config for Stacked Bar Chart
         const readingConfig = {
             type: 'bar',
             data: readingData,
             options: {
-                responsive: true
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    },
+                    title: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        title: {
+                            display: true,
+                            text: 'Grade Level'
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Students'
+                        }
+                    }
+                }
             }
         };
 
         // Render Reading Level Chart
         new Chart(document.getElementById('readingLevelChart'), readingConfig);
-
-        // Add sidebar toggle functionality
-        const menuToggle = document.querySelector('.menu-toggle');
-        const sidebar = document.querySelector('.sidebar');
-        const mainContent = document.querySelector('.main-content');
-        const header = document.querySelector('header');
-
-        menuToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-        });
     </script>
 </body>
 

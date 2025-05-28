@@ -34,6 +34,7 @@ class AdminController extends Controller
             ->get()
             ->map(function ($test) {
                 return (object)[
+                    'id' => $test->id,
                     'student_name' => $test->student->first_name . ' ' . $test->student->last_name,
                     'test_type' => 'English Test',
                     'score' => $test->score,
@@ -49,6 +50,7 @@ class AdminController extends Controller
             ->get()
             ->map(function ($test) {
                 return (object)[
+                    'id' => $test->id,
                     'student_name' => $test->student->first_name . ' ' . $test->student->last_name,
                     'test_type' => 'Tagalog Test',
                     'score' => $test->score,
@@ -63,6 +65,7 @@ class AdminController extends Controller
             ->get()
             ->map(function ($test) {
                 return (object)[
+                    'id' => $test->id,
                     'student_name' => $test->student_name,
                     'test_type' => 'Reading Assessment',
                     'score' => round(($test->reading_speed / 200) * 100), // Convert reading speed to percentage
@@ -79,5 +82,38 @@ class AdminController extends Controller
             ->take(5);
 
         return view('admin.AdminDashboard', compact('totalStudents', 'totalTests', 'topListeners', 'recentTests'));
+    }
+
+    public function deleteTest($id)
+    {
+        // Try to find and delete the test from each model
+        $deleted = false;
+
+        // Try English tests
+        $englishTest = StudentAnswerEnglish::find($id);
+        if ($englishTest) {
+            $englishTest->delete();
+            $deleted = true;
+        }
+
+        // Try Tagalog tests
+        $tagalogTest = StudentAnswerTagalog::find($id);
+        if ($tagalogTest) {
+            $tagalogTest->delete();
+            $deleted = true;
+        }
+
+        // Try Reading assessments
+        $readingTest = ReadingAssessment::find($id);
+        if ($readingTest) {
+            $readingTest->delete();
+            $deleted = true;
+        }
+
+        if ($deleted) {
+            return redirect()->back()->with('success', 'Test deleted successfully');
+        }
+
+        return redirect()->back()->with('error', 'Test not found');
     }
 } 
