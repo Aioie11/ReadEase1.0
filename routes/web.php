@@ -40,9 +40,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware(['web'])->group(function () {
     // Teacher Routes
     Route::prefix('teacher')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('teacher.dashboard');
-        })->name('teacher.dashboard');
+        Route::get('/dashboard', [TeacherController::class, 'dashboard'])->name('teacher.dashboard');
 
         Route::get('/students', function () {
             return view('teacher.students');
@@ -125,6 +123,7 @@ Route::middleware(['web'])->group(function () {
             return view('admin.userManagement');
         })->name('admin.user-management');
 
+        Route::delete('/delete-test/{id}', [AdminController::class, 'deleteTest'])->name('admin.delete.test');
 
         Route::post('/users', [ProfileController::class, 'store']);
         Route::get('/users', [ProfileController::class, 'index']);
@@ -160,9 +159,7 @@ Route::get('/stud-dash', [StudentDashboardController::class, 'index'])->name('st
 Route::get('/stud-eng', [ReadingMaterialController::class, 'getPublishedMaterial'])->name('student.students-eng');
 Route::get('/stud-fil', [ReadingMaterialController::class, 'getPublishedMaterial'])->name('student.students-fil');
 
-Route::get('/stud-reports', function () {
-    return view('student.stud-reports');
-});
+Route::get('/stud-reports', [StudentDashboardController::class, 'reports'])->name('student.reports');
 
 
 Route::get('/admin/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.dashboard');
