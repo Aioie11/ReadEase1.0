@@ -571,7 +571,7 @@
                 <div class="nav-section">
                     <li class="nav-item">
                         <a href="{{ route('student.dashboard') }}" class="nav-link">
-                            <i class="fas fa-tachometer-alt"></i>
+                            <i class="fas fa-home"></i>
                             Dashboard
                         </a>
                     </li>

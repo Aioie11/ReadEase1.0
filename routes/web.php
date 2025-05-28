@@ -10,7 +10,7 @@ use App\Http\Controllers\ReadingController;
 use App\Http\Controllers\ReadingMaterialController;
 use App\Http\Controllers\ReadingLevelController;
 use App\Http\Controllers\StudentDashboardController;
-use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\StudentAnswerEnglishController;
 use Illuminate\Http\Request;
 
 
@@ -20,9 +20,6 @@ use Illuminate\Http\Request;
 
 // Route::post('/student/add/english', [StudentAnswerEnglishController::class, 'store'])->name('student.add.english');
 // Route::post('/student/add/tagalog', [StudentAnswerTagalogController::class, 'store'])->name('student.add.tagalog');
-
-Route::post('/student/add', [StudentAnswerEnglishController::class, 'store']);
-Route::post('/student/add', [StudentAnswerTagalogController::class, 'store']);
 
 
 // Home Route
@@ -137,6 +134,7 @@ Route::middleware(['web'])->group(function () {
     Route::prefix('student')->group(function () {
         Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('student.dashboard');
         Route::get('/reports', [StudentDashboardController::class, 'reports'])->name('student.reports');
+        Route::post('/add/english', [StudentAnswerEnglishController::class, 'store'])->name('student.add.english');
     });
 
     // Reading Materials Routes
@@ -153,14 +151,6 @@ Route::middleware(['web'])->group(function () {
 });
 
 
-Route::get('/viewreports', function () {
-    return view('viewreports');
-});
-
-Route::get('/log', function () {
-    return view('log'); // This is your homepage
-});
-
 // Student Routes
 Route::get('/stud-dash', [StudentDashboardController::class, 'index'])->name('student.dashboard');
 
@@ -172,4 +162,9 @@ Route::get('/stud-reports', [StudentDashboardController::class, 'reports'])->nam
 
 Route::get('/admin/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.dashboard');
 
+Route::post('/student/add/english', [StudentAnswerEnglishController::class, 'store'])->name('student.add.english');
+
+Route::get('/teacher/studentManagement', function () {
+    return view('teacher.studentManagement');
+});
 
