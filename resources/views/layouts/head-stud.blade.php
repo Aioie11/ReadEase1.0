@@ -517,7 +517,7 @@
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <a href="{{ url('/') }}" class="sidebar-logo">
+            <a class="sidebar-logo">
                 <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo">
                 <span>ReadEase</span>
             </a>
@@ -549,17 +549,17 @@
                             Reports
                         </a>
                     </li>
-                </div>
+                    
                 </div>
             </ul>
         </nav>
 
         <div class="sidebar-footer">
             <div class="student-profile">
-                <div class="student-avatar">{{ isset($user) ? strtoupper(substr($user->name, 0, 1)) : 'A' }}</div>
+                <div class="student-avatar">{{ auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 1)) : 'A' }}</div>
                 <div class="student-info">
-                    <div class="student-name">{{ isset($user) ? $user->name : 'Student Name' }}</div>
-                    <div class="student-role">{{ isset($user) ? 'Grade ' . $user->grade . ' • Section ' . $user->section : 'Grade 7 • Section Narra' }}</div>
+                    <div class="student-name">{{ auth()->check() ? auth()->user()->name : 'Student Name' }}</div>
+                    <div class="student-role">{{ auth()->check() ? 'Grade ' . auth()->user()->grade . ' • Section ' . auth()->user()->section : 'Grade 7 • Section Narra' }}</div>
                 </div>
             </div>
         </div>

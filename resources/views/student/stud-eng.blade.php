@@ -100,11 +100,87 @@
         <div class="confirmation-content">
             <h2>Success!</h2>
             <p>Your answers have been submitted successfully.</p>
+            @if(session('score'))
+                <p class="score-display">Your score: {{ session('score') }}/{{ session('total_questions') }}</p>
+            @endif
+
+        </div>
+    </div>
+
+    <!-- Alert Modal -->
+    <div id="alertModal" class="modal">
+        <div class="confirmation-content">
+            <h2>Incomplete Answers</h2>
+            <p>Please answer all questions before submitting.</p>
             <div class="confirmation-buttons">
-                <button class="confirm-submit" onclick="closeSuccessModal()">OK</button>
+                <button class="confirm-submit" onclick="closeAlertModal()">OK</button>
             </div>
         </div>
     </div>
+
+    <script>
+        function confirmSubmit() {
+            // Check if all questions are answered
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+            const textInputs = document.querySelectorAll('input[type="text"]');
+            const allQuestions = document.querySelectorAll('.question-card');
+            
+            // Check if all questions have an answer
+            let allAnswered = true;
+            allQuestions.forEach((question, index) => {
+                const questionNumber = index + 1;
+                const radioInputs = question.querySelectorAll(`input[name="c${questionNumber}"]`);
+                const textInput = question.querySelector(`input[name="c${questionNumber}"]`);
+                
+                if (radioInputs.length > 0) {
+                    // For radio button questions
+                    const isAnswered = Array.from(radioInputs).some(radio => radio.checked);
+                    if (!isAnswered) {
+                        allAnswered = false;
+                    }
+                } else if (textInput) {
+                    // For text input questions
+                    if (!textInput.value.trim()) {
+                        allAnswered = false;
+                    }
+                }
+            });
+            
+            if (!allAnswered) {
+                document.getElementById('alertModal').classList.add('show');
+                return;
+            }
+            
+            // Show confirmation modal
+            document.getElementById('confirmationModal').classList.add('show');
+        }
+
+        function submitForm() {
+            document.getElementById('answerForm').submit();
+            // Show success modal immediately after submission
+            document.getElementById('successModal').classList.add('show');
+        }
+
+        function closeConfirmationModal() {
+            document.getElementById('confirmationModal').classList.remove('show');
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.remove('show');
+            window.location.href = "{{ route('student.reports') }}";
+        }
+
+        function closeAlertModal() {
+            document.getElementById('alertModal').classList.remove('show');
+        }
+
+        // Show success modal if there's a success message
+        @if(session('success'))
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('successModal').classList.add('show');
+            });
+        @endif
+    </script>
 
     <style>
         .passage-container {
@@ -194,32 +270,34 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.5);
             z-index: 1000;
-            overflow-y: auto;
-            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .confirmation-content {
-            background: var(--neutral-light);
-            margin: 15% auto;
+            background-color: white;
             padding: 2rem;
-            width: 90%;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             max-width: 400px;
-            border-radius: 12px;
-            box-shadow: var(--shadow-lg);
+            width: 90%;
             text-align: center;
         }
 
         .confirmation-content h2 {
-            color: var(--text);
+            color: #1a237e;
             margin-bottom: 1rem;
-            font-size: 1.5rem;
         }
 
         .confirmation-content p {
-            color: var(--text-light);
             margin-bottom: 1.5rem;
+            color: #333;
         }
 
         .confirmation-buttons {
@@ -228,132 +306,40 @@
             gap: 1rem;
         }
 
-        .confirm-submit {
-            background: var(--primary);
-            color: var(--neutral-light);
-            border: none;
+        .confirm-submit, .cancel-submit {
             padding: 0.8rem 1.5rem;
-            border-radius: 8px;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
-            transition: var(--transition);
-            font-weight: 500;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .confirm-submit {
+            background-color: #1a237e;
+            color: white;
         }
 
         .confirm-submit:hover {
-            background: var(--primary-dark);
+            background-color: #0d47a1;
             transform: translateY(-2px);
         }
 
         .cancel-submit {
-            background: var(--neutral);
-            color: var(--text);
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: 500;
+            background-color: #e0e0e0;
+            color: #333;
         }
 
         .cancel-submit:hover {
-            background: var(--neutral-dark);
+            background-color: #bdbdbd;
             transform: translateY(-2px);
         }
 
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid transparent;
-            border-radius: 4px;
-            position: relative;
-        }
-
-        .alert-success {
-            color: #155724;
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-        }
-
-        .alert-danger {
-            color: #721c24;
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-        }
-
-        .alert-dismissible {
-            padding-right: 4rem;
-        }
-
-        .btn-close {
-            position: absolute;
-            top: 0;
-            right: 0;
-            padding: 1.25rem;
-            background: transparent;
-            border: 0;
-            cursor: pointer;
-        }
-
-        .fade {
-            transition: opacity .15s linear;
-        }
-
-        .fade.show {
-            opacity: 1;
+        .score-display {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a237e;
+            margin: 1rem 0;
         }
     </style>
-
-    <script>
-        function confirmSubmit() {
-            document.getElementById('confirmationModal').style.display = 'block';
-        }
-
-        function closeConfirmationModal() {
-            document.getElementById('confirmationModal').style.display = 'none';
-        }
-
-        function closeSuccessModal() {
-            document.getElementById('successModal').style.display = 'none';
-            window.location.href = "{{ route('student.reports') }}";
-        }
-
-        function submitForm() {
-            const form = document.getElementById('answerForm');
-            const formData = new FormData(form);
-
-            fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                closeConfirmationModal();
-                if (data.success) {
-                    document.getElementById('successModal').style.display = 'block';
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while submitting your answers. Please try again.');
-            });
-        }
-
-        // Close modals when clicking outside
-        window.onclick = function(event) {
-            const confirmationModal = document.getElementById('confirmationModal');
-            const successModal = document.getElementById('successModal');
-            if (event.target === confirmationModal) {
-                closeConfirmationModal();
-            }
-            if (event.target === successModal) {
-                closeSuccessModal();
-            }
-        }
-    </script>
 @endsection

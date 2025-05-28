@@ -11,6 +11,7 @@ use App\Http\Controllers\ReadingMaterialController;
 use App\Http\Controllers\ReadingLevelController;
 use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\StudentAnswerEnglishController;
+use App\Http\Controllers\StudentAnswerTagalogController;
 use Illuminate\Http\Request;
 
 
@@ -163,9 +164,12 @@ Route::get('/stud-reports', function () {
     return view('student.stud-reports');
 });
 
+
 Route::get('/admin/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.dashboard');
 
 Route::post('/student/add/english', [StudentAnswerEnglishController::class, 'store'])->name('student.add.english');
+
+Route::post('/student/add/filipino', [StudentAnswerTagalogController::class, 'store'])->name('student.add.filipino');
 
 Route::get('/teacher/studentManagement', function () {
     return view('teacher.studentManagement');
