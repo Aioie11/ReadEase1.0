@@ -631,6 +631,50 @@
                 width: 100%;
             }
         }
+
+        /* Add these styles to your existing CSS */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--neutral-light);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .user-role {
+            background: var(--accent);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            
+            .header-actions {
+                order: 3;
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
     </style>
 </head>
 
@@ -638,7 +682,7 @@
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <a href="{{ url('/') }}" class="sidebar-logo">
+            <a class="sidebar-logo">
                 <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo">
                 <span>ReadEase</span>
             </a>
@@ -670,68 +714,40 @@
                             Reports
                         </a>
                     </li>
-                </div>
+                    
                 </div>
             </ul>
         </nav>
 
         <div class="sidebar-footer">
             <div class="student-profile">
-                <div class="student-avatar">{{ isset($user) ? strtoupper(substr($user->name, 0, 1)) : 'A' }}</div>
+                <div class="student-avatar">{{ auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 1)) : 'A' }}</div>
                 <div class="student-info">
-                    <div class="student-name">{{ isset($user) ? $user->name : 'Student Name' }}</div>
-                    <div class="student-role">
-                        {{ isset($user) ? 'Grade ' . $user->grade . ' • Section ' . $user->section : 'Grade 7 • Section Narra' }}
-                    </div>
+                    <div class="student-name">{{ auth()->check() ? auth()->user()->name : 'Student Name' }}</div>
+                    <div class="student-role">{{ auth()->check() ? 'Grade ' . auth()->user()->grade . ' • Section ' . auth()->user()->section : 'Grade 7 • Section Narra' }}</div>
                 </div>
             </div>
         </div>
     </aside>
 
     <!-- Header -->
-    <header>
-        <div class="header-container">
-            <div class="header-left">
-                <button class="menu-toggle" id="menuToggle">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
-            <div class="header-right">
-                <div class="user-info">
-                    <div class="user-dropdown" onclick="toggleUserDropdown()">
-                        <div class="user-avatar">
-                            {{ Auth::user() ? strtoupper(substr(Auth::user()->name, 0, 1)) : 'S' }}
-                        </div>
-                        <div class="user-details">
-                            <div class="user-name">{{ Auth::user() ? Auth::user()->name : 'Student Name' }}</div>
-                            <div class="user-role">
-                                {{ Auth::user() ? 'Grade ' . Auth::user()->grade . ' • Section ' . Auth::user()->section : 'Student' }}
-                            </div>
-                        </div>
-                        <i class="fas fa-chevron-down dropdown-arrow"></i>
-
-                        <!-- Dropdown Menu -->
-                        <div class="dropdown-menu" id="userDropdownMenu">
-                            <a href="#" class="dropdown-item">
-                                <i class="fas fa-user"></i>
-                                <span>Profile</span>
-                            </a>
-                            <a href="#" class="dropdown-item">
-                                <i class="fas fa-cog"></i>
-                                <span>Settings</span>
-                            </a>
-                            <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
-                                @csrf
-                                <button type="submit" class="dropdown-item logout-item"
-                                    style="width: 100%; border: none; background: none; text-align: left;">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                    <span>Logout</span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
+    <header style="background: #156fd1; box-shadow: none;">
+        <div class="header-container" style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 1rem;">
+            <div style="display: flex; align-items: center; gap: 1.2rem;">
+                <div style="width: 44px; height: 44px; border-radius: 50%; background: #f9a602; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 1.5rem; color: #fff;">
+                    {{ isset($user) ? strtoupper(substr($user->name, 0, 1)) : 'U' }}
+                </div>
+                <div style="display: flex; flex-direction: column;">
+                    <span style="font-weight: 700; color: #fff; font-size: 1.1rem;">{{ isset($user) ? $user->name : 'User' }}</span>
+                    <span style="color: #fff; font-size: 0.95rem; opacity: 0.85; text-transform: lowercase;">Student</span>
                 </div>
             </div>
+            <a href="{{ route('logout') }}" class="logout-btn" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" style="background: #2176d2; color: #fff; border-radius: 7px; padding: 0.6rem 1.4rem; font-weight: 500; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 2px 8px rgba(21,111,209,0.08); border: none; transition: background 0.2s;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
         </div>
     </header>
 

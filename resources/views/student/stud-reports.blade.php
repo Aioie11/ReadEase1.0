@@ -49,47 +49,11 @@
                     </div>
                 </div>
                 <div class="feedback-section">
-                    <div class="feedback-history">
-                            <h4>Teacher's Feedbacks</h4>
+                    <h3>Teacher Feedback</h3>
+                    <div class="feedback-content">
                         <div class="feedback-item">
-                            <div class="feedback-meta">
-                                <span>Date: December 15, 2025</span>
-                                <span>Reading Level: Grade 7</span>
-                            </div>
-                            <div class="feedback-content">
-                                <p><strong>Strengths:</strong> Good comprehension of main ideas and vocabulary usage.</p>
-                                <p><strong>Areas for Improvement:</strong> Needs to work on reading pace and pronunciation.</p>
-                                <p><strong>Recommendations:</strong> Practice reading aloud daily and use phonics exercises.</p>
-                            </div>
-                            <div class="feedback-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
-                                <span>4/5</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="feedback-history">
-                        <div class="feedback-item">
-                            <div class="feedback-meta">
-                                <span>Date: March 30, 2024</span>
-                                <span>Reading Level: Grade 7</span>
-                            </div>
-                            <div class="feedback-content">
-                                <p><strong>Strengths:</strong> Good comprehension of main ideas and vocabulary usage.</p>
-                                <p><strong>Areas for Improvement:</strong> Needs to work on reading pace and pronunciation.</p>
-                                <p><strong>Recommendations:</strong> Practice reading aloud daily and use phonics exercises.</p>
-                            </div>
-                            <div class="feedback-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
-                                <span>4/5</span>
+                            <div class="feedback-message">
+                                <p>No feedback yet</p>
                             </div>
                         </div>
                     </div>
@@ -132,53 +96,16 @@
                     </div>
                 </div>
                 <div class="feedback-section">
-                    <div class="feedback-history">
-                            <h4>Teacher's Feedbacks</h4>
+                    <h3>Teacher Feedback</h3>
+                    <div class="feedback-content">
                         <div class="feedback-item">
-                            <div class="feedback-meta">
-                                <span>Date: December 15, 2025</span>
-                                <span>Reading Level: Grade 7</span>
-                            </div>
-
-                            <div class="feedback-content">
-                                <p><strong>Strengths:</strong> Good comprehension of main ideas and vocabulary usage.</p>
-                                <p><strong>Areas for Improvement:</strong> Needs to work on reading pace and pronunciation.</p>
-                                <p><strong>Recommendations:</strong> Practice reading aloud daily and use phonics exercises.</p>
-                            </div>
-
-                            <div class="feedback-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
-                                <span>4/5</span>
-                            </div>
-                        </div>
-
-                        <div class="feedback-item">
-                            <div class="feedback-meta">
-                                <span>Date: December 15, 2025</span>
-                                <span>Reading Level: Grade 7</span>
-                            </div>
-
-                            <div class="feedback-content">
-                                <p><strong>Strengths:</strong> Good comprehension of main ideas and vocabulary usage.</p>
-                                <p><strong>Areas for Improvement:</strong> Needs to work on reading pace and pronunciation.</p>
-                                <p><strong>Recommendations:</strong> Practice reading aloud daily and use phonics exercises.</p>
-                            </div>
-
-                            <div class="feedback-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
-                                <span>4/5</span>
+                            <div class="feedback-message">
+                                <p>No feedback yet</p>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
             <!-- Detailed Results Table -->
             <div class="results-section">

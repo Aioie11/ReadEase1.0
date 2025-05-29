@@ -110,24 +110,25 @@
             align-items: center;
             gap: 1rem;
             color: var(--neutral-light);
-            position: relative;
-            margin-left: auto;
         }
 
-        /* User Dropdown Styles */
-        .user-dropdown {
-            position: relative;
+        .logout-btn {
+            background: var(--accent);
+            color: var(--neutral-light);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            cursor: pointer;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
+            gap: 0.5rem;
             transition: var(--transition);
+            font-weight: 500;
         }
 
-        .user-dropdown:hover {
-            background: rgba(255, 255, 255, 0.1);
+        .logout-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
         }
 
         .user-avatar {
@@ -626,36 +627,63 @@
         </div>
         <nav>
             <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="{{ route('admin.dashboard') }}" class="nav-link">
-                        <i class="fas fa-home"></i>
-                        Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.test-management') }}" class="nav-link">
-                        <i class="fas fa-file-alt"></i>
-                        Test Management
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.student-records') }}" class="nav-link">
-                        <i class="fas fa-users"></i>
-                        Student Record
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.user-management') }}" class="nav-link">
-                        <i class="fas fa-user-cog"></i>
-                        User Management
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.reports') }}" class="nav-link">
-                        <i class="fas fa-chart-line"></i>
-                        Reports
-                    </a>
-                </li>
+                @if(Auth::user()->role === 'admin')
+                    <li class="nav-item">
+                        <a href="{{ route('admin.dashboard') }}" class="nav-link">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.test-management') }}" class="nav-link">
+                            <i class="fas fa-tasks"></i>
+                            Test Management
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.student-records') }}" class="nav-link">
+                            <i class="fas fa-users"></i>
+                            Student Record
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.reports') }}" class="nav-link">
+                            <i class="fas fa-chart-line"></i>
+                            Reports
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.user-management') }}" class="nav-link">
+                            <i class="fas fa-user-cog"></i>
+                            User Management
+                        </a>
+                    </li>
+                @else
+                    <li class="nav-item">
+                        <a href="{{ route('student.dashboard') }}" class="nav-link">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('student.tests') }}" class="nav-link">
+                            <i class="fas fa-book"></i>
+                            My Tests
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('student.progress') }}" class="nav-link">
+                            <i class="fas fa-chart-line"></i>
+                            My Progress
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('student.profile') }}" class="nav-link">
+                            <i class="fas fa-user"></i>
+                            My Profile
+                        </a>
+                    </li>
+                @endif
             </ul>
         </nav>
 
@@ -671,47 +699,23 @@
     </aside>
 
     <!-- Header -->
-    <header>
-        <div class="header-container">
-            <div class="header-left">
-                <button class="menu-toggle">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
-            <div class="header-right">
-                <div class="user-info">
-                    <div class="user-dropdown" onclick="toggleUserDropdown()">
-                        <div class="user-avatar">
-                            {{ Auth::user() ? strtoupper(substr(Auth::user()->name, 0, 1)) : 'A' }}
-                        </div>
-                        <div class="user-details">
-                            <div class="user-name">{{ Auth::user() ? Auth::user()->name : 'Admin Name' }}</div>
-                            <div class="user-role">Administrator</div>
-                        </div>
-                        <i class="fas fa-chevron-down dropdown-arrow"></i>
-
-                        <!-- Dropdown Menu -->
-                        <div class="dropdown-menu" id="userDropdownMenu">
-                            <a href="#" class="dropdown-item">
-                                <i class="fas fa-user"></i>
-                                <span>Profile</span>
-                            </a>
-                            <a href="#" class="dropdown-item">
-                                <i class="fas fa-cog"></i>
-                                <span>Settings</span>
-                            </a>
-                            <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
-                                @csrf
-                                <button type="submit" class="dropdown-item logout-item"
-                                    style="width: 100%; border: none; background: none; text-align: left;">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                    <span>Logout</span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
+    <header style="background: #156fd1; box-shadow: none;">
+        <div class="header-container" style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 1rem;">
+            <div style="display: flex; align-items: center; gap: 1.2rem;">
+                <div style="width: 44px; height: 44px; border-radius: 50%; background: #f9a602; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 1.5rem; color: #fff;">
+                    {{ Auth::user() ? strtoupper(substr(Auth::user()->name, 0, 1)) : 'A' }}
+                </div>
+                <div style="display: flex; flex-direction: column;">
+                    <span style="font-weight: 700; color: #fff; font-size: 1.1rem;">{{ Auth::user()->name ?? 'Admin' }}</span>
+                    <span style="color: #fff; font-size: 0.95rem; opacity: 0.85; text-transform: lowercase;">Admin</span>
                 </div>
             </div>
+            <a href="{{ route('logout') }}" class="logout-btn" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" style="background: #2176d2; color: #fff; border-radius: 7px; padding: 0.6rem 1.4rem; font-weight: 500; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 2px 8px rgba(21,111,209,0.08); border: none; transition: background 0.2s;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
         </div>
     </header>
 

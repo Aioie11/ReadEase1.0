@@ -363,8 +363,8 @@
                 <button class="add-profile-button" onclick="openAddProfileModal()">+ Add New User</button>
             </div>
             <div class="search-bar">
-                <input type="text" placeholder="Search profiles...">
-                <button>Search</button>
+                <input type="text" id="searchInput" placeholder="Search by User ID or Name...">
+                <button onclick="searchUsers()">Search</button>
             </div>
             <table class="profile-table">
                 <thead>
@@ -411,12 +411,24 @@
                 </div>
                 <div class="form-group">
                     <label for="profileRole">Role</label>
-                    <select id="profileRole" name="role" required onchange="toggleStudentFields(this.value)">
+                    <select id="profileRole" name="role" required onchange="toggleRoleFields(this.value)">
                         <option value="">Select Role</option>
                         <option value="admin">Administrator</option>
                         <option value="teacher">Teacher</option>
                         <option value="student">Student</option>
                     </select>
+                </div>
+                <div id="teacherFields" style="display: none;">
+                    <div class="form-group">
+                        <label for="profileTeacherGrade">Grade Level Access</label>
+                        <select id="profileTeacherGrade" name="teacherGrade" class="teacher-field" required>
+                            <option value="">Select Grade Level</option>
+                            <option value="7">Grade 7</option>
+                            <option value="8">Grade 8</option>
+                            <option value="9">Grade 9</option>
+                            <option value="10">Grade 10</option>
+                        </select>
+                    </div>
                 </div>
                 <div id="studentFields" style="display: none;">
                     <div class="form-group">
@@ -568,18 +580,27 @@
         }
     }
 
-    function toggleStudentFields(role) {
+    function toggleRoleFields(role) {
         const studentFields = document.getElementById('studentFields');
+        const teacherFields = document.getElementById('teacherFields');
         const studentInputs = studentFields.getElementsByClassName('student-field');
+        const teacherInputs = teacherFields.getElementsByClassName('teacher-field');
         
+        // Hide all role-specific fields first
+        studentFields.style.display = 'none';
+        teacherFields.style.display = 'none';
+        Array.from(studentInputs).forEach(input => input.required = false);
+        Array.from(teacherInputs).forEach(input => input.required = false);
+        
+        // Show and set required fields based on role
         if (role === 'student') {
             studentFields.style.display = 'block';
             Array.from(studentInputs).forEach(input => input.required = true);
             // Reset sections when role changes
             document.getElementById('profileSection').innerHTML = '<option value="">Select Section</option>';
-        } else {
-            studentFields.style.display = 'none';
-            Array.from(studentInputs).forEach(input => input.required = false);
+        } else if (role === 'teacher') {
+            teacherFields.style.display = 'block';
+            Array.from(teacherInputs).forEach(input => input.required = true);
         }
     }
 
@@ -640,10 +661,41 @@
         });
     }
 
+    // Add this new function for searching users
+    function searchUsers() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+        
+        fetch('/admin/users')
+            .then(res => res.json())
+            .then(users => {
+                const filteredUsers = users.filter(user => 
+                    user.userId.toLowerCase().includes(searchTerm) || 
+                    user.name.toLowerCase().includes(searchTerm)
+                );
+                renderProfiles(filteredUsers);
+            })
+            .catch(error => {
+                console.error('Search error:', error);
+                alert('An error occurred while searching users.');
+            });
+    }
+
+    // Add event listener for Enter key in search input
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            searchUsers();
+        }
+    });
+
+    // Modify the existing loadProfiles function to store users globally
+    let allUsers = [];
     function loadProfiles() {
         fetch('/admin/users')
             .then(res => res.json())
-            .then(renderProfiles);
+            .then(users => {
+                allUsers = users; // Store all users
+                renderProfiles(users);
+            });
     }
 
     // Call on page load
