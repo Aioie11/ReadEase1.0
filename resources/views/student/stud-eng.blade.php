@@ -9,6 +9,18 @@
             <div class="dashboard-header">
                 <h1>English Question</h1>
                 <p>Read each passage and answer the questions given.</p>
+
+                <!-- Reading Timer Display -->
+                <div class="timer-container">
+                    <div class="timer-display">
+                        <i class="fas fa-clock"></i>
+                        <span class="timer-label">Reading Time:</span>
+                        <span id="timer" class="timer-value">00:00</span>
+                    </div>
+                    <div class="timer-status">
+                        <span id="timer-status">📖 Reading in progress...</span>
+                    </div>
+                </div>
             </div>
 
             @if(session('success'))
@@ -29,7 +41,7 @@
                 @csrf
                 <div class="grade-card">
                     <h2><i class="fas fa-book-open"></i> Reading Passage</h2>
-                    
+
                     <!-- Reading Passage -->
                     <div class="passage-container">
                         @if(isset($readingMaterial))
@@ -47,7 +59,7 @@
                     <!-- Questions -->
                     <div class="questions-container">
                         <h3>Questions</h3>
-                        
+
                         @if(isset($readingMaterial) && $readingMaterial->questions)
                             @foreach($readingMaterial->questions as $index => $question)
                                 <div class="question-card">
@@ -62,7 +74,8 @@
                                             @endforeach
                                         @else
                                             <div class="choice">
-                                                <input type="text" name="c{{ $index + 1 }}" class="form-control" placeholder="Enter your answer" required>
+                                                <input type="text" name="c{{ $index + 1 }}" class="form-control"
+                                                    placeholder="Enter your answer" required>
                                             </div>
                                         @endif
                                     </div>
@@ -107,6 +120,60 @@
     </div>
 
     <style>
+        /* Timer Styles */
+        .timer-container {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 2px solid #00B8A9;
+            box-shadow: 0 4px 12px rgba(0, 184, 169, 0.15);
+        }
+
+        .timer-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .timer-display i {
+            color: #00B8A9;
+            font-size: 1.2rem;
+        }
+
+        .timer-label {
+            font-weight: 600;
+            color: #1a237e;
+            font-size: 1.1rem;
+        }
+
+        .timer-value {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00B8A9;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 2px solid #00B8A9;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .timer-status {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        .timer-status.completed {
+            color: #4caf50;
+            font-weight: 600;
+        }
+
         .passage-container {
             margin: 20px 0;
             padding: 20px;
@@ -132,7 +199,7 @@
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .question {
@@ -194,7 +261,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 1000;
             overflow-y: auto;
             padding: 20px;
@@ -304,6 +371,60 @@
     </style>
 
     <script>
+        // Timer Variables
+        let startTime = Date.now();
+        let timerInterval;
+        let readingTimeSeconds = 0;
+
+        // Start timer when page loads
+        window.addEventListener('load', function () {
+            startTimer();
+            console.log('Reading timer started');
+        });
+
+        function startTimer() {
+            timerInterval = setInterval(function () {
+                readingTimeSeconds = Math.floor((Date.now() - startTime) / 1000);
+                const minutes = Math.floor(readingTimeSeconds / 60);
+                const seconds = readingTimeSeconds % 60;
+
+                // Update timer display
+                document.getElementById('timer').textContent =
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                // Update status based on time
+                updateTimerStatus(readingTimeSeconds);
+            }, 1000);
+        }
+
+        function updateTimerStatus(seconds) {
+            const statusElement = document.getElementById('timer-status');
+            const minutes = Math.floor(seconds / 60);
+
+            if (minutes < 2) {
+                statusElement.textContent = '📖 Reading in progress...';
+                statusElement.className = '';
+            } else if (minutes < 5) {
+                statusElement.textContent = '⏰ Good reading pace';
+                statusElement.className = '';
+            } else if (minutes < 10) {
+                statusElement.textContent = '🤔 Take your time to understand';
+                statusElement.className = '';
+            } else {
+                statusElement.textContent = '📚 Thorough reading - great job!';
+                statusElement.className = '';
+            }
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                document.getElementById('timer-status').textContent = '✅ Reading completed!';
+                document.getElementById('timer-status').className = 'completed';
+                console.log('Reading timer stopped. Total time:', readingTimeSeconds, 'seconds');
+            }
+        }
+
         function confirmSubmit() {
             document.getElementById('confirmationModal').style.display = 'block';
         }
@@ -318,8 +439,15 @@
         }
 
         function submitForm() {
+            // Stop the timer first
+            stopTimer();
+
             const form = document.getElementById('answerForm');
             const formData = new FormData(form);
+
+            // Add reading time to form data
+            formData.append('reading_time', readingTimeSeconds);
+            console.log('Submitting with reading time:', readingTimeSeconds, 'seconds');
 
             fetch(form.action, {
                 method: 'POST',
@@ -329,23 +457,23 @@
                     'Accept': 'application/json'
                 }
             })
-            .then(response => response.json())
-            .then(data => {
-                closeConfirmationModal();
-                if (data.success) {
-                    document.getElementById('successModal').style.display = 'block';
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while submitting your answers. Please try again.');
-            });
+                .then(response => response.json())
+                .then(data => {
+                    closeConfirmationModal();
+                    if (data.success) {
+                        document.getElementById('successModal').style.display = 'block';
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while submitting your answers. Please try again.');
+                });
         }
 
         // Close modals when clicking outside
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             const confirmationModal = document.getElementById('confirmationModal');
             const successModal = document.getElementById('successModal');
             if (event.target === confirmationModal) {

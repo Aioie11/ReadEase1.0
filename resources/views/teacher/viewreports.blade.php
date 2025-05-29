@@ -1245,8 +1245,8 @@
                 datasets: [{
                     data: [149, 250],
                     backgroundColor: [
-                        '#00B8A9',
-                        '#00B8A9'
+                        '#4fc3f7',
+                        '#f56565'
                     ],
                     borderWidth: 0,
                     borderRadius: 4
@@ -1264,8 +1264,8 @@
                 datasets: [{
                     data: [6, 10],
                     backgroundColor: [
-                        '#00B8A9',
-                        '#00B8A9'
+                        '#38b2ac',
+                        '#ed8936'
                     ],
                     borderWidth: 0,
                     borderRadius: 4
@@ -1283,9 +1283,9 @@
                 datasets: [{
                     data: [101, 149, 250],
                     backgroundColor: [
-                        '#00B8A9',
-                        '#00B8A9',
-                        '#00B8A9'
+                        '#f56565',
+                        '#38b2ac',
+                        '#ed8936'
                     ],
                     borderWidth: 0,
                     borderRadius: 4

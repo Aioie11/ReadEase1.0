@@ -30,6 +30,7 @@ class StudentAnswerEnglishController extends Controller
             'c5' => 'required',
             'c6' => 'required',
             'c7' => 'required',
+            'reading_time' => 'required|integer|min:0',
         ]);
 
         // Calculate score
@@ -41,6 +42,11 @@ class StudentAnswerEnglishController extends Controller
         }
 
         try {
+            // Calculate reading speed (words per minute)
+            $totalWords = 250; // Approximate word count of the passage
+            $readingTimeMinutes = $request->reading_time / 60;
+            $readingSpeed = $readingTimeMinutes > 0 ? round($totalWords / $readingTimeMinutes) : 0;
+
             // Save to database
             StudentAnswerEnglish::create([
                 'student_id' => $request->student_id,
@@ -52,6 +58,8 @@ class StudentAnswerEnglishController extends Controller
                 'c6' => $request->c6,
                 'c7' => $request->c7,
                 'score' => $score,
+                'reading_time' => $request->reading_time,
+                'reading_speed' => $readingSpeed,
             ]);
 
             // Check if the request is AJAX
