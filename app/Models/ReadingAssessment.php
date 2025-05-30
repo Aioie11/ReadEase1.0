@@ -10,6 +10,7 @@ class ReadingAssessment extends Model
     use HasFactory;
 
     protected $fillable = [
+        'student_id',
         'student_name',
         'reading_time',
         'miscues',
@@ -36,4 +37,9 @@ class ReadingAssessment extends Model
         'reading_speed' => 'integer',
         'assessment_date' => 'datetime'
     ];
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class, 'student_id', 'student_number');
+    }
 }

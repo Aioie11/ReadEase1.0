@@ -35,6 +35,6 @@ class Student extends Model
 
     public function readingAssessments()
     {
-        return $this->hasMany(ReadingAssessment::class, 'student_name', 'student_number');
+        return $this->hasMany(ReadingAssessment::class, 'student_id', 'student_number');
     }
 }

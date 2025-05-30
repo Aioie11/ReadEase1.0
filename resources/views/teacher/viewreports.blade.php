@@ -47,13 +47,40 @@
 
                 <div class="chart-panel">
                     <div class="chart-panel-header">
-                        <h3> Reading Sessions Progress (By Grade Level)</h3>
+                        <h3>📊 Reading Performance Distribution by Grade Level</h3>
                         <div class="time-selector">
                             <button class="time-btn active">All Grades</button>
                         </div>
                     </div>
                     <div class="chart-panel-body">
                         <canvas id="mainChart"></canvas>
+
+                        <!-- Reading Level Legend -->
+                        <div
+                            style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #00B8A9;">
+                            <h4 style="margin: 0 0 10px 0; color: #2D3748; font-size: 14px; font-weight: 600;">📖
+                                Reading Performance Levels:</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 15px; font-size: 12px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 16px; height: 16px; background: #00B8A9; border-radius: 4px;">
+                                    </div>
+                                    <span><strong>Independent (90-100%):</strong> Students read fluently without
+                                        assistance</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 16px; height: 16px; background: #F6AD55; border-radius: 4px;">
+                                    </div>
+                                    <span><strong>Instructional (70-89%):</strong> Students can read with teacher
+                                        support</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 16px; height: 16px; background: #E53E3E; border-radius: 4px;">
+                                    </div>
+                                    <span><strong>Frustration (Below 70%):</strong> Students struggle with reading
+                                        material</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1065,37 +1092,61 @@
         gradient.addColorStop(1, 'rgba(0, 184, 169, 0.05)');
 
         window.mainChart = new Chart(mainCtx, {
-            type: 'line',
+            type: 'bar',
             data: {
                 labels: ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'],
-                datasets: [{
-                    label: 'Reading Level Progress',
-                    data: [1.8, 2.1, 2.4, 2.7],
-                    borderColor: '#00B8A9',
-                    backgroundColor: gradient,
-                    tension: 0.4,
-                    fill: true,
-                    borderWidth: 4,
-                    pointBackgroundColor: '#ffffff',
-                    pointBorderColor: '#00B8A9',
-                    pointBorderWidth: 3,
-                    pointRadius: 8,
-                    pointHoverRadius: 12,
-                    pointHoverBackgroundColor: '#00B8A9',
-                    pointHoverBorderColor: '#ffffff',
-                    pointHoverBorderWidth: 4,
-                    shadowOffsetX: 2,
-                    shadowOffsetY: 2,
-                    shadowBlur: 8,
-                    shadowColor: 'rgba(0, 184, 169, 0.3)'
-                }]
+                datasets: [
+                    {
+                        label: 'Independent Level (90-100%)',
+                        data: [15, 18, 22, 20], // Number of students at Independent level
+                        backgroundColor: '#00B8A9',
+                        borderColor: '#00B8A9',
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        borderSkipped: false,
+                    },
+                    {
+                        label: 'Instructional Level (70-89%)',
+                        data: [8, 10, 6, 4], // Number of students at Instructional level
+                        backgroundColor: '#F6AD55',
+                        borderColor: '#F6AD55',
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        borderSkipped: false,
+                    },
+                    {
+                        label: 'Frustration Level (Below 70%)',
+                        data: [5, 4, 2, 1], // Number of students at Frustration level
+                        backgroundColor: '#E53E3E',
+                        borderColor: '#E53E3E',
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        borderSkipped: false,
+                    }
+                ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
                 plugins: {
                     legend: {
-                        display: false
+                        display: true,
+                        position: 'top',
+                        align: 'center',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'rect',
+                            padding: 20,
+                            font: {
+                                size: 12,
+                                weight: '600'
+                            },
+                            color: '#2D3748'
+                        }
                     },
                     tooltip: {
                         backgroundColor: 'rgba(255, 255, 255, 0.98)',
@@ -1104,83 +1155,67 @@
                         borderColor: '#00B8A9',
                         borderWidth: 2,
                         cornerRadius: 12,
-                        displayColors: false,
-                        padding: 20,
+                        displayColors: true,
+                        padding: 16,
                         titleFont: {
-                            size: 16,
+                            size: 14,
                             weight: 'bold'
                         },
                         bodyFont: {
-                            size: 14
+                            size: 13
                         },
-                        boxShadow: '0 8px 32px rgba(0, 184, 169, 0.2)',
                         callbacks: {
                             title: function (context) {
-                                const gradeData = {
-                                    'Grade 7': { students: 28, avgAge: '12-13 years' },
-                                    'Grade 8': { students: 32, avgAge: '13-14 years' },
-                                    'Grade 9': { students: 30, avgAge: '14-15 years' },
-                                    'Grade 10': { students: 25, avgAge: '15-16 years' }
-                                };
-                                const grade = context[0].label;
-                                const data = gradeData[grade];
-                                return `${grade} - ${data.students} Students (${data.avgAge})`;
+                                return `${context[0].label} Reading Performance`;
                             },
                             label: function (context) {
+                                const datasetLabel = context.dataset.label;
                                 const value = context.parsed.y;
-                                let level = readingLevels[Math.round(value)];
+                                const total = context.chart.data.datasets.reduce((sum, dataset) => {
+                                    return sum + dataset.data[context.dataIndex];
+                                }, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
 
-                                // Handle values between levels
-                                if (!level) {
-                                    if (value < 1.5) level = readingLevels[1];
-                                    else if (value < 2.5) level = readingLevels[2];
-                                    else level = readingLevels[3];
-                                }
-
-                                return [
-                                    `Reading Level: ${level.name}`,
-                                    `Word Reading: ${level.wordReading}%`,
-                                    `Comprehension: ${level.comprehension}%`,
-                                    `${level.description}`
-                                ];
+                                return `${datasetLabel}: ${value} students (${percentage}%)`;
+                            },
+                            afterBody: function (context) {
+                                const dataIndex = context[0].dataIndex;
+                                const total = context[0].chart.data.datasets.reduce((sum, dataset) => {
+                                    return sum + dataset.data[dataIndex];
+                                }, 0);
+                                return `Total Students: ${total}`;
                             }
                         }
                     }
                 },
                 scales: {
                     y: {
-                        position: 'left',
-                        beginAtZero: false,
-                        min: 0.5,
-                        max: 3.5,
+                        beginAtZero: true,
+                        stacked: false,
                         grid: {
                             color: 'rgba(0, 184, 169, 0.1)',
                             drawBorder: false,
-                            lineWidth: 2
+                            lineWidth: 1
                         },
                         ticks: {
-                            stepSize: 1,
-                            padding: 20,
+                            padding: 15,
                             font: {
-                                size: 14,
-                                weight: '600'
+                                size: 12,
+                                weight: '500'
                             },
-                            color: '#2D3748',
+                            color: '#4A5568',
                             callback: function (value) {
-                                if (value === 1) return '🔴 Frustration';
-                                if (value === 2) return '🟡 Instructional';
-                                if (value === 3) return '🟢 Independent';
-                                return '';
+                                return value + ' students';
                             }
                         },
                         title: {
                             display: true,
-                            text: 'Reading Performance Level',
+                            text: 'Number of Students',
                             font: {
-                                size: 16,
+                                size: 14,
                                 weight: 'bold'
                             },
-                            color: '#00B8A9',
+                            color: '#2D3748',
                             padding: 20
                         }
                     },
@@ -1193,13 +1228,13 @@
                             padding: 15,
                             font: {
                                 size: 13,
-                                weight: '500'
+                                weight: '600'
                             },
-                            color: '#4A5568'
+                            color: '#2D3748'
                         },
                         title: {
                             display: true,
-                            text: '🎓 Grade Levels',
+                            text: 'Grade Levels',
                             font: {
                                 size: 14,
                                 weight: 'bold'
@@ -1212,25 +1247,61 @@
             }
         });
 
-        // Define clean chart options
+        // Define clean chart options with consistent design
         const cleanChartOptions = {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: {
                     display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                    titleColor: '#1A202C',
+                    bodyColor: '#2D3748',
+                    borderColor: '#00B8A9',
+                    borderWidth: 2,
+                    cornerRadius: 8,
+                    displayColors: true,
+                    padding: 12,
+                    titleFont: {
+                        size: 13,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 12
+                    }
                 }
             },
             scales: {
                 y: {
                     beginAtZero: true,
                     grid: {
-                        color: 'rgba(0, 0, 0, 0.1)'
+                        color: 'rgba(0, 184, 169, 0.1)',
+                        drawBorder: false,
+                        lineWidth: 1
+                    },
+                    ticks: {
+                        padding: 10,
+                        font: {
+                            size: 11,
+                            weight: '500'
+                        },
+                        color: '#4A5568'
                     }
                 },
                 x: {
                     grid: {
-                        display: false
+                        display: false,
+                        drawBorder: false
+                    },
+                    ticks: {
+                        padding: 10,
+                        font: {
+                            size: 11,
+                            weight: '500'
+                        },
+                        color: '#2D3748'
                     }
                 }
             }
@@ -1241,37 +1312,98 @@
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Reading Time', 'Total Words'],
+                labels: ['Reading Time (seconds)', 'Words Read', 'Reading Speed (WPM)'],
                 datasets: [{
-                    data: [149, 250],
+                    label: 'Reading Performance',
+                    data: [149, 250, 101], // Time in seconds, Total words, WPM
                     backgroundColor: [
-                        '#4fc3f7',
-                        '#f56565'
+                        '#00B8A9',  // Teal for time
+                        '#F6AD55',  // Orange for words
+                        '#4FC3F7'   // Blue for speed
                     ],
-                    borderWidth: 0,
-                    borderRadius: 4
+                    borderColor: [
+                        '#00B8A9',
+                        '#F6AD55',
+                        '#4FC3F7'
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    borderSkipped: false
                 }]
             },
-            options: cleanChartOptions
+            options: {
+                ...cleanChartOptions,
+                plugins: {
+                    ...cleanChartOptions.plugins,
+                    tooltip: {
+                        ...cleanChartOptions.plugins.tooltip,
+                        callbacks: {
+                            label: function (context) {
+                                const label = context.label;
+                                const value = context.parsed.y;
+
+                                if (label.includes('Time')) {
+                                    const minutes = Math.floor(value / 60);
+                                    const seconds = value % 60;
+                                    return `Reading Time: ${minutes}m ${seconds}s`;
+                                } else if (label.includes('Words')) {
+                                    return `Total Words: ${value} words`;
+                                } else if (label.includes('Speed')) {
+                                    return `Reading Speed: ${value} WPM`;
+                                }
+                                return `${label}: ${value}`;
+                            }
+                        }
+                    }
+                }
+            }
         });
 
         // Reading Comprehension Chart
         const ctx1 = document.getElementById('myChart1').getContext('2d');
         new Chart(ctx1, {
-            type: 'bar',
+            type: 'doughnut',
             data: {
-                labels: ['Correct Answers', 'Total Questions'],
+                labels: ['Correct Answers', 'Incorrect Answers'],
                 datasets: [{
-                    data: [6, 10],
+                    label: 'Comprehension Score',
+                    data: [6, 4], // 6 correct out of 10 questions
                     backgroundColor: [
-                        '#38b2ac',
-                        '#ed8936'
+                        '#00B8A9',  // Teal for correct
+                        '#E53E3E'   // Red for incorrect
                     ],
-                    borderWidth: 0,
-                    borderRadius: 4
+                    borderColor: [
+                        '#00B8A9',
+                        '#E53E3E'
+                    ],
+                    borderWidth: 3,
+                    hoverOffset: 8
                 }]
             },
-            options: cleanChartOptions
+            options: {
+                ...cleanChartOptions,
+                cutout: '65%',
+                plugins: {
+                    ...cleanChartOptions.plugins,
+                    tooltip: {
+                        ...cleanChartOptions.plugins.tooltip,
+                        callbacks: {
+                            label: function (context) {
+                                const label = context.label;
+                                const value = context.parsed;
+                                const total = 10; // Total questions
+                                const percentage = ((value / total) * 100).toFixed(1);
+
+                                if (label.includes('Correct')) {
+                                    return `Correct: ${value} out of ${total} (${percentage}%)`;
+                                } else {
+                                    return `Incorrect: ${value} out of ${total} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         });
 
         // Word Reading Chart
@@ -1279,19 +1411,50 @@
         new Chart(ctx2, {
             type: 'bar',
             data: {
-                labels: ['Reading Miscues', 'Correct Reading', 'Total Words'],
+                labels: ['Reading Miscues', 'Words Read Correctly', 'Total Words'],
                 datasets: [{
-                    data: [101, 149, 250],
+                    label: 'Word Reading Performance',
+                    data: [5, 145, 150], // 5 miscues, 145 correct, 150 total
                     backgroundColor: [
-                        '#f56565',
-                        '#38b2ac',
-                        '#ed8936'
+                        '#E53E3E',  // Red for miscues
+                        '#00B8A9',  // Teal for correct
+                        '#4FC3F7'   // Blue for total
                     ],
-                    borderWidth: 0,
-                    borderRadius: 4
+                    borderColor: [
+                        '#E53E3E',
+                        '#00B8A9',
+                        '#4FC3F7'
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    borderSkipped: false
                 }]
             },
-            options: cleanChartOptions
+            options: {
+                ...cleanChartOptions,
+                plugins: {
+                    ...cleanChartOptions.plugins,
+                    tooltip: {
+                        ...cleanChartOptions.plugins.tooltip,
+                        callbacks: {
+                            label: function (context) {
+                                const label = context.label;
+                                const value = context.parsed.y;
+
+                                if (label.includes('Miscues')) {
+                                    const accuracy = ((145 / 150) * 100).toFixed(1);
+                                    return `Reading Miscues: ${value} words (${accuracy}% accuracy)`;
+                                } else if (label.includes('Correctly')) {
+                                    const accuracy = ((value / 150) * 100).toFixed(1);
+                                    return `Correct Words: ${value} out of 150 (${accuracy}%)`;
+                                } else {
+                                    return `Total Words: ${value} words`;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         });
     });
 

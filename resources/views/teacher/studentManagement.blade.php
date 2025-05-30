@@ -407,98 +407,66 @@
         <th>Actions</th>
       </tr>
       </thead>
-      <tbody>
-      <tr>
-        <td>1001</td>
+      <tbody id="studentsTableBody">
+      @if(isset($students) && $students->count() > 0)
+      @foreach($students as $index => $student)
+      <tr data-grade="{{ $student['grade_level'] }}" data-section="{{ $student['section'] }}">
+        <td>{{ $student['student_number'] }}</td>
         <td>
         <div class="student-info">
-          <div class="student-avatar avatar-blue">EB</div>
-          <div class="student-name">Emma Brown</div>
+        @php
+      $avatarColors = ['avatar-blue', 'avatar-green', 'avatar-orange', 'avatar-red', 'avatar-purple', 'avatar-pink'];
+      $avatarClass = $avatarColors[$index % count($avatarColors)];
+      @endphp
+        <div class="student-avatar {{ $avatarClass }}">{{ $student['initials'] }}</div>
+        <div class="student-name">{{ $student['name'] }}</div>
         </div>
         </td>
-        <td>Grade 7 - Section Narra</td>
-        <td><span class="badge badge-excellent">Excellent</span></td>
-        <td>95/100</td>
+        <td>Grade {{ $student['grade_level'] }} - Section {{ $student['section'] }}</td>
+        <td>
+        <span class="badge
+      @if($student['status'] == 'Excellent') badge-excellent
+      @elseif($student['status'] == 'Good') badge-good
+      @elseif($student['status'] == 'Average') badge-average
+      @elseif($student['status'] == 'Needs Improvement') badge-needs
+      @else badge-needs @endif">
+        {{ $student['status'] }}
+        </span>
+        </td>
+        <td>
+        @if($student['latest_score'] > 0)
+      {{ $student['latest_score'] }}/100
+      @else
+      No Assessment
+      @endif
+        </td>
         <td>
         <div class="action-buttons">
-          <a href="{{ route('teacher.view') }}" class="action-btn btn-view">View</a>
-          <a href="{{ route('teacher.passage') }}" class="action-btn btn-assess"> Completed</a>
+        <a href="{{ route('teacher.view', ['student_id' => $student['id']]) }}"
+        class="action-btn btn-view">View</a>
+        <a href="{{ route('teacher.passage', ['grade' => 'grade' . $student['grade_level'], 'section' => strtolower($student['section'])]) }}"
+        class="action-btn btn-assess">
+        @if($student['total_assessments'] > 0)
+        {{ $student['total_assessments'] }} Assessment{{ $student['total_assessments'] > 1 ? 's' : '' }}
+      @else
+        Start Assessment
+      @endif
+        </a>
         </div>
         </td>
       </tr>
+      @endforeach
+    @else
       <tr>
-        <td>1002</td>
-        <td>
-        <div class="student-info">
-          <div class="student-avatar avatar-green">JD</div>
-          <div class="student-name">James Davis</div>
-        </div>
-        </td>
-        <td>Grade 7 - Section Lawaan</td>
-        <td><span class="badge badge-good">Good</span></td>
-        <td>88/100</td>
-        <td>
-        <div class="action-buttons">
-          <a href="{{ route('teacher.view') }}" class="action-btn btn-view">View</a>
-          <a href="{{ route('teacher.passage') }}" class="action-btn btn-assess">Incomplete</a>
-
-        </div>
-        </td>
+      <td colspan="6" class="text-center" style="padding: 40px;">
+      <div style="color: #718096;">
+        <i class="fas fa-users" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
+        <h3 style="margin: 0 0 8px 0; font-size: 18px;">No Students Found</h3>
+        <p style="margin: 0; font-size: 14px;">Students will appear here once they are added to the system.</p>
+      </div>
+      </td>
       </tr>
-      <tr>
-        <td>1003</td>
-        <td>
-        <div class="student-info">
-          <div class="student-avatar avatar-orange">OT</div>
-          <div class="student-name">Olivia Thompson</div>
-        </div>
-        </td>
-        <td>Grade 8 - Section Dao</td>
-        <td><span class="badge badge-excellent">Excellent</span></td>
-        <td>96/100</td>
-        <td>
-        <div class="action-buttons">
-          <a href="{{ route('teacher.view') }}" class="action-btn btn-view">View</a>
-          <a href="{{ route('teacher.passage') }}" class="action-btn btn-assess">Incomplete</a>
-        </div>
-        </td>
-      </tr>
-      <tr>
-        <td>1004</td>
-        <td>
-        <div class="student-info">
-          <div class="student-avatar avatar-purple">MS</div>
-          <div class="student-name">Michael Smith</div>
-        </div>
-        </td>
-        <td>Grade 9 - Section Zinc</td>
-        <td><span class="badge badge-average">Average</span></td>
-        <td>75/100</td>
-        <td>
-        <div class="action-buttons">
-          <a href="{{ route('teacher.view') }}" class="action-btn btn-view">View</a>
-          <a href="{{ route('teacher.passage') }}" class="action-btn btn-assess">Completed</a>
-        </div>
-        </td>
-      </tr>
-      <tr>
-        <td>1005</td>
-        <td>
-        <div class="student-info">
-          <div class="student-avatar avatar-pink">SJ</div>
-          <div class="student-name">Sarah Johnson</div>
-        </div>
-        </td>
-        <td>Grade 10 - Section Newton</td>
-        <td><span class="badge badge-good">Good</span></td>
-        <td>89/100</td>
-        <td>
-        <div class="action-buttons">
-          <a href="{{ route('teacher.view') }}" class="action-btn btn-view">View</a>
-          <a href="{{ route('teacher.passage') }}" class="action-btn btn-assess">Completed</a>
-        </div>
-        </td>
-      </tr>
+    @endif
       </tbody>
     </table>
     </div>
@@ -548,6 +516,75 @@
   </div>
 
   <script>
+    // Search and Filter Functionality
+    document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.querySelector('.search-input');
+    const gradeFilter = document.getElementById('gradeFilter');
+    const sectionFilter = document.getElementById('sectionFilter');
+    const tableBody = document.getElementById('studentsTableBody');
+    const rows = tableBody.querySelectorAll('tr[data-grade]');
+
+    function filterTable() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const selectedGrade = gradeFilter.value;
+      const selectedSection = sectionFilter.value;
+
+      rows.forEach(row => {
+      const studentName = row.querySelector('.student-name').textContent.toLowerCase();
+      const grade = row.getAttribute('data-grade');
+      const section = row.getAttribute('data-section');
+
+      const matchesSearch = studentName.includes(searchTerm);
+      const matchesGrade = selectedGrade === 'All Grades' || selectedGrade === `Grade ${grade}`;
+      const matchesSection = selectedSection === 'All Sections' || selectedSection === `Section ${section}`;
+
+      if (matchesSearch && matchesGrade && matchesSection) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+      });
+
+      // Show/hide "no results" message
+      const visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
+      const noResultsRow = tableBody.querySelector('#noResultsRow');
+
+      if (visibleRows.length === 0 && rows.length > 0) {
+      if (!noResultsRow) {
+        const noResults = document.createElement('tr');
+        noResults.innerHTML = `
+          <td colspan="6" class="text-center" style="padding: 40px;">
+          <div style="color: #718096;">
+            <i class="fas fa-search" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
+            <h3 style="margin: 0 0 8px 0; font-size: 18px;">No Students Found</h3>
+            <p style="margin: 0; font-size: 14px;">Try adjusting your search criteria.</p>
+          </div>
+          </td>
+        `;
+        noResults.id = 'noResultsRow';
+        tableBody.appendChild(noResults);
+      }
+      } else if (noResultsRow) {
+      noResultsRow.remove();
+      }
+    }
+
+    // Event listeners
+    if (searchInput) searchInput.addEventListener('input', filterTable);
+    if (gradeFilter) gradeFilter.addEventListener('change', filterTable);
+    if (sectionFilter) sectionFilter.addEventListener('change', filterTable);
+
+    // Auto-refresh data every 30 seconds to show updated assessment info
+    setInterval(function () {
+      // Only refresh if user is not actively searching/filtering
+      if (searchInput && gradeFilter && sectionFilter) {
+      if (searchInput.value === '' && gradeFilter.value === 'All Grades' && sectionFilter.value === 'All Sections') {
+        location.reload();
+      }
+      }
+    }, 30000);
+    });
+
     // Comment Modal Functions
     function openCommentModal(studentId, studentName) {
     document.getElementById('studentId').value = studentId;

@@ -70,8 +70,36 @@
             .passage {
                 color: var(--text-light);
                 font-size: 1.1rem;
-                margin-bottom: 1.5rem;
+                margin-bottom: 1rem;
                 line-height: 1.6;
+            }
+
+            .word-count-display {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin-bottom: 1.5rem;
+                padding: 0.5rem 1rem;
+                background: var(--neutral);
+                border-radius: 8px;
+                border-left: 4px solid var(--primary);
+            }
+
+            .word-count-label {
+                color: var(--text);
+                font-weight: 600;
+                font-size: 0.95rem;
+            }
+
+            .word-count-number {
+                color: var(--primary);
+                font-weight: 700;
+                font-size: 1.1rem;
+                background: var(--neutral-light);
+                padding: 0.2rem 0.6rem;
+                border-radius: 4px;
+                min-width: 40px;
+                text-align: center;
             }
 
             .student-card {
@@ -125,6 +153,25 @@
                 box-shadow: 0 0 0 2px rgba(14, 97, 186, 0.1);
             }
 
+            .assessment-layout {
+                display: flex;
+                gap: 2rem;
+                margin-bottom: 1.5rem;
+                align-items: flex-start;
+            }
+
+            .left-controls {
+                flex: 1;
+                min-width: 200px;
+            }
+
+            .right-controls {
+                flex: 2;
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
             .assessment-controls {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -162,19 +209,23 @@
                 display: flex;
                 align-items: center;
                 gap: 1rem;
-                margin-bottom: 1.5rem;
-                flex-wrap: wrap;
-                justify-content: center;
                 padding: 1rem;
                 background: var(--neutral-light);
                 border-radius: 8px;
+                border: 1px solid #e0e0e0;
+                flex-wrap: wrap;
+            }
+
+            .timer-buttons {
+                display: flex;
+                gap: 0.5rem;
+                flex-wrap: wrap;
             }
 
             .save-controls {
                 display: flex;
                 gap: 1rem;
-                justify-content: center;
-                margin-top: 1rem;
+                flex-wrap: wrap;
             }
 
             .save-assessment {
@@ -416,7 +467,8 @@
             }
 
             .rating-stars i.active {
-                color: var(--accent);
+                color: #FFD700;
+                /* Golden Yellow */
             }
 
             .rating-stars i:hover {
@@ -502,7 +554,8 @@
             }
 
             .feedback-rating i {
-                color: var(--accent);
+                color: #FFD700;
+                /* Golden Yellow */
             }
 
             .feedback-rating .far {
@@ -575,6 +628,23 @@
                     padding: 1rem;
                 }
 
+                .assessment-layout {
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+
+                .right-controls {
+                    gap: 0.8rem;
+                }
+
+                .timer-buttons {
+                    justify-content: center;
+                }
+
+                .save-controls {
+                    justify-content: center;
+                }
+
                 .assessment-controls {
                     flex-direction: column;
                     align-items: flex-start;
@@ -609,6 +679,10 @@
                     isang guro balang araw upang matulungan ang mga batang katulad niya na nais matuto at magkaroon ng
                     magandang kinabukasan.
                 </div>
+                <div class="word-count-display">
+                    <span class="word-count-label">Total Words:</span>
+                    <span class="word-count-number" id="passageWordCount">0</span>
+                </div>
             </div>
 
             <div class="student-card">
@@ -630,36 +704,29 @@
                     </select>
                 </div>
 
-                <!-- Reading Assessment Controls -->
-                <div class="assessment-controls">
+
+
+                <!-- Right Side - Reading Miscues, Timer, and Save Controls -->
+                <div class="right-controls">
+                    <!-- Reading Miscues -->
                     <div class="control-group">
                         <label for="miscues">Reading Miscues</label>
                         <input type="number" id="miscues" class="assessment-input" min="0" value="0">
                     </div>
 
-                    <div class="control-group">
-                        <label for="totalWords">Total Words</label>
-                        <input type="number" id="totalWords" class="assessment-input" min="1" value="150">
+                    <!-- Timer and Save Controls -->
+                    <div class="timer-controls">
+                        <span class="timer" id="timer">00:00:00</span>
+                        <div class="timer-buttons">
+                            <button class="btn start" onclick="startTimer()">Start Time</button>
+                            <button class="btn stop" onclick="stopTimer()">Stop Time</button>
+                            <button class="btn reset" onclick="resetTimer()">Reset Time</button>
+                        </div>
+                        <div class="save-controls">
+                            <button class="btn save-assessment" onclick="saveAssessment()">Save Assessment</button>
+                            <button class="btn clear-assessment" onclick="clearAssessment()">Clear All</button>
+                        </div>
                     </div>
-
-                    <div class="control-group">
-                        <label for="correctAnswers">Correct Answers</label>
-                        <input type="number" id="correctAnswers" class="assessment-input" min="0" value="0">
-                    </div>
-                </div>
-
-                <!-- Timer Controls -->
-                <div class="timer-controls">
-                    <span class="timer" id="timer">00:00:00</span>
-                    <button class="btn start" onclick="startTimer()">Start Time</button>
-                    <button class="btn stop" onclick="stopTimer()">Stop Time</button>
-                    <button class="btn reset" onclick="resetTimer()">Reset Time</button>
-                </div>
-
-                <!-- Save Assessment Button -->
-                <div class="save-controls">
-                    <button class="btn save-assessment" onclick="saveAssessment()">Save Assessment</button>
-                    <button class="btn clear-assessment" onclick="clearAssessment()">Clear All</button>
                 </div>
             </div>
         </div>
@@ -852,6 +919,29 @@
             } else {
                 switchLanguage('english');
             }
+
+            // Initialize word count
+            updateWordCount();
+
+            // Watch for changes in passage text (if it becomes editable in the future)
+            const passageElement = document.getElementById('passage-text');
+            if (passageElement) {
+                // Create a MutationObserver to watch for text changes
+                const observer = new MutationObserver(function (mutations) {
+                    mutations.forEach(function (mutation) {
+                        if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                            updateWordCount();
+                        }
+                    });
+                });
+
+                // Start observing
+                observer.observe(passageElement, {
+                    childList: true,
+                    subtree: true,
+                    characterData: true
+                });
+            }
         });
 
         function switchLanguage(language) {
@@ -864,6 +954,26 @@
                 link.classList.remove('selected');
             });
             document.getElementById('lang-' + language).classList.add('selected');
+
+            // Update word count when language changes
+            updateWordCount();
+        }
+
+        // Word counting functionality
+        function countWords(text) {
+            // Remove extra whitespace and split by spaces
+            return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+        }
+
+        function updateWordCount() {
+            const passageText = document.getElementById('passage-text').textContent;
+            const wordCount = countWords(passageText);
+
+            // Update the word count display
+            document.getElementById('passageWordCount').textContent = wordCount;
+
+            // Auto-update the Total Words input field
+            document.getElementById('totalWords').value = wordCount;
         }
 
         // Star Rating Functionality
@@ -944,28 +1054,28 @@
             const feedbackId = 'feedback-' + Date.now();
 
             feedbackItem.innerHTML = `
-                                    <div class="feedback-meta">
-                                        <span>Date: ${feedback.date}</span>
-                                        <span>Reading Level: Grade 7</span>
-                                    </div>
-                                    <div class="feedback-content">
-                                        <p><strong>Strengths:</strong> ${feedback.strengths}</p>
-                                        <p><strong>Areas for Improvement:</strong> ${feedback.areasForImprovement}</p>
-                                        <p><strong>Recommendations:</strong> ${feedback.recommendations}</p>
-                                    </div>
-                                    <div class="feedback-rating">
-                                        ${Array(5).fill().map((_, i) =>
+                                                                                                        <div class="feedback-meta">
+                                                                                                            <span>Date: ${feedback.date}</span>
+                                                                                                            <span>Reading Level: Grade 7</span>
+                                                                                                        </div>
+                                                                                                        <div class="feedback-content">
+                                                                                                            <p><strong>Strengths:</strong> ${feedback.strengths}</p>
+                                                                                                            <p><strong>Areas for Improvement:</strong> ${feedback.areasForImprovement}</p>
+                                                                                                            <p><strong>Recommendations:</strong> ${feedback.recommendations}</p>
+                                                                                                        </div>
+                                                                                                        <div class="feedback-rating">
+                                                                                                            ${Array(5).fill().map((_, i) =>
                 `<i class="fas fa-star${i < feedback.rating ? '' : ' far'}"></i>`
             ).join('')}
-                                        <span>${feedback.rating}/5</span>
-                                    </div>
-                                    <div class="feedback-actions-history">
-                                        <button class="btn-send" onclick="sendFeedbackToStudent(this, '${feedbackId}')">
-                                            <i class="fas fa-paper-plane"></i> Send to Student
-                                        </button>
-                                        <span class="send-status not-sent">Not Sent</span>
-                                    </div>
-                                `;
+                                                                                                            <span>${feedback.rating}/5</span>
+                                                                                                        </div>
+                                                                                                        <div class="feedback-actions-history">
+                                                                                                            <button class="btn-send" onclick="sendFeedbackToStudent(this, '${feedbackId}')">
+                                                                                                                <i class="fas fa-paper-plane"></i> Send to Student
+                                                                                                            </button>
+                                                                                                            <span class="send-status not-sent">Not Sent</span>
+                                                                                                        </div>
+                                                                                                    `;
 
             // Store feedback data for sending
             feedbackItem.dataset.feedbackData = JSON.stringify(feedback);
@@ -1045,11 +1155,15 @@
 
         // Assessment saving functionality
         function saveAssessment() {
-            const studentName = document.getElementById('studentSelect').value;
+            const studentSelect = document.getElementById('studentSelect');
+            const studentName = studentSelect.value;
+            const selectedOption = studentSelect.options[studentSelect.selectedIndex];
+            const studentId = selectedOption.dataset.studentId || null;
+
             const miscues = parseInt(document.getElementById('miscues').value) || 0;
             const totalWords = parseInt(document.getElementById('totalWords').value) || 0;
-            const correctAnswers = parseInt(document.getElementById('correctAnswers').value) || 0;
-            const totalQuestions = parseInt(document.getElementById('totalQuestions').value) || 0;
+            const correctAnswers = 0; // Default value since this field doesn't exist in the form
+            const totalQuestions = 10; // Default value since this field doesn't exist in the form
 
             // Get timer data
             const timerElement = document.getElementById('timer');
@@ -1091,6 +1205,7 @@
 
             // Prepare assessment data
             const assessmentData = {
+                student_id: studentId,
                 student_name: studentName,
                 reading_time: totalSeconds,
                 miscues: miscues,
@@ -1145,8 +1260,6 @@
             document.getElementById('studentSelect').value = '';
             document.getElementById('miscues').value = '0';
             document.getElementById('totalWords').value = '150';
-            document.getElementById('correctAnswers').value = '0';
-            document.getElementById('totalQuestions').value = '10';
 
             // Reset timer
             resetTimer();

@@ -328,23 +328,47 @@
 
                 <!-- Student Info -->
                 <div class="flex-grow">
-                    <h1 class="text-2xl font-bold mb-4">Emma Brown</h1>
+                    <h1 class="text-2xl font-bold mb-4">
+                        @if(isset($student))
+                            {{ $student->first_name }} {{ $student->last_name }}
+                        @else
+                            Emma Brown
+                        @endif
+                    </h1>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <div class="mb-2">
                                 <p class="text-sm text-gray-500">Student ID</p>
-                                <p>001</p>
+                                <p>
+                                    @if(isset($student))
+                                        {{ $student->student_number }}
+                                    @else
+                                        001
+                                    @endif
+                                </p>
                             </div>
                         </div>
                         <div>
                             <div class="flex justify-between">
                                 <div>
-                                    <p class="text-sm text-gray-500">Email</p>
-                                    <p>emma.b@example.com</p>
+                                    <p class="text-sm text-gray-500">Total Assessments</p>
+                                    <p>
+                                        @if(isset($student))
+                                            {{ $student->readingAssessments->count() }}
+                                        @else
+                                            0
+                                        @endif
+                                    </p>
                                 </div>
                                 <div>
                                     <p class="text-sm text-gray-500">Grade & Section</p>
-                                    <p>Grade 7 - Section A</p>
+                                    <p>
+                                        @if(isset($student))
+                                            Grade {{ $student->grade_level }} - {{ $student->section }}
+                                        @else
+                                            Grade 7 - Narra
+                                        @endif
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -358,37 +382,106 @@
             <!-- Reading Level -->
             <div class="bg-white p-5 rounded-lg shadow-sm">
                 <div class="flex justify-between mb-2">
-                    <span class="text-gray-500 text-sm">Reading Level</span>
+                    <span class="text-gray-500 text-sm">Average Correct Reading</span>
                     <div class="w-5 h-5 flex items-center justify-center text-blue-500">
                         <i class="ri-book-open-line"></i>
                     </div>
                 </div>
-                <h3 class="text-2xl font-bold mb-2">Instructional</h3>
-                <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs">Excellent</span>
+                <h3 class="text-2xl font-bold mb-2">
+                    @if(isset($student) && $student->readingAssessments->count() > 0)
+                        {{ round($student->readingAssessments->avg('correct_reading'), 1) }}%
+                    @else
+                        N/A
+                    @endif
+                </h3>
+                <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs">
+                    @if(isset($student) && $student->readingAssessments->count() > 0)
+                        @php
+                            $avgCorrect = $student->readingAssessments->avg('correct_reading');
+                        @endphp
+                        @if($avgCorrect >= 90)
+                            Excellent
+                        @elseif($avgCorrect >= 80)
+                            Good
+                        @elseif($avgCorrect >= 70)
+                            Fair
+                        @else
+                            Needs Improvement
+                        @endif
+                    @else
+                        No Data
+                    @endif
+                </span>
             </div>
 
             <!-- Comprehension Score -->
             <div class="bg-white p-5 rounded-lg shadow-sm">
                 <div class="flex justify-between mb-2">
-                    <span class="text-gray-500 text-sm">Comprehension Score</span>
+                    <span class="text-gray-500 text-sm">Average Comprehension</span>
                     <div class="w-5 h-5 flex items-center justify-center text-blue-500">
                         <i class="ri-mental-health-line"></i>
                     </div>
                 </div>
-                <h3 class="text-2xl font-bold mb-2">84%</h3>
-                <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs">Excellent</span>
+                <h3 class="text-2xl font-bold mb-2">
+                    @if(isset($student) && $student->readingAssessments->count() > 0)
+                        {{ round($student->readingAssessments->avg('comprehension'), 1) }}%
+                    @else
+                        N/A
+                    @endif
+                </h3>
+                <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs">
+                    @if(isset($student) && $student->readingAssessments->count() > 0)
+                        @php
+                            $avgComp = $student->readingAssessments->avg('comprehension');
+                        @endphp
+                        @if($avgComp >= 90)
+                            Excellent
+                        @elseif($avgComp >= 80)
+                            Good
+                        @elseif($avgComp >= 70)
+                            Fair
+                        @else
+                            Needs Improvement
+                        @endif
+                    @else
+                        No Data
+                    @endif
+                </span>
             </div>
 
             <!-- Reading Speed -->
             <div class="bg-white p-5 rounded-lg shadow-sm">
                 <div class="flex justify-between mb-2">
-                    <span class="text-gray-500 text-sm">Reading Speed</span>
+                    <span class="text-gray-500 text-sm">Average Reading Speed</span>
                     <div class="w-5 h-5 flex items-center justify-center text-blue-500">
                         <i class="ri-speed-line"></i>
                     </div>
                 </div>
-                <h3 class="text-2xl font-bold mb-2">121wpm</h3>
-                <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs">Excellent</span>
+                <h3 class="text-2xl font-bold mb-2">
+                    @if(isset($student) && $student->readingAssessments->count() > 0)
+                        {{ round($student->readingAssessments->avg('reading_speed'), 1) }} wpm
+                    @else
+                        N/A
+                    @endif
+                </h3>
+                <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs">
+                    @if(isset($student) && $student->readingAssessments->count() > 0)
+                        @php
+                            $avgSpeed = $student->readingAssessments->avg('reading_speed');
+                        @endphp
+                        @if($avgSpeed >= 120)
+                            Excellent
+                        @elseif($avgSpeed >= 100)
+                            Good
+                        @elseif($avgSpeed >= 80)
+                            Fair
+                        @else
+                            Needs Improvement
+                        @endif
+                    @else
+                        No Data
+                    @endif
+                </span>
             </div>
         </div>
 
@@ -426,141 +519,87 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead>
                             <tr>
-                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Book Title
-                                </th>
-                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Reading
-                                    Level</th>
-                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Score</th>
+                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Assessment Date</th>
+                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Language</th>
+                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Reading Speed</th>
+                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Comprehension</th>
+                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Correct Reading</th>
                                 <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Status</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
-                            <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="py-4 px-4">
-                                    <div class="flex items-center">
-                                        <div
-                                            class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mr-3">
-                                            <i class="ri-book-2-line"></i>
+                            @if(isset($student) && $student->readingAssessments->count() > 0)
+                                @foreach($student->readingAssessments->sortByDesc('assessment_date') as $assessment)
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="py-4 px-4">
+                                            <div class="flex items-center">
+                                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mr-3">
+                                                    <i class="ri-calendar-line"></i>
+                                                </div>
+                                                <span>{{ $assessment->assessment_date->format('M d, Y') }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-4 px-4">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                {{ $assessment->language == 'english' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
+                                                {{ ucfirst($assessment->language) }}
+                                            </span>
+                                        </td>
+                                        <td class="py-4 px-4">
+                                            <div class="flex items-center">
+                                                <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                                    @php
+                                                        $speedPercentage = min(100, ($assessment->reading_speed / 150) * 100);
+                                                    @endphp
+                                                    <div class="bg-blue-500 h-2 rounded-full" style="width: {{ $speedPercentage }}%"></div>
+                                                </div>
+                                                <span>{{ $assessment->reading_speed }} wpm</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-4 px-4">
+                                            <div class="flex items-center">
+                                                <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                                    <div class="bg-green-500 h-2 rounded-full" style="width: {{ $assessment->comprehension }}%"></div>
+                                                </div>
+                                                <span>{{ $assessment->comprehension }}%</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-4 px-4">
+                                            <div class="flex items-center">
+                                                <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                                    <div class="bg-purple-500 h-2 rounded-full" style="width: {{ $assessment->correct_reading }}%"></div>
+                                                </div>
+                                                <span>{{ $assessment->correct_reading }}%</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-4 px-4">
+                                            @php
+                                                $overallScore = ($assessment->comprehension + $assessment->correct_reading) / 2;
+                                            @endphp
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                @if($overallScore >= 90) bg-green-100 text-green-800
+                                                @elseif($overallScore >= 80) bg-blue-100 text-blue-800
+                                                @elseif($overallScore >= 70) bg-yellow-100 text-yellow-800
+                                                @else bg-red-100 text-red-800 @endif">
+                                                @if($overallScore >= 90) Excellent
+                                                @elseif($overallScore >= 80) Good
+                                                @elseif($overallScore >= 70) Fair
+                                                @else Needs Improvement @endif
+                                            </span>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="6" class="py-8 px-4 text-center text-gray-500">
+                                        <div class="flex flex-col items-center">
+                                            <i class="ri-book-open-line text-4xl mb-2"></i>
+                                            <p>No reading assessments found for this student.</p>
+                                            <p class="text-sm">Assessments will appear here after completing reading tests.</p>
                                         </div>
-                                        <span>The Secret Garden</span>
-                                    </div>
-                                </td>
-                                <td class="py-4 px-4">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                        Instructional
-                                    </span>
-                                </td>
-                                <td class="py-4 px-4">
-                                    <div class="flex items-center">
-                                        <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                                            <div class="bg-green-500 h-2 rounded-full" style="width: 98%"></div>
-                                        </div>
-                                        <span>90/100</span>
-                                    </div>
-                                </td>
-                                <td class="py-4 px-4">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        Excellent
-                                    </span>
-                                </td>
-                            </tr>
-
-
-                            <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="py-4 px-4">
-                                    <div class="flex items-center">
-                                        <div
-                                            class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mr-3">
-                                            <i class="ri-book-2-line"></i>
-                                        </div>
-                                        <span>Number the Stars</span>
-                                    </div>
-                                </td>
-                                <td class="py-4 px-4">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                        Instructional
-                                    </span>
-                                </td>
-                                <td class="py-4 px-4">
-                                    <div class="flex items-center">
-                                        <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                                            <div class="bg-green-500 h-2 rounded-full" style="width: 96%"></div>
-                                        </div>
-                                        <span>87/100</span>
-                                    </div>
-                                </td>
-                                <td class="py-4 px-4">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        Good
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="py-4 px-4">
-                                    <div class="flex items-center">
-                                        <div
-                                            class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mr-3">
-                                            <i class="ri-book-2-line"></i>
-                                        </div>
-                                        <span>Island of the Blue Dolphins</span>
-                                    </div>
-                                </td>
-                                <td class="py-4 px-4">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                        Instrutional
-                                    </span>
-                                </td>
-                                <td class="py-4 px-4">
-                                    <div class="flex items-center">
-                                        <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                                            <div class="bg-green-500 h-2 rounded-full" style="width: 94%"></div>
-                                        </div>
-                                        <span>85/100</span>
-                                    </div>
-                                </td>
-                                <td class="py-4 px-4">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        Good
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="py-4 px-4">
-                                    <div class="flex items-center">
-                                        <div
-                                            class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mr-3">
-                                            <i class="ri-book-2-line"></i>
-                                        </div>
-                                        <span>The Giver</span>
-                                    </div>
-                                </td>
-                                <td class="py-4 px-4">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                        Instructional
-                                    </span>
-                                </td>
-                                <td class="py-4 px-4">
-                                    <div class="flex items-center">
-                                        <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                                            <div class="bg-green-500 h-2 rounded-full" style="width: 97%"></div>
-                                        </div>
-                                        <span>91/100</span>
-                                    </div>
-                                </td>
-                                <td class="py-4 px-4">
-                                    <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        Excellent
-                                    </span>
-                                </td>
-                            </tr>
+                                    </td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -625,8 +664,8 @@
             </div>
         </div>
 
-        <!-- Performance Trend -->
-        <div class="bg-white rounded-lg shadow-sm p-6">
+        <!-- English Language Test Results -->
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-3xl font-bold text-gray-800">English Language Test Results</h2>
                 <div class="flex items-center space-x-2">
@@ -649,7 +688,7 @@
                     <div id="reading-speed-chart" class="chart-container"></div>
                     <div class="mt-4 pt-4 border-t border-gray-200">
                         <div class="flex justify-between items-center">
-                            <p class="text-xl font-bold text-primary">121WPM</p>
+                            <p class="text-xl font-bold text-primary">121 WPM</p>
                             <span class="text-sm text-green-600">+5% from last test</span>
                         </div>
                         <p class="text-gray-600 text-sm mt-1">Words Per Minute</p>
@@ -670,7 +709,7 @@
                             <p class="text-xl font-bold text-primary">Instructional Level</p>
                             <span class="text-sm text-green-600">+2% from last test</span>
                         </div>
-                        <p class="text-gray-600 text-sm mt-1">6 out of 10 correct answers</p>
+                        <p class="text-gray-600 text-sm mt-1">7 out of 10 correct answers</p>
                     </div>
                 </div>
 
@@ -690,6 +729,76 @@
                             <span class="text-sm text-green-600">+3% from last test</span>
                         </div>
                         <p class="text-gray-600 text-sm mt-1">149 out of 250 words read correctly</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filipino Language Test Results -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-800">Filipino Language Test Results</h2>
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-500">View:</span>
+                    <select class="text-sm border-gray-200 rounded-md focus:ring-primary focus:border-primary">
+                        <option>Detailed View</option>
+                        <option>Summary View</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Reading Speed Chart -->
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100 hover-card">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-medium text-gray-700">Bilis ng Pagbasa</h2>
+                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
+                            <i class="ri-speed-line"></i>
+                        </div>
+                    </div>
+                    <div id="filipino-reading-speed-chart" class="chart-container"></div>
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <div class="flex justify-between items-center">
+                            <p class="text-xl font-bold text-primary">120 WPM</p>
+                            <span class="text-sm text-green-600">+3% mula sa huling pagsusulit</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mt-1">Mga Salita Bawat Minuto</p>
+                    </div>
+                </div>
+
+                <!-- Reading Comprehension Chart -->
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100 hover-card">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-medium text-gray-700">Pag-unawa sa Binasa</h2>
+                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600">
+                            <i class="ri-mental-health-line"></i>
+                        </div>
+                    </div>
+                    <div id="filipino-reading-comprehension-chart" class="chart-container"></div>
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <div class="flex justify-between items-center">
+                            <p class="text-xl font-bold text-primary">Antas ng Pagtuturo</p>
+                            <span class="text-sm text-green-600">+1% mula sa huling pagsusulit</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mt-1">7 sa 10 tamang sagot</p>
+                    </div>
+                </div>
+
+                <!-- Word Reading Chart -->
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100 hover-card">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-medium text-gray-700">Pagbasa ng Salita</h2>
+                        <div
+                            class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600">
+                            <i class="ri-book-read-line"></i>
+                        </div>
+                    </div>
+                    <div id="filipino-word-reading-chart" class="chart-container"></div>
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <div class="flex justify-between items-center">
+                            <p class="text-xl font-bold text-primary">Antas ng Independiyente</p>
+                            <span class="text-sm text-green-600">+2% mula sa huling pagsusulit</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mt-1">235 sa 250 salitang nabasa nang tama</p>
                     </div>
                 </div>
             </div>
@@ -765,7 +874,7 @@
                         data: {
                             labels: ['Reading Time', 'Total Words'],
                             datasets: [{
-                                data: [149, 250],
+                                data: [3, 250],
                                 backgroundColor: [
                                     '#4fc3f7',
                                     '#f56565'
@@ -791,7 +900,7 @@
                         data: {
                             labels: ['Correct Answers', 'Total Questions'],
                             datasets: [{
-                                data: [6, 10],
+                                data: [7, 10],
                                 backgroundColor: [
                                     '#38b2ac',
                                     '#ed8936'
@@ -818,6 +927,85 @@
                             labels: ['Reading Miscues', 'Correct Reading', 'Total Words'],
                             datasets: [{
                                 data: [101, 149, 250],
+                                backgroundColor: [
+                                    '#f56565',
+                                    '#38b2ac',
+                                    '#ed8936'
+                                ],
+                                borderWidth: 0,
+                                borderRadius: 4
+                            }]
+                        },
+                        options: chartOptions
+                    });
+                }
+
+                // Filipino Reading Speed Chart
+                const filipinoSpeedCtx = document.getElementById('filipino-reading-speed-chart');
+                if (filipinoSpeedCtx) {
+                    // Create canvas element
+                    const canvas = document.createElement('canvas');
+                    canvas.style.height = '200px';
+                    filipinoSpeedCtx.appendChild(canvas);
+
+                    new Chart(canvas.getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            labels: ['Oras ng Pagbasa', 'Kabuuang Salita'],
+                            datasets: [{
+                                data: [3, 250],
+                                backgroundColor: [
+                                    '#4fc3f7',
+                                    '#f56565'
+                                ],
+                                borderWidth: 0,
+                                borderRadius: 4
+                            }]
+                        },
+                        options: chartOptions
+                    });
+                }
+
+                // Filipino Reading Comprehension Chart
+                const filipinoComprehensionCtx = document.getElementById('filipino-reading-comprehension-chart');
+                if (filipinoComprehensionCtx) {
+                    // Create canvas element
+                    const canvas = document.createElement('canvas');
+                    canvas.style.height = '200px';
+                    filipinoComprehensionCtx.appendChild(canvas);
+
+                    new Chart(canvas.getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            labels: ['Tamang Sagot', 'Kabuuang Tanong'],
+                            datasets: [{
+                                data: [7, 10],
+                                backgroundColor: [
+                                    '#38b2ac',
+                                    '#ed8936'
+                                ],
+                                borderWidth: 0,
+                                borderRadius: 4
+                            }]
+                        },
+                        options: chartOptions
+                    });
+                }
+
+                // Filipino Word Reading Chart
+                const filipinoWordCtx = document.getElementById('filipino-word-reading-chart');
+                if (filipinoWordCtx) {
+                    // Create canvas element
+                    const canvas = document.createElement('canvas');
+                    canvas.style.height = '200px';
+                    filipinoWordCtx.appendChild(canvas);
+
+                    new Chart(canvas.getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            labels: ['Mali sa Pagbasa', 'Tamang Pagbasa', 'Kabuuang Salita'],
+                            datasets: [{
+                                data: [15, 235, 250],
                                 backgroundColor: [
                                     '#f56565',
                                     '#38b2ac',

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ReadingAssessment;
+use App\Models\Student;
 use Illuminate\Support\Facades\Log;
 
 class ReportsController extends Controller
@@ -92,8 +93,32 @@ class ReportsController extends Controller
                 'assessment_date' => 'required|date'
             ]);
 
+            // Find the student by name and section to get student_id
+            $gradeNumber = is_numeric($validatedData['grade']) ? $validatedData['grade'] : (int) str_replace('grade', '', $validatedData['grade']);
+
+            $student = Student::where('grade_level', $gradeNumber)
+                ->where('section', ucfirst(strtolower($validatedData['section'])))
+                ->where(function ($query) use ($validatedData) {
+                    $nameParts = explode(', ', $validatedData['student_name']);
+                    if (count($nameParts) >= 2) {
+                        $lastName = trim($nameParts[0]);
+                        $firstAndMiddle = trim($nameParts[1]);
+                        $firstNameParts = explode(' ', $firstAndMiddle);
+                        $firstName = trim($firstNameParts[0]);
+
+                        $query->where('last_name', $lastName)
+                            ->where('first_name', $firstName);
+                    } else {
+                        // Fallback: search by full name in different combinations
+                        $query->whereRaw('CONCAT(last_name, ", ", first_name) = ?', [$validatedData['student_name']])
+                            ->orWhereRaw('CONCAT(first_name, " ", last_name) = ?', [$validatedData['student_name']]);
+                    }
+                })
+                ->first();
+
             // Create new reading assessment record
             $assessment = ReadingAssessment::create([
+                'student_id' => $student ? $student->student_number : null,
                 'student_name' => $validatedData['student_name'],
                 'reading_time' => $validatedData['reading_time'],
                 'miscues' => $validatedData['miscues'],

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReadEase Chart Improvements Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f7f9fb;
+            color: #2D3748;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header h1 {
+            color: #00B8A9;
+            margin: 0 0 10px 0;
+            font-size: 2.5rem;
+        }
+        .header p {
+            color: #718096;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .chart-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .chart-section h3 {
+            margin: 0 0 20px 0;
+            color: #2D3748;
+            font-size: 1.3rem;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #E2E8F0;
+        }
+        .before h3 {
+            color: #E53E3E;
+        }
+        .after h3 {
+            color: #00B8A9;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+        .legend {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #00B8A9;
+        }
+        .legend h4 {
+            margin: 0 0 10px 0;
+            color: #2D3748;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: 12px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+        .improvements {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+        .improvements h2 {
+            color: #00B8A9;
+            margin: 0 0 20px 0;
+            font-size: 1.8rem;
+        }
+        .improvement-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .improvement-item {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #00B8A9;
+        }
+        .improvement-item h4 {
+            margin: 0 0 10px 0;
+            color: #2D3748;
+            font-size: 1.1rem;
+        }
+        .improvement-item p {
+            margin: 0;
+            color: #4A5568;
+            line-height: 1.5;
+        }
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 ReadEase Chart Improvements</h1>
+            <p>Enhanced Reading Sessions Progress Charts with Better Design and Clarity</p>
+        </div>
+
+        <div class="comparison">
+            <!-- Before Section -->
+            <div class="chart-section before">
+                <h3>❌ Before: Confusing Line Chart</h3>
+                <div class="chart-container">
+                    <canvas id="beforeChart"></canvas>
+                </div>
+                <div style="background: #fee; padding: 15px; border-radius: 8px; border-left: 4px solid #E53E3E;">
+                    <h4 style="margin: 0 0 10px 0; color: #E53E3E;">Issues with Previous Design:</h4>
+                    <ul style="margin: 0; color: #721c24;">
+                        <li>Unclear what the numbers represent</li>
+                        <li>No clear legend or explanation</li>
+                        <li>Difficult to understand reading levels</li>
+                        <li>Abstract data points (1.8, 2.1, etc.)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- After Section -->
+            <div class="chart-section after">
+                <h3>✅ After: Clear Bar Chart with Legend</h3>
+                <div class="chart-container">
+                    <canvas id="afterChart"></canvas>
+                </div>
+                <div class="legend">
+                    <h4>📖 Reading Performance Levels:</h4>
+                    <div class="legend-items">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #00B8A9;"></div>
+                            <span><strong>Independent (90-100%):</strong> Students read fluently without assistance</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #F6AD55;"></div>
+                            <span><strong>Instructional (70-89%):</strong> Students can read with teacher support</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #E53E3E;"></div>
+                            <span><strong>Frustration (Below 70%):</strong> Students struggle with reading material</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="improvements">
+            <h2>🎯 Key Improvements Made</h2>
+            <div class="improvement-list">
+                <div class="improvement-item">
+                    <h4>📊 Chart Type Change</h4>
+                    <p>Changed from confusing line chart to clear grouped bar chart showing actual student counts per performance level.</p>
+                </div>
+                <div class="improvement-item">
+                    <h4>🎨 Consistent Color Scheme</h4>
+                    <p>Applied consistent colors across all charts: Teal for excellent, Orange for good, Red for needs improvement.</p>
+                </div>
+                <div class="improvement-item">
+                    <h4>📖 Clear Labels & Tooltips</h4>
+                    <p>Added descriptive labels, meaningful tooltips with percentages, and clear axis titles.</p>
+                </div>
+                <div class="improvement-item">
+                    <h4>📋 Performance Legend</h4>
+                    <p>Added comprehensive legend explaining what each performance level means for better understanding.</p>
+                </div>
+                <div class="improvement-item">
+                    <h4>📈 Real Data Display</h4>
+                    <p>Shows actual number of students instead of abstract decimal values, making data more meaningful.</p>
+                </div>
+                <div class="improvement-item">
+                    <h4>🎯 Interactive Features</h4>
+                    <p>Enhanced tooltips show student counts, percentages, and total students for complete context.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Before Chart (Confusing Line Chart)
+        const beforeCtx = document.getElementById('beforeChart').getContext('2d');
+        new Chart(beforeCtx, {
+            type: 'line',
+            data: {
+                labels: ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'],
+                datasets: [{
+                    label: 'Reading Level Progress',
+                    data: [1.8, 2.1, 2.4, 2.7],
+                    borderColor: '#00B8A9',
+                    backgroundColor: 'rgba(0, 184, 169, 0.2)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 3,
+                    pointRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 1,
+                        max: 3,
+                        ticks: {
+                            callback: function(value) {
+                                if (value === 1) return 'Frustration';
+                                if (value === 2) return 'Instructional';
+                                if (value === 3) return 'Independent';
+                                return '';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // After Chart (Clear Bar Chart)
+        const afterCtx = document.getElementById('afterChart').getContext('2d');
+        new Chart(afterCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'],
+                datasets: [
+                    {
+                        label: 'Independent Level (90-100%)',
+                        data: [15, 18, 22, 20],
+                        backgroundColor: '#00B8A9',
+                        borderColor: '#00B8A9',
+                        borderWidth: 2,
+                        borderRadius: 8
+                    },
+                    {
+                        label: 'Instructional Level (70-89%)',
+                        data: [8, 10, 6, 4],
+                        backgroundColor: '#F6AD55',
+                        borderColor: '#F6AD55',
+                        borderWidth: 2,
+                        borderRadius: 8
+                    },
+                    {
+                        label: 'Frustration Level (Below 70%)',
+                        data: [5, 4, 2, 1],
+                        backgroundColor: '#E53E3E',
+                        borderColor: '#E53E3E',
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'rect',
+                            padding: 15,
+                            font: { size: 11, weight: '600' }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.parsed.y;
+                                const total = context.chart.data.datasets.reduce((sum, dataset) => {
+                                    return sum + dataset.data[context.dataIndex];
+                                }, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${context.dataset.label}: ${value} students (${percentage}%)`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Students',
+                            font: { size: 12, weight: 'bold' }
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value + ' students';
+                            }
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Grade Levels',
+                            font: { size: 12, weight: 'bold' }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

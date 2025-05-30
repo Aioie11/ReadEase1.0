@@ -59,40 +59,202 @@
                         </div>
                     </div>
 
-                    <!-- Filipino Language Test Results -->
+                    <!-- Filipino Language Test Results by Grade Level -->
                     <div class="chart-panel">
                         <div class="chart-panel-header">
-                            <h3>Filipino Language Test Results</h3>
+                            <h3>📊 Filipino Language Test Results by Grade Level</h3>
+                            <div class="grade-selector">
+                                <select id="gradeSelector" class="custom-select" onchange="updateGradeAnalysis()">
+                                    <option value="all">All Grades</option>
+                                    <option value="7">Grade 7</option>
+                                    <option value="8">Grade 8</option>
+                                    <option value="9">Grade 9</option>
+                                    <option value="10">Grade 10</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="chart-panel-body">
-                            <div class="charts-grid">
-                                <div class="chart-container">
-                                    <h4>Reading Speed</h4>
-                                    <canvas id="filipinoChart1"></canvas>
-                                    <div class="chart-summary">
-                                        <div class="summary-item">
-                                            <div class="summary-value">120 (WPM) Words Per Minute</div>
-                                            <div class="summary-label">Bilis ng Pagbasa</div>
+                            <!-- Grade Level Summary Cards -->
+                            <div class="grade-summary-grid">
+                                <div class="summary-card grade-7">
+                                    <div class="card-header">
+                                        <h4>Grade 7</h4>
+                                        <span class="student-count">28 mag-aaral</span>
+                                    </div>
+                                    <div class="performance-metrics">
+                                        <div class="metric">
+                                            <span class="metric-label">Avg Reading Speed</span>
+                                            <span class="metric-value">95 WPM</span>
+                                        </div>
+                                        <div class="metric">
+                                            <span class="metric-label">Avg Comprehension</span>
+                                            <span class="metric-value">78%</span>
+                                        </div>
+                                        <div class="metric">
+                                            <span class="metric-label">Avg Accuracy</span>
+                                            <span class="metric-value">85%</span>
+                                        </div>
+                                    </div>
+                                    <div class="performance-distribution">
+                                        <div class="dist-item independent">
+                                            <span class="dist-label">Independiyente</span>
+                                            <span class="dist-value">18 (64%)</span>
+                                        </div>
+                                        <div class="dist-item instructional">
+                                            <span class="dist-label">Pagtuturo</span>
+                                            <span class="dist-value">7 (25%)</span>
+                                        </div>
+                                        <div class="dist-item frustration">
+                                            <span class="dist-label">Pagkabalisa</span>
+                                            <span class="dist-value">3 (11%)</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="chart-container">
-                                    <h4>Reading Comprehension</h4>
-                                    <canvas id="filipinoChart2"></canvas>
-                                    <div class="chart-summary">
-                                        <div class="summary-item">
-                                            <div class="summary-value">Instructional Level</div>
-                                            <div class="summary-label">7 out of 10 correct answers</div>
+
+                                <div class="summary-card grade-8">
+                                    <div class="card-header">
+                                        <h4>Grade 8</h4>
+                                        <span class="student-count">32 mag-aaral</span>
+                                    </div>
+                                    <div class="performance-metrics">
+                                        <div class="metric">
+                                            <span class="metric-label">Avg Reading Speed</span>
+                                            <span class="metric-value">108 WPM</span>
+                                        </div>
+                                        <div class="metric">
+                                            <span class="metric-label">Avg Comprehension</span>
+                                            <span class="metric-value">82%</span>
+                                        </div>
+                                        <div class="metric">
+                                            <span class="metric-label">Avg Accuracy</span>
+                                            <span class="metric-value">89%</span>
+                                        </div>
+                                    </div>
+                                    <div class="performance-distribution">
+                                        <div class="dist-item independent">
+                                            <span class="dist-label">Independiyente</span>
+                                            <span class="dist-value">20 (63%)</span>
+                                        </div>
+                                        <div class="dist-item instructional">
+                                            <span class="dist-label">Pagtuturo</span>
+                                            <span class="dist-value">9 (28%)</span>
+                                        </div>
+                                        <div class="dist-item frustration">
+                                            <span class="dist-label">Pagkabalisa</span>
+                                            <span class="dist-value">3 (9%)</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="chart-container">
-                                    <h4>Word Reading</h4>
-                                    <canvas id="filipinoChart3"></canvas>
-                                    <div class="chart-summary">
-                                        <div class="summary-item">
-                                            <div class="summary-value">Independent Level</div>
-                                            <div class="summary-label">235 out of 250 words read correctly</div>
+
+                                <div class="summary-card grade-9">
+                                    <div class="card-header">
+                                        <h4>Grade 9</h4>
+                                        <span class="student-count">30 mag-aaral</span>
+                                    </div>
+                                    <div class="performance-metrics">
+                                        <div class="metric">
+                                            <span class="metric-label">Avg Reading Speed</span>
+                                            <span class="metric-value">118 WPM</span>
+                                        </div>
+                                        <div class="metric">
+                                            <span class="metric-label">Avg Comprehension</span>
+                                            <span class="metric-value">86%</span>
+                                        </div>
+                                        <div class="metric">
+                                            <span class="metric-label">Avg Accuracy</span>
+                                            <span class="metric-value">92%</span>
+                                        </div>
+                                    </div>
+                                    <div class="performance-distribution">
+                                        <div class="dist-item independent">
+                                            <span class="dist-label">Independiyente</span>
+                                            <span class="dist-value">24 (80%)</span>
+                                        </div>
+                                        <div class="dist-item instructional">
+                                            <span class="dist-label">Pagtuturo</span>
+                                            <span class="dist-value">5 (17%)</span>
+                                        </div>
+                                        <div class="dist-item frustration">
+                                            <span class="dist-label">Pagkabalisa</span>
+                                            <span class="dist-value">1 (3%)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="summary-card grade-10">
+                                    <div class="card-header">
+                                        <h4>Grade 10</h4>
+                                        <span class="student-count">25 mag-aaral</span>
+                                    </div>
+                                    <div class="performance-metrics">
+                                        <div class="metric">
+                                            <span class="metric-label">Avg Reading Speed</span>
+                                            <span class="metric-value">125 WPM</span>
+                                        </div>
+                                        <div class="metric">
+                                            <span class="metric-label">Avg Comprehension</span>
+                                            <span class="metric-value">89%</span>
+                                        </div>
+                                        <div class="metric">
+                                            <span class="metric-label">Avg Accuracy</span>
+                                            <span class="metric-value">94%</span>
+                                        </div>
+                                    </div>
+                                    <div class="performance-distribution">
+                                        <div class="dist-item independent">
+                                            <span class="dist-label">Independiyente</span>
+                                            <span class="dist-value">22 (88%)</span>
+                                        </div>
+                                        <div class="dist-item instructional">
+                                            <span class="dist-label">Pagtuturo</span>
+                                            <span class="dist-value">3 (12%)</span>
+                                        </div>
+                                        <div class="dist-item frustration">
+                                            <span class="dist-label">Pagkabalisa</span>
+                                            <span class="dist-value">0 (0%)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Detailed Analysis Charts -->
+                            <div class="detailed-analysis">
+                                <div class="analysis-header">
+                                    <h4>📈 Detailed Performance Analysis</h4>
+                                    <p>Comprehensive breakdown of Filipino reading performance across all grade levels</p>
+                                </div>
+
+                                <div class="charts-grid">
+                                    <div class="chart-container">
+                                        <h4>📚 Reading Speed Progression</h4>
+                                        <canvas id="filipinoSpeedChart"></canvas>
+                                        <div class="chart-summary">
+                                            <div class="summary-item">
+                                                <div class="summary-value">112 WPM Average</div>
+                                                <div class="summary-label">Across all grade levels</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="chart-container">
+                                        <h4>🧠 Comprehension Levels</h4>
+                                        <canvas id="filipinoComprehensionChart"></canvas>
+                                        <div class="chart-summary">
+                                            <div class="summary-item">
+                                                <div class="summary-value">84% Average</div>
+                                                <div class="summary-label">Overall comprehension rate</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="chart-container">
+                                        <h4>✅ Reading Accuracy</h4>
+                                        <canvas id="filipinoAccuracyChart"></canvas>
+                                        <div class="chart-summary">
+                                            <div class="summary-item">
+                                                <div class="summary-value">90% Average</div>
+                                                <div class="summary-label">Word reading accuracy</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -629,6 +791,161 @@
             color: var(--text);
         }
 
+        /* Grade Level Analysis Styles */
+        .grade-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .grade-summary-grid {
+            display: grid;grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+        }
+
+        .summary-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 184, 169, 0.15);
+        }
+
+        .summary-card.grade-7 {
+            border-left-color: #00B8A9;
+        }
+
+        .summary-card.grade-8 {
+            border-left-color: #F6AD55;
+        }
+
+        .summary-card.grade-9 {
+            border-left-color: #4FC3F7;
+        }
+
+        .summary-card.grade-10 {
+            border-left-color: #E53E3E;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--neutral-light);
+        }
+
+        .card-header h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .student-count {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            background: var(--neutral-light);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+        }
+
+        .performance-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .metric {
+            text-align: center;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .metric-label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+
+        .metric-value {
+            display: block;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .performance-distribution {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .dist-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+
+        .dist-item.independent {
+            background: #E8F5E8;
+            color: #2E7D32;
+        }
+
+        .dist-item.instructional {
+            background: #FFF3E0;
+            color: #F57C00;
+        }
+
+        .dist-item.frustration {
+            background: #FFEBEE;
+            color: #D32F2F;
+        }
+
+        .dist-label {
+            font-weight: 600;
+        }
+
+        .dist-value {
+            font-weight: 700;
+        }
+
+        .detailed-analysis {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--neutral-light);
+        }
+
+        .analysis-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .analysis-header h4 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .analysis-header p {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
         @media (max-width: 1024px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
@@ -645,6 +962,14 @@
 
             .search-wrapper input:focus {
                 width: 100%;
+            }
+
+            .grade-summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .performance-metrics {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -663,53 +988,46 @@
         };
 
         new Chart(progressCtx, {
-            type: 'line',
+            type: 'bar',
             data: {
                 labels: ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'],
-                datasets: [{
-                    label: '🟢 Independiyente',
-                    data: [2.8, 2.6, 2.9, 3.1],
-                    borderColor: '#2E7D32',
-                    backgroundColor: 'rgba(46, 125, 50, 0.1)',
-                    borderWidth: 4,
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#ffffff',
-                    pointBorderColor: '#2E7D32',
-                    pointBorderWidth: 3,
-                    pointRadius: 8,
-                    pointHoverRadius: 12
-                }, {
-                    label: '🟡 Pagtuturo',
-                    data: [2.2, 2.4, 2.3, 2.5],
-                    borderColor: '#F57C00',
-                    backgroundColor: 'rgba(245, 124, 0, 0.1)',
-                    borderWidth: 4,
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#ffffff',
-                    pointBorderColor: '#F57C00',
-                    pointBorderWidth: 3,
-                    pointRadius: 8,
-                    pointHoverRadius: 12
-                }, {
-                    label: '🔴 Pagkabigo',
-                    data: [1.5, 1.3, 1.2, 1.1],
-                    borderColor: '#D32F2F',
-                    backgroundColor: 'rgba(211, 47, 47, 0.1)',
-                    borderWidth: 4,
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#ffffff',
-                    pointBorderColor: '#D32F2F',
-                    pointBorderWidth: 3,
-                    pointRadius: 8,
-                    pointHoverRadius: 12
-                }]
+                datasets: [
+                    {
+                        label: 'Independiyente (90-100%)',
+                        data: [18, 20, 24, 22], // Number of students at Independent level
+                        backgroundColor: '#00B8A9',
+                        borderColor: '#00B8A9',
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        borderSkipped: false,
+                    },
+                    {
+                        label: 'Pagtuturo (70-89%)',
+                        data: [7, 9, 5, 3], // Number of students at Instructional level
+                        backgroundColor: '#F6AD55',
+                        borderColor: '#F6AD55',
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        borderSkipped: false,
+                    },
+                    {
+                        label: 'Pagkabalisa (Below 70%)',
+                        data: [3, 3, 1, 0], // Number of students at Frustration level
+                        backgroundColor: '#E53E3E',
+                        borderColor: '#E53E3E',
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        borderSkipped: false,
+                    }
+                ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
                 plugins: {
                     title: {
                         display: true,
@@ -719,12 +1037,15 @@
                         padding: 20
                     },
                     legend: {
+                        display: true,
                         position: 'top',
+                        align: 'center',
                         labels: {
+                            usePointStyle: true,
+                            pointStyle: 'rect',
                             padding: 20,
                             font: { size: 12, weight: '600' },
-                            color: '#2D3748',
-                            usePointStyle: true
+                            color: '#2D3748'
                         }
                     },
                     tooltip: {
@@ -734,65 +1055,56 @@
                         borderColor: '#00B8A9',
                         borderWidth: 2,
                         cornerRadius: 12,
-                        padding: 20,
+                        displayColors: true,
+                        padding: 16,
+                        titleFont: { size: 14, weight: 'bold' },
+                        bodyFont: { size: 13 },
                         callbacks: {
                             title: function (context) {
-                                const gradeData = {
-                                    'Grade 7': { students: 28, avgAge: '12-13 taon' },
-                                    'Grade 8': { students: 32, avgAge: '13-14 taon' },
-                                    'Grade 9': { students: 30, avgAge: '14-15 taon' },
-                                    'Grade 10': { students: 25, avgAge: '15-16 taon' }
-                                };
-                                const grade = context[0].label;
-                                const data = gradeData[grade];
-                                return `${grade} - ${data.students} Mag-aaral (${data.avgAge})`;
+                                return `${context[0].label} Pagganap sa Filipino`;
                             },
                             label: function (context) {
+                                const datasetLabel = context.dataset.label;
                                 const value = context.parsed.y;
-                                let level = readingLevels[Math.round(value)];
-                                if (!level) {
-                                    if (value < 1.5) level = readingLevels[1];
-                                    else if (value < 2.5) level = readingLevels[2];
-                                    else level = readingLevels[3];
-                                }
-                                return [
-                                    `Antas ng Pagbasa: ${level.name}`,
-                                    `Pagbasa ng Salita: ${level.wordReading}`,
-                                    `Pag-unawa: ${level.comprehension}`,
-                                    `${level.description}`
-                                ];
+                                const total = context.chart.data.datasets.reduce((sum, dataset) => {
+                                    return sum + dataset.data[context.dataIndex];
+                                }, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+
+                                return `${datasetLabel}: ${value} mag-aaral (${percentage}%)`;
+                            },
+                            afterBody: function (context) {
+                                const dataIndex = context[0].dataIndex;
+                                const total = context[0].chart.data.datasets.reduce((sum, dataset) => {
+                                    return sum + dataset.data[dataIndex];
+                                }, 0);
+                                return `Kabuuang Mag-aaral: ${total}`;
                             }
                         }
                     }
                 },
                 scales: {
                     y: {
-                        position: 'left',
-                        beginAtZero: false,
-                        min: 0.5,
-                        max: 3.5,
+                        beginAtZero: true,
+                        stacked: false,
                         grid: {
                             color: 'rgba(0, 184, 169, 0.1)',
                             drawBorder: false,
-                            lineWidth: 2
+                            lineWidth: 1
                         },
                         ticks: {
-                            stepSize: 1,
-                            padding: 20,
-                            font: { size: 12, weight: '600' },
-                            color: '#2D3748',
+                            padding: 15,
+                            font: { size: 12, weight: '500' },
+                            color: '#4A5568',
                             callback: function (value) {
-                                if (value === 1) return '🔴 Pagkabalisa';
-                                if (value === 2) return '🟡 Pagtuturo';
-                                if (value === 3) return '🟢 Independiyente';
-                                return '';
+                                return value + ' mag-aaral';
                             }
                         },
                         title: {
                             display: true,
-                            text: 'Antas ng Pagganap sa Pagbasa',
+                            text: 'Bilang ng Mag-aaral',
                             font: { size: 14, weight: 'bold' },
-                            color: '#00B8A9',
+                            color: '#2D3748',
                             padding: 20
                         }
                     },
@@ -800,12 +1112,12 @@
                         grid: { display: false, drawBorder: false },
                         ticks: {
                             padding: 15,
-                            font: { size: 12, weight: '500' },
-                            color: '#4A5568'
+                            font: { size: 13, weight: '600' },
+                            color: '#2D3748'
                         },
                         title: {
                             display: true,
-                            text: '🎓 Mga Baitang',
+                            text: 'Mga Baitang',
                             font: { size: 14, weight: 'bold' },
                             color: '#2D3748',
                             padding: 15
@@ -896,5 +1208,230 @@
             },
             options: cleanChartOptions
         });
+
+        // Filipino Reading Speed Progression Chart
+        const speedCtx = document.getElementById('filipinoSpeedChart').getContext('2d');
+        new Chart(speedCtx, {
+            type: 'line',
+            data: {
+                labels: ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'],
+                datasets: [{
+                    label: 'Average Reading Speed (WPM)',
+                    data: [95, 108, 118, 125],
+                    borderColor: '#00B8A9',
+                    backgroundColor: 'rgba(0, 184, 169, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#00B8A9',
+                    pointBorderWidth: 3,
+                    pointRadius: 6,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                ...cleanChartOptions,
+                plugins: {
+                    ...cleanChartOptions.plugins,
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                        titleColor: '#1A202C',
+                        bodyColor: '#2D3748',
+                        borderColor: '#00B8A9',
+                        borderWidth: 2,
+                        cornerRadius: 8,
+                        displayColors: true,
+                        padding: 12,
+                        titleFont: { size: 13, weight: 'bold' },
+                        bodyFont: { size: 12 },
+                        callbacks: {
+                            label: function (context) {
+                                return `Reading Speed: ${context.parsed.y} WPM`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 184, 169, 0.1)',
+                            drawBorder: false,
+                            lineWidth: 1
+                        },
+                        ticks: {
+                            padding: 10,
+                            font: { size: 11, weight: '500' },
+                            color: '#4A5568',
+                            callback: function (value) {
+                                return value + ' WPM';
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            padding: 10,
+                            font: { size: 11, weight: '500' },
+                            color: '#2D3748'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Filipino Comprehension Levels Chart
+        const comprehensionCtx = document.getElementById('filipinoComprehensionChart').getContext('2d');
+        new Chart(comprehensionCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'],
+                datasets: [{
+                    label: 'Average Comprehension (%)',
+                    data: [78, 82, 86, 89],
+                    backgroundColor: '#F6AD55',
+                    borderColor: '#F6AD55',
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                ...cleanChartOptions,
+                plugins: {
+                    ...cleanChartOptions.plugins,
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                        titleColor: '#1A202C',
+                        bodyColor: '#2D3748',
+                        borderColor: '#00B8A9',
+                        borderWidth: 2,
+                        cornerRadius: 8,
+                        displayColors: true,
+                        padding: 12,
+                        titleFont: { size: 13, weight: 'bold' },
+                        bodyFont: { size: 12 },
+                        callbacks: {
+                            label: function (context) {
+                                return `Comprehension: ${context.parsed.y}%`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: {
+                            color: 'rgba(0, 184, 169, 0.1)',
+                            drawBorder: false,
+                            lineWidth: 1
+                        },
+                        ticks: {
+                            padding: 10,
+                            font: { size: 11, weight: '500' },
+                            color: '#4A5568',
+                            callback: function (value) {
+                                return value + '%';
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            padding: 10,
+                            font: { size: 11, weight: '500' },
+                            color: '#2D3748'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Filipino Reading Accuracy Chart
+        const accuracyCtx = document.getElementById('filipinoAccuracyChart').getContext('2d');
+        new Chart(accuracyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'],
+                datasets: [{
+                    label: 'Average Reading Accuracy (%)',
+                    data: [85, 89, 92, 94],
+                    backgroundColor: '#4FC3F7',
+                    borderColor: '#4FC3F7',
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                ...cleanChartOptions,
+                plugins: {
+                    ...cleanChartOptions.plugins,
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                        titleColor: '#1A202C',
+                        bodyColor: '#2D3748',
+                        borderColor: '#00B8A9',
+                        borderWidth: 2,
+                        cornerRadius: 8,
+                        displayColors: true,
+                        padding: 12,
+                        titleFont: { size: 13, weight: 'bold' },
+                        bodyFont: { size: 12 },
+                        callbacks: {
+                            label: function (context) {
+                                return `Reading Accuracy: ${context.parsed.y}%`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: {
+                            color: 'rgba(0, 184, 169, 0.1)',
+                            drawBorder: false,
+                            lineWidth: 1
+                        },
+                        ticks: {
+                            padding: 10,
+                            font: { size: 11, weight: '500' },
+                            color: '#4A5568',
+                            callback: function (value) {
+                                return value + '%';
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            padding: 10,
+                            font: { size: 11, weight: '500' },
+                            color: '#2D3748'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Grade Analysis Update Function
+        function updateGradeAnalysis() {
+            const selectedGrade = document.getElementById('gradeSelector').value;
+            // This function can be expanded to filter data based on selected grade
+            console.log('Selected grade:', selectedGrade);
+            // Future implementation: Update charts and summary cards based on selected grade
+        }
     </script>
 @endsection
