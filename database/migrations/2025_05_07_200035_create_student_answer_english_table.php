@@ -19,6 +19,8 @@ class CreateStudentAnswerEnglishTable extends Migration // Class name matches fi
             $table->string('c6');
             $table->string('c7');
             $table->integer('score')->default(0);
+            $table->integer('reading_time')->nullable()->comment('Reading time in seconds');
+            $table->integer('reading_speed')->nullable()->comment('Reading speed in words per minute');
             $table->timestamps();
         });
     }

@@ -26,7 +26,7 @@
                     </div>
                     <div class="stat-info">
                         <h3>Test Progress</h3>
-                        <p class="stat-number">85%</p>
+                        <p class="stat-number">{{ $completionPercentage }}%</p>
                         <p class="stat-label">Overall Completion</p>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                     </div>
                     <div class="stat-info">
                         <h3>Performance</h3>
-                        <p class="stat-number">90%</p>
+                        <p class="stat-number">{{ $averageScore }}%</p>
                         <p class="stat-label">Average Score</p>
                     </div>
                 </div>
@@ -60,60 +60,65 @@
                     <h2>Recent Activities</h2>
                 </div>
                 <div class="activity-list">
+                    <!-- English Answering -->
                     <div class="activity-item">
-                        <div class="activity-icon completed">
-                            <i class="fas fa-check"></i>
+                        <div class="activity-icon {{ $latestEnglishActivity ? 'completed' : 'in-progress' }}">
+                            <i class="fas {{ $latestEnglishActivity ? 'fa-check' : 'fa-spinner' }}"></i>
                         </div>
                         <div class="activity-details">
-                            <h4>English Reading Exercise</h4>
-                            <p>Completed with 85% score</p>
-                            <span class="activity-time">2 hours ago</span>
+                            <h4>English Answering</h4>
+                            @if($latestEnglishActivity)
+                                @php
+                                    $englishPercent = ($totalEnglishQuestions > 0) ? round(($latestEnglishScore / $totalEnglishQuestions) * 100) : 0;
+                                @endphp
+                                <p>Completed with {{ $englishPercent }}% score</p>
+                                <span class="activity-time">{{ $latestEnglishActivity->created_at->diffForHumans() }}</span>
+                            @else
+                                <p>0% - Not yet completed</p>
+                                <span class="activity-time">Pending</span>
+                            @endif
                         </div>
                     </div>
-
-                    <div class="activity-item">
-                        <div class="activity-icon in-progress">
-                            <i class="fas fa-spinner"></i>
-                        </div>
-                        <div class="activity-details">
-                            <h4>English Comprehension</h4>
-                            <p>In progress - 60% complete</p>
-                            <span class="activity-time">1 hour ago</span>
-                        </div>
-                    </div>
-
-                    <div class="activity-item">
-                        <div class="activity-icon completed">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <div class="activity-details">
-                            <h4>Filipino Reading Exercise</h4>
-                            <p>Completed with 85% score</p>
-                            <span class="activity-time">2 hours ago</span>
-                        </div>
-                    </div>
-
+                    <!-- English Reading (not yet connected, always show 0%) -->
                     <div class="activity-item">
                         <div class="activity-icon in-progress">
                             <i class="fas fa-spinner"></i>
                         </div>
                         <div class="activity-details">
-                            <h4>Filipino Comprehension</h4>
-                            <p>In progress - 60% complete</p>
-                            <span class="activity-time">1 hour ago</span>
+                            <h4>English Reading</h4>
+                            <p>0% - Not yet completed</p>
+                            <span class="activity-time">Pending</span>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Performance Overview -->
-            <div class="results-section">
-                <div class="results-header">
-                    <h2>Performance Overview</h2>
-                </div>
-                <div class="charts-container">
-                    <div class="chart-card">
-                        <canvas id="performanceChart"></canvas>
+                    <!-- Filipino Answering -->
+                    <div class="activity-item">
+                        <div class="activity-icon {{ $latestFilipinoActivity ? 'completed' : 'in-progress' }}">
+                            <i class="fas {{ $latestFilipinoActivity ? 'fa-check' : 'fa-spinner' }}"></i>
+                        </div>
+                        <div class="activity-details">
+                            <h4>Filipino Answering</h4>
+                            @if($latestFilipinoActivity)
+                                @php
+                                    $filipinoPercent = ($totalFilipinoQuestions > 0) ? round(($latestFilipinoScore / $totalFilipinoQuestions) * 100) : 0;
+                                @endphp
+                                <p>Completed with {{ $filipinoPercent }}% score</p>
+                                <span class="activity-time">{{ $latestFilipinoActivity->created_at->diffForHumans() }}</span>
+                            @else
+                                <p>0% - Not yet completed</p>
+                                <span class="activity-time">Pending</span>
+                            @endif
+                        </div>
+                    </div>
+                    <!-- Filipino Reading (not yet connected, always show 0%) -->
+                    <div class="activity-item">
+                        <div class="activity-icon in-progress">
+                            <i class="fas fa-spinner"></i>
+                        </div>
+                        <div class="activity-details">
+                            <h4>Filipino Reading</h4>
+                            <p>0% - Not yet completed</p>
+                            <span class="activity-time">Pending</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -139,7 +144,7 @@
             background: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .profile-header {
@@ -176,7 +181,7 @@
             background: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
             gap: 15px;
@@ -216,7 +221,7 @@
             background: white;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
         }
 
@@ -277,14 +282,6 @@
             color: #95a5a6;
         }
 
-        .chart-card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            height: 300px;
-        }
-
         @media (max-width: 768px) {
             .profile-header {
                 flex-direction: column;
@@ -296,58 +293,4 @@
             }
         }
     </style>
-
-    <!-- Chart.js Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // Performance Overview Chart
-        const ctx = document.getElementById('performanceChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-                datasets: [{
-                    label: 'English',
-                    data: [75, 82, 78, 85],
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    backgroundColor: 'rgba(54, 162, 235, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }, {
-                    label: 'Filipino',
-                    data: [80, 85, 88, 90],
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Weekly Performance',
-                        font: {
-                            size: 16
-                        }
-                    },
-                    legend: {
-                        position: 'top'
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        title: {
-                            display: true,
-                            text: 'Score (%)'
-                        }
-                    }
-                }
-            }
-        });
-    </script>
 @endsection

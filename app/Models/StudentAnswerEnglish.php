@@ -20,5 +20,7 @@ class StudentAnswerEnglish extends Model
         'c6',
         'c7',
         'score',
+        'reading_time',
+        'reading_speed',
     ];
 }

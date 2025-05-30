@@ -11,49 +11,51 @@ class ReadingMaterialController extends Controller
     public function getByGradeAndSubject($grade, $subject)
     {
         try {
-            $materials = ReadingMaterial::where('grade_level', $grade)
+            $material = ReadingMaterial::where('grade_level', $grade)
                 ->where('subject', $subject)
-                ->with('questions')
-                ->get();
+                ->where('is_published', false)
+                ->latest()
+                ->first();
 
-            if ($materials->isEmpty()) {
-                return response()->json([], 200);
+            if (!$material) {
+                return response()->json([
+                    'message' => 'No unpublished reading material found for this grade and subject'
+                ], 404);
             }
 
-            return response()->json($materials);
+            return response()->json([
+                'material' => $material
+            ]);
         } catch (\Exception $e) {
             return response()->json([
-                'success' => false,
-                'message' => 'Failed to fetch reading materials: ' . $e->getMessage()
+                'message' => 'Error fetching reading material: ' . $e->getMessage()
             ], 500);
         }
     }
 
-    public function publish(Request $request, $id)
+    public function publish($id)
     {
         try {
-            $material = ReadingMaterial::findOrFail($id);
+            $readingMaterial = ReadingMaterial::findOrFail($id);
             
-            // Update the published status
-            $material->update([
-                'is_published' => true,
-                'published_at' => now()
-            ]);
+            // Validate that the material has both grade level and subject
+            if (!$readingMaterial->grade_level || !$readingMaterial->subject) {
+                return response()->json([
+                    'message' => 'Reading material must have both grade level and subject before publishing'
+                ], 422);
+            }
 
-            // Determine the redirect URL based on the subject
-            $redirectUrl = $material->subject === 'english' 
-                ? '/student/students-eng' 
-                : '/student/students-tag';
+            $readingMaterial->is_published = true;
+            $readingMaterial->published_at = now();
+            $readingMaterial->save();
 
             return response()->json([
-                'success' => true,
                 'message' => 'Reading material published successfully',
-                'redirect_url' => $redirectUrl
+                'material' => $readingMaterial
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'success' => false,
-                'message' => 'Failed to publish reading material: ' . $e->getMessage()
+                'message' => 'Error publishing reading material: ' . $e->getMessage()
             ], 500);
         }
     }

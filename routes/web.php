@@ -10,6 +10,9 @@ use App\Http\Controllers\ReadingController;
 use App\Http\Controllers\ReadingMaterialController;
 use App\Http\Controllers\ReadingLevelController;
 use App\Http\Controllers\StudentDashboardController;
+use App\Http\Controllers\StudentAnswerEnglishController;
+use App\Http\Controllers\StudentAnswerTagalogController;
+use App\Http\Controllers\TeacherController;
 use Illuminate\Http\Request;
 
 
@@ -19,9 +22,6 @@ use Illuminate\Http\Request;
 
 // Route::post('/student/add/english', [StudentAnswerEnglishController::class, 'store'])->name('student.add.english');
 // Route::post('/student/add/tagalog', [StudentAnswerTagalogController::class, 'store'])->name('student.add.tagalog');
-
-Route::post('/student/add', [StudentAnswerEnglishController::class, 'store']);
-Route::post('/student/add', [StudentAnswerTagalogController::class, 'store']);
 
 
 // Home Route
@@ -41,25 +41,29 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware(['web'])->group(function () {
     // Teacher Routes
     Route::prefix('teacher')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('teacher.dashboard');
-        })->name('teacher.dashboard');
+        Route::get('/dashboard', [TeacherController::class, 'dashboard'])->name('teacher.dashboard');
 
         Route::get('/students', function () {
             return view('teacher.students');
         })->name('teacher.students');
 
+        Route::get('/student-management', function () {
+            return view('teacher.studentManagement');
+        })->name('teacher.student-management');
+
+        Route::get('/view', function () {
+            return view('teacher.view');
+        })->name('teacher.view');
+
         Route::get('/about', function () {
             return view('teacher.about');
         })->name('teacher.about');
-        
-        Route::get('/readinglanguage', function () {
-            return view('teacher.readinglanguage');
+
+        Route::get('/readinglangu', function () {
+            return view('teacher.assessment');
         })->name('teacher.readinglanguage');
 
-        Route::get('/passage', function () {
-            return view('teacher.passsage');
-        })->name('teacher.passage');
+        Route::get('/passage', [TeacherController::class, 'passage'])->name('teacher.passage');
 
         Route::get('/english', function () {
             return view('teacher.english');
@@ -95,11 +99,24 @@ Route::middleware(['web'])->group(function () {
 
         Route::get('/viewreports', [ReportsController::class, 'index'])->name('teacher.viewreports');
 
+        Route::get('/filipinoreport', function () {
+            return view('teacher.filipinoreport');
+        })->name('teacher.filipinoreport');
+
+        // Reading Assessment Routes
+        Route::post('/save-reading-assessment', [ReportsController::class, 'saveReadingAssessment'])->name('teacher.save-reading-assessment');
+        Route::get('/grade-level-data', [ReportsController::class, 'getGradeLevelData'])->name('teacher.grade-level-data');
+
         // Add search route for teachers
         Route::get('/search-student', [StudentController::class, 'search'])->name('teacher.search-student');
 
         // Add the update-reading route
         Route::post('/update-reading', [ReadingController::class, 'updateReading'])->name('reading.update');
+
+        // Add route for reading progress report
+        Route::get('/reading-progress', function () {
+            return view('teacher.report');
+        })->name('teacher.reading-progress');
     });
 
     // Admin Routes
@@ -120,12 +137,13 @@ Route::middleware(['web'])->group(function () {
 
         Route::get('/test-management', function () {
             return view('admin.testManagement');
-        })->name('admin.test-management');  
+        })->name('admin.test-management');
 
         Route::get('/user-management', function () {
             return view('admin.userManagement');
         })->name('admin.user-management');
 
+        Route::delete('/delete-test/{id}', [AdminController::class, 'deleteTest'])->name('admin.delete.test');
 
         Route::post('/users', [ProfileController::class, 'store']);
         Route::get('/users', [ProfileController::class, 'index']);
@@ -137,6 +155,7 @@ Route::middleware(['web'])->group(function () {
     Route::prefix('student')->group(function () {
         Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('student.dashboard');
         Route::get('/reports', [StudentDashboardController::class, 'reports'])->name('student.reports');
+        Route::post('/add/english', [StudentAnswerEnglishController::class, 'store'])->name('student.add.english');
     });
 
     // Reading Materials Routes
@@ -153,14 +172,6 @@ Route::middleware(['web'])->group(function () {
 });
 
 
-Route::get('/viewreports', function () {
-    return view('viewreports');
-});
-
-Route::get('/log', function () {
-    return view('log'); // This is your homepage
-});
-
 // Student Routes
 Route::get('/stud-dash', [StudentDashboardController::class, 'index'])->name('student.dashboard');
 
@@ -168,10 +179,16 @@ Route::get('/stud-dash', [StudentDashboardController::class, 'index'])->name('st
 Route::get('/stud-eng', [ReadingMaterialController::class, 'getPublishedMaterial'])->name('student.students-eng');
 Route::get('/stud-fil', [ReadingMaterialController::class, 'getPublishedMaterial'])->name('student.students-fil');
 
-Route::get('/stud-reports', function () {
-    return view('student.stud-reports');
-});
+Route::get('/stud-reports', [StudentDashboardController::class, 'reports'])->name('student.reports');
+
 
 Route::get('/admin/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.dashboard');
 
+Route::post('/student/add/english', [StudentAnswerEnglishController::class, 'store'])->name('student.add.english');
+
+Route::post('/student/add/filipino', [StudentAnswerTagalogController::class, 'store'])->name('student.add.filipino');
+
+Route::get('/teacher/studentManagement', function () {
+    return view('teacher.studentManagement');
+});
 

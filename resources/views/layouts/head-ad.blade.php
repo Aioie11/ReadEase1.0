@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Default Title')</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -13,34 +15,34 @@
             --primary: #0E61BA;
             --primary-light: #3b82f6;
             --primary-dark: #0d4b94;
-            
+
             /* Secondary - Navigation and Secondary UI */
             --secondary: #6CC24A;
             --secondary-light: #7ed56f;
-            
+
             /* Accent - Buttons and Highlights */
             --accent: #F9A602;
             --accent-light: #fbbf24;
-            
+
             /* Neutral - Backgrounds */
             --neutral: #F4F4F4;
             --neutral-light: #ffffff;
             --neutral-dark: #e5e5e5;
-            
+
             /* Text - Main Text and Headings */
             --text: #232323;
             --text-light: #4b5563;
-            
+
             /* Gradients */
             --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             --gradient-secondary: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
             --gradient-accent: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
-            
+
             /* Shadows */
-            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
-            
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
             --transition: all 0.3s ease;
         }
 
@@ -83,11 +85,50 @@
             text-decoration: none;
         }
 
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+
         .user-info {
             display: flex;
             align-items: center;
             gap: 1rem;
             color: var(--neutral-light);
+        }
+
+        .logout-btn {
+            background: var(--accent);
+            color: var(--neutral-light);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
         }
 
         .user-avatar {
@@ -99,11 +140,98 @@
             align-items: center;
             justify-content: center;
             font-weight: 600;
+            font-size: 1rem;
+            color: var(--neutral-light);
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            line-height: 1.2;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            line-height: 1;
+        }
+
+        .dropdown-arrow {
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+
+        .user-dropdown.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Dropdown Menu */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--neutral-light);
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            margin-top: 0.5rem;
+        }
+
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            color: var(--text);
+            text-decoration: none;
+            transition: var(--transition);
+            border-bottom: 1px solid var(--neutral-dark);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: var(--neutral);
+            color: var(--primary);
+        }
+
+        .dropdown-item i {
+            width: 16px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .logout-item {
+            color: #dc3545;
+        }
+
+        .logout-item:hover {
+            background: #dc3545;
+            color: var(--neutral-light);
         }
 
         /* Dashboard Content */
         .dashboard {
-            padding: 6rem 5% 2rem;
+            padding: 7rem 5% 2rem;
             max-width: 1400px;
             margin: 0 auto;
         }
@@ -328,7 +456,7 @@
             background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .nav-menu {
@@ -366,7 +494,8 @@
             font-size: 0.95rem;
         }
 
-        .nav-link:hover, .nav-link.active {
+        .nav-link:hover,
+        .nav-link.active {
             background: var(--secondary);
             color: var(--neutral-light);
             transform: translateX(5px);
@@ -396,14 +525,14 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .student-profile {
+        .admin-profile {
             display: flex;
             align-items: center;
             gap: 1rem;
             color: var(--neutral-light);
         }
 
-        .student-avatar {
+        .admin-avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -414,11 +543,11 @@
             font-weight: 600;
         }
 
-        .student-info {
+        .admin-info {
             flex: 1;
         }
 
-        .student-name {
+        .admin-name {
             font-weight: 600;
             margin-bottom: 0.2rem;
             font-size: 1rem;
@@ -426,10 +555,10 @@
             background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
-        .student-role {
+        .admin-role {
             font-size: 0.85rem;
             opacity: 0.9;
             color: #e0e0e0;
@@ -439,6 +568,7 @@
         /* Adjust main content for sidebar */
         .main-content {
             margin-left: 250px;
+            padding-top: 5rem;
             transition: var(--transition);
         }
 
@@ -484,9 +614,10 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Sidebar -->
-    
+
     <aside class="sidebar">
         <div class="sidebar-header">
             <a href="{{ url('/') }}" class="sidebar-logo">
@@ -496,55 +627,100 @@
         </div>
         <nav>
             <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="{{ route('admin.dashboard') }}" class="nav-link">
-                        <i class="fas fa-tachometer-alt"></i>
-                        Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.test-management') }}" class="nav-link">
-                        <i class="fas fa-tasks"></i>
-                        Test Management
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.student-records') }}" class="nav-link">
-                        <i class="fas fa-users"></i>
-                        Student Record
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.reports') }}" class="nav-link">
-                        <i class="fas fa-chart-line"></i>
-                        Reports
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.user-management') }}" class="nav-link">
-                        <i class="fas fa-user-cog"></i>
-                        User Management
-                    </a>
-                </li>
+                @if(Auth::user()->role === 'admin')
+                    <li class="nav-item">
+                        <a href="{{ route('admin.dashboard') }}" class="nav-link">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.test-management') }}" class="nav-link">
+                            <i class="fas fa-tasks"></i>
+                            Test Management
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.student-records') }}" class="nav-link">
+                            <i class="fas fa-users"></i>
+                            Student Record
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.reports') }}" class="nav-link">
+                            <i class="fas fa-chart-line"></i>
+                            Reports
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.user-management') }}" class="nav-link">
+                            <i class="fas fa-user-cog"></i>
+                            User Management
+                        </a>
+                    </li>
+                @else
+                    <li class="nav-item">
+                        <a href="{{ route('student.dashboard') }}" class="nav-link">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('student.tests') }}" class="nav-link">
+                            <i class="fas fa-book"></i>
+                            My Tests
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('student.progress') }}" class="nav-link">
+                            <i class="fas fa-chart-line"></i>
+                            My Progress
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('student.profile') }}" class="nav-link">
+                            <i class="fas fa-user"></i>
+                            My Profile
+                        </a>
+                    </li>
+                @endif
             </ul>
         </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile">
+                <div class="admin-avatar">{{ Auth::user() ? strtoupper(substr(Auth::user()->name, 0, 1)) : 'A' }}</div>
+                <div class="admin-info">
+                    <div class="admin-name">{{ Auth::user() ? Auth::user()->name : 'Admin' }}</div>
+                    <div class="admin-role">Administrator</div>
+                </div>
+            </div>
+        </div>
     </aside>
 
     <!-- Header -->
-    <header>
-        <div class="header-container">
-            <button class="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="user-info">
-                <span>Welcome, Admin</span>
+    <header style="background: #156fd1; box-shadow: none;">
+        <div class="header-container" style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 1rem;">
+            <div style="display: flex; align-items: center; gap: 1.2rem;">
+                <div style="width: 44px; height: 44px; border-radius: 50%; background: #f9a602; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 1.5rem; color: #fff;">
+                    {{ Auth::user() ? strtoupper(substr(Auth::user()->name, 0, 1)) : 'A' }}
+                </div>
+                <div style="display: flex; flex-direction: column;">
+                    <span style="font-weight: 700; color: #fff; font-size: 1.1rem;">{{ Auth::user()->name ?? 'Admin' }}</span>
+                    <span style="color: #fff; font-size: 0.95rem; opacity: 0.85; text-transform: lowercase;">Admin</span>
+                </div>
             </div>
+            <a href="{{ route('logout') }}" class="logout-btn" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" style="background: #2176d2; color: #fff; border-radius: 7px; padding: 0.6rem 1.4rem; font-weight: 500; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 2px 8px rgba(21,111,209,0.08); border: none; transition: background 0.2s;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
         </div>
     </header>
 
-
     @yield ('content')
-    
+
     <script>
         // Add hover effect for grade cards
         document.querySelectorAll('.grade-card').forEach(card => {
@@ -575,15 +751,37 @@
             });
         });
 
+        // User dropdown functionality
+        function toggleUserDropdown() {
+            const dropdown = document.querySelector('.user-dropdown');
+            const dropdownMenu = document.getElementById('userDropdownMenu');
+
+            dropdown.classList.toggle('active');
+            dropdownMenu.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+            const userDropdown = document.querySelector('.user-dropdown');
+            const dropdownMenu = document.getElementById('userDropdownMenu');
+
+            if (!userDropdown.contains(event.target)) {
+                userDropdown.classList.remove('active');
+                dropdownMenu.classList.remove('show');
+            }
+        });
+
         // Add sidebar toggle functionality
         const menuToggle = document.querySelector('.menu-toggle');
         const sidebar = document.querySelector('.sidebar');
         const mainContent = document.querySelector('.main-content');
         const header = document.querySelector('header');
 
-        menuToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-        });
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
 
         // Add active state to nav links
         const navLinks = document.querySelectorAll('.nav-link');
@@ -595,4 +793,5 @@
         });
     </script>
 </body>
-</html> 
+
+</html>

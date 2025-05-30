@@ -3,54 +3,79 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\StudentAnswerEnglish;
+use App\Models\StudentAnswerTagalog;
+use App\Models\ReadingMaterial;
+use App\Models\ReadingQuestion;
+use Illuminate\Support\Facades\Auth;
 
 class StudentAnswerTagalogController extends Controller
 {
     public function store(Request $request)
     {
-        // Correct answers
-        $correctAnswers = [
-            'c1' => 'B',
-            'c2' => 'A',
-            'c3' => 'C',
-            'c4' => 'C',
-            'c5' => 'D',
-            'c6' => 'C',
-        ];
+        // Get the current reading material and its questions
+        $readingMaterial = ReadingMaterial::where('subject', 'filipino')
+            ->where('is_published', true)
+            ->latest('published_at')
+            ->first();
+
+        if (!$readingMaterial) {
+            return redirect()->back()->with('error', 'Walang aktibong reading material na nahanap.');
+        }
+
+        $questions = $readingMaterial->questions()->orderBy('id')->get();
+        
+        // Get correct answers from the database
+        $correctAnswers = [];
+        foreach ($questions as $index => $question) {
+            $correctAnswers['c' . ($index + 1)] = $question->correct_answer;
+        }
 
         // Validate input
-        $request->validate([
-            'student_id' => 'required',
-            'c1' => 'required',
-            'c2' => 'required',
-            'c3' => 'required',
-            'c4' => 'required',
-            'c5' => 'required',
-            'c6' => 'required',
-        ]);
+        $validationRules = [];
+        foreach ($questions as $index => $question) {
+            $validationRules['c' . ($index + 1)] = 'required';
+        }
+        $request->validate($validationRules);
 
         // Calculate score
         $score = 0;
+        $totalQuestions = count($correctAnswers);
         foreach ($correctAnswers as $key => $value) {
             if ($request->$key == $value) {
                 $score++;
             }
         }
 
-        // Save to database
-        StudentAnswerTagalog::create([
-            'student_id' => $request->student_id,
-            'c1' => $request->c1,
-            'c2' => $request->c2,
-            'c3' => $request->c3,
-            'c4' => $request->c4,
-            'c5' => $request->c5,
-            'c6' => $request->c6,
-            'score' => $score,
-        ]);
+        try {
+            // Get the logged-in user's userId
+            $user = Auth::user();
+            if (!$user) {
+                return redirect()->back()->with('error', 'Kailangan mong mag-login para makapag-submit ng mga sagot.');
+            }
 
-        // Redirect back with success message
-        return redirect()->back()->with('success', 'Answers submitted successfully! Score: ' . $score . '/6');
+            // Prepare answer data
+            $answerData = [
+                'student_id' => $user->userId, // Use userId instead of internal ID
+                'score' => $score,
+                'total_questions' => $totalQuestions
+            ];
+
+            // Add individual answers
+            foreach ($questions as $index => $question) {
+                $answerData['c' . ($index + 1)] = $request->input('c' . ($index + 1));
+            }
+
+            // Save to database
+            StudentAnswerTagalog::create($answerData);
+
+            // Redirect back with success message
+            return redirect()->route('student.reports')->with([
+                'success' => 'Matagumpay na naipasa ang iyong mga sagot! Score: ' . $score . '/' . $totalQuestions,
+                'score' => $score,
+                'total_questions' => $totalQuestions
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'May error sa pagpapasa ng iyong mga sagot. Pakisubukan muli.');
+        }
     }
 }

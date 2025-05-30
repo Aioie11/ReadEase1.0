@@ -6,6 +6,12 @@
     <!-- Main Content -->
     <div class="main-content">
         <div class="dashboard">
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
 
             <!-- English Language Results -->
             <div class="results-section">
@@ -28,7 +34,7 @@
                         </div>
                         <div class="reading-metrics">
                             <p><strong>Instructional Level</strong></p>
-                            <p>7 out of 10 correct answers</p>
+                            <p>{{ session('score', 7) }} out of {{ session('total_questions', 10) }} correct answers</p>
                         </div>
                     </div>
 
@@ -43,47 +49,11 @@
                     </div>
                 </div>
                 <div class="feedback-section">
-                    <div class="feedback-history">
-                            <h4>Teacher's Feedbacks</h4>
+                    <h3>Teacher Feedback</h3>
+                    <div class="feedback-content">
                         <div class="feedback-item">
-                            <div class="feedback-meta">
-                                <span>Date: December 15, 2025</span>
-                                <span>Reading Level: Grade 7</span>
-                            </div>
-                            <div class="feedback-content">
-                                <p><strong>Strengths:</strong> Good comprehension of main ideas and vocabulary usage.</p>
-                                <p><strong>Areas for Improvement:</strong> Needs to work on reading pace and pronunciation.</p>
-                                <p><strong>Recommendations:</strong> Practice reading aloud daily and use phonics exercises.</p>
-                            </div>
-                            <div class="feedback-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
-                                <span>4/5</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="feedback-history">
-                        <div class="feedback-item">
-                            <div class="feedback-meta">
-                                <span>Date: March 30, 2024</span>
-                                <span>Reading Level: Grade 7</span>
-                            </div>
-                            <div class="feedback-content">
-                                <p><strong>Strengths:</strong> Good comprehension of main ideas and vocabulary usage.</p>
-                                <p><strong>Areas for Improvement:</strong> Needs to work on reading pace and pronunciation.</p>
-                                <p><strong>Recommendations:</strong> Practice reading aloud daily and use phonics exercises.</p>
-                            </div>
-                            <div class="feedback-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
-                                <span>4/5</span>
+                            <div class="feedback-message">
+                                <p>No feedback yet</p>
                             </div>
                         </div>
                     </div>
@@ -126,53 +96,16 @@
                     </div>
                 </div>
                 <div class="feedback-section">
-                    <div class="feedback-history">
-                            <h4>Teacher's Feedbacks</h4>
+                    <h3>Teacher Feedback</h3>
+                    <div class="feedback-content">
                         <div class="feedback-item">
-                            <div class="feedback-meta">
-                                <span>Date: December 15, 2025</span>
-                                <span>Reading Level: Grade 7</span>
-                            </div>
-
-                            <div class="feedback-content">
-                                <p><strong>Strengths:</strong> Good comprehension of main ideas and vocabulary usage.</p>
-                                <p><strong>Areas for Improvement:</strong> Needs to work on reading pace and pronunciation.</p>
-                                <p><strong>Recommendations:</strong> Practice reading aloud daily and use phonics exercises.</p>
-                            </div>
-
-                            <div class="feedback-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
-                                <span>4/5</span>
-                            </div>
-                        </div>
-
-                        <div class="feedback-item">
-                            <div class="feedback-meta">
-                                <span>Date: December 15, 2025</span>
-                                <span>Reading Level: Grade 7</span>
-                            </div>
-
-                            <div class="feedback-content">
-                                <p><strong>Strengths:</strong> Good comprehension of main ideas and vocabulary usage.</p>
-                                <p><strong>Areas for Improvement:</strong> Needs to work on reading pace and pronunciation.</p>
-                                <p><strong>Recommendations:</strong> Practice reading aloud daily and use phonics exercises.</p>
-                            </div>
-
-                            <div class="feedback-rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
-                                <span>4/5</span>
+                            <div class="feedback-message">
+                                <p>No feedback yet</p>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
             <!-- Detailed Results Table -->
             <div class="results-section">
@@ -768,7 +701,7 @@
             data: {
                 labels: ['Correct Answers', 'Total Questions'],
                 datasets: [{
-                    data: [7, 10],
+                    data: [{{ session('score', 7) }}, {{ session('total_questions', 10) }}],
                     backgroundColor: [
                         'rgba(75, 192, 192, 0.8)',
                         'rgba(255, 159, 64, 0.8)'
