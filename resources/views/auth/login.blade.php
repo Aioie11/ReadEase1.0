@@ -177,7 +177,7 @@
 <body>
     <div class="login-container">
         <div class="brand-section">
-            <img src="{{ asset('pic/logo .png') }}" alt="ReadEase Logo" height="100px" width="100px"><br>
+            <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo" height="100px" width="100px"><br>
             <h1 class="brand-title">ReadEase</h1>
             <p class="brand-subtitle">Smarter Reading assessments for Better teaching!</p>
         </div>

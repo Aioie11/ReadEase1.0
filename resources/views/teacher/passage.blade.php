@@ -669,19 +669,19 @@
                     </div>
                 </div>
 
-                <div class="section-title" id="passage-title">TALATA SA PAGBASA</div>
+                <div class="section-title" id="passage-title">READING PASSAGE</div>
                 <div class="passage" id="passage-text">
-                    Narito ang isang kwento tungkol sa isang batang babae na nagngangalang Maria. Sa isang maliit na bayan
-                    sa tabi ng bundok, nakatira siya sa kanyang lola at lolo. Bawat umaga, masaya niyang tinutulungan ang
-                    kanyang mga lolo at lola sa mga gawain sa bahay, tulad ng paghuhugas ng pinggan at pag-aalaga sa mga
-                    hayop. Laking tuwa ni Maria kapag nakikita niyang maligaya ang kanyang mga lolo at lola. Mahilig din
-                    siya sa pagbabasa ng mga aklat, lalo na ng mga kwento tungkol sa kalikasan. Pinapangarap niyang maging
-                    isang guro balang araw upang matulungan ang mga batang katulad niya na nais matuto at magkaroon ng
-                    magandang kinabukasan.
-                </div>
-                <div class="word-count-display">
-                    <span class="word-count-label">Total Words:</span>
-                    <span class="word-count-number" id="passageWordCount">0</span>
+                    @if(isset($readingMaterial))
+                        <h3>{{ $readingMaterial->title }}</h3>
+                        <div class="reading-content">
+                            <p>{{ $readingMaterial->content }}</p>
+                        </div>
+                    @else
+                        <div class="empty-state">
+                            <i class="fas fa-book"></i>
+                            <p>No reading material has been published for this grade level and subject yet.</p>
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -696,11 +696,11 @@
                     <label for="studentSelect">Select Student:</label>
                     <select id="studentSelect" class="assessment-select">
                         <option value="">Choose a student...</option>
-                        <option value="Maria Garcia">Maria Garcia</option>
-                        <option value="Juan Santos">Juan Santos</option>
-                        <option value="Ana Reyes">Ana Reyes</option>
-                        <option value="Carlos Mendoza">Carlos Mendoza</option>
-                        <option value="Sofia Cruz">Sofia Cruz</option>
+                        @foreach($students as $student)
+                            @if($student->grade_level == str_replace('grade', '', $grade) && $student->section == ucfirst($section))
+                                <option value="{{ $student->id }}">{{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}</option>
+                            @endif
+                        @endforeach
                     </select>
                 </div>
 
@@ -714,19 +714,24 @@
                         <input type="number" id="miscues" class="assessment-input" min="0" value="0">
                     </div>
 
-                    <!-- Timer and Save Controls -->
-                    <div class="timer-controls">
-                        <span class="timer" id="timer">00:00:00</span>
-                        <div class="timer-buttons">
-                            <button class="btn start" onclick="startTimer()">Start Time</button>
-                            <button class="btn stop" onclick="stopTimer()">Stop Time</button>
-                            <button class="btn reset" onclick="resetTimer()">Reset Time</button>
-                        </div>
-                        <div class="save-controls">
-                            <button class="btn save-assessment" onclick="saveAssessment()">Save Assessment</button>
-                            <button class="btn clear-assessment" onclick="clearAssessment()">Clear All</button>
-                        </div>
+                    <div class="control-group">
+                        <label for="totalWords">Total Words</label>
+                        <input type="number" id="totalWords" class="assessment-input" min="1" value="150">
                     </div>
+                </div>
+
+                <!-- Timer Controls -->
+                <div class="timer-controls">
+                    <span class="timer" id="timer">00:00:00</span>
+                    <button class="btn start" onclick="startTimer()">Start Time</button>
+                    <button class="btn stop" onclick="stopTimer()">Stop Time</button>
+                    <button class="btn reset" onclick="resetTimer()">Reset Time</button>
+                </div>
+
+                <!-- Save Assessment Button -->
+                <div class="save-controls">
+                    <button class="btn save-assessment" onclick="saveAssessment()">Save Assessment</button>
+                    <button class="btn clear-assessment" onclick="clearAssessment()">Clear All</button>
                 </div>
             </div>
         </div>
@@ -882,66 +887,26 @@
         document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('lang-english').addEventListener('click', function (e) {
                 e.preventDefault();
-                switchLanguage('english');
+                const urlParams = new URLSearchParams(window.location.search);
+                urlParams.set('language', 'english');
+                window.location.href = window.location.pathname + '?' + urlParams.toString();
             });
 
             document.getElementById('lang-filipino').addEventListener('click', function (e) {
                 e.preventDefault();
-                switchLanguage('filipino');
+                const urlParams = new URLSearchParams(window.location.search);
+                urlParams.set('language', 'filipino');
+                window.location.href = window.location.pathname + '?' + urlParams.toString();
             });
 
             // Initialize button states
             document.querySelector('.btn.stop').disabled = true;
             document.querySelector('.btn.reset').disabled = true;
 
-            // Set default language selection
-            document.getElementById('lang-filipino').classList.add('selected');
-
-            // Display current section and grade information
+            // Set default language selection based on current language
             const urlParams = new URLSearchParams(window.location.search);
-            const grade = urlParams.get('grade') || '{{ $grade ?? "grade7" }}';
-            const section = urlParams.get('section') || '{{ $section ?? "narra" }}';
-            const language = urlParams.get('language') || 'english';
-
-            // Update page title based on parameters
-            const gradeNumber = grade.replace('grade', '');
-            const sectionName = section.charAt(0).toUpperCase() + section.slice(1);
-
-            // Update student card with section info
-            const studentMeta = document.querySelector('.student-meta');
-            if (studentMeta) {
-                studentMeta.innerHTML = `Section: ${sectionName} &nbsp; | &nbsp; Grade Level: ${gradeNumber}`;
-            }
-
-            // Set initial language
-            if (language === 'filipino') {
-                switchLanguage('filipino');
-            } else {
-                switchLanguage('english');
-            }
-
-            // Initialize word count
-            updateWordCount();
-
-            // Watch for changes in passage text (if it becomes editable in the future)
-            const passageElement = document.getElementById('passage-text');
-            if (passageElement) {
-                // Create a MutationObserver to watch for text changes
-                const observer = new MutationObserver(function (mutations) {
-                    mutations.forEach(function (mutation) {
-                        if (mutation.type === 'childList' || mutation.type === 'characterData') {
-                            updateWordCount();
-                        }
-                    });
-                });
-
-                // Start observing
-                observer.observe(passageElement, {
-                    childList: true,
-                    subtree: true,
-                    characterData: true
-                });
-            }
+            const currentLanguage = urlParams.get('language') || 'english';
+            document.getElementById('lang-' + currentLanguage).classList.add('selected');
         });
 
         function switchLanguage(language) {

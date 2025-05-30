@@ -12,26 +12,26 @@
     <style>
         :root {
             /* Primary - Main UI and Brand Elements */
-            --primary: #00B8A9;
-            --primary-light: #00B8A9;
-            --primary-dark: #00B8A9;
+            --primary: #0E61BA;
+            --primary-light: #3b82f6;
+            --primary-dark: #0d4b94;
 
             /* Secondary - Navigation and Secondary UI */
-            --secondary: #00B8A9;
-            --secondary-light: #00B8A9;
+            --secondary: #6CC24A;
+            --secondary-light: #7ed56f;
 
             /* Accent - Buttons and Highlights */
-            --accent: #00B8A9;
-            --accent-light: #00B8A9;
+            --accent: #F9A602;
+            --accent-light: #fbbf24;
 
             /* Neutral - Backgrounds */
-            --neutral: #F7FAFC;
-            --neutral-light: #FFFFFF;
-            --neutral-dark: #E2E8F0;
+            --neutral: #F4F4F4;
+            --neutral-light: #ffffff;
+            --neutral-dark: #e5e5e5;
 
             /* Text - Main Text and Headings */
-            --text: #1A202C;
-            --text-light: #718096;
+            --text: #232323;
+            --text-light: #4b5563;
 
             /* Additional Colors */
             --success: #00B8A9;
@@ -41,17 +41,17 @@
             --background: #F7FAFC;
 
             /* Gradients */
-            --gradient-primary: linear-gradient(135deg, #00B8A9 0%, #00B8A9 100%);
-            --gradient-secondary: linear-gradient(135deg, #00B8A9 0%, #00B8A9 100%);
-            --gradient-accent: linear-gradient(135deg, #00B8A9 0%, #00B8A9 100%);
+            --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            --gradient-secondary: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
+            --gradient-accent: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
             --secondary-gradient: linear-gradient(135deg, #00B8A9 0%, #00B8A9 100%);
             --accent-gradient: linear-gradient(135deg, #00B8A9 0%, #00B8A9 100%);
             --danger-gradient: linear-gradient(135deg, #00B8A9 0%, #00B8A9 100%);
 
             /* Shadows */
-            --shadow-sm: 0 1px 3px rgba(0, 184, 169, 0.12), 0 1px 2px rgba(0, 184, 169, 0.08);
-            --shadow-md: 0 4px 6px rgba(0, 184, 169, 0.1), 0 2px 4px rgba(0, 184, 169, 0.06);
-            --shadow-lg: 0 10px 15px rgba(0, 184, 169, 0.1);
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
 
             --transition: all 0.3s ease;
         }
@@ -149,12 +149,14 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            gap: 0.3rem;
         }
 
         .user-name {
             font-weight: 600;
             font-size: 0.95rem;
             line-height: 1.2;
+            margin-bottom: 0.1rem;
         }
 
         .user-role {
@@ -234,12 +236,12 @@
         }
 
         .logout-item {
-            color: #dc3545;
+            color: var(--text);
         }
 
         .logout-item:hover {
-            background: #dc3545;
-            color: var(--neutral-light);
+            background: var(--text);
+            color: #dc3545;
         }
 
         /* Dashboard Content */
@@ -568,14 +570,14 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .admin-profile {
+        .teacher-profile {
             display: flex;
             align-items: center;
             gap: 1rem;
             color: var(--neutral-light);
         }
 
-        .admin-avatar {
+        .teacher-avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -586,11 +588,11 @@
             font-weight: 600;
         }
 
-        .admin-info {
+        .teacher-info {
             flex: 1;
         }
 
-        .admin-name {
+        .teacher-name {
             font-weight: 600;
             margin-bottom: 0.2rem;
             font-size: 1rem;
@@ -601,7 +603,7 @@
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
-        .admin-role {
+        .teacher-role {
             font-size: 0.85rem;
             opacity: 0.9;
             color: #e0e0e0;
@@ -764,7 +766,7 @@
         </button>
 
         <div class="sidebar-header">
-            <a href="{{ url('/') }}" class="sidebar-logo">
+            <a class="sidebar-logo">
                 <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo">
                 <span>ReadEase</span>
             </a>
@@ -801,11 +803,11 @@
         </nav>
 
         <div class="sidebar-footer">
-            <div class="admin-profile">
-                <div class="admin-avatar">{{ Auth::user() ? strtoupper(substr(Auth::user()->name, 0, 1)) : 'A' }}</div>
-                <div class="admin-info">
-                    <div class="admin-name">{{ Auth::user() ? Auth::user()->name : 'Admin' }}</div>
-                    <div class="admin-role">Teacher</div>
+            <div class="teacher-profile">
+                <div class="teacher-avatar">{{ Auth::user() ? strtoupper(substr(Auth::user()->name, 0, 1)) : 'T' }}</div>
+                <div class="teacher-info">
+                    <div class="teacher-name">{{ Auth::user() ? Auth::user()->name : 'Teacher' }}</div>
+                    <div class="teacher-role">Teacher</div>
                 </div>
             </div>
         </div>

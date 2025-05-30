@@ -11,7 +11,7 @@
                 <p>Read each passage and answer the questions given.</p>
 
                 <!-- Reading Timer Display -->
-                <div class="timer-container">
+                <!-- <div class="timer-container">
                     <div class="timer-display">
                         <i class="fas fa-clock"></i>
                         <span class="timer-label">Reading Time:</span>
@@ -21,7 +21,7 @@
                         <span id="timer-status">📖 Reading in progress...</span>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">

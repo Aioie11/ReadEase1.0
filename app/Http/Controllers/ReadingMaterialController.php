@@ -179,11 +179,16 @@ class ReadingMaterialController extends Controller
         try {
             $readingMaterial = ReadingMaterial::findOrFail($id);
             
-            // Update the published status and published_at timestamp
-            $readingMaterial->update([
-                'is_published' => true,
-                'published_at' => now()
-            ]);
+            // Unpublish previous materials for this grade and subject
+            ReadingMaterial::where('grade_level', $readingMaterial->grade_level)
+                ->where('subject', $readingMaterial->subject)
+                ->where('id', '!=', $readingMaterial->id)
+                ->update(['is_published' => false]);
+
+            // Publish the selected material
+            $readingMaterial->is_published = true;
+            $readingMaterial->published_at = now();
+            $readingMaterial->save();
 
             return response()->json([
                 'success' => true,
@@ -211,15 +216,17 @@ class ReadingMaterialController extends Controller
                 $subject = 'english';
             }
 
-            // Get the authenticated user's grade level
+            // Get the authenticated user
             $user = auth()->user();
             if (!$user) {
                 return redirect()->route('login');
             }
 
-            // Use the user's grade level instead of the passed parameter
-            $grade = $user->grade;
+            // For teachers, use the provided grade parameter
+            // For students, use their grade level
+            $grade = $user->role === 'teacher' ? $grade : $user->grade;
 
+            // Get the most recently published material for this grade and subject
             $readingMaterial = ReadingMaterial::with('questions')
                 ->where('grade_level', $grade)
                 ->where('subject', $subject)
@@ -230,20 +237,26 @@ class ReadingMaterialController extends Controller
             if (!$readingMaterial) {
                 return view($subject === 'english' ? 'student.stud-eng' : 'student.stud-fil', [
                     'readingMaterial' => null,
-                    'error' => 'No published reading material found for your grade level.',
-                    'user' => $user
+                    'error' => 'No published reading material found for this grade level.',
+                    'user' => $user,
+                    'grade' => $grade,
+                    'subject' => $subject
                 ]);
             }
 
             return view($subject === 'english' ? 'student.stud-eng' : 'student.stud-fil', [
                 'readingMaterial' => $readingMaterial,
-                'user' => $user
+                'user' => $user,
+                'grade' => $grade,
+                'subject' => $subject
             ]);
         } catch (\Exception $e) {
             \Log::error('Error fetching published material: ' . $e->getMessage());
             return view($subject === 'english' ? 'student.stud-eng' : 'student.stud-fil', [
                 'readingMaterial' => null,
-                'error' => 'Error fetching reading material: ' . $e->getMessage()
+                'error' => 'Error fetching reading material: ' . $e->getMessage(),
+                'grade' => $grade,
+                'subject' => $subject
             ]);
         }
     }

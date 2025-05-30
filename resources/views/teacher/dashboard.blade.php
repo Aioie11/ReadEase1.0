@@ -96,8 +96,7 @@
                 <div class="grade-card">
                     <h2><i class="fas fa-graduation-cap"></i> Grade 7</h2>
                     <ul class="sections-list">
-                        <li class="section-item"
-                            onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade7', 'section' => 'narra', 'language' => 'english']) }}'">
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade7', 'section' => 'narra', 'language' => 'english']) }}'">
                             <div class="section-info">
                                 <i class="fas fa-book"></i>
                                 <span>Section Narra</span>
@@ -105,12 +104,11 @@
                             <div class="section-stats">
                                 <span class="stat-item">
                                     <i class="fas fa-user"></i>
-                                    25 Students
+                                    {{ $students->where('grade_level', 7)->where('section', 'Narra')->count() }} Students
                                 </span>
                             </div>
                         </li>
-                        <li class="section-item"
-                            onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade7', 'section' => 'lawaan', 'language' => 'english']) }}'">
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade7', 'section' => 'lawaan', 'language' => 'english']) }}'">
                             <div class="section-info">
                                 <i class="fas fa-book"></i>
                                 <span>Section Lawaan</span>
@@ -118,12 +116,11 @@
                             <div class="section-stats">
                                 <span class="stat-item">
                                     <i class="fas fa-user"></i>
-                                    28 Students
+                                    {{ $students->where('grade_level', 7)->where('section', 'Lawaan')->count() }} Students
                                 </span>
                             </div>
                         </li>
-                        <li class="section-item"
-                            onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade7', 'section' => 'dao', 'language' => 'english']) }}'">
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade7', 'section' => 'dao', 'language' => 'english']) }}'">
                             <div class="section-info">
                                 <i class="fas fa-book"></i>
                                 <span>Section Dao</span>
@@ -131,12 +128,11 @@
                             <div class="section-stats">
                                 <span class="stat-item">
                                     <i class="fas fa-user"></i>
-                                    30 Students
+                                    {{ $students->where('grade_level', 7)->where('section', 'Dao')->count() }} Students
                                 </span>
                             </div>
                         </li>
-                        <li class="section-item"
-                            onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade7', 'section' => 'mahugani', 'language' => 'english']) }}'">
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade7', 'section' => 'mahugani', 'language' => 'english']) }}'">
                             <div class="section-info">
                                 <i class="fas fa-book"></i>
                                 <span>Section Mahugani</span>
@@ -144,7 +140,7 @@
                             <div class="section-stats">
                                 <span class="stat-item">
                                     <i class="fas fa-user"></i>
-                                    27 Students
+                                    {{ $students->where('grade_level', 7)->where('section', 'Mahugani')->count() }} Students
                                 </span>
                             </div>
                         </li>
@@ -155,16 +151,51 @@
                 <div class="grade-card">
                     <h2><i class="fas fa-graduation-cap"></i> Grade 8</h2>
                     <ul class="sections-list">
-                        <li class="section-item"
-                            onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade8', 'section' => 'narra', 'language' => 'english']) }}'">
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade8', 'section' => 'avocado', 'language' => 'english']) }}'">
                             <div class="section-info">
                                 <i class="fas fa-book"></i>
-                                <span>Section Narra</span>
+                                <span>Section Avocado</span>
                             </div>
                             <div class="section-stats">
                                 <span class="stat-item">
                                     <i class="fas fa-user"></i>
-                                    24 Students
+                                    {{ $students->where('grade_level', 8)->where('section', 'Avocado')->count() }} Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade8', 'section' => 'guava', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Guava</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    {{ $students->where('grade_level', 8)->where('section', 'Guava')->count() }} Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade8', 'section' => 'duhat', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Duhat</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    {{ $students->where('grade_level', 8)->where('section', 'Duhat')->count() }} Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade8', 'section' => 'mango', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Mango</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    {{ $students->where('grade_level', 8)->where('section', 'Mango')->count() }} Students
                                 </span>
                             </div>
                         </li>
@@ -175,16 +206,39 @@
                 <div class="grade-card">
                     <h2><i class="fas fa-graduation-cap"></i> Grade 9</h2>
                     <ul class="sections-list">
-                        <li class="section-item"
-                            onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade9', 'section' => 'narra', 'language' => 'english']) }}'">
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade9', 'section' => 'gold', 'language' => 'english']) }}'">
                             <div class="section-info">
                                 <i class="fas fa-book"></i>
-                                <span>Section Narra</span>
+                                <span>Section Gold</span>
                             </div>
                             <div class="section-stats">
                                 <span class="stat-item">
                                     <i class="fas fa-user"></i>
-                                    22 Students
+                                    {{ $students->where('grade_level', 9)->where('section', 'Gold')->count() }} Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade9', 'section' => 'silver', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Silver</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    {{ $students->where('grade_level', 9)->where('section', 'Silver')->count() }} Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade9', 'section' => 'zinc', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Zinc</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    {{ $students->where('grade_level', 9)->where('section', 'Zinc')->count() }} Students
                                 </span>
                             </div>
                         </li>
@@ -195,16 +249,39 @@
                 <div class="grade-card">
                     <h2><i class="fas fa-graduation-cap"></i> Grade 10</h2>
                     <ul class="sections-list">
-                        <li class="section-item"
-                            onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade10', 'section' => 'narra', 'language' => 'english']) }}'">
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade10', 'section' => 'galileo', 'language' => 'english']) }}'">
                             <div class="section-info">
                                 <i class="fas fa-book"></i>
-                                <span>Section Narra</span>
+                                <span>Section Galileo</span>
                             </div>
                             <div class="section-stats">
                                 <span class="stat-item">
                                     <i class="fas fa-user"></i>
-                                    20 Students
+                                    {{ $students->where('grade_level', 10)->where('section', 'Galileo')->count() }} Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade10', 'section' => 'edison', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Edison</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    {{ $students->where('grade_level', 10)->where('section', 'Edison')->count() }} Students
+                                </span>
+                            </div>
+                        </li>
+                        <li class="section-item" onclick="window.location.href='{{ route('teacher.passage', ['grade' => 'grade10', 'section' => 'newton', 'language' => 'english']) }}'">
+                            <div class="section-info">
+                                <i class="fas fa-book"></i>
+                                <span>Section Newton</span>
+                            </div>
+                            <div class="section-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-user"></i>
+                                    {{ $students->where('grade_level', 10)->where('section', 'Newton')->count() }} Students
                                 </span>
                             </div>
                         </li>
