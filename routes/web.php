@@ -12,6 +12,7 @@ use App\Http\Controllers\ReadingLevelController;
 use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\StudentAnswerEnglishController;
 use App\Http\Controllers\StudentAnswerTagalogController;
+use App\Http\Controllers\TeacherController;
 use Illuminate\Http\Request;
 
 
@@ -62,13 +63,7 @@ Route::middleware(['web'])->group(function () {
             return view('teacher.assessment');
         })->name('teacher.readinglanguage');
 
-        Route::get('/passage', function (Request $request) {
-            $grade = $request->get('grade', 'grade7');
-            $section = $request->get('section', 'narra');
-            $language = $request->get('language', 'english');
-
-            return view('teacher.passage', compact('grade', 'section', 'language'));
-        })->name('teacher.passage');
+        Route::get('/passage', [TeacherController::class, 'passage'])->name('teacher.passage');
 
         Route::get('/english', function () {
             return view('teacher.english');

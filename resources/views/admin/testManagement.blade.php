@@ -1342,7 +1342,7 @@
                             'X-CSRF-TOKEN': token,
                             'Accept': 'application/json'
                         },
-                        body: JSON.stringify({}), // Send empty object as body
+                        body: JSON.stringify({}),
                         credentials: 'same-origin'
                     });
                 } else {
@@ -1351,17 +1351,14 @@
             })
             .then(response => {
                 if (!response.ok) {
-                    if (response.status === 419) {
-                        throw new Error('CSRF token mismatch. Please refresh the page and try again.');
-                    }
-                    return response.json().then(err => Promise.reject(err));
+                    throw new Error('Failed to publish reading material');
                 }
                 return response.json();
             })
             .then(data => {
                 if (data.success) {
-                    alert('Reading material published successfully!');
-                    // Refresh the display to show updated status
+                    alert(`Reading material published successfully!\n\nGrade: ${selectedGrade}\nSubject: ${selectedSubject}\n\nThis material will now be visible to ${selectedGrade} students in the ${selectedSubject} section.`);
+                    // Refresh the display
                     fetchAndDisplayReadingMaterials();
                 } else {
                     throw new Error(data.message || 'Failed to publish reading material');
