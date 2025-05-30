@@ -149,12 +149,14 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            gap: 0.3rem;
         }
 
         .user-name {
             font-weight: 600;
             font-size: 0.95rem;
             line-height: 1.2;
+            margin-bottom: 0.1rem;
         }
 
         .user-role {
@@ -234,12 +236,12 @@
         }
 
         .logout-item {
-            color: #dc3545;
+            color: var(--text);
         }
 
         .logout-item:hover {
-            background: #dc3545;
-            color: var(--neutral-light);
+            background: var(--text);
+            color: #dc3545;
         }
 
         /* Dashboard Content */
@@ -568,14 +570,14 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .admin-profile {
+        .teacher-profile {
             display: flex;
             align-items: center;
             gap: 1rem;
             color: var(--neutral-light);
         }
 
-        .admin-avatar {
+        .teacher-avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -586,11 +588,11 @@
             font-weight: 600;
         }
 
-        .admin-info {
+        .teacher-info {
             flex: 1;
         }
 
-        .admin-name {
+        .teacher-name {
             font-weight: 600;
             margin-bottom: 0.2rem;
             font-size: 1rem;
@@ -601,7 +603,7 @@
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
-        .admin-role {
+        .teacher-role {
             font-size: 0.85rem;
             opacity: 0.9;
             color: #e0e0e0;
@@ -764,7 +766,7 @@
         </button>
 
         <div class="sidebar-header">
-            <a href="{{ url('/') }}" class="sidebar-logo">
+            <a class="sidebar-logo">
                 <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo">
                 <span>ReadEase</span>
             </a>
@@ -801,11 +803,11 @@
         </nav>
 
         <div class="sidebar-footer">
-            <div class="admin-profile">
-                <div class="admin-avatar">{{ Auth::user() ? strtoupper(substr(Auth::user()->name, 0, 1)) : 'A' }}</div>
-                <div class="admin-info">
-                    <div class="admin-name">{{ Auth::user() ? Auth::user()->name : 'Admin' }}</div>
-                    <div class="admin-role">Teacher</div>
+            <div class="teacher-profile">
+                <div class="teacher-avatar">{{ Auth::user() ? strtoupper(substr(Auth::user()->name, 0, 1)) : 'T' }}</div>
+                <div class="teacher-info">
+                    <div class="teacher-name">{{ Auth::user() ? Auth::user()->name : 'Teacher' }}</div>
+                    <div class="teacher-role">Teacher</div>
                 </div>
             </div>
         </div>
