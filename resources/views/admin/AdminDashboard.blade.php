@@ -13,8 +13,9 @@
 
         /* Main Content */
         .main-content {
+            margin-top: 50px;
             margin-left: 280px;
-            padding: 6rem 5% 2rem;
+            padding: 2rem 5% 2rem;
             transition: var(--transition);
         }
 
@@ -23,7 +24,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
         }
 
         .metric-card {
@@ -31,6 +32,11 @@
             padding: 1.5rem;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
         }
 
         .metric-card h2 {
@@ -51,7 +57,7 @@
             padding: 1.5rem;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
         }
 
         .chart-section h2 {
@@ -66,6 +72,7 @@
             padding: 1.5rem;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
         }
 
         .recent-tests h2 {
@@ -139,17 +146,6 @@
             </div>
         </div>
 
-        <div class="chart-section">
-            <h2>Reading Level Distribution By Grade</h2>
-            <canvas id="readingLevelChart"></canvas>
-            <div style="margin-top:1rem; font-size:0.95rem;">
-                <strong>Legend:</strong>
-                <span style="color:#4caf50; font-weight:bold;">■</span> Independent (Word Reading: 97-100, Comprehension: 80-100)
-                <span style="color:#ffb300; font-weight:bold; margin-left:1.5rem;">■</span> Instructional (Word Reading: 90-96, Comprehension: 59-79)
-                <span style="color:#e53935; font-weight:bold; margin-left:1.5rem;">■</span> Frustration (Word Reading: 89 BELOW, Comprehension: 58 BELOW)
-            </div>
-        </div>
-
         <div class="recent-tests">
             <h2>Recent Tests</h2>
             <table>
@@ -184,82 +180,6 @@
             </table>
         </div>
     </main>
-
-    <!-- Include Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- JavaScript for Chart -->
-    <script>
-        const distribution = @json($readingLevelDistribution ?? []);
-
-        // Filter for grades 7-10
-        const grades = ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'];
-        const independent = grades.map(g => distribution[g]?.['Independent'] || 0);
-        const instructional = grades.map(g => distribution[g]?.['Instructional'] || 0);
-        const frustration = grades.map(g => distribution[g]?.['Frustration'] || 0);
-
-        const readingData = {
-            labels: grades,
-            datasets: [
-                {
-                    label: 'Independent',
-                    data: independent,
-                    backgroundColor: '#4caf50',
-                    stack: 'Stack 0',
-                },
-                {
-                    label: 'Instructional',
-                    data: instructional,
-                    backgroundColor: '#ffb300',
-                    stack: 'Stack 0',
-                },
-                {
-                    label: 'Frustration',
-                    data: frustration,
-                    backgroundColor: '#e53935',
-                    stack: 'Stack 0',
-                }
-            ]
-        };
-
-        // Config for Stacked Bar Chart
-        const readingConfig = {
-            type: 'bar',
-            data: readingData,
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                    },
-                    title: {
-                        display: false
-                    }
-                },
-                scales: {
-                    x: {
-                        stacked: true,
-                        title: {
-                            display: true,
-                            text: 'Grade Level'
-                        }
-                    },
-                    y: {
-                        stacked: true,
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Number of Students'
-                        }
-                    }
-                }
-            }
-        };
-
-        // Render Reading Level Chart
-        new Chart(document.getElementById('readingLevelChart'), readingConfig);
-    </script>
 </body>
 
 </html>

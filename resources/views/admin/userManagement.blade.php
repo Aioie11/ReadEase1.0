@@ -14,6 +14,7 @@
 
         /* Main Content */
         .main-content {
+            margin-top: 50px;
             margin-left: 280px;
             padding: 6rem 5% 2rem;
             transition: var(--transition);
@@ -178,21 +179,28 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             background: rgba(0,0,0,0.5);
-            z-index: 1000;
+            z-index: 2000;
             overflow-y: auto;
-            padding: 20px;
         }
 
         .modal-content {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             background: var(--neutral-light);
-            margin: 20px auto;
+            margin: 0;
             padding: 35px;
             border-radius: 12px;
             box-shadow: var(--shadow-lg);
             max-width: 600px;
+            width: 90vw;
+            z-index: 2100;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-content h2 {

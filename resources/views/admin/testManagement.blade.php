@@ -15,6 +15,7 @@
 
         /* Main Content */
         .main-content {
+            margin-top: 50px;
             margin-left: 280px;
             padding: 6rem 5% 2rem;
             transition: var(--transition);

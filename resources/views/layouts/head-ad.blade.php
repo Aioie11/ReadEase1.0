@@ -66,8 +66,10 @@
             position: fixed;
             width: 100%;
             top: 0;
-            z-index: 1000;
+            left: 0;
+            z-index: 1002;
             box-shadow: var(--shadow-md);
+            margin-left: 0;
         }
 
         .header-container {
@@ -444,7 +446,8 @@
             position: fixed;
             left: 0;
             top: 0;
-            height: 100vh;
+            margin-top: 70px; /* Push below header */
+            height: calc(100vh - 70px); /* Full height minus header */
             width: 280px;
             background: var(--primary);
             padding: 1.5rem;
@@ -591,15 +594,9 @@
 
         /* Adjust main content for sidebar */
         .main-content {
-            margin-left: 250px;
-            padding-top: 5rem;
+            margin-left: 280px; /* Same as sidebar width */
+            padding-top: 70px;  /* Same as header height */
             transition: var(--transition);
-        }
-
-        /* Adjust header for sidebar */
-        header {
-            margin-left: 250px;
-            width: calc(100% - 250px);
         }
 
         /* Responsive Design */
@@ -642,10 +639,7 @@
 <body>
         <aside class="sidebar">
         <div class="sidebar-header">
-            <a class="sidebar-logo">
-                <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo">
-                <span>ReadEase</span>
-            </a>
+            <!-- Removed sidebar logo and title -->
         </div>
         <nav>
             <ul class="nav-menu">
@@ -705,6 +699,10 @@
                         <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
                     </svg>
                 </button>
+                <a class="logo" href="{{ route('admin.dashboard') }}" style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1rem;">
+                    <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo" style="height: 32px; width: 32px; object-fit: contain;">
+                    <span>ReadEase</span>
+                </a>
             </div>
             <div class="header-right">
                 <div class="user-info">
