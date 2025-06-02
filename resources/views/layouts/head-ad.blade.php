@@ -9,29 +9,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/readease-colors.css') }}">
     <style>
         :root {
-            /* Primary - Main UI and Brand Elements */
-            --primary: #0E61BA;
-            --primary-light: #3b82f6;
-            --primary-dark: #0d4b94;
+            /* ReadEase Teal Theme - Consistent with Filipino Report */
+            --primary: #00B8A9;
+            --primary-light: #4DD0E1;
+            --primary-dark: #009688;
 
             /* Secondary - Navigation and Secondary UI */
-            --secondary: #6CC24A;
-            --secondary-light: #7ed56f;
+            --secondary: #F6AD55;
+            --secondary-light: #FFB74D;
 
             /* Accent - Buttons and Highlights */
-            --accent: #F9A602;
-            --accent-light: #fbbf24;
+            --accent: #00B8A9;
+            --accent-light: #4DD0E1;
 
             /* Neutral - Backgrounds */
-            --neutral: #F4F4F4;
-            --neutral-light: #ffffff;
-            --neutral-dark: #e5e5e5;
+            --neutral: #F7FAFC;
+            --neutral-light: #E2E8F0;
+            --neutral-dark: #2D3748;
 
             /* Text - Main Text and Headings */
-            --text: #232323;
-            --text-light: #4b5563;
+            --text: #1A202C;
+            --text-light: #718096;
+            --text-white: #FFFFFF;
+
+            /* Status Colors */
+            --success: #00B8A9;
+            --warning: #F6AD55;
+            --danger: #E53E3E;
+            --info: #4FC3F7;
 
             /* Gradients */
             --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
@@ -640,7 +648,7 @@
 </head>
 
 <body>
-        <aside class="sidebar">
+    <aside class="sidebar">
         <div class="sidebar-header">
             <a class="sidebar-logo">
                 <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo">
@@ -680,7 +688,7 @@
                             User Management
                         </a>
                     </li>
-                    
+
                 </div>
             </ul>
         </nav>

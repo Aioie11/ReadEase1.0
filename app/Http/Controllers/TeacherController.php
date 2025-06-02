@@ -51,8 +51,9 @@ class TeacherController extends Controller
         // Get all students
         $students = Student::all();
 
-        // Get published reading material for this grade and language
-        $readingMaterial = ReadingMaterial::where('grade_level', str_replace('grade', '', $grade))
+        // Get published reading material for this grade and language with comprehension questions
+        $readingMaterial = ReadingMaterial::with('comprehensionQuestions')
+            ->where('grade_level', str_replace('grade', '', $grade))
             ->where('subject', $language)
             ->where('is_published', true)
             ->latest('published_at')
@@ -80,4 +81,4 @@ class TeacherController extends Controller
 
         return view('teacher.studentManagement', compact('students'));
     }
-} 
+}

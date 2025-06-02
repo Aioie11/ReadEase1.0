@@ -27,4 +27,9 @@ class ReadingMaterial extends Model
     {
         return $this->hasMany(ReadingQuestion::class);
     }
+
+    public function comprehensionQuestions()
+    {
+        return $this->hasMany(ComprehensionQuestion::class)->orderBy('order');
+    }
 }

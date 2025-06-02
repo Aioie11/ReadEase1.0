@@ -128,7 +128,7 @@
     <style>
         .main-content {
             padding: 20px;
-            background-color: #f5f6fa;
+            background-color: var(--background);
         }
 
         .dashboard {
@@ -141,10 +141,11 @@
         }
 
         .profile-card {
-            background: white;
+            background: var(--card-bg);
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            border-left: 4px solid var(--primary);
         }
 
         .profile-header {
@@ -156,18 +157,20 @@
         .profile-image {
             width: 100px;
             height: 90px;
-            border-radius: 10px;
+            border-radius: 12px;
+            border: 3px solid var(--primary);
         }
 
         .profile-info h2 {
             margin: 0;
-            color: #2c3e50;
+            color: var(--primary);
             font-size: 1.8em;
+            font-weight: 700;
         }
 
         .profile-info p {
             margin: 5px 0 0;
-            color: #7f8c8d;
+            color: var(--text-light);
         }
 
         .stats-overview {
@@ -178,59 +181,69 @@
         }
 
         .stat-card {
-            background: white;
+            background: var(--card-bg);
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
             display: flex;
             align-items: center;
             gap: 15px;
+            transition: var(--transition);
+            border-left: 4px solid var(--secondary);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .stat-icon {
             width: 50px;
             height: 50px;
-            background: #f8f9fa;
-            border-radius: 10px;
+            background: var(--primary);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5em;
-            color: #3498db;
+            color: var(--text-white);
         }
 
         .stat-info h3 {
             margin: 0;
             font-size: 0.9em;
-            color: #7f8c8d;
+            color: var(--text-light);
+            font-weight: 600;
         }
 
         .stat-number {
             margin: 5px 0;
             font-size: 1.5em;
             font-weight: bold;
-            color: #2c3e50;
+            color: var(--primary);
         }
 
         .stat-label {
             font-size: 0.8em;
-            color: #95a5a6;
+            color: var(--text-light);
         }
 
         .results-section {
-            background: white;
+            background: var(--card-bg);
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-md);
             margin-bottom: 30px;
+            border-left: 4px solid var(--primary);
         }
 
         .results-header h2 {
-            color: #2c3e50;
+            color: var(--primary);
             font-size: 1.8em;
             margin-bottom: 25px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #95a5a6;
+            border-bottom: 2px solid var(--neutral-light);
+            font-weight: 700;
         }
 
         .activity-list {
@@ -244,8 +257,15 @@
             align-items: center;
             gap: 15px;
             padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
+            background: var(--background);
+            border-radius: 12px;
+            transition: var(--transition);
+            border: 1px solid var(--neutral-light);
+        }
+
+        .activity-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-sm);
         }
 
         .activity-icon {
@@ -255,31 +275,32 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: var(--text-white);
         }
 
         .activity-icon.completed {
-            background: #27ae60;
+            background: var(--success);
         }
 
         .activity-icon.in-progress {
-            background: #f1c40f;
+            background: var(--warning);
         }
 
         .activity-details h4 {
             margin: 0;
-            color: #2c3e50;
+            color: var(--text);
             font-size: 1.1em;
+            font-weight: 600;
         }
 
         .activity-details p {
             margin: 5px 0;
-            color: #7f8c8d;
+            color: var(--text-light);
         }
 
         .activity-time {
             font-size: 0.8em;
-            color: #95a5a6;
+            color: var(--text-light);
         }
 
         @media (max-width: 768px) {
