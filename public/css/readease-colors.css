@@ -1,0 +1,327 @@
+/* ReadEase Global Color Scheme */
+/* Consistent colors across all admin, teacher, and student interfaces */
+
+:root {
+    /* Primary Colors - ReadEase Teal Theme */
+    --primary: #00B8A9;
+    --primary-dark: #009688;
+    --primary-light: #4DD0E1;
+    --accent: #00B8A9;
+    
+    /* Neutral Colors */
+    --neutral-dark: #2D3748;
+    --neutral: #4A5568;
+    --neutral-light: #E2E8F0;
+    --neutral-lighter: #F7FAFC;
+    
+    /* Background Colors */
+    --background: #F7FAFC;
+    --background-secondary: #EDF2F7;
+    --card-bg: #FFFFFF;
+    --sidebar-bg: #2D3748;
+    --header-bg: #FFFFFF;
+    
+    /* Status Colors */
+    --success: #00B8A9;
+    --warning: #F6AD55;
+    --danger: #E53E3E;
+    --info: #4FC3F7;
+    
+    /* Text Colors */
+    --text-dark: #1A202C;
+    --text: #4A5568;
+    --text-light: #718096;
+    --text-muted: #A0AEC0;
+    --text-white: #FFFFFF;
+    
+    /* Performance Level Colors */
+    --independent: #00B8A9;
+    --instructional: #F6AD55;
+    --frustration: #E53E3E;
+    
+    /* Grade Level Colors */
+    --grade-7: #00B8A9;
+    --grade-8: #F6AD55;
+    --grade-9: #4FC3F7;
+    --grade-10: #E53E3E;
+    
+    /* Gradients */
+    --primary-gradient: linear-gradient(135deg, #00B8A9 0%, #4DD0E1 100%);
+    --secondary-gradient: linear-gradient(135deg, #00B8A9 0%, #009688 100%);
+    --accent-gradient: linear-gradient(135deg, #F6AD55 0%, #FF8A65 100%);
+    --danger-gradient: linear-gradient(135deg, #E53E3E 0%, #FF5722 100%);
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 184, 169, 0.12), 0 1px 2px rgba(0, 184, 169, 0.08);
+    --shadow-md: 0 4px 6px rgba(0, 184, 169, 0.1), 0 2px 4px rgba(0, 184, 169, 0.06);
+    --shadow-lg: 0 10px 15px rgba(0, 184, 169, 0.1), 0 4px 6px rgba(0, 184, 169, 0.05);
+    --shadow-xl: 0 20px 25px rgba(0, 184, 169, 0.1), 0 10px 10px rgba(0, 184, 169, 0.04);
+    
+    /* Borders */
+    --border-light: 1px solid var(--neutral-light);
+    --border-primary: 1px solid var(--primary);
+    --border-radius: 8px;
+    --border-radius-lg: 12px;
+    
+    /* Transitions */
+    --transition: all 0.3s ease;
+    --transition-fast: all 0.15s ease;
+    --transition-slow: all 0.5s ease;
+    
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+    
+    /* Font Sizes */
+    --font-xs: 0.75rem;
+    --font-sm: 0.875rem;
+    --font-base: 1rem;
+    --font-lg: 1.125rem;
+    --font-xl: 1.25rem;
+    --font-2xl: 1.5rem;
+    --font-3xl: 1.875rem;
+    --font-4xl: 2.25rem;
+    
+    /* Font Weights */
+    --font-light: 300;
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+    --font-extrabold: 800;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #1A202C;
+        --background-secondary: #2D3748;
+        --card-bg: #2D3748;
+        --text-dark: #F7FAFC;
+        --text: #E2E8F0;
+        --text-light: #A0AEC0;
+        --neutral-light: #4A5568;
+        --header-bg: #2D3748;
+    }
+}
+
+/* Utility Classes */
+.bg-primary { background-color: var(--primary) !important; }
+.bg-success { background-color: var(--success) !important; }
+.bg-warning { background-color: var(--warning) !important; }
+.bg-danger { background-color: var(--danger) !important; }
+.bg-info { background-color: var(--info) !important; }
+
+.text-primary { color: var(--primary) !important; }
+.text-success { color: var(--success) !important; }
+.text-warning { color: var(--warning) !important; }
+.text-danger { color: var(--danger) !important; }
+.text-info { color: var(--info) !important; }
+.text-muted { color: var(--text-muted) !important; }
+
+.border-primary { border-color: var(--primary) !important; }
+.border-success { border-color: var(--success) !important; }
+.border-warning { border-color: var(--warning) !important; }
+.border-danger { border-color: var(--danger) !important; }
+
+/* Button Styles */
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--text-white);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.btn-success {
+    background-color: var(--success);
+    border-color: var(--success);
+    color: var(--text-white);
+}
+
+.btn-warning {
+    background-color: var(--warning);
+    border-color: var(--warning);
+    color: var(--text-white);
+}
+
+.btn-danger {
+    background-color: var(--danger);
+    border-color: var(--danger);
+    color: var(--text-white);
+}
+
+/* Card Styles */
+.card-readease {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    border: var(--border-light);
+}
+
+/* Badge Styles */
+.badge-independent {
+    background-color: rgba(0, 184, 169, 0.1);
+    color: var(--independent);
+    border: 1px solid var(--independent);
+}
+
+.badge-instructional {
+    background-color: rgba(246, 173, 85, 0.1);
+    color: var(--instructional);
+    border: 1px solid var(--instructional);
+}
+
+.badge-frustration {
+    background-color: rgba(229, 62, 62, 0.1);
+    color: var(--frustration);
+    border: 1px solid var(--frustration);
+}
+
+/* Form Styles */
+.form-control-readease {
+    border: var(--border-light);
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+}
+
+.form-control-readease:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(0, 184, 169, 0.25);
+}
+
+/* Navigation Styles */
+.nav-readease {
+    background-color: var(--sidebar-bg);
+}
+
+.nav-readease .nav-link {
+    color: var(--text-light);
+    transition: var(--transition);
+}
+
+.nav-readease .nav-link:hover,
+.nav-readease .nav-link.active {
+    color: var(--primary);
+    background-color: rgba(0, 184, 169, 0.1);
+}
+
+/* Header Styles */
+.header-readease {
+    background-color: var(--header-bg);
+    border-bottom: var(--border-light);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Progress Bar Styles */
+.progress-readease {
+    background-color: var(--neutral-light);
+    border-radius: var(--border-radius);
+}
+
+.progress-bar-readease {
+    background-color: var(--primary);
+    transition: var(--transition);
+}
+
+/* Table Styles */
+.table-readease {
+    background-color: var(--card-bg);
+}
+
+.table-readease th {
+    background-color: var(--background-secondary);
+    color: var(--text);
+    border-bottom: var(--border-light);
+}
+
+.table-readease td {
+    border-bottom: var(--border-light);
+}
+
+.table-readease tbody tr:hover {
+    background-color: var(--background-secondary);
+}
+
+/* Chart Container Styles */
+.chart-container-readease {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-lg);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    :root {
+        --font-base: 0.875rem;
+        --font-lg: 1rem;
+        --font-xl: 1.125rem;
+        --spacing-md: 0.75rem;
+        --spacing-lg: 1rem;
+    }
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-in {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+}
+
+/* Hover Effects */
+.hover-lift {
+    transition: var(--transition);
+}
+
+.hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Focus States */
+.focus-primary:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.25);
+}
+
+/* Loading States */
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 184, 169, 0.2), transparent);
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}

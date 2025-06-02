@@ -83,7 +83,7 @@ class ReportsController extends Controller
                 'miscues' => 'required|integer|min:0',
                 'total_words' => 'required|integer|min:1',
                 'correct_answers' => 'required|integer|min:0',
-                'total_questions' => 'required|integer|min:1',
+                'total_questions' => 'required|integer|min:0', // Changed from min:1 to min:0
                 'reading_speed' => 'required|integer|min:0',
                 'comprehension' => 'required|integer|min:0|max:100',
                 'correct_reading' => 'required|integer|min:0|max:100',
@@ -257,6 +257,82 @@ class ReportsController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error fetching grade level data: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getStudentAssessments($studentId)
+    {
+        try {
+            // Find the student and get their reading assessments
+            $student = Student::with([
+                'readingAssessments' => function ($query) {
+                    $query->orderBy('assessment_date', 'desc');
+                }
+            ])->find($studentId);
+
+            if (!$student) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Student not found'
+                ], 404);
+            }
+
+            // Process assessment data for charts
+            $assessments = $student->readingAssessments;
+            $englishAssessments = $assessments->where('language', 'english');
+            $filipinoAssessments = $assessments->where('language', 'filipino');
+
+            // Get latest assessments for each language
+            $latestEnglish = $englishAssessments->first();
+            $latestFilipino = $filipinoAssessments->first();
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'student' => [
+                        'id' => $student->id,
+                        'name' => $student->first_name . ' ' . $student->last_name,
+                        'grade_level' => $student->grade_level,
+                        'section' => $student->section
+                    ],
+                    'assessments' => [
+                        'english' => $latestEnglish ? [
+                            'reading_time' => $latestEnglish->reading_time,
+                            'total_words' => $latestEnglish->total_words,
+                            'reading_speed' => $latestEnglish->reading_speed,
+                            'miscues' => $latestEnglish->miscues,
+                            'correct_reading' => $latestEnglish->correct_reading,
+                            'correct_answers' => $latestEnglish->correct_answers,
+                            'total_questions' => $latestEnglish->total_questions,
+                            'comprehension' => $latestEnglish->comprehension,
+                            'assessment_date' => $latestEnglish->assessment_date
+                        ] : null,
+                        'filipino' => $latestFilipino ? [
+                            'reading_time' => $latestFilipino->reading_time,
+                            'total_words' => $latestFilipino->total_words,
+                            'reading_speed' => $latestFilipino->reading_speed,
+                            'miscues' => $latestFilipino->miscues,
+                            'correct_reading' => $latestFilipino->correct_reading,
+                            'correct_answers' => $latestFilipino->correct_answers,
+                            'total_questions' => $latestFilipino->total_questions,
+                            'comprehension' => $latestFilipino->comprehension,
+                            'assessment_date' => $latestFilipino->assessment_date
+                        ] : null
+                    ]
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error fetching student assessments:', [
+                'student_id' => $studentId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching student assessments: ' . $e->getMessage()
             ], 500);
         }
     }

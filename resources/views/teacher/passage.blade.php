@@ -205,6 +205,13 @@
                 box-shadow: 0 0 0 2px rgba(14, 97, 186, 0.1);
             }
 
+            .input-note {
+                font-size: 0.8rem;
+                color: var(--text-light);
+                margin-top: 0.3rem;
+                font-style: italic;
+            }
+
             .timer-controls {
                 display: flex;
                 align-items: center;
@@ -226,6 +233,8 @@
                 display: flex;
                 gap: 1rem;
                 flex-wrap: wrap;
+                justify-content: flex-end;
+                margin-top: 1rem;
             }
 
             .save-assessment {
@@ -391,6 +400,51 @@
                 color: #fff;
             }
 
+            /* Passage Header and Word Count Styles */
+            .passage-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 2px solid var(--neutral-light);
+            }
+
+            .word-count-display {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                background: var(--primary);
+                color: var(--text-white);
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                font-size: 0.9rem;
+                font-weight: 500;
+                box-shadow: var(--shadow-sm);
+            }
+
+            .word-count-display i {
+                font-size: 1rem;
+                color: var(--text-white);
+            }
+
+            .word-count-display strong {
+                font-weight: 700;
+                font-size: 1rem;
+            }
+
+            .input-note {
+                color: var(--text-light);
+                font-size: 0.8rem;
+                margin-top: 0.25rem;
+                font-style: italic;
+            }
+
+            #totalWords {
+                background-color: var(--neutral-light);
+                cursor: not-allowed;
+            }
+
             /* Feedback Section Styles */
             .feedback-section {
                 background: var(--neutral-light);
@@ -448,32 +502,7 @@
                 box-shadow: 0 0 0 2px rgba(14, 97, 186, 0.1);
             }
 
-            .rating-group {
-                display: flex;
-                gap: 1rem;
-                align-items: center;
-            }
 
-            .rating-stars {
-                display: flex;
-                gap: 0.5rem;
-            }
-
-            .rating-stars i {
-                color: #ddd;
-                cursor: pointer;
-                font-size: 1.5rem;
-                transition: var(--transition);
-            }
-
-            .rating-stars i.active {
-                color: #FFD700;
-                /* Golden Yellow */
-            }
-
-            .rating-stars i:hover {
-                transform: scale(1.1);
-            }
 
             .feedback-actions {
                 display: flex;
@@ -642,7 +671,7 @@
                 }
 
                 .save-controls {
-                    justify-content: center;
+                    justify-content: flex-end;
                 }
 
                 .assessment-controls {
@@ -669,7 +698,13 @@
                     </div>
                 </div>
 
-                <div class="section-title" id="passage-title">READING PASSAGE</div>
+                <div class="passage-header">
+                    <div class="section-title" id="passage-title">READING PASSAGE</div>
+                    <div class="word-count-display">
+                        <i class="fas fa-file-word"></i>
+                        <span>Total Words: <strong id="passageWordCount">0</strong></span>
+                    </div>
+                </div>
                 <div class="passage" id="passage-text">
                     @if(isset($readingMaterial))
                         <h3>{{ $readingMaterial->title }}</h3>
@@ -685,6 +720,8 @@
                 </div>
             </div>
 
+
+
             <div class="student-card">
                 <div class="student-header">Student Reading Assessment</div>
                 <div class="student-meta">Section: {{ ucfirst($section ?? 'Narra') }} &nbsp; | &nbsp; Grade Level:
@@ -698,7 +735,9 @@
                         <option value="">Choose a student...</option>
                         @foreach($students as $student)
                             @if($student->grade_level == str_replace('grade', '', $grade) && $student->section == ucfirst($section))
-                                <option value="{{ $student->id }}">{{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}</option>
+                                <option value="{{ $student->id }}">{{ $student->last_name }}, {{ $student->first_name }}
+                                    {{ $student->middle_name }}
+                                </option>
                             @endif
                         @endforeach
                     </select>
@@ -706,17 +745,19 @@
 
 
 
-                <!-- Right Side - Reading Miscues, Timer, and Save Controls -->
-                <div class="right-controls">
+                <!-- Assessment Controls -->
+                <div class="assessment-controls">
                     <!-- Reading Miscues -->
                     <div class="control-group">
                         <label for="miscues">Reading Miscues</label>
                         <input type="number" id="miscues" class="assessment-input" min="0" value="0">
                     </div>
 
+                    <!-- Total Words (Auto-calculated) -->
                     <div class="control-group">
-                        <label for="totalWords">Total Words</label>
-                        <input type="number" id="totalWords" class="assessment-input" min="1" value="150">
+                        <label for="totalWords">Total Words (Auto-calculated)</label>
+                        <input type="number" id="totalWords" class="assessment-input" readonly>
+                        <div class="input-note">This field is automatically updated based on the reading passage</div>
                     </div>
                 </div>
 
@@ -742,20 +783,6 @@
                 <h3>Student Reading Assessment Feedback</h3>
             </div>
             <form class="feedback-form" id="feedbackForm">
-                <div class="feedback-group">
-                    <label>Reading Performance Rating:</label>
-                    <div class="rating-group">
-                        <div class="rating-stars" id="readingRating">
-                            <i class="fas fa-star" data-rating="1"></i>
-                            <i class="fas fa-star" data-rating="2"></i>
-                            <i class="fas fa-star" data-rating="3"></i>
-                            <i class="fas fa-star" data-rating="4"></i>
-                            <i class="fas fa-star" data-rating="5"></i>
-                        </div>
-                        <span id="ratingValue">0/5</span>
-                    </div>
-                </div>
-
                 <div class="feedback-group">
                     <label for="strengths">Reading Strengths:</label>
                     <textarea id="strengths" class="feedback-input"
@@ -792,14 +819,7 @@
                         <p><strong>Areas for Improvement:</strong> Reading speed and comprehension</p>
                         <p><strong>Recommendations:</strong> Practice with shorter passages first</p>
                     </div>
-                    <div class="feedback-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <i class="far fa-star"></i>
-                        <span>3/5</span>
-                    </div>
+
                     <div class="feedback-actions-history">
                         <button class="btn-send" onclick="sendFeedbackToStudent(this, 'sample-feedback-1')">
                             <i class="fas fa-paper-plane"></i> Send to Student
@@ -907,6 +927,27 @@
             const urlParams = new URLSearchParams(window.location.search);
             const currentLanguage = urlParams.get('language') || 'english';
             document.getElementById('lang-' + currentLanguage).classList.add('selected');
+
+            // Initialize word count on page load
+            updateWordCount();
+
+            // Set up observer to watch for passage content changes
+            const passageText = document.getElementById('passage-text');
+            if (passageText) {
+                const observer = new MutationObserver(function (mutations) {
+                    mutations.forEach(function (mutation) {
+                        if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                            updateWordCount();
+                        }
+                    });
+                });
+
+                observer.observe(passageText, {
+                    childList: true,
+                    subtree: true,
+                    characterData: true
+                });
+            }
         });
 
         function switchLanguage(language) {
@@ -927,63 +968,56 @@
         // Word counting functionality
         function countWords(text) {
             // Remove extra whitespace and split by spaces
-            return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+            // Also remove common punctuation and normalize text
+            const cleanText = text.replace(/[^\w\s]/g, ' ').replace(/\s+/g, ' ').trim();
+            return cleanText.split(/\s+/).filter(word => word.length > 0).length;
         }
 
         function updateWordCount() {
-            const passageText = document.getElementById('passage-text').textContent;
+            const passageElement = document.getElementById('passage-text');
+            let passageText = '';
+
+            // Check if there's content from database or use default passages
+            const readingContent = passageElement.querySelector('.reading-content p');
+            const emptyState = passageElement.querySelector('.empty-state');
+
+            if (readingContent && !emptyState) {
+                // Use database content
+                passageText = readingContent.textContent || readingContent.innerText || '';
+            } else if (!emptyState) {
+                // Use default passage content (when language switching)
+                passageText = passageElement.textContent || passageElement.innerText || '';
+            } else {
+                // No content available
+                passageText = '';
+            }
+
             const wordCount = countWords(passageText);
 
             // Update the word count display
-            document.getElementById('passageWordCount').textContent = wordCount;
+            const wordCountElement = document.getElementById('passageWordCount');
+            if (wordCountElement) {
+                wordCountElement.textContent = wordCount;
+            }
 
             // Auto-update the Total Words input field
-            document.getElementById('totalWords').value = wordCount;
+            const totalWordsInput = document.getElementById('totalWords');
+            if (totalWordsInput) {
+                totalWordsInput.value = wordCount;
+            }
+
+            // Log for debugging
+            console.log('Word count updated:', wordCount, 'from text:', passageText.substring(0, 50) + '...');
         }
 
-        // Star Rating Functionality
-        const readingRating = document.getElementById('readingRating');
-        const ratingValue = document.getElementById('ratingValue');
+        // Feedback Form Functionality
         const feedbackForm = document.getElementById('feedbackForm');
-        let currentRating = 0;
-
-        readingRating.addEventListener('click', (e) => {
-            if (e.target.classList.contains('fa-star')) {
-                const rating = parseInt(e.target.dataset.rating);
-                currentRating = rating;
-                updateStars(rating);
-                ratingValue.textContent = `${rating}/5`;
-            }
-        });
-
-        readingRating.addEventListener('mouseover', (e) => {
-            if (e.target.classList.contains('fa-star')) {
-                const rating = parseInt(e.target.dataset.rating);
-                updateStars(rating);
-            }
-        });
-
-        readingRating.addEventListener('mouseout', () => {
-            updateStars(currentRating);
-        });
-
-        function updateStars(rating) {
-            const stars = readingRating.querySelectorAll('i');
-            stars.forEach((star, index) => {
-                if (index < rating) {
-                    star.classList.add('active');
-                } else {
-                    star.classList.remove('active');
-                }
-            });
-        }
 
         // Form Submission
         feedbackForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
             const feedback = {
-                rating: currentRating,
                 strengths: document.getElementById('strengths').value,
                 areasForImprovement: document.getElementById('areasForImprovement').value,
                 recommendations: document.getElementById('recommendations').value,
@@ -1005,9 +1039,6 @@
 
         function resetFeedback() {
             feedbackForm.reset();
-            currentRating = 0;
-            updateStars(0);
-            ratingValue.textContent = '0/5';
         }
 
         function addFeedbackToHistory(feedback) {
@@ -1019,28 +1050,23 @@
             const feedbackId = 'feedback-' + Date.now();
 
             feedbackItem.innerHTML = `
-                                                                                                        <div class="feedback-meta">
-                                                                                                            <span>Date: ${feedback.date}</span>
-                                                                                                            <span>Reading Level: Grade 7</span>
-                                                                                                        </div>
-                                                                                                        <div class="feedback-content">
-                                                                                                            <p><strong>Strengths:</strong> ${feedback.strengths}</p>
-                                                                                                            <p><strong>Areas for Improvement:</strong> ${feedback.areasForImprovement}</p>
-                                                                                                            <p><strong>Recommendations:</strong> ${feedback.recommendations}</p>
-                                                                                                        </div>
-                                                                                                        <div class="feedback-rating">
-                                                                                                            ${Array(5).fill().map((_, i) =>
-                `<i class="fas fa-star${i < feedback.rating ? '' : ' far'}"></i>`
-            ).join('')}
-                                                                                                            <span>${feedback.rating}/5</span>
-                                                                                                        </div>
-                                                                                                        <div class="feedback-actions-history">
-                                                                                                            <button class="btn-send" onclick="sendFeedbackToStudent(this, '${feedbackId}')">
-                                                                                                                <i class="fas fa-paper-plane"></i> Send to Student
-                                                                                                            </button>
-                                                                                                            <span class="send-status not-sent">Not Sent</span>
-                                                                                                        </div>
-                                                                                                    `;
+                                                                                                                                                                                                                                            <div class="feedback-meta">
+                                                                                                                                                                                                                                                <span>Date: ${feedback.date}</span>
+                                                                                                                                                                                                                                                <span>Reading Level: Grade 7</span>
+                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                            <div class="feedback-content">
+                                                                                                                                                                                                                                                <p><strong>Strengths:</strong> ${feedback.strengths}</p>
+                                                                                                                                                                                                                                                <p><strong>Areas for Improvement:</strong> ${feedback.areasForImprovement}</p>
+                                                                                                                                                                                                                                                <p><strong>Recommendations:</strong> ${feedback.recommendations}</p>
+                                                                                                                                                                                                                                            </div>
+
+                                                                                                                                                                                                                                            <div class="feedback-actions-history">
+                                                                                                                                                                                                                                                <button class="btn-send" onclick="sendFeedbackToStudent(this, '${feedbackId}')">
+                                                                                                                                                                                                                                                    <i class="fas fa-paper-plane"></i> Send to Student
+                                                                                                                                                                                                                                                </button>
+                                                                                                                                                                                                                                                <span class="send-status not-sent">Not Sent</span>
+                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                        `;
 
             // Store feedback data for sending
             feedbackItem.dataset.feedbackData = JSON.stringify(feedback);
@@ -1081,7 +1107,6 @@
                     subject: 'Reading Assessment Feedback',
                     grade: grade.replace('grade', ''),
                     section: section.charAt(0).toUpperCase() + section.slice(1),
-                    rating: feedbackData.rating,
                     strengths: feedbackData.strengths,
                     areasForImprovement: feedbackData.areasForImprovement,
                     recommendations: feedbackData.recommendations,
@@ -1107,7 +1132,7 @@
                 localStorage.setItem('studentFeedback', JSON.stringify(existingFeedback));
 
                 // Show success message
-                alert(`Feedback sent successfully to student!\n\nGrade: ${studentFeedback.grade}\nSection: ${studentFeedback.section}\nRating: ${studentFeedback.rating}/5 stars`);
+                alert(`Feedback sent successfully to student!\n\nGrade: ${studentFeedback.grade}\nSection: ${studentFeedback.section}\nFeedback: Comprehensive reading assessment feedback`);
 
                 // Disable button after successful send
                 setTimeout(() => {
@@ -1118,17 +1143,21 @@
             }, 2000); // Simulate network delay
         }
 
+
+
         // Assessment saving functionality
         function saveAssessment() {
             const studentSelect = document.getElementById('studentSelect');
-            const studentName = studentSelect.value;
+            const studentId = studentSelect.value; // Student ID is in the value attribute
             const selectedOption = studentSelect.options[studentSelect.selectedIndex];
-            const studentId = selectedOption.dataset.studentId || null;
+            const studentName = selectedOption.textContent.trim(); // Get the display name from option text
 
             const miscues = parseInt(document.getElementById('miscues').value) || 0;
             const totalWords = parseInt(document.getElementById('totalWords').value) || 0;
-            const correctAnswers = 0; // Default value since this field doesn't exist in the form
-            const totalQuestions = 10; // Default value since this field doesn't exist in the form
+
+            // Set default comprehension values (will be handled on student side)
+            const correctAnswers = 0;
+            const totalQuestions = 0;
 
             // Get timer data
             const timerElement = document.getElementById('timer');
@@ -1153,18 +1182,13 @@
             const language = urlParams.get('language') || 'english';
 
             // Validation
-            if (!studentName) {
+            if (!studentId) {
                 alert('Please select a student first!');
                 return;
             }
 
             if (totalWords <= 0) {
                 alert('Please enter the total number of words!');
-                return;
-            }
-
-            if (totalQuestions <= 0) {
-                alert('Please enter the total number of questions!');
                 return;
             }
 
@@ -1204,7 +1228,11 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert(`Assessment saved successfully!\n\nStudent: ${studentName}\nReading Speed: ${readingSpeed} WPM\nComprehension: ${comprehension}%\nCorrect Reading: ${correctReading}%`);
+                        alert(`Assessment saved successfully!\n\nStudent: ${studentName}\nReading Speed: ${readingSpeed} WPM\nCorrect Reading: ${correctReading}%\nNote: Comprehension will be assessed on student side`);
+
+                        // Refresh charts with new data
+                        refreshStudentCharts(studentId);
+
                         clearAssessment();
                     } else {
                         alert('Error saving assessment: ' + (data.message || 'Unknown error'));
@@ -1224,13 +1252,54 @@
             // Reset all form fields
             document.getElementById('studentSelect').value = '';
             document.getElementById('miscues').value = '0';
-            document.getElementById('totalWords').value = '150';
 
             // Reset timer
             resetTimer();
 
+            // Recalculate word count from current passage
+            updateWordCount();
+
             // Show confirmation
             console.log('Assessment form cleared');
+        }
+
+        // Function to refresh student charts after assessment saving
+        function refreshStudentCharts(studentId) {
+            if (!studentId) {
+                console.log('No student ID provided for chart refresh');
+                return;
+            }
+
+            console.log('Refreshing charts for student ID:', studentId);
+
+            // Open student view in new tab/window with updated data
+            const studentViewUrl = `/teacher/view?student_id=${studentId}`;
+
+            // Check if student view is already open
+            if (window.studentViewWindow && !window.studentViewWindow.closed) {
+                // Refresh existing window with new data
+                window.studentViewWindow.location.href = studentViewUrl;
+                window.studentViewWindow.focus();
+
+                // Try to call the refresh function if it exists
+                setTimeout(() => {
+                    try {
+                        if (window.studentViewWindow.refreshChartsWithNewData) {
+                            window.studentViewWindow.refreshChartsWithNewData(studentId);
+                        }
+                    } catch (e) {
+                        console.log('Chart refresh function not available, page will reload with new data');
+                    }
+                }, 1000);
+            } else {
+                // Open new window
+                window.studentViewWindow = window.open(studentViewUrl, 'studentView', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+            }
+
+            // Show success message
+            setTimeout(() => {
+                console.log('Charts will be updated with the latest assessment data!');
+            }, 500);
         }
     </script>
 @endsection

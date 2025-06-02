@@ -8,29 +8,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/readease-colors.css') }}">
     <style>
         :root {
-            /* Primary - Main UI and Brand Elements */
-            --primary: #0E61BA;
-            --primary-light: #3b82f6;
-            --primary-dark: #0d4b94;
+            /* ReadEase Teal Theme - Consistent with Filipino Report */
+            --primary: #00B8A9;
+            --primary-light: #4DD0E1;
+            --primary-dark: #009688;
 
             /* Secondary - Navigation and Secondary UI */
-            --secondary: #6CC24A;
-            --secondary-light: #7ed56f;
+            --secondary: #F6AD55;
+            --secondary-light: #FFB74D;
 
             /* Accent - Buttons and Highlights */
-            --accent: #F9A602;
-            --accent-light: #fbbf24;
+            --accent: #00B8A9;
+            --accent-light: #4DD0E1;
 
             /* Neutral - Backgrounds */
-            --neutral: #F4F4F4;
-            --neutral-light: #ffffff;
-            --neutral-dark: #e5e5e5;
+            --neutral: #F7FAFC;
+            --neutral-light: #E2E8F0;
+            --neutral-dark: #2D3748;
 
             /* Text - Main Text and Headings */
-            --text: #232323;
-            --text-light: #4b5563;
+            --text: #1A202C;
+            --text-light: #718096;
+            --text-white: #FFFFFF;
+
+            /* Status Colors */
+            --success: #00B8A9;
+            --warning: #F6AD55;
+            --danger: #E53E3E;
+            --info: #4FC3F7;
 
             /* Gradients */
             --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
@@ -668,7 +676,7 @@
                 flex-wrap: wrap;
                 gap: 1rem;
             }
-            
+
             .header-actions {
                 order: 3;
                 width: 100%;
@@ -714,17 +722,20 @@
                             Reports
                         </a>
                     </li>
-                    
+
                 </div>
             </ul>
         </nav>
 
         <div class="sidebar-footer">
             <div class="student-profile">
-                <div class="student-avatar">{{ auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 1)) : 'A' }}</div>
+                <div class="student-avatar">{{ auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 1)) : 'A' }}
+                </div>
                 <div class="student-info">
                     <div class="student-name">{{ auth()->check() ? auth()->user()->name : 'Student Name' }}</div>
-                    <div class="student-role">{{ auth()->check() ? 'Grade ' . auth()->user()->grade . ' • Section ' . auth()->user()->section : 'Grade 7 • Section Narra' }}</div>
+                    <div class="student-role">
+                        {{ auth()->check() ? 'Grade ' . auth()->user()->grade . ' • Section ' . auth()->user()->section : 'Grade 7 • Section Narra' }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -732,17 +743,23 @@
 
     <!-- Header -->
     <header style="background: #156fd1; box-shadow: none;">
-        <div class="header-container" style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 1rem;">
+        <div class="header-container"
+            style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 1rem;">
             <div style="display: flex; align-items: center; gap: 1.2rem;">
-                <div style="width: 44px; height: 44px; border-radius: 50%; background: #f9a602; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 1.5rem; color: #fff;">
+                <div
+                    style="width: 44px; height: 44px; border-radius: 50%; background: #f9a602; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 1.5rem; color: #fff;">
                     {{ isset($user) ? strtoupper(substr($user->name, 0, 1)) : 'U' }}
                 </div>
                 <div style="display: flex; flex-direction: column;">
-                    <span style="font-weight: 700; color: #fff; font-size: 1.1rem;">{{ isset($user) ? $user->name : 'User' }}</span>
-                    <span style="color: #fff; font-size: 0.95rem; opacity: 0.85; text-transform: lowercase;">Student</span>
+                    <span
+                        style="font-weight: 700; color: #fff; font-size: 1.1rem;">{{ isset($user) ? $user->name : 'User' }}</span>
+                    <span
+                        style="color: #fff; font-size: 0.95rem; opacity: 0.85; text-transform: lowercase;">Student</span>
                 </div>
             </div>
-            <a href="{{ route('logout') }}" class="logout-btn" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" style="background: #2176d2; color: #fff; border-radius: 7px; padding: 0.6rem 1.4rem; font-weight: 500; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 2px 8px rgba(21,111,209,0.08); border: none; transition: background 0.2s;">
+            <a href="{{ route('logout') }}" class="logout-btn"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                style="background: #2176d2; color: #fff; border-radius: 7px; padding: 0.6rem 1.4rem; font-weight: 500; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 2px 8px rgba(21,111,209,0.08); border: none; transition: background 0.2s;">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
