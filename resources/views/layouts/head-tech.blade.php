@@ -116,6 +116,25 @@
             margin-left: auto;
         }
 
+        .logout-btn {
+            background: var(--accent);
+            color: var(--neutral-light);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+
         /* User Dropdown Styles */
         .user-dropdown {
             position: relative;
@@ -237,11 +256,6 @@
 
         .logout-item {
             color: var(--text);
-        }
-
-        .logout-item:hover {
-            background: var(--text);
-            color: #dc3545;
         }
 
         /* Dashboard Content */
@@ -829,7 +843,7 @@
                         <div class="user-avatar">
                             {{ Auth::user() ? strtoupper(substr(Auth::user()->name, 0, 1)) : 'T' }}
                         </div>
-                        <div class="user-details">
+                        <div class="user-info">
                             <div class="user-name">{{ Auth::user() ? Auth::user()->name : 'Teacher Name' }}</div>
                             <div class="user-role">Teacher</div>
                         </div>

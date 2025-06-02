@@ -10,7 +10,7 @@
             <div class="profile-section">
                 <div class="profile-card">
                     <div class="profile-header">
-                        <img src="{{ asset('pic/profile.png') }}" alt="Student Profile" class="profile-image">
+                        <img src="{{ asset('pic/profile.png') }}" alt="Student Profile" class="profile-image" >
                         <div class="profile-info">
                             <h2>{{ $user->name }}</h2>
                             <p>Grade {{ $user->grade }}: Section {{ $user->section }}</p>
@@ -28,17 +28,6 @@
                         <h3>Test Progress</h3>
                         <p class="stat-number">{{ $completionPercentage }}%</p>
                         <p class="stat-label">Overall Completion</p>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>Time Spent</h3>
-                        <p class="stat-number">45 mins</p>
-                        <p class="stat-label">Today's Activity</p>
                     </div>
                 </div>
 
@@ -154,9 +143,10 @@
         }
 
         .profile-image {
-            width: 100px;
-            height: 90px;
+            width: 80px;
+            height: 80px;
             border-radius: 10px;
+            padding: 10px;
         }
 
         .profile-info h2 {
@@ -255,15 +245,21 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            font-size: 1.2em;
         }
 
         .activity-icon.completed {
-            background: #27ae60;
+            background: #2ecc71;
+            color: white;
         }
 
         .activity-icon.in-progress {
             background: #f1c40f;
+            color: white;
+        }
+
+        .activity-details {
+            flex: 1;
         }
 
         .activity-details h4 {

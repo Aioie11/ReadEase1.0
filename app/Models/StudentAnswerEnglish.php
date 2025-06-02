@@ -12,15 +12,21 @@ class StudentAnswerEnglish extends Model
     protected $table = 'student_answer_english';
     protected $fillable = [
         'student_id',
-        'c1',
-        'c2',
-        'c3',
-        'c4',
-        'c5',
-        'c6',
-        'c7',
+        'answers',
         'score',
         'reading_time',
-        'reading_speed',
+        'start_time',
+        'end_time'
     ];
+
+    protected $casts = [
+        'answers' => 'array',
+        'reading_time' => 'integer',
+        'reading_speed' => 'integer',
+    ];
+
+    public function student()
+    {
+        return $this->belongsTo(User::class, 'student_id', 'userId');
+    }
 }

@@ -26,8 +26,11 @@ class StudentAnswerTagalogController extends Controller
         
         // Get correct answers from the database
         $correctAnswers = [];
+        $studentAnswers = [];
         foreach ($questions as $index => $question) {
-            $correctAnswers['c' . ($index + 1)] = $question->correct_answer;
+            $questionKey = 'c' . ($index + 1);
+            $correctAnswers[$questionKey] = $question->correct_answer;
+            $studentAnswers[$questionKey] = $request->input($questionKey);
         }
 
         // Validate input
@@ -41,7 +44,7 @@ class StudentAnswerTagalogController extends Controller
         $score = 0;
         $totalQuestions = count($correctAnswers);
         foreach ($correctAnswers as $key => $value) {
-            if ($request->$key == $value) {
+            if ($studentAnswers[$key] == $value) {
                 $score++;
             }
         }
@@ -53,27 +56,20 @@ class StudentAnswerTagalogController extends Controller
                 return redirect()->back()->with('error', 'Kailangan mong mag-login para makapag-submit ng mga sagot.');
             }
 
-            // Prepare answer data
-            $answerData = [
-                'student_id' => $user->userId, // Use userId instead of internal ID
+            // Save to database with JSON answers
+            StudentAnswerTagalog::create([
+                'student_id' => $user->userId,
+                'answers' => $studentAnswers,
                 'score' => $score,
-                'total_questions' => $totalQuestions
-            ];
-
-            // Add individual answers
-            foreach ($questions as $index => $question) {
-                $answerData['c' . ($index + 1)] = $request->input('c' . ($index + 1));
-            }
-
-            // Save to database
-            StudentAnswerTagalog::create($answerData);
-
-            // Redirect back with success message
-            return redirect()->route('student.reports')->with([
-                'success' => 'Matagumpay na naipasa ang iyong mga sagot! Score: ' . $score . '/' . $totalQuestions,
-                'score' => $score,
-                'total_questions' => $totalQuestions
             ]);
+
+            // Store score and total questions in session for graphs
+            session([
+                'filipino_score' => $score,
+                'filipino_total_questions' => $totalQuestions
+            ]);
+
+            return redirect()->route('student.reports');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'May error sa pagpapasa ng iyong mga sagot. Pakisubukan muli.');
         }
