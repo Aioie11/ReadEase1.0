@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('reading_assessments', function (Blueprint $table) {
             $table->id();
+            $table->string('student_id');
             $table->string('student_name');
             $table->float('reading_time');
             $table->integer('miscues');

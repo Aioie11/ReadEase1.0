@@ -9,19 +9,7 @@
             <div class="dashboard-header">
                 <h1>English Question</h1>
                 <p>Read each passage and answer the questions given.</p>
-
-                <!-- Reading Timer Display -->
-                <!-- <div class="timer-container">
-                    <div class="timer-display">
-                        <i class="fas fa-clock"></i>
-                        <span class="timer-label">Reading Time:</span>
-                        <span id="timer" class="timer-value">00:00</span>
-                    </div>
-                    <div class="timer-status">
-                        <span id="timer-status">📖 Reading in progress...</span>
-                    </div>
-                </div>
-            </div> -->
+            </div>
 
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -196,58 +184,45 @@
     </script>
 
     <style>
-        /* Timer Styles */
-        .timer-container {
-            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border: 2px solid #00B8A9;
-            box-shadow: 0 4px 12px rgba(0, 184, 169, 0.15);
+        .main-content {
+            padding: 20px;
+            background-color: #f5f6fa;
         }
 
-        .timer-display {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            margin-bottom: 0.5rem;
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        .timer-display i {
-            color: #00B8A9;
-            font-size: 1.2rem;
+        .dashboard-header {
+            margin-bottom: 30px;
         }
 
-        .timer-label {
-            font-weight: 600;
-            color: #1a237e;
-            font-size: 1.1rem;
+        .dashboard-header h1 {
+            color: var(--primary);
+            font-size: 1.8em;
+            margin-bottom: 10px;
         }
 
-        .timer-value {
-            font-family: 'Courier New', monospace;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #00B8A9;
+        .dashboard-header p {
+            color: #7f8c8d;
+            margin: 0;
+        }
+
+        .grade-card {
             background: white;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            border: 2px solid #00B8A9;
-            min-width: 80px;
-            text-align: center;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
         }
 
-        .timer-status {
-            text-align: center;
-            font-size: 0.9rem;
-            color: #666;
-            font-style: italic;
-        }
-
-        .timer-status.completed {
-            color: #4caf50;
-            font-weight: 600;
+        .grade-card h2 {
+            color: var(--primary);
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #95a5a6;
         }
 
         .passage-container {
@@ -257,31 +232,37 @@
             border-radius: 10px;
         }
 
+        .passage-container h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
         .passage {
             line-height: 1.6;
             color: #333;
         }
 
-        .passage p {
-            margin-bottom: 15px;
+        .questions-container {
+            margin-top: 30px;
         }
 
-        .questions-container {
-            margin: 20px 0;
+        .questions-container h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
         }
 
         .question-card {
-            background-color: white;
+            background: #f8f9fa;
             padding: 20px;
+            border-radius: 8px;
             margin-bottom: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .question {
-            font-weight: 600;
+            color: var(--primary-dark);
+            font-size: 1.1em;
             margin-bottom: 15px;
-            color: #1a237e;
+            font-weight: 600;
         }
 
         .choices {
@@ -293,40 +274,36 @@
         .choice {
             display: flex;
             align-items: center;
+            gap: 10px;
             padding: 10px;
-            border: 1px solid #e0e0e0;
-            border-radius: 5px;
+            background: white;
+            border-radius: 6px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: background-color 0.2s;
         }
 
         .choice:hover {
-            background-color: #e3f2fd;
-        }
-
-        .choice input[type="radio"] {
-            margin-right: 10px;
+            background-color: #e9ecef;
         }
 
         .submit-container {
+            margin-top: 30px;
             text-align: center;
-            margin: 20px 0;
         }
 
         .submit-btn {
-            background-color: #1a237e;
+            background-color: #3498db;
             color: white;
             padding: 12px 30px;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
+            font-size: 1.1em;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            transition: background-color 0.2s;
         }
 
         .submit-btn:hover {
-            background-color: #0d47a1;
-            transform: translateY(-2px);
+            background-color: #2980b9;
         }
 
         /* Modal Styles */
@@ -343,70 +320,78 @@
 
         .modal.show {
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
         }
 
         .confirmation-content {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
             width: 90%;
             text-align: center;
         }
 
         .confirmation-content h2 {
-            color: #1a237e;
-            margin-bottom: 1rem;
-        }
-
-        .confirmation-content p {
-            margin-bottom: 1.5rem;
-            color: #333;
+            color: #2c3e50;
+            margin-bottom: 20px;
         }
 
         .confirmation-buttons {
             display: flex;
             justify-content: center;
-            gap: 1rem;
+            gap: 15px;
+            margin-top: 25px;
         }
 
         .confirm-submit, .cancel-submit {
-            padding: 0.8rem 1.5rem;
+            padding: 10px 25px;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            font-size: 1em;
+            transition: background-color 0.2s;
         }
 
         .confirm-submit {
-            background-color: #1a237e;
+            background-color: #3498db;
             color: white;
         }
 
         .confirm-submit:hover {
-            background-color: #0d47a1;
-            transform: translateY(-2px);
+            background-color: #2980b9;
         }
 
         .cancel-submit {
-            background-color: #e0e0e0;
-            color: #333;
+            background-color: #e74c3c;
+            color: white;
         }
 
         .cancel-submit:hover {
-            background-color: #bdbdbd;
-            transform: translateY(-2px);
+            background-color: #c0392b;
         }
 
         .score-display {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #1a237e;
-            margin: 1rem 0;
+            font-size: 1.2em;
+            color: #2c3e50;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 15px;
+            }
+
+            .grade-card {
+                padding: 15px;
+            }
+
+            .confirmation-content {
+                width: 95%;
+                padding: 20px;
+            }
         }
     </style>
 @endsection

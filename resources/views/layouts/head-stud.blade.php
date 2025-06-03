@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Default Title')</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
@@ -83,6 +84,14 @@
             align-items: center;
             max-width: 1400px;
             margin: 0 auto;
+            width: 100%;
+        }
+
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
         }
 
         .logo {
@@ -92,17 +101,6 @@
             text-decoration: none;
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            margin-left: auto;
-        }
-
         .user-info {
             display: flex;
             align-items: center;
@@ -110,6 +108,25 @@
             color: var(--neutral-light);
             position: relative;
             margin-left: auto;
+        }
+
+        .logout-btn {
+            background: var(--accent);
+            color: var(--neutral-light);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
         }
 
         /* User Dropdown Styles */
@@ -132,7 +149,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: var(--accent);
+            background: var(--primary-dark);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -145,12 +162,14 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            gap: 0.3rem;
         }
 
         .user-name {
             font-weight: 600;
             font-size: 0.95rem;
             line-height: 1.2;
+            margin-bottom: 0.1rem;
         }
 
         .user-role {
@@ -183,12 +202,24 @@
             transition: all 0.3s ease;
             z-index: 1000;
             margin-top: 0.5rem;
+            border: 1px solid #e0e0e0;
         }
 
         .dropdown-menu.show {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateY(0) !important;
+            display: block !important;
+            background: white !important;
+            border: 2px solid #0E61BA !important;
+        }
+
+        /* Alternative hover-based dropdown for testing */
+        .user-dropdown:hover .dropdown-menu {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
+            display: block;
         }
 
         .dropdown-item {
@@ -218,12 +249,7 @@
         }
 
         .logout-item {
-            color: #dc3545;
-        }
-
-        .logout-item:hover {
-            background: #dc3545;
-            color: var(--neutral-light);
+            color: var(--text);
         }
 
         /* Dashboard Content */
@@ -300,7 +326,7 @@
         }
 
         .section-item:hover {
-            background: var(--secondary);
+            background: var(--primary-dark);
             color: var(--neutral-light);
         }
 
@@ -493,7 +519,7 @@
 
         .nav-link:hover,
         .nav-link.active {
-            background: var(--secondary);
+            background: var(--primary-dark);
             color: var(--neutral-light);
             transform: translateX(5px);
         }
@@ -609,15 +635,48 @@
             cursor: pointer;
             padding: 0.5rem;
             z-index: 1002;
-            margin-left: auto;
+            margin-right: 1rem;
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
+            .header-container {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            
+            .header-left {
+                display: flex;
+                align-items: center;
+            }
+
             .menu-toggle {
                 display: block;
-                position: relative;
-                right: 0;
+                margin-left: 1rem;
+            }
+
+            .user-info {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .user-dropdown {
+                padding: 0.3rem;
+            }
+
+            .user-details {
+                display: none;
+            }
+
+            .user-avatar {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+
+            .dropdown-arrow {
+                display: none;
             }
 
             .sidebar {
@@ -663,13 +722,7 @@
             background: rgba(255, 255, 255, 0.2);
         }
 
-        .user-role {
-            background: var(--accent);
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
+        
 
         @media (max-width: 768px) {
             .header-container {
@@ -726,47 +779,65 @@
                 </div>
             </ul>
         </nav>
+    </aside>
 
-        <div class="sidebar-footer">
-            <div class="student-profile">
-                <div class="student-avatar">{{ auth()->check() ? strtoupper(substr(auth()->user()->name, 0, 1)) : 'A' }}
-                </div>
-                <div class="student-info">
-                    <div class="student-name">{{ auth()->check() ? auth()->user()->name : 'Student Name' }}</div>
-                    <div class="student-role">
-                        {{ auth()->check() ? 'Grade ' . auth()->user()->grade . ' • Section ' . auth()->user()->section : 'Grade 7 • Section Narra' }}
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="header-right">
+                <div class="user-info">
+                    <button class="menu-toggle" id="menuToggle">
+                        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;">
+                            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+                        </svg>
+                    </button>
+                    <div class="user-dropdown" id="userDropdownToggle">
+                        <div class="user-avatar">
+                            {{ Auth::user() ? strtoupper(substr(Auth::user()->name, 0, 1)) : '' }}
+                        </div>
+                        <div class="user-details">
+                            <div class="user-name">{{ Auth::user() ? Auth::user()->name : '' }}</div>
+                            <div class="user-role">{{ Auth::user() ? Auth::user()->role : '' }}</div>
+                        </div>
+                        <svg viewBox="0 0 24 24" fill="currentColor" class="dropdown-arrow"
+                            style="width: 16px; height: 16px;">
+                            <path d="M7 10l5 5 5-5z" />
+                        </svg>
+
+                        <!-- Dropdown Menu -->
+                        <div class="dropdown-menu" id="userDropdownMenu">
+                            <a href="#" class="dropdown-item">
+                                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
+                                    <path
+                                        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                </svg>
+                                <span>Profile</span>
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
+                                    <path
+                                        d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.82,11.69,4.82,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z" />
+                                </svg>
+                                <span>Settings</span>
+                            </a>
+                            <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                                @csrf
+                                <button type="submit" class="dropdown-item logout-item"
+                                    style="width: 100%; border: none; background: none; text-align: left; cursor: pointer;">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
+                                        <path
+                                            d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+                                    </svg>
+                                    <span>Logout</span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </aside>
-
-    <!-- Header -->
-    <header style="background: #156fd1; box-shadow: none;">
-        <div class="header-container"
-            style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 1rem;">
-            <div style="display: flex; align-items: center; gap: 1.2rem;">
-                <div
-                    style="width: 44px; height: 44px; border-radius: 50%; background: #f9a602; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 1.5rem; color: #fff;">
-                    {{ isset($user) ? strtoupper(substr($user->name, 0, 1)) : 'U' }}
-                </div>
-                <div style="display: flex; flex-direction: column;">
-                    <span
-                        style="font-weight: 700; color: #fff; font-size: 1.1rem;">{{ isset($user) ? $user->name : 'User' }}</span>
-                    <span
-                        style="color: #fff; font-size: 0.95rem; opacity: 0.85; text-transform: lowercase;">Student</span>
-                </div>
-            </div>
-            <a href="{{ route('logout') }}" class="logout-btn"
-                onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                style="background: #2176d2; color: #fff; border-radius: 7px; padding: 0.6rem 1.4rem; font-weight: 500; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 2px 8px rgba(21,111,209,0.08); border: none; transition: background 0.2s;">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                @csrf
-            </form>
-        </div>
     </header>
+
 
 
     @yield ('content')
@@ -801,33 +872,18 @@
             });
         });
 
-        // User dropdown functionality
-        function toggleUserDropdown() {
-            const dropdown = document.querySelector('.user-dropdown');
-            const dropdownMenu = document.getElementById('userDropdownMenu');
-
-            dropdown.classList.toggle('active');
-            dropdownMenu.classList.toggle('show');
-        }
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function (event) {
-            const userDropdown = document.querySelector('.user-dropdown');
-            const dropdownMenu = document.getElementById('userDropdownMenu');
-
-            if (!userDropdown.contains(event.target)) {
-                userDropdown.classList.remove('active');
-                dropdownMenu.classList.remove('show');
-            }
-        });
-
-        // Add sidebar toggle functionality
+        // Menu toggle functionality
         const menuToggle = document.getElementById('menuToggle');
         const sidebar = document.querySelector('.sidebar');
+        const mainContent = document.querySelector('.main-content');
+        const header = document.querySelector('header');
 
         if (menuToggle) {
             menuToggle.addEventListener('click', () => {
                 sidebar.classList.toggle('active');
+                if (window.innerWidth <= 768) {
+                    document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+                }
             });
         }
 
@@ -836,6 +892,7 @@
             if (window.innerWidth <= 768) {
                 if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
                     sidebar.classList.remove('active');
+                    document.body.style.overflow = '';
                 }
             }
         });
@@ -844,6 +901,27 @@
         window.addEventListener('resize', () => {
             if (window.innerWidth > 768) {
                 sidebar.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // User dropdown functionality
+        const userDropdown = document.querySelector('.user-dropdown');
+        const dropdownMenu = document.getElementById('userDropdownMenu');
+
+        if (userDropdown) {
+            userDropdown.addEventListener('click', (e) => {
+                e.stopPropagation();
+                userDropdown.classList.toggle('active');
+                dropdownMenu.classList.toggle('show');
+            });
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+            if (!userDropdown.contains(event.target)) {
+                userDropdown.classList.remove('active');
+                dropdownMenu.classList.remove('show');
             }
         });
     </script>

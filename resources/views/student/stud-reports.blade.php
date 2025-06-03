@@ -24,7 +24,9 @@
                             <canvas id="myChart"></canvas>
                         </div>
                         <div class="reading-metrics">
-                            <p><strong>125 (WPM) Words Per Minute</strong></p>
+                            <p><strong>{{ $latestEnglishReadingSpeed ?? 0 }} (WPM) Words Per Minute</strong></p>
+                            <p><strong>Reading Time:</strong> {{ $latestEnglishReadingTime ?? 0 }} seconds</p>
+                            <p><strong>Total Words:</strong> {{ $latestEnglishTotalWords ?? 0 }}</p>
                         </div>
                     </div>
 
@@ -34,7 +36,7 @@
                         </div>
                         <div class="reading-metrics">
                             <p><strong>Instructional Level</strong></p>
-                            <p>{{ session('score', 7) }} out of {{ session('total_questions', 10) }} correct answers</p>
+                            <p>{{ session('english_score', 0) }} out of {{ session('english_total_questions', 0) }} correct answers</p>
                         </div>
                     </div>
 
@@ -44,7 +46,7 @@
                         </div>
                         <div class="reading-metrics">
                             <p><strong>Independent Level</strong></p>
-                            <p>235 out of 250 words read correctly</p>
+                            <p>0 out of 0 words read correctly</p>
                         </div>
                     </div>
                 </div>
@@ -71,7 +73,9 @@
                             <canvas id="myChart3"></canvas>
                         </div>
                         <div class="reading-metrics">
-                            <p><strong>130 (WPM) Words Per Minute</strong></p>
+                            <p><strong>{{ $latestFilipinoReadingSpeed ?? 0 }} (WPM) Words Per Minute</strong></p>
+                            <p><strong>Reading Time:</strong> {{ $latestFilipinoReadingTime ?? 0 }} seconds</p>
+                            <p><strong>Total Words:</strong> {{ $latestFilipinoTotalWords ?? 0 }}</p>
                         </div>
                     </div>
 
@@ -80,8 +84,8 @@
                             <canvas id="myChart4"></canvas>
                         </div>
                         <div class="reading-metrics">
-                            <p><strong>Independent Level</strong></p>
-                            <p>8 out of 10 correct answers</p>
+                            <p><strong>Instructional Level</strong></p>
+                            <p>{{ session('filipino_score', 0) }} out of {{ session('filipino_total_questions', 0) }} correct answers</p>
                         </div>
                     </div>
 
@@ -91,7 +95,7 @@
                         </div>
                         <div class="reading-metrics">
                             <p><strong>Independent Level</strong></p>
-                            <p>238 out of 250 words read correctly</p>
+                            <p>0 out of 0 words read correctly</p>
                         </div>
                     </div>
                 </div>
@@ -631,14 +635,14 @@
             }
         };
 
-        // Reading Speed Chart
+        // English Reading Speed Chart
         const ctx = document.getElementById('myChart').getContext('2d');
         new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: ['Reading Time', 'Total Words'],
                 datasets: [{
-                    data: [120, 250],
+                    data: [{{ session('english_reading_time', 0) }}, {{ session('english_reading_speed', 0) }}],
                     backgroundColor: [
                         'rgba(54, 162, 235, 0.8)',
                         'rgba(255, 99, 132, 0.8)'
@@ -665,14 +669,14 @@
             }
         });
 
-        // Comprehension Chart
+        // English Comprehension Chart
         const ctx1 = document.getElementById('myChart1').getContext('2d');
         new Chart(ctx1, {
             type: 'bar',
             data: {
                 labels: ['Correct Answers', 'Total Questions'],
                 datasets: [{
-                    data: [{{ session('score', 7) }}, {{ session('total_questions', 10) }}],
+                    data: [{{ session('english_score', 0) }}, {{ session('english_total_questions', 0) }}],
                     backgroundColor: [
                         'rgba(75, 192, 192, 0.8)',
                         'rgba(255, 159, 64, 0.8)'
@@ -699,14 +703,14 @@
             }
         });
 
-        // Word Reading Chart
+        // English Independent Level Chart
         const ctx2 = document.getElementById('myChart2').getContext('2d');
         new Chart(ctx2, {
             type: 'bar',
             data: {
                 labels: ['Reading Miscues', 'Correct Reading', 'Total Words'],
                 datasets: [{
-                    data: [15, 235, 250],
+                    data: [0, 0, 0],
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.8)',
                         'rgba(75, 192, 192, 0.8)',
@@ -742,7 +746,7 @@
             data: {
                 labels: ['Reading Time', 'Total Words'],
                 datasets: [{
-                    data: [115, 250],
+                    data: [{{ session('filipino_reading_time', 0) }}, {{ session('filipino_reading_speed', 0) }}],
                     backgroundColor: [
                         'rgba(54, 162, 235, 0.8)',
                         'rgba(255, 99, 132, 0.8)'
@@ -776,7 +780,7 @@
             data: {
                 labels: ['Correct Answers', 'Total Questions'],
                 datasets: [{
-                    data: [4, 10],
+                    data: [{{ session('filipino_score', 0) }}, {{ session('filipino_total_questions', 0) }}],
                     backgroundColor: [
                         'rgba(75, 192, 192, 0.8)',
                         'rgba(255, 159, 64, 0.8)'
@@ -803,14 +807,14 @@
             }
         });
 
-        // Filipino Word Reading Chart
+        // Filipino Independent Level Chart
         const ctx5 = document.getElementById('myChart5').getContext('2d');
         new Chart(ctx5, {
             type: 'bar',
             data: {
                 labels: ['Reading Miscues', 'Correct Reading', 'Total Words'],
                 datasets: [{
-                    data: [19, 231, 250],
+                    data: [0, 0, 0],
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.8)',
                         'rgba(75, 192, 192, 0.8)',

@@ -10,7 +10,7 @@
             <div class="profile-section">
                 <div class="profile-card">
                     <div class="profile-header">
-                        <img src="{{ asset('pic/profile.png') }}" alt="Student Profile" class="profile-image">
+                        <img src="{{ asset('pic/profile.png') }}" alt="Student Profile" class="profile-image" >
                         <div class="profile-info">
                             <h2>{{ $user->name }}</h2>
                             <p>Grade {{ $user->grade }}: Section {{ $user->section }}</p>
@@ -28,17 +28,6 @@
                         <h3>Test Progress</h3>
                         <p class="stat-number">{{ $completionPercentage }}%</p>
                         <p class="stat-label">Overall Completion</p>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>Time Spent</h3>
-                        <p class="stat-number">45 mins</p>
-                        <p class="stat-label">Today's Activity</p>
                     </div>
                 </div>
 
@@ -128,7 +117,7 @@
     <style>
         .main-content {
             padding: 20px;
-            background-color: var(--background);
+            background-color: #f5f6fa;
         }
 
         .dashboard {
@@ -141,11 +130,11 @@
         }
 
         .profile-card {
-            background: var(--card-bg);
+            background: white;
             padding: 20px;
             border-radius: 12px;
-            box-shadow: var(--shadow-md);
-            border-left: 4px solid var(--primary);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
         }
 
         .profile-header {
@@ -155,22 +144,22 @@
         }
 
         .profile-image {
-            width: 100px;
+            width: 90px;
             height: 90px;
-            border-radius: 12px;
-            border: 3px solid var(--primary);
+            padding: 10px;
+
         }
 
         .profile-info h2 {
             margin: 0;
-            color: var(--primary);
+            color: #2c3e50;
             font-size: 1.8em;
             font-weight: 700;
         }
 
         .profile-info p {
             margin: 5px 0 0;
-            color: var(--text-light);
+            color: #7f8c8d;
         }
 
         .stats-overview {
@@ -181,38 +170,37 @@
         }
 
         .stat-card {
-            background: var(--card-bg);
+            background: white;
             padding: 20px;
             border-radius: 12px;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
             gap: 15px;
-            transition: var(--transition);
-            border-left: 4px solid var(--secondary);
+            transition: transform 0.2s;
         }
 
         .stat-card:hover {
             transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
         }
 
         .stat-icon {
             width: 50px;
             height: 50px;
-            background: var(--primary);
+            background: #3498db;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5em;
-            color: var(--text-white);
+            color: white;
         }
 
         .stat-info h3 {
             margin: 0;
             font-size: 0.9em;
-            color: var(--text-light);
+            color: #7f8c8d;
             font-weight: 600;
         }
 
@@ -220,29 +208,28 @@
             margin: 5px 0;
             font-size: 1.5em;
             font-weight: bold;
-            color: var(--primary);
+            color: #2c3e50;
         }
 
         .stat-label {
             font-size: 0.8em;
-            color: var(--text-light);
+            color: #7f8c8d;
         }
 
         .results-section {
-            background: var(--card-bg);
+            background: white;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
-            border-left: 4px solid var(--primary);
         }
 
         .results-header h2 {
-            color: var(--primary);
+            color: #2c3e50;
             font-size: 1.8em;
             margin-bottom: 25px;
             padding-bottom: 15px;
-            border-bottom: 2px solid var(--neutral-light);
+            border-bottom: 2px solid #95a5a6;
             font-weight: 700;
         }
 
@@ -257,15 +244,14 @@
             align-items: center;
             gap: 15px;
             padding: 15px;
-            background: var(--background);
+            background: #f8f9fa;
             border-radius: 12px;
-            transition: var(--transition);
-            border: 1px solid var(--neutral-light);
+            transition: transform 0.2s;
         }
 
         .activity-item:hover {
             transform: translateX(5px);
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
         .activity-icon {
@@ -275,32 +261,32 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text-white);
+            color: white;
         }
 
         .activity-icon.completed {
-            background: var(--success);
+            background: #2ecc71;
         }
 
         .activity-icon.in-progress {
-            background: var(--warning);
+            background: #f1c40f;
         }
 
         .activity-details h4 {
             margin: 0;
-            color: var(--text);
+            color: #2c3e50;
             font-size: 1.1em;
             font-weight: 600;
         }
 
         .activity-details p {
             margin: 5px 0;
-            color: var(--text-light);
+            color: #7f8c8d;
         }
 
         .activity-time {
             font-size: 0.8em;
-            color: var(--text-light);
+            color: #7f8c8d;
         }
 
         @media (max-width: 768px) {

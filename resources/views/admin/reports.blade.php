@@ -5,7 +5,6 @@
 @section('content')
 
 <style>
-
         .user-info {
             display: flex;
             align-items: center;
@@ -15,8 +14,9 @@
 
         /* Main Content */
         .main-content {
+            margin-top: 100px;
             margin-left: 280px;
-            padding: 6rem 5% 2rem;
+            padding: 2rem 5% 2rem;
             transition: var(--transition);
         }
 
@@ -260,6 +260,20 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .chart-section {
+            background: var(--neutral-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2.5rem;
+        }
+
+        .chart-section h2 {
+            color: var(--text);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 
@@ -267,119 +281,82 @@
     
     <!-- Main Content -->
     <main class="main-content">
-        <div class="reports-content">
-            <div class="reports-header">
-                <h1>Reports</h1>
-                <p>View and analyze student performance data</p>
+        <div class="chart-section">
+            <h2>Reading Level Distribution By Grade</h2>
+            <canvas id="readingLevelChart"></canvas>
+            <div style="margin-top:1rem; font-size:0.95rem;">
+                <strong>Legend:</strong>
+                <span style="color:#4caf50; font-weight:bold;">■</span> Independent (Word Reading: 97-100, Comprehension: 80-100)
+                <span style="color:#ffb300; font-weight:bold; margin-left:1.5rem;">■</span> Instructional (Word Reading: 90-96, Comprehension: 59-79)
+                <span style="color:#e53935; font-weight:bold; margin-left:1.5rem;">■</span> Frustration (Word Reading: 89 BELOW, Comprehension: 58 BELOW)
             </div>
-
-            <!-- Recent Test Results Section -->
-            <section class="report-section">
-                <h2 class="section-title">RECENT TEST RESULTS</h2>
-                <div class="month-title">{{ now()->format('F Y') }}</div>
-                <div class="pie-charts-container">
-                    @foreach([7, 8, 9, 10] as $grade)
-                    <div class="chart-wrapper">
-                        <div class="chart-title">GRADE {{ $grade }}</div>
-                        <canvas id="grade{{ $grade }}Chart"></canvas>
-                    </div>
-                    @endforeach
-                </div>
-            </section>
-
-            <!-- Comparison Chart Section -->
-            <section class="report-section">
-                <h2 class="section-title">COMPARISON CHART</h2>
-                <div class="comparison-charts-container">
-                    @foreach(['august', 'september', 'october', 'november'] as $month)
-                    <div class="chart-wrapper">
-                        <div class="month-title">{{ strtoupper($month) }} {{ now()->year }}</div>
-                        <canvas id="{{ $month }}Chart"></canvas>
-                    </div>
-                    @endforeach
-                </div>
-            </section>
         </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Function to fetch reading level data
-        async function fetchReadingLevelData() {
-            try {
-                const response = await fetch('/api/reading-levels/stats');
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                console.error('Error fetching reading level data:', error);
-                return null;
-            }
-        }
-
-        // Function to create pie charts
-        function createPieCharts(data) {
-            const gradeIds = ['grade7', 'grade8', 'grade9', 'grade10'];
-            const colors = {
-                beginner: '#32CD32',
-                intermediate: '#90EE90',
-                advanced: '#98FB98'
-            };
-
-            gradeIds.forEach((id, index) => {
-                const grade = index + 7;
-                const ctx = document.getElementById(id + 'Chart').getContext('2d');
-                
-                // Get data for both English and Filipino subjects
-                const englishData = data[grade]?.english || { beginner: 0, intermediate: 0, advanced: 0 };
-                const filipinoData = data[grade]?.filipino || { beginner: 0, intermediate: 0, advanced: 0 };
-
-                // Combine the data
-                const combinedData = {
-                    beginner: englishData.beginner + filipinoData.beginner,
-                    intermediate: englishData.intermediate + filipinoData.intermediate,
-                    advanced: englishData.advanced + filipinoData.advanced
-                };
-
-                new Chart(ctx, {
-                    type: 'pie',
-                    data: {
-                        labels: ['Beginner', 'Intermediate', 'Advanced'],
-                        datasets: [{
-                            data: [
-                                combinedData.beginner,
-                                combinedData.intermediate,
-                                combinedData.advanced
-                            ],
-                            backgroundColor: [
-                                colors.beginner,
-                                colors.intermediate,
-                                colors.advanced
-                            ]
-                        }]
+        const distribution = @json($readingLevelDistribution ?? []);
+        const grades = ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'];
+        const independent = grades.map(g => distribution[g]?.['Independent'] || 0);
+        const instructional = grades.map(g => distribution[g]?.['Instructional'] || 0);
+        const frustration = grades.map(g => distribution[g]?.['Frustration'] || 0);
+        const readingData = {
+            labels: grades,
+            datasets: [
+                {
+                    label: 'Independent',
+                    data: independent,
+                    backgroundColor: '#4caf50',
+                    stack: 'Stack 0',
+                },
+                {
+                    label: 'Instructional',
+                    data: instructional,
+                    backgroundColor: '#ffb300',
+                    stack: 'Stack 0',
+                },
+                {
+                    label: 'Frustration',
+                    data: frustration,
+                    backgroundColor: '#e53935',
+                    stack: 'Stack 0',
+                }
+            ]
+        };
+        const readingConfig = {
+            type: 'bar',
+            data: readingData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom'
-                            }
+                    title: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        title: {
+                            display: true,
+                            text: 'Grade Level'
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Students'
                         }
                     }
-                });
-            });
-        }
-
-        // Initialize charts with real data
-        async function initializeCharts() {
-            const readingLevelData = await fetchReadingLevelData();
-            if (readingLevelData) {
-                createPieCharts(readingLevelData);
+                }
             }
-        }
-
-        // Call initialization function when page loads
-        document.addEventListener('DOMContentLoaded', initializeCharts);
+        };
+        new Chart(document.getElementById('readingLevelChart'), readingConfig);
     </script>
 </body>
 

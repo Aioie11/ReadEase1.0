@@ -35,7 +35,7 @@ class AdminController extends Controller
             ->map(function ($test) {
                 return (object)[
                     'id' => $test->id,
-                    'student_name' => $test->student->first_name . ' ' . $test->student->last_name,
+                    'student_name' => $test->student ? $test->student->first_name . ' ' . $test->student->last_name : 'Unknown Student',
                     'test_type' => 'English Test',
                     'score' => $test->score,
                     'created_at' => $test->created_at,
@@ -51,7 +51,7 @@ class AdminController extends Controller
             ->map(function ($test) {
                 return (object)[
                     'id' => $test->id,
-                    'student_name' => $test->student->first_name . ' ' . $test->student->last_name,
+                    'student_name' => $test->student ? $test->student->first_name . ' ' . $test->student->last_name : 'Unknown Student',
                     'test_type' => 'Tagalog Test',
                     'score' => $test->score,
                     'created_at' => $test->created_at,

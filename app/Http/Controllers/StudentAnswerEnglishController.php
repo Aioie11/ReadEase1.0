@@ -26,8 +26,11 @@ class StudentAnswerEnglishController extends Controller
         
         // Get correct answers from the database
         $correctAnswers = [];
+        $studentAnswers = [];
         foreach ($questions as $index => $question) {
-            $correctAnswers['c' . ($index + 1)] = $question->correct_answer;
+            $questionKey = 'c' . ($index + 1);
+            $correctAnswers[$questionKey] = $question->correct_answer;
+            $studentAnswers[$questionKey] = $request->input($questionKey);
         }
 
         // Validate input
@@ -41,7 +44,7 @@ class StudentAnswerEnglishController extends Controller
         $score = 0;
         $totalQuestions = count($correctAnswers);
         foreach ($correctAnswers as $key => $value) {
-            if ($request->$key == $value) {
+            if ($studentAnswers[$key] == $value) {
                 $score++;
             }
         }
@@ -53,27 +56,24 @@ class StudentAnswerEnglishController extends Controller
                 return redirect()->back()->with('error', 'You must be logged in to submit answers.');
             }
 
-            // Prepare answer data
-            $answerData = [
-                'student_id' => $user->userId, // Use userId instead of internal ID
+            // Save to database with JSON answers
+            StudentAnswerEnglish::create([
+                'student_id' => $user->userId,
+                'answers' => $studentAnswers,
                 'score' => $score,
-                'total_questions' => $totalQuestions
-            ];
-
-            // Add individual answers
-            foreach ($questions as $index => $question) {
-                $answerData['c' . ($index + 1)] = $request->input('c' . ($index + 1));
-            }
-
-            // Save to database
-            StudentAnswerEnglish::create($answerData);
-
-            // For regular form submissions, redirect with session message
-            return redirect()->route('student.reports')->with([
-                'success' => 'Answers submitted successfully! Your score: ' . $score . '/' . $totalQuestions,
-                'score' => $score,
-                'total_questions' => $totalQuestions
+                'reading_time' => $request->input('reading_time'),
+                'reading_speed' => $request->input('reading_speed'),
             ]);
+
+            // Store score and total questions in session for graphs
+            session([
+                'english_score' => $score,
+                'english_total_questions' => $totalQuestions,
+                'english_reading_time' => $request->input('reading_time'),
+                'english_reading_speed' => $request->input('reading_speed')
+            ]);
+
+            return redirect()->route('student.reports');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'There was an error submitting your answers. Please try again.');
         }

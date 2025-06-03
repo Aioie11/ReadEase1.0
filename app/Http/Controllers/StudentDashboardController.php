@@ -8,6 +8,7 @@ use App\Models\StudentAnswerEnglish;
 use App\Models\StudentAnswerTagalog;
 use App\Models\ReadingMaterial;
 use App\Models\ReadingQuestion;
+use Carbon\Carbon;
 
 class StudentDashboardController extends Controller
 {
@@ -62,19 +63,25 @@ class StudentDashboardController extends Controller
         $latestFilipinoScore = 0;
 
         // Calculate English percentage if available
-        if ($latestEnglishActivity && $totalEnglishQuestions > 0) {
+        if ($latestEnglishActivity) {
             $latestEnglishScore = $latestEnglishActivity->score;
-            $englishPercent = round(($latestEnglishScore / $totalEnglishQuestions) * 100);
-            $totalPercent += $englishPercent;
-            $completedCount++;
+            $totalEnglishQuestions = count($latestEnglishActivity->answers ?? []);
+            if ($totalEnglishQuestions > 0) {
+                $englishPercent = round(($latestEnglishScore / $totalEnglishQuestions) * 100);
+                $totalPercent += $englishPercent;
+                $completedCount++;
+            }
         }
 
         // Calculate Filipino percentage if available
-        if ($latestFilipinoActivity && $totalFilipinoQuestions > 0) {
+        if ($latestFilipinoActivity) {
             $latestFilipinoScore = $latestFilipinoActivity->score;
-            $filipinoPercent = round(($latestFilipinoScore / $totalFilipinoQuestions) * 100);
-            $totalPercent += $filipinoPercent;
-            $completedCount++;
+            $totalFilipinoQuestions = count($latestFilipinoActivity->answers ?? []);
+            if ($totalFilipinoQuestions > 0) {
+                $filipinoPercent = round(($latestFilipinoScore / $totalFilipinoQuestions) * 100);
+                $totalPercent += $filipinoPercent;
+                $completedCount++;
+            }
         }
 
         // Calculate average performance
@@ -88,6 +95,42 @@ class StudentDashboardController extends Controller
         // Reading activities are not yet connected, so they count as 0
         $completionPercentage = round(($completedActivities / 4) * 100);
 
+        // Calculate total time spent
+        $totalTimeSpent = 0;
+        $completedTests = 0;
+
+        // Calculate time for English answering test
+        if ($latestEnglishActivity) {
+            $startTime = Carbon::parse($latestEnglishActivity->start_time);
+            $endTime = Carbon::parse($latestEnglishActivity->end_time);
+            $totalTimeSpent += $endTime->diffInSeconds($startTime);
+            $completedTests++;
+        }
+
+        // Calculate time for Filipino answering test
+        if ($latestFilipinoActivity) {
+            $startTime = Carbon::parse($latestFilipinoActivity->start_time);
+            $endTime = Carbon::parse($latestFilipinoActivity->end_time);
+            $totalTimeSpent += $endTime->diffInSeconds($startTime);
+            $completedTests++;
+        }
+
+        // Calculate average time for both tests
+        $averageTimeSpent = $completedTests > 0 ? round($totalTimeSpent / $completedTests) : 0;
+
+        // Format time for display
+        $formatTime = function($seconds) {
+            if ($seconds < 60) {
+                return $seconds . ' seconds';
+            } else {
+                $minutes = floor($seconds / 60);
+                $remainingSeconds = $seconds % 60;
+                return $minutes . ' min ' . $remainingSeconds . ' sec';
+            }
+        };
+
+        $averageTimeFormatted = $formatTime($averageTimeSpent);
+
         return view('student.stud-dash', compact(
             'user',
             'latestEnglishActivity',
@@ -97,7 +140,8 @@ class StudentDashboardController extends Controller
             'latestFilipinoScore',
             'totalFilipinoQuestions',
             'averageScore',
-            'completionPercentage'
+            'completionPercentage',
+            'averageTimeFormatted'
         ));
     }
 
@@ -116,6 +160,65 @@ class StudentDashboardController extends Controller
             return redirect()->route('login')->with('error', 'Session expired. Please login again.');
         }
 
-        return view('student.stud-reports', compact('user'));
+        // Get latest English test result for this student
+        $latestEnglishActivity = StudentAnswerEnglish::where('student_id', $user->userId)
+            ->latest()
+            ->first();
+
+        // Get latest Filipino test result for this student
+        $latestFilipinoActivity = StudentAnswerTagalog::where('student_id', $user->userId)
+            ->latest()
+            ->first();
+
+        // Get all English answers for this student
+        $englishAnswers = StudentAnswerEnglish::where('student_id', $user->userId)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Get all Filipino answers for this student
+        $filipinoAnswers = StudentAnswerTagalog::where('student_id', $user->userId)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Set session variables for graphs
+        if ($latestEnglishActivity) {
+            session([
+                'english_reading_time' => $latestEnglishActivity->reading_time ?? 0,
+                'english_reading_speed' => $latestEnglishActivity->reading_speed ?? 0,
+                'english_score' => $latestEnglishActivity->score ?? 0,
+                'english_total_questions' => count($latestEnglishActivity->answers ?? [])
+            ]);
+        } else {
+            session([
+                'english_reading_time' => 0,
+                'english_reading_speed' => 0,
+                'english_score' => 0,
+                'english_total_questions' => 0
+            ]);
+        }
+
+        if ($latestFilipinoActivity) {
+            session([
+                'filipino_reading_time' => $latestFilipinoActivity->reading_time ?? 0,
+                'filipino_reading_speed' => $latestFilipinoActivity->reading_speed ?? 0,
+                'filipino_score' => $latestFilipinoActivity->score ?? 0,
+                'filipino_total_questions' => count($latestFilipinoActivity->answers ?? [])
+            ]);
+        } else {
+            session([
+                'filipino_reading_time' => 0,
+                'filipino_reading_speed' => 0,
+                'filipino_score' => 0,
+                'filipino_total_questions' => 0
+            ]);
+        }
+
+        return view('student.stud-reports', compact(
+            'user',
+            'latestEnglishActivity',
+            'latestFilipinoActivity',
+            'englishAnswers',
+            'filipinoAnswers'
+        ));
     }
 } 
