@@ -29,17 +29,20 @@
                         <div class="filter-label">View by</div>
                         <div class="filter-options">
                             <select class="custom-select" id="sectionFilter" onchange="updateGradeLevelData()">
-                                <option value="all">All Sections</option>
-                                <option value="narra">Narra</option>
-                                <option value="lawaan">Lawaan</option>
-                                <option value="dao">Dao</option>
-                                <option value="mahugani">Mahugani</option>
+                                <option value="all" {{ ($section ?? 'all') == 'all' ? 'selected' : '' }}>All Sections
+                                </option>
+                                <option value="narra" {{ ($section ?? '') == 'narra' ? 'selected' : '' }}>Narra</option>
+                                <option value="lawaan" {{ ($section ?? '') == 'lawaan' ? 'selected' : '' }}>Lawaan
+                                </option>
+                                <option value="dao" {{ ($section ?? '') == 'dao' ? 'selected' : '' }}>Dao</option>
+                                <option value="mahugani" {{ ($section ?? '') == 'mahugani' ? 'selected' : '' }}>Mahugani
+                                </option>
                             </select>
                             <select class="custom-select" id="gradeFilter" onchange="updateGradeLevelData()">
-                                <option value="7">Grade 7</option>
-                                <option value="8">Grade 8</option>
-                                <option value="9">Grade 9</option>
-                                <option value="10">Grade 10</option>
+                                <option value="7" {{ ($grade ?? '7') == '7' ? 'selected' : '' }}>Grade 7</option>
+                                <option value="8" {{ ($grade ?? '7') == '8' ? 'selected' : '' }}>Grade 8</option>
+                                <option value="9" {{ ($grade ?? '7') == '9' ? 'selected' : '' }}>Grade 9</option>
+                                <option value="10" {{ ($grade ?? '7') == '10' ? 'selected' : '' }}>Grade 10</option>
                             </select>
                         </div>
                     </div>
@@ -92,15 +95,17 @@
                         <div class="summary-stats" id="summaryStats">
                             <div class="stat-item">
                                 <span class="stat-label">Total Students:</span>
-                                <span class="stat-value" id="totalStudents">0</span>
+                                <span class="stat-value" id="totalStudents">{{ $total_students ?? 0 }}</span>
                             </div>
                             <div class="stat-item">
                                 <span class="stat-label">Avg Reading Speed:</span>
-                                <span class="stat-value" id="avgReadingSpeed">0 WPM</span>
+                                <span class="stat-value"
+                                    id="avgReadingSpeed">{{ $statistics['avg_reading_speed'] ?? 0 }} WPM</span>
                             </div>
                             <div class="stat-item">
                                 <span class="stat-label">Avg Comprehension:</span>
-                                <span class="stat-value" id="avgComprehension">0%</span>
+                                <span class="stat-value"
+                                    id="avgComprehension">{{ $statistics['avg_comprehension'] ?? 0 }}%</span>
                             </div>
                         </div>
                     </div>
@@ -117,75 +122,43 @@
                                 </tr>
                             </thead>
                             <tbody id="sectionTableBody">
-                                <!-- Data will be loaded dynamically -->
-                                <tr>
-                                    <td>
-                                        <div class="student-info">
-                                            <div class="student-avatar">N</div>
-                                            <div>Narra</div>
-                                        </div>
-                                    </td>
-                                    <td>25 students</td>
-                                    <td>175 WPM</td>
-                                    <td>82%</td>
-                                    <td>89%</td>
-                                    <td>
-                                        <div class="progress-bar">
-                                            <div class="progress green" style="width: 82%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="student-info">
-                                            <div class="student-avatar">L</div>
-                                            <div>Lawaan</div>
-                                        </div>
-                                    </td>
-                                    <td>23 students</td>
-                                    <td>168 WPM</td>
-                                    <td>78%</td>
-                                    <td>85%</td>
-                                    <td>
-                                        <div class="progress-bar">
-                                            <div class="progress yellow" style="width: 78%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="student-info">
-                                            <div class="student-avatar">D</div>
-                                            <div>Dao</div>
-                                        </div>
-                                    </td>
-                                    <td>24 students</td>
-                                    <td>162 WPM</td>
-                                    <td>75%</td>
-                                    <td>71%</td>
-                                    <td>
-                                        <div class="progress-bar">
-                                            <div class="progress yellow" style="width: 75%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="student-info">
-                                            <div class="student-avatar">M</div>
-                                            <div>Mahugani</div>
-                                        </div>
-                                    </td>
-                                    <td>22 students</td>
-                                    <td>158 WPM</td>
-                                    <td>127%</td>
-                                    <td>71%</td>
-                                    <td>
-                                        <div class="progress-bar">
-                                            <div class="progress red" style="width: 72%"></div>
-                                        </div>
-                                    </td>
-                                </tr>
+                                @if(isset($section_data) && count($section_data) > 0)
+                                    @foreach($section_data as $section)
+                                        @php
+                                            $sectionIcon = strtoupper(substr($section['section'], 0, 1));
+                                            $performanceClass = 'green';
+                                            if ($section['avg_comprehension'] < 80)
+                                                $performanceClass = 'yellow';
+                                            if ($section['avg_comprehension'] < 70)
+                                                $performanceClass = 'red';
+                                        @endphp
+                                        <tr>
+                                            <td>
+                                                <div class="student-info">
+                                                    <div class="student-avatar">{{ $sectionIcon }}</div>
+                                                    <div>{{ $section['section'] }}</div>
+                                                </div>
+                                            </td>
+                                            <td>{{ $section['student_count'] }} students</td>
+                                            <td>{{ $section['avg_reading_speed'] }} WPM</td>
+                                            <td>{{ $section['avg_comprehension'] }}%</td>
+                                            <td>{{ $section['avg_correct_reading'] }}%</td>
+                                            <td>
+                                                <div class="progress-bar">
+                                                    <div class="progress {{ $performanceClass }}"
+                                                        style="width: {{ $section['avg_comprehension'] }}%"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="6"
+                                            style="text-align: center; padding: 2rem; color: var(--text-light);">
+                                            No data available for the selected filters
+                                        </td>
+                                    </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -203,15 +176,15 @@
                         </div>
                         <div class="metric-content">
                             <div class="metric-label">Reading Level</div>
-                            <div class="metric-value">Instructional</div>
+                            <div class="metric-value">{{ $metric_cards['reading_level'] ?? 'No Data' }}</div>
                             <div class="metric-details"
                                 style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem;">
-                                Word Reading: 90-96% | Comprehension: 59-79%
+                                Overall class performance level
                             </div>
-                            <div class="metric-trend positive">
+                            <div class="metric-trend">
                                 <svg viewBox="0 0 24 24" fill="currentColor" style="width: 12px; height: 12px;">
                                     <path d="M7 14l5-5 5 5z" />
-                                </svg> 12%
+                                </svg> {{ $total_students ?? 0 }} students
                             </div>
                         </div>
                     </div>
@@ -225,11 +198,12 @@
                         </div>
                         <div class="metric-content">
                             <div class="metric-label">Reading Speed</div>
-                            <div class="metric-value">185 <span>WPM</span></div>
-                            <div class="metric-trend positive">
+                            <div class="metric-value">{{ $metric_cards['avg_reading_speed'] ?? 0 }} <span>WPM</span>
+                            </div>
+                            <div class="metric-trend">
                                 <svg viewBox="0 0 24 24" fill="currentColor" style="width: 12px; height: 12px;">
                                     <path d="M7 14l5-5 5 5z" />
-                                </svg> 8%
+                                </svg> Average
                             </div>
                         </div>
                     </div>
@@ -243,11 +217,11 @@
                         </div>
                         <div class="metric-content">
                             <div class="metric-label">Comprehension</div>
-                            <div class="metric-value">78<span>%</span></div>
-                            <div class="metric-trend positive">
+                            <div class="metric-value">{{ $metric_cards['avg_comprehension'] ?? 0 }}<span>%</span></div>
+                            <div class="metric-trend">
                                 <svg viewBox="0 0 24 24" fill="currentColor" style="width: 12px; height: 12px;">
                                     <path d="M7 14l5-5 5 5z" />
-                                </svg> 5%
+                                </svg> Average
                             </div>
                         </div>
                     </div>
@@ -260,16 +234,16 @@
                             </svg>
                         </div>
                         <div class="metric-content">
-                            <div class="metric-label">Reading Sessions</div>
-                            <div class="metric-value">16 <span>Total</span></div>
+                            <div class="metric-label">Total Students</div>
+                            <div class="metric-value">{{ $total_students ?? 0 }} <span>Students</span></div>
                             <div class="metric-details"
                                 style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem;">
-                                This 6-week period | Avg: 2.7 per week
+                                Active students with assessments
                             </div>
-                            <div class="metric-trend positive">
+                            <div class="metric-trend">
                                 <svg viewBox="0 0 24 24" fill="currentColor" style="width: 12px; height: 12px;">
                                     <path d="M7 14l5-5 5 5z" />
-                                </svg> 3 sessions
+                                </svg> Current grade
                             </div>
                         </div>
                     </div>
@@ -950,14 +924,24 @@
         gradient.addColorStop(0.5, 'rgba(0, 184, 169, 0.2)');
         gradient.addColorStop(1, 'rgba(0, 184, 169, 0.05)');
 
+        // Get chart data from backend
+        const gradeDistribution = @json($grade_distribution ?? []);
+        const readingLevelDistribution = @json($reading_level_distribution ?? []);
+
+        // Prepare chart data
+        const chartLabels = Object.keys(gradeDistribution);
+        const independentData = chartLabels.map(grade => gradeDistribution[grade]?.Independent || 0);
+        const instructionalData = chartLabels.map(grade => gradeDistribution[grade]?.Instructional || 0);
+        const frustrationData = chartLabels.map(grade => gradeDistribution[grade]?.Frustration || 0);
+
         window.mainChart = new Chart(mainCtx, {
             type: 'bar',
             data: {
-                labels: ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'],
+                labels: chartLabels.length > 0 ? chartLabels : ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'],
                 datasets: [
                     {
                         label: 'Independent Level (90-100%)',
-                        data: [3, 2, 3, 4], // Number of students at Independent level
+                        data: independentData.length > 0 ? independentData : [0, 0, 0, 0],
                         backgroundColor: '#00B8A9',
                         borderColor: '#00B8A9',
                         borderWidth: 2,
@@ -966,7 +950,7 @@
                     },
                     {
                         label: 'Instructional Level (70-89%)',
-                        data: [3, 2, 6, 4], // Number of students at Instructional level
+                        data: instructionalData.length > 0 ? instructionalData : [0, 0, 0, 0],
                         backgroundColor: '#F6AD55',
                         borderColor: '#F6AD55',
                         borderWidth: 2,
@@ -975,7 +959,7 @@
                     },
                     {
                         label: 'Frustration Level (Below 70%)',
-                        data: [5, 4, 2, 1], // Number of students at Frustration level
+                        data: frustrationData.length > 0 ? frustrationData : [0, 0, 0, 0],
                         backgroundColor: '#E53E3E',
                         borderColor: '#E53E3E',
                         borderWidth: 2,
@@ -1180,101 +1164,19 @@
         document.getElementById('avgReadingSpeed').textContent = 'Loading...';
         document.getElementById('avgComprehension').textContent = 'Loading...';
 
-        // Fetch grade level data
-        fetch(`/teacher/grade-level-data?grade=${grade}&section=${section}&language=${language}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    updateSummaryStats(data.data);
-                    updateSectionTable(data.data.section_data);
-                    updateChart(data.data);
-                } else {
-                    console.error('Error loading grade level data:', data.message);
-                    showErrorMessage('Error loading data: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching grade level data:', error);
-                showErrorMessage('Error loading data. Please try again.');
-            });
+        // Reload page with new parameters
+        const currentUrl = new URL(window.location);
+        currentUrl.searchParams.set('grade', grade);
+        currentUrl.searchParams.set('section', section);
+        currentUrl.searchParams.set('language', language);
+
+        window.location.href = currentUrl.toString();
     }
 
-    // Update summary statistics
-    function updateSummaryStats(data) {
-        document.getElementById('totalStudents').textContent = data.total_students || 0;
-        document.getElementById('avgReadingSpeed').textContent = (data.statistics.avg_reading_speed || 0) + ' WPM';
-        document.getElementById('avgComprehension').textContent = (data.statistics.avg_comprehension || 0) + '%';
-    }
-
-    // Update section table
-    function updateSectionTable(sectionData) {
-        const tableBody = document.getElementById('sectionTableBody');
-
-        if (!sectionData || sectionData.length === 0) {
-            tableBody.innerHTML = `
-                <tr>
-                    <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-light);">
-                        No data available for the selected filters
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-
-        tableBody.innerHTML = sectionData.map(section => {
-            const sectionIcon = section.section.charAt(0).toUpperCase();
-            const performanceClass = getPerformanceClass(section.avg_comprehension);
-
-            return `
-                <tr>
-                    <td>
-                        <div class="student-info">
-                            <div class="student-avatar">${sectionIcon}</div>
-                            <div>${section.section}</div>
-                        </div>
-                    </td>
-                    <td>${section.student_count} students</td>
-                    <td>${section.avg_reading_speed} WPM</td>
-                    <td>${section.avg_comprehension}%</td>
-                    <td>${section.avg_correct_reading}%</td>
-                    <td>
-                        <div class="progress-bar">
-                            <div class="progress ${performanceClass}" style="width: ${section.avg_comprehension}%"></div>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-    }
-
-    // Get performance class based on comprehension percentage
-    function getPerformanceClass(comprehension) {
-        if (comprehension >= 80) return 'green';
-        if (comprehension >= 70) return 'yellow';
-        return 'red';
-    }
-
-    // Update chart with new data
-    function updateChart(data) {
-        if (window.mainChart) {
-            // Update main chart data based on reading level distribution
-            const distribution = data.reading_level_distribution;
-            window.mainChart.data.datasets[0].data = [
-                distribution.Independent || 0,
-                distribution.Instructional || 0,
-                distribution.Frustration || 0
-            ];
-            window.mainChart.update();
-        }
-    }
-
-    // Show error message
-    function showErrorMessage(message) {
-        document.getElementById('totalStudents').textContent = 'Error';
-        document.getElementById('avgReadingSpeed').textContent = 'Error';
-        document.getElementById('avgComprehension').textContent = 'Error';
-
-        // You could also show a toast notification here
-        console.error(message);
-    }
+    // Initialize page with current data
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log('ViewReports page loaded with real data');
+        console.log('Total students:', {{ $total_students ?? 0 }});
+        console.log('Grade distribution:', @json($grade_distribution ?? []));
+    });
 </script>

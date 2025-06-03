@@ -20,7 +20,13 @@ class StudentAnswerEnglish extends Model
         'c6',
         'c7',
         'score',
+        'total_questions',
         'reading_time',
         'reading_speed',
     ];
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class, 'student_id', 'student_number');
+    }
 }

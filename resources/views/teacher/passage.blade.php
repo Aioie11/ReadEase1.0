@@ -1050,23 +1050,23 @@
             const feedbackId = 'feedback-' + Date.now();
 
             feedbackItem.innerHTML = `
-                                                                                                                                                                                                                                            <div class="feedback-meta">
-                                                                                                                                                                                                                                                <span>Date: ${feedback.date}</span>
-                                                                                                                                                                                                                                                <span>Reading Level: Grade 7</span>
-                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                            <div class="feedback-content">
-                                                                                                                                                                                                                                                <p><strong>Strengths:</strong> ${feedback.strengths}</p>
-                                                                                                                                                                                                                                                <p><strong>Areas for Improvement:</strong> ${feedback.areasForImprovement}</p>
-                                                                                                                                                                                                                                                <p><strong>Recommendations:</strong> ${feedback.recommendations}</p>
-                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                            <div class="feedback-meta">
+                                                                                                                                                                                                                                                                <span>Date: ${feedback.date}</span>
+                                                                                                                                                                                                                                                                <span>Reading Level: Grade 7</span>
+                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                            <div class="feedback-content">
+                                                                                                                                                                                                                                                                <p><strong>Strengths:</strong> ${feedback.strengths}</p>
+                                                                                                                                                                                                                                                                <p><strong>Areas for Improvement:</strong> ${feedback.areasForImprovement}</p>
+                                                                                                                                                                                                                                                                <p><strong>Recommendations:</strong> ${feedback.recommendations}</p>
+                                                                                                                                                                                                                                                            </div>
 
-                                                                                                                                                                                                                                            <div class="feedback-actions-history">
-                                                                                                                                                                                                                                                <button class="btn-send" onclick="sendFeedbackToStudent(this, '${feedbackId}')">
-                                                                                                                                                                                                                                                    <i class="fas fa-paper-plane"></i> Send to Student
-                                                                                                                                                                                                                                                </button>
-                                                                                                                                                                                                                                                <span class="send-status not-sent">Not Sent</span>
-                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                        `;
+                                                                                                                                                                                                                                                            <div class="feedback-actions-history">
+                                                                                                                                                                                                                                                                <button class="btn-send" onclick="sendFeedbackToStudent(this, '${feedbackId}')">
+                                                                                                                                                                                                                                                                    <i class="fas fa-paper-plane"></i> Send to Student
+                                                                                                                                                                                                                                                                </button>
+                                                                                                                                                                                                                                                                <span class="send-status not-sent">Not Sent</span>
+                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                        `;
 
             // Store feedback data for sending
             feedbackItem.dataset.feedbackData = JSON.stringify(feedback);
@@ -1165,8 +1165,8 @@
             const timeParts = timeText.split(':');
             const totalSeconds = (parseInt(timeParts[0]) * 3600) + (parseInt(timeParts[1]) * 60) + parseInt(timeParts[2]);
 
-            // Calculate reading speed (WPM)
-            const readingTimeMinutes = totalSeconds / 60;
+            // Calculate reading speed (WPM) - allow 0 minutes
+            const readingTimeMinutes = totalSeconds / 60; // Allow any time including 0
             const readingSpeed = readingTimeMinutes > 0 ? Math.round(totalWords / readingTimeMinutes) : 0;
 
             // Calculate comprehension percentage
@@ -1191,6 +1191,8 @@
                 alert('Please enter the total number of words!');
                 return;
             }
+
+            // Allow 0 seconds minimum - no minimum time validation needed
 
             // Prepare assessment data
             const assessmentData = {

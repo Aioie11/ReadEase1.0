@@ -12,39 +12,21 @@ class ReportsController extends Controller
     public function index(Request $request)
     {
         try {
-            $section = $request->input('section', 'Narra');
-            $language = $request->input('language', 'English');
+            $grade = $request->input('grade', '7');
+            $section = $request->input('section', 'all');
+            $language = $request->input('language', 'english');
 
-            // Get the latest reading assessment for each student in the section
-            $students = ReadingAssessment::where('section', $section)
-                ->where('language', $language)
-                ->orderBy('assessment_date', 'desc')
-                ->get()
-                ->groupBy('student_name')
-                ->map(function ($assessments) {
-                    $latest = $assessments->first();
-                    return [
-                        'student_name' => $latest->student_name,
-                        'reading_time' => $latest->reading_time,
-                        'miscues' => $latest->miscues,
-                        'total_words' => $latest->total_words,
-                        'reading_speed' => $latest->reading_speed,
-                        'section' => $latest->section,
-                        'language' => $latest->language,
-                        'assessment_date' => $latest->assessment_date,
-                        'comprehension' => 'N/A', // You can add comprehension data if available
-                        'word_label' => $this->getWordRecognitionLabel($latest->miscues, $latest->total_words)
-                    ];
-                })
-                ->values();
+            // Get comprehensive dashboard data
+            $dashboardData = $this->getDashboardData($grade, $section, $language);
 
-            Log::info('Fetched reading reports:', [
+            Log::info('Fetched reading reports dashboard:', [
+                'grade' => $grade,
                 'section' => $section,
                 'language' => $language,
-                'student_count' => $students->count()
+                'total_students' => $dashboardData['total_students']
             ]);
 
-            return view('teacher.viewreports', compact('students', 'section', 'language'));
+            return view('teacher.viewreports', $dashboardData);
         } catch (\Exception $e) {
             Log::error('Error fetching reading reports:', [
                 'error' => $e->getMessage(),
@@ -52,11 +34,144 @@ class ReportsController extends Controller
             ]);
 
             return view('teacher.viewreports', [
-                'students' => collect([]),
-                'section' => $section ?? 'Narra',
-                'language' => $language ?? 'English'
+                'total_students' => 0,
+                'statistics' => [
+                    'avg_reading_speed' => 0,
+                    'avg_comprehension' => 0,
+                    'avg_correct_reading' => 0
+                ],
+                'reading_level_distribution' => [
+                    'Independent' => 0,
+                    'Instructional' => 0,
+                    'Frustration' => 0
+                ],
+                'section_data' => [],
+                'grade_distribution' => [],
+                'metric_cards' => [
+                    'reading_level' => 'No Data',
+                    'avg_reading_speed' => 0,
+                    'avg_comprehension' => 0,
+                    'total_sessions' => 0
+                ],
+                'grade' => $grade ?? '7',
+                'section' => $section ?? 'all',
+                'language' => $language ?? 'english'
             ])->with('error', 'Error loading reading reports: ' . $e->getMessage());
         }
+    }
+
+    private function getDashboardData($grade, $section, $language)
+    {
+        // Build query for assessments
+        $query = ReadingAssessment::where('grade', $grade)
+            ->where('language', $language);
+
+        if ($section && $section !== 'all') {
+            $query->where('section', $section);
+        }
+
+        // Get latest assessment per student
+        $assessments = $query->orderBy('assessment_date', 'desc')
+            ->get()
+            ->groupBy('student_name')
+            ->map(function ($studentAssessments) {
+                return $studentAssessments->first();
+            });
+
+        // Calculate overall statistics
+        $totalStudents = $assessments->count();
+        $avgReadingSpeed = round($assessments->avg('reading_speed'), 1);
+        $avgComprehension = round($assessments->avg('comprehension'), 1);
+        $avgCorrectReading = round($assessments->avg('correct_reading'), 1);
+
+        // Calculate reading level distribution
+        $readingLevels = $assessments->groupBy(function ($assessment) {
+            $accuracy = $assessment->correct_reading;
+            if ($accuracy >= 90)
+                return 'Independent';
+            if ($accuracy >= 70)
+                return 'Instructional';
+            return 'Frustration';
+        });
+
+        $levelDistribution = [
+            'Independent' => $readingLevels->get('Independent', collect())->count(),
+            'Instructional' => $readingLevels->get('Instructional', collect())->count(),
+            'Frustration' => $readingLevels->get('Frustration', collect())->count()
+        ];
+
+        // Get section-wise data
+        $sectionData = $assessments->groupBy('section')->map(function ($sectionAssessments, $sectionName) {
+            return [
+                'section' => ucfirst($sectionName),
+                'student_count' => $sectionAssessments->count(),
+                'avg_reading_speed' => round($sectionAssessments->avg('reading_speed'), 1),
+                'avg_comprehension' => round($sectionAssessments->avg('comprehension'), 1),
+                'avg_correct_reading' => round($sectionAssessments->avg('correct_reading'), 1)
+            ];
+        })->values();
+
+        // Get grade distribution for chart
+        $gradeDistribution = [];
+        for ($g = 7; $g <= 10; $g++) {
+            $gradeAssessments = ReadingAssessment::where('grade', $g)
+                ->where('language', $language)
+                ->orderBy('assessment_date', 'desc')
+                ->get()
+                ->groupBy('student_name')
+                ->map(function ($studentAssessments) {
+                    return $studentAssessments->first();
+                });
+
+            $gradeLevels = $gradeAssessments->groupBy(function ($assessment) {
+                $accuracy = $assessment->correct_reading;
+                if ($accuracy >= 90)
+                    return 'Independent';
+                if ($accuracy >= 70)
+                    return 'Instructional';
+                return 'Frustration';
+            });
+
+            $gradeDistribution["Grade $g"] = [
+                'Independent' => $gradeLevels->get('Independent', collect())->count(),
+                'Instructional' => $gradeLevels->get('Instructional', collect())->count(),
+                'Frustration' => $gradeLevels->get('Frustration', collect())->count()
+            ];
+        }
+
+        // Determine overall reading level
+        $overallReadingLevel = 'Instructional';
+        if ($avgCorrectReading >= 90) {
+            $overallReadingLevel = 'Independent';
+        } elseif ($avgCorrectReading < 70) {
+            $overallReadingLevel = 'Frustration';
+        }
+
+        // Count total sessions
+        $totalSessions = ReadingAssessment::where('grade', $grade)
+            ->where('language', $language)
+            ->count();
+
+        return [
+            'total_students' => $totalStudents,
+            'statistics' => [
+                'avg_reading_speed' => $avgReadingSpeed,
+                'avg_comprehension' => $avgComprehension,
+                'avg_correct_reading' => $avgCorrectReading
+            ],
+            'reading_level_distribution' => $levelDistribution,
+            'section_data' => $sectionData,
+            'grade_distribution' => $gradeDistribution,
+            'metric_cards' => [
+                'reading_level' => $overallReadingLevel,
+                'avg_reading_speed' => $avgReadingSpeed,
+                'avg_comprehension' => $avgComprehension,
+                'total_sessions' => $totalSessions
+            ],
+            'grade' => $grade,
+            'section' => $section,
+            'language' => $language
+        ];
     }
 
     private function getWordRecognitionLabel($miscues, $totalWords)
@@ -79,7 +194,7 @@ class ReportsController extends Controller
             // Validate the incoming data
             $validatedData = $request->validate([
                 'student_name' => 'required|string|max:255',
-                'reading_time' => 'required|integer|min:0',
+                'reading_time' => 'required|integer|min:0', // Allow minimum 0 seconds
                 'miscues' => 'required|integer|min:0',
                 'total_words' => 'required|integer|min:1',
                 'correct_answers' => 'required|integer|min:0',
