@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Profile - Emma Brown</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script>tailwind.config = { theme: { extend: { colors: { primary: '#0369a1', secondary: '#6b7280' }, borderRadius: { 'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px' } } } }</script>
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#0369a1', secondary: '#6b7280' }, borderRadius: { 'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px' } } }</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
@@ -928,22 +928,24 @@
                     comprehensionCtx.appendChild(canvas);
 
                     // Use real data if available, otherwise use default values
-                    const correctAnswers = latestEnglish ? latestEnglish.correct_answers : 7;
-                    const totalQuestions = latestEnglish ? latestEnglish.total_questions : 10;
-                    const comprehensionScore = latestEnglish ? latestEnglish.comprehension : 70;
+                    const correctAnswers = latestEnglish ? latestEnglish.correct_answers : 0;
+                    const totalQuestions = latestEnglish ? latestEnglish.total_questions : 0;
 
                     window.chartInstances.comprehensionChart = new Chart(canvas.getContext('2d'), {
                         type: 'bar',
                         data: {
-                            labels: ['Correct Answers', 'Total Questions', 'Comprehension %'],
+                            labels: ['Correct Answers', 'Total Questions'],
                             datasets: [{
-                                data: [correctAnswers, totalQuestions, comprehensionScore],
+                                data: [correctAnswers, totalQuestions],
                                 backgroundColor: [
-                                    '#0F766E',
-                                    '#EA580C',
-                                    '#1E3A8A'
+                                    'rgba(75, 192, 192, 0.8)',
+                                    'rgba(255, 159, 64, 0.8)'
                                 ],
-                                borderWidth: 0,
+                                borderColor: [
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(255, 159, 64, 1)'
+                                ],
+                                borderWidth: 1,
                                 borderRadius: 4
                             }]
                         },
@@ -1025,22 +1027,24 @@
                     filipinoComprehensionCtx.appendChild(canvas);
 
                     // Use real data if available, otherwise use default values
-                    const filipinoCorrectAnswers = latestFilipino ? latestFilipino.correct_answers : 7;
-                    const filipinoTotalQuestions = latestFilipino ? latestFilipino.total_questions : 10;
-                    const filipinoComprehensionScore = latestFilipino ? latestFilipino.comprehension : 70;
+                    const filipinoCorrectAnswers = latestFilipino ? latestFilipino.correct_answers : 0;
+                    const filipinoTotalQuestions = latestFilipino ? latestFilipino.total_questions : 0;
 
                     window.chartInstances.filipinoComprehensionChart = new Chart(canvas.getContext('2d'), {
                         type: 'bar',
                         data: {
-                            labels: ['Tamang Sagot', 'Kabuuang Tanong', 'Pag-unawa %'],
+                            labels: ['Tamang Sagot', 'Kabuuang Tanong'],
                             datasets: [{
-                                data: [filipinoCorrectAnswers, filipinoTotalQuestions, filipinoComprehensionScore],
+                                data: [filipinoCorrectAnswers, filipinoTotalQuestions],
                                 backgroundColor: [
-                                    '#0F766E',
-                                    '#EA580C',
-                                    '#1E3A8A'
+                                    'rgba(75, 192, 192, 0.8)',
+                                    'rgba(255, 159, 64, 0.8)'
                                 ],
-                                borderWidth: 0,
+                                borderColor: [
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(255, 159, 64, 1)'
+                                ],
+                                borderWidth: 1,
                                 borderRadius: 4
                             }]
                         },
@@ -1133,11 +1137,10 @@
 
                 // Update Comprehension Chart
                 if (window.chartInstances.comprehensionChart) {
-                    const correctAnswers = latestEnglish ? latestEnglish.correct_answers : 7;
-                    const totalQuestions = latestEnglish ? latestEnglish.total_questions : 10;
-                    const comprehensionScore = latestEnglish ? latestEnglish.comprehension : 70;
+                    const correctAnswers = latestEnglish ? latestEnglish.correct_answers : 0;
+                    const totalQuestions = latestEnglish ? latestEnglish.total_questions : 0;
 
-                    window.chartInstances.comprehensionChart.data.datasets[0].data = [correctAnswers, totalQuestions, comprehensionScore];
+                    window.chartInstances.comprehensionChart.data.datasets[0].data = [correctAnswers, totalQuestions];
                     window.chartInstances.comprehensionChart.update();
                 }
 
@@ -1167,11 +1170,10 @@
 
                 // Update Filipino Comprehension Chart
                 if (window.chartInstances.filipinoComprehensionChart) {
-                    const filipinoCorrectAnswers = latestFilipino ? latestFilipino.correct_answers : 7;
-                    const filipinoTotalQuestions = latestFilipino ? latestFilipino.total_questions : 10;
-                    const filipinoComprehensionScore = latestFilipino ? latestFilipino.comprehension : 70;
+                    const filipinoCorrectAnswers = latestFilipino ? latestFilipino.correct_answers : 0;
+                    const filipinoTotalQuestions = latestFilipino ? latestFilipino.total_questions : 0;
 
-                    window.chartInstances.filipinoComprehensionChart.data.datasets[0].data = [filipinoCorrectAnswers, filipinoTotalQuestions, filipinoComprehensionScore];
+                    window.chartInstances.filipinoComprehensionChart.data.datasets[0].data = [filipinoCorrectAnswers, filipinoTotalQuestions];
                     window.chartInstances.filipinoComprehensionChart.update();
                 }
 
