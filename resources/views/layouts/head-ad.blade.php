@@ -9,29 +9,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/readease-colors.css') }}">
     <style>
         :root {
-            /* Primary - Main UI and Brand Elements */
-            --primary: #0E61BA;
-            --primary-light: #3b82f6;
-            --primary-dark: #0d4b94;
+            /* ReadEase Teal Theme - Consistent with Filipino Report */
+            --primary: #00B8A9;
+            --primary-light: #4DD0E1;
+            --primary-dark: #009688;
 
             /* Secondary - Navigation and Secondary UI */
-            --secondary: #6CC24A;
-            --secondary-light: #7ed56f;
+            --secondary: #F6AD55;
+            --secondary-light: #FFB74D;
 
             /* Accent - Buttons and Highlights */
-            --accent: #F9A602;
-            --accent-light: #fbbf24;
+            --accent: #00B8A9;
+            --accent-light: #4DD0E1;
 
             /* Neutral - Backgrounds */
-            --neutral: #F4F4F4;
-            --neutral-light: #ffffff;
-            --neutral-dark: #e5e5e5;
+            --neutral: #F7FAFC;
+            --neutral-light: #E2E8F0;
+            --neutral-dark: #2D3748;
 
             /* Text - Main Text and Headings */
-            --text: #232323;
-            --text-light: #4b5563;
+            --text: #1A202C;
+            --text-light: #718096;
+            --text-white: #FFFFFF;
+
+            /* Status Colors */
+            --success: #00B8A9;
+            --warning: #F6AD55;
+            --danger: #E53E3E;
+            --info: #4FC3F7;
 
             /* Gradients */
             --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
@@ -66,8 +74,10 @@
             position: fixed;
             width: 100%;
             top: 0;
-            z-index: 1000;
+            left: 0;
+            z-index: 1002;
             box-shadow: var(--shadow-md);
+            margin-left: 0;
         }
 
         .header-container {
@@ -444,7 +454,8 @@
             position: fixed;
             left: 0;
             top: 0;
-            height: 100vh;
+            margin-top: 70px; /* Push below header */
+            height: calc(100vh - 70px); /* Full height minus header */
             width: 280px;
             background: var(--primary);
             padding: 1.5rem;
@@ -591,15 +602,9 @@
 
         /* Adjust main content for sidebar */
         .main-content {
-            margin-left: 250px;
-            padding-top: 5rem;
+            margin-left: 280px; /* Same as sidebar width */
+            padding-top: 70px;  /* Same as header height */
             transition: var(--transition);
-        }
-
-        /* Adjust header for sidebar */
-        header {
-            margin-left: 250px;
-            width: calc(100% - 250px);
         }
 
         /* Responsive Design */
@@ -640,12 +645,9 @@
 </head>
 
 <body>
-        <aside class="sidebar">
+    <aside class="sidebar">
         <div class="sidebar-header">
-            <a class="sidebar-logo">
-                <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo">
-                <span>ReadEase</span>
-            </a>
+            <!-- Removed sidebar logo and title -->
         </div>
         <nav>
             <ul class="nav-menu">
@@ -680,7 +682,7 @@
                             User Management
                         </a>
                     </li>
-                    
+
                 </div>
             </ul>
         </nav>
@@ -705,6 +707,10 @@
                         <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
                     </svg>
                 </button>
+                <a class="logo" href="{{ route('admin.dashboard') }}" style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1rem;">
+                    <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo" style="height: 32px; width: 32px; object-fit: contain;">
+                    <span>ReadEase</span>
+                </a>
             </div>
             <div class="header-right">
                 <div class="user-info">

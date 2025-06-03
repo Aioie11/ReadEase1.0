@@ -205,7 +205,7 @@
             background: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .profile-header {
@@ -239,7 +239,7 @@
             background: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .overview-header {
@@ -298,7 +298,7 @@
             background: white;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
         }
 
@@ -348,7 +348,7 @@
             padding: 15px;
             border-radius: 8px;
             margin: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             height: 350px;
             position: relative;
         }
@@ -435,31 +435,7 @@
             box-shadow: 0 0 0 2px rgba(14, 97, 186, 0.1);
         }
 
-        .rating-group {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
 
-        .rating-stars {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .rating-stars i {
-            color: #ddd;
-            cursor: pointer;
-            font-size: 1.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .rating-stars i.active {
-            color: #F9A602;
-        }
-
-        .rating-stars i:hover {
-            transform: scale(1.1);
-        }
 
         .feedback-actions {
             display: flex;
@@ -528,16 +504,7 @@
             line-height: 1.5;
         }
 
-        .feedback-rating {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
 
-        .feedback-rating i {
-            color: #F9A602;
-        }
 
         .results-table {
             overflow-x: auto;
@@ -548,7 +515,8 @@
             border-collapse: collapse;
         }
 
-        th, td {
+        th,
+        td {
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #ddd;
@@ -586,7 +554,9 @@
         }
 
         @media (max-width: 768px) {
-            .overview-header, .results-header {
+
+            .overview-header,
+            .results-header {
                 flex-direction: column;
                 gap: 15px;
             }
@@ -608,6 +578,7 @@
             .charts-container {
                 flex-direction: column;
             }
+
             .reading-passage {
                 flex: 0 0 100%;
             }
@@ -872,189 +843,109 @@
             }
         });
 
-        // English Feedback Form Functionality
+        // English Feedback Form Functionality (Star rating removed)
         const englishFeedbackForm = document.getElementById('englishFeedbackForm');
-        const englishReadingRating = document.getElementById('englishReadingRating');
-        const englishRatingValue = document.getElementById('englishRatingValue');
-        let englishCurrentRating = 0;
 
-        // Star Rating Functionality - English
-        englishReadingRating.addEventListener('click', (e) => {
-            if (e.target.classList.contains('fa-star')) {
-                const rating = parseInt(e.target.dataset.rating);
-                englishCurrentRating = rating;
-                updateEnglishStars(rating);
-                englishRatingValue.textContent = `${rating}/5`;
-            }
-        });
+        // Form Submission - English
+        if (englishFeedbackForm) {
+            englishFeedbackForm.addEventListener('submit', (e) => {
+                e.preventDefault();
 
-        englishReadingRating.addEventListener('mouseover', (e) => {
-            if (e.target.classList.contains('fa-star')) {
-                const rating = parseInt(e.target.dataset.rating);
-                updateEnglishStars(rating);
-            }
-        });
+                const feedback = {
+                    strengths: document.getElementById('englishStrengths').value,
+                    areasForImprovement: document.getElementById('englishAreasForImprovement').value,
+                    recommendations: document.getElementById('englishRecommendations').value,
+                    date: new Date().toLocaleDateString()
+                };
 
-        englishReadingRating.addEventListener('mouseout', () => {
-            updateEnglishStars(englishCurrentRating);
-        });
+                // Here you would typically send this to your backend
+                console.log('English Feedback submitted:', feedback);
 
-        function updateEnglishStars(rating) {
-            const stars = englishReadingRating.querySelectorAll('i');
-            stars.forEach((star, index) => {
-                if (index < rating) {
-                    star.classList.add('active');
-                } else {
-                    star.classList.remove('active');
-                }
+                // Add to feedback history (for demo purposes)
+                addEnglishFeedbackToHistory(feedback);
+
+                // Reset form
+                resetEnglishFeedback();
             });
         }
 
-        // Form Submission - English
-        englishFeedbackForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const feedback = {
-                rating: englishCurrentRating,
-                strengths: document.getElementById('englishStrengths').value,
-                areasForImprovement: document.getElementById('englishAreasForImprovement').value,
-                recommendations: document.getElementById('englishRecommendations').value,
-                date: new Date().toLocaleDateString()
-            };
-
-            // Here you would typically send this to your backend
-            console.log('English Feedback submitted:', feedback);
-            
-            // Add to feedback history (for demo purposes)
-            addEnglishFeedbackToHistory(feedback);
-            
-            // Reset form
-            resetEnglishFeedback();
-        });
-
         function resetEnglishFeedback() {
-            englishFeedbackForm.reset();
-            englishCurrentRating = 0;
-            updateEnglishStars(0);
-            englishRatingValue.textContent = '0/5';
+            if (englishFeedbackForm) {
+                englishFeedbackForm.reset();
+            }
         }
 
         function addEnglishFeedbackToHistory(feedback) {
             const feedbackHistory = document.querySelector('#englishFeedbackForm').nextElementSibling;
             const feedbackItem = document.createElement('div');
             feedbackItem.className = 'feedback-item';
-            
+
             feedbackItem.innerHTML = `
-                <div class="feedback-meta">
-                    <span>Date: ${feedback.date}</span>
-                    <span>Reading Level: Grade 7</span>
-                </div>
-                <div class="feedback-content">
-                    <p><strong>Strengths:</strong> ${feedback.strengths}</p>
-                    <p><strong>Areas for Improvement:</strong> ${feedback.areasForImprovement}</p>
-                    <p><strong>Recommendations:</strong> ${feedback.recommendations}</p>
-                </div>
-                <div class="feedback-rating">
-                    ${Array(5).fill().map((_, i) => 
-                        `<i class="${i < feedback.rating ? 'fas' : 'far'} fa-star"></i>`
-                    ).join('')}
-                    <span>${feedback.rating}/5</span>
-                </div>
-            `;
-            
+                                                <div class="feedback-meta">
+                                                    <span>Date: ${feedback.date}</span>
+                                                    <span>Reading Level: Grade 7</span>
+                                                </div>
+                                                <div class="feedback-content">
+                                                    <p><strong>Strengths:</strong> ${feedback.strengths}</p>
+                                                    <p><strong>Areas for Improvement:</strong> ${feedback.areasForImprovement}</p>
+                                                    <p><strong>Recommendations:</strong> ${feedback.recommendations}</p>
+                                                </div>
+
+                                            `;
+
             feedbackHistory.insertBefore(feedbackItem, feedbackHistory.querySelector('.feedback-item'));
         }
 
-        // Filipino Feedback Form Functionality
+        // Filipino Feedback Form Functionality (Star rating removed)
         const filipinoFeedbackForm = document.getElementById('filipinoFeedbackForm');
-        const filipinoReadingRating = document.getElementById('filipinoReadingRating');
-        const filipinoRatingValue = document.getElementById('filipinoRatingValue');
-        let filipinoCurrentRating = 0;
 
-        // Star Rating Functionality - Filipino
-        filipinoReadingRating.addEventListener('click', (e) => {
-            if (e.target.classList.contains('fa-star')) {
-                const rating = parseInt(e.target.dataset.rating);
-                filipinoCurrentRating = rating;
-                updateFilipinoStars(rating);
-                filipinoRatingValue.textContent = `${rating}/5`;
-            }
-        });
+        // Form Submission - Filipino
+        if (filipinoFeedbackForm) {
+            filipinoFeedbackForm.addEventListener('submit', (e) => {
+                e.preventDefault();
 
-        filipinoReadingRating.addEventListener('mouseover', (e) => {
-            if (e.target.classList.contains('fa-star')) {
-                const rating = parseInt(e.target.dataset.rating);
-                updateFilipinoStars(rating);
-            }
-        });
+                const feedback = {
+                    strengths: document.getElementById('filipinoStrengths').value,
+                    areasForImprovement: document.getElementById('filipinoAreasForImprovement').value,
+                    recommendations: document.getElementById('filipinoRecommendations').value,
+                    date: new Date().toLocaleDateString()
+                };
 
-        filipinoReadingRating.addEventListener('mouseout', () => {
-            updateFilipinoStars(filipinoCurrentRating);
-        });
+                // Here you would typically send this to your backend
+                console.log('Filipino Feedback submitted:', feedback);
 
-        function updateFilipinoStars(rating) {
-            const stars = filipinoReadingRating.querySelectorAll('i');
-            stars.forEach((star, index) => {
-                if (index < rating) {
-                    star.classList.add('active');
-                } else {
-                    star.classList.remove('active');
-                }
+                // Add to feedback history (for demo purposes)
+                addFilipinoFeedbackToHistory(feedback);
+
+                // Reset form
+                resetFilipinoFeedback();
             });
         }
 
-        // Form Submission - Filipino
-        filipinoFeedbackForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const feedback = {
-                rating: filipinoCurrentRating,
-                strengths: document.getElementById('filipinoStrengths').value,
-                areasForImprovement: document.getElementById('filipinoAreasForImprovement').value,
-                recommendations: document.getElementById('filipinoRecommendations').value,
-                date: new Date().toLocaleDateString()
-            };
-
-            // Here you would typically send this to your backend
-            console.log('Filipino Feedback submitted:', feedback);
-            
-            // Add to feedback history (for demo purposes)
-            addFilipinoFeedbackToHistory(feedback);
-            
-            // Reset form
-            resetFilipinoFeedback();
-        });
-
         function resetFilipinoFeedback() {
-            filipinoFeedbackForm.reset();
-            filipinoCurrentRating = 0;
-            updateFilipinoStars(0);
-            filipinoRatingValue.textContent = '0/5';
+            if (filipinoFeedbackForm) {
+                filipinoFeedbackForm.reset();
+            }
         }
 
         function addFilipinoFeedbackToHistory(feedback) {
             const feedbackHistory = document.querySelector('#filipinoFeedbackForm').nextElementSibling;
             const feedbackItem = document.createElement('div');
             feedbackItem.className = 'feedback-item';
-            
+
             feedbackItem.innerHTML = `
-                <div class="feedback-meta">
-                    <span>Date: ${feedback.date}</span>
-                    <span>Reading Level: Grade 7</span>
-                </div>
-                <div class="feedback-content">
-                    <p><strong>Strengths:</strong> ${feedback.strengths}</p>
-                    <p><strong>Areas for Improvement:</strong> ${feedback.areasForImprovement}</p>
-                    <p><strong>Recommendations:</strong> ${feedback.recommendations}</p>
-                </div>
-                <div class="feedback-rating">
-                    ${Array(5).fill().map((_, i) => 
-                        `<i class="${i < feedback.rating ? 'fas' : 'far'} fa-star"></i>`
-                    ).join('')}
-                    <span>${feedback.rating}/5</span>
-                </div>
-            `;
-            
+                                                <div class="feedback-meta">
+                                                    <span>Date: ${feedback.date}</span>
+                                                    <span>Reading Level: Grade 7</span>
+                                                </div>
+                                                <div class="feedback-content">
+                                                    <p><strong>Strengths:</strong> ${feedback.strengths}</p>
+                                                    <p><strong>Areas for Improvement:</strong> ${feedback.areasForImprovement}</p>
+                                                    <p><strong>Recommendations:</strong> ${feedback.recommendations}</p>
+                                                </div>
+
+                                            `;
+
             feedbackHistory.insertBefore(feedbackItem, feedbackHistory.querySelector('.feedback-item'));
         }
     </script>

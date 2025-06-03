@@ -132,8 +132,9 @@
         .profile-card {
             background: white;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
         }
 
         .profile-header {
@@ -143,16 +144,17 @@
         }
 
         .profile-image {
-            width: 80px;
-            height: 80px;
-            border-radius: 10px;
+            width: 90px;
+            height: 90px;
             padding: 10px;
+
         }
 
         .profile-info h2 {
             margin: 0;
             color: #2c3e50;
             font-size: 1.8em;
+            font-weight: 700;
         }
 
         .profile-info p {
@@ -170,29 +172,36 @@
         .stat-card {
             background: white;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
             gap: 15px;
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
         }
 
         .stat-icon {
             width: 50px;
             height: 50px;
-            background: #f8f9fa;
-            border-radius: 10px;
+            background: #3498db;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5em;
-            color: #3498db;
+            color: white;
         }
 
         .stat-info h3 {
             margin: 0;
             font-size: 0.9em;
             color: #7f8c8d;
+            font-weight: 600;
         }
 
         .stat-number {
@@ -204,7 +213,7 @@
 
         .stat-label {
             font-size: 0.8em;
-            color: #95a5a6;
+            color: #7f8c8d;
         }
 
         .results-section {
@@ -221,6 +230,7 @@
             margin-bottom: 25px;
             padding-bottom: 15px;
             border-bottom: 2px solid #95a5a6;
+            font-weight: 700;
         }
 
         .activity-list {
@@ -235,7 +245,13 @@
             gap: 15px;
             padding: 15px;
             background: #f8f9fa;
-            border-radius: 8px;
+            border-radius: 12px;
+            transition: transform 0.2s;
+        }
+
+        .activity-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
         .activity-icon {
@@ -245,27 +261,22 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2em;
+            color: white;
         }
 
         .activity-icon.completed {
             background: #2ecc71;
-            color: white;
         }
 
         .activity-icon.in-progress {
             background: #f1c40f;
-            color: white;
-        }
-
-        .activity-details {
-            flex: 1;
         }
 
         .activity-details h4 {
             margin: 0;
             color: #2c3e50;
             font-size: 1.1em;
+            font-weight: 600;
         }
 
         .activity-details p {
@@ -275,7 +286,7 @@
 
         .activity-time {
             font-size: 0.8em;
-            color: #95a5a6;
+            color: #7f8c8d;
         }
 
         @media (max-width: 768px) {

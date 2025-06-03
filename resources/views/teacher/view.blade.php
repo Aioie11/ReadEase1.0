@@ -519,11 +519,16 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead>
                             <tr>
-                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Assessment Date</th>
-                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Language</th>
-                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Reading Speed</th>
-                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Comprehension</th>
-                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Correct Reading</th>
+                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Assessment
+                                    Date</th>
+                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Language
+                                </th>
+                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Reading
+                                    Speed</th>
+                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">
+                                    Comprehension</th>
+                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Correct
+                                    Reading</th>
                                 <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Status</th>
                             </tr>
                         </thead>
@@ -533,15 +538,17 @@
                                     <tr class="hover:bg-gray-50 transition-colors">
                                         <td class="py-4 px-4">
                                             <div class="flex items-center">
-                                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mr-3">
+                                                <div
+                                                    class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mr-3">
                                                     <i class="ri-calendar-line"></i>
                                                 </div>
                                                 <span>{{ $assessment->assessment_date->format('M d, Y') }}</span>
                                             </div>
                                         </td>
                                         <td class="py-4 px-4">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                                {{ $assessment->language == 'english' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                                                                                                                                                                        {{ $assessment->language == 'english' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
                                                 {{ ucfirst($assessment->language) }}
                                             </span>
                                         </td>
@@ -551,7 +558,8 @@
                                                     @php
                                                         $speedPercentage = min(100, ($assessment->reading_speed / 150) * 100);
                                                     @endphp
-                                                    <div class="bg-blue-500 h-2 rounded-full" style="width: {{ $speedPercentage }}%"></div>
+                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                        style="width: {{ $speedPercentage }}%"></div>
                                                 </div>
                                                 <span>{{ $assessment->reading_speed }} wpm</span>
                                             </div>
@@ -559,7 +567,8 @@
                                         <td class="py-4 px-4">
                                             <div class="flex items-center">
                                                 <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                                                    <div class="bg-green-500 h-2 rounded-full" style="width: {{ $assessment->comprehension }}%"></div>
+                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                        style="width: {{ $assessment->comprehension }}%"></div>
                                                 </div>
                                                 <span>{{ $assessment->comprehension }}%</span>
                                             </div>
@@ -567,7 +576,8 @@
                                         <td class="py-4 px-4">
                                             <div class="flex items-center">
                                                 <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                                                    <div class="bg-purple-500 h-2 rounded-full" style="width: {{ $assessment->correct_reading }}%"></div>
+                                                    <div class="bg-purple-500 h-2 rounded-full"
+                                                        style="width: {{ $assessment->correct_reading }}%"></div>
                                                 </div>
                                                 <span>{{ $assessment->correct_reading }}%</span>
                                             </div>
@@ -576,11 +586,12 @@
                                             @php
                                                 $overallScore = ($assessment->comprehension + $assessment->correct_reading) / 2;
                                             @endphp
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                                @if($overallScore >= 90) bg-green-100 text-green-800
-                                                @elseif($overallScore >= 80) bg-blue-100 text-blue-800
-                                                @elseif($overallScore >= 70) bg-yellow-100 text-yellow-800
-                                                @else bg-red-100 text-red-800 @endif">
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                                                                                                                                                                        @if($overallScore >= 90) bg-green-100 text-green-800
+                                                                                                                                                                                                        @elseif($overallScore >= 80) bg-blue-100 text-blue-800
+                                                                                                                                                                                                        @elseif($overallScore >= 70) bg-yellow-100 text-yellow-800
+                                                                                                                                                                                                        @else bg-red-100 text-red-800 @endif">
                                                 @if($overallScore >= 90) Excellent
                                                 @elseif($overallScore >= 80) Good
                                                 @elseif($overallScore >= 70) Fair
@@ -595,7 +606,8 @@
                                         <div class="flex flex-col items-center">
                                             <i class="ri-book-open-line text-4xl mb-2"></i>
                                             <p>No reading assessments found for this student.</p>
-                                            <p class="text-sm">Assessments will appear here after completing reading tests.</p>
+                                            <p class="text-sm">Assessments will appear here after completing reading tests.
+                                            </p>
                                         </div>
                                     </td>
                                 </tr>
@@ -822,6 +834,20 @@
 
         <script id="performance-chart-script">
             document.addEventListener('DOMContentLoaded', function () {
+                // Get student assessment data from backend
+                const studentData = @json(isset($student) ? $student->readingAssessments : []);
+
+                // Process assessment data for charts
+                const englishAssessments = studentData.filter(assessment => assessment.language === 'english');
+                const filipinoAssessments = studentData.filter(assessment => assessment.language === 'filipino');
+
+                // Get latest assessments for each language
+                const latestEnglish = englishAssessments.length > 0 ? englishAssessments[0] : null;
+                const latestFilipino = filipinoAssessments.length > 0 ? filipinoAssessments[0] : null;
+
+                // Store chart instances globally for updates
+                window.chartInstances = {};
+
                 // Chart.js configuration for uniform styling
                 const chartOptions = {
                     responsive: true,
@@ -861,7 +887,7 @@
                     }
                 };
 
-                // Reading Speed Chart
+                // Reading Speed Chart (English)
                 const speedCtx = document.getElementById('reading-speed-chart');
                 if (speedCtx) {
                     // Create canvas element
@@ -869,15 +895,21 @@
                     canvas.style.height = '200px';
                     speedCtx.appendChild(canvas);
 
-                    new Chart(canvas.getContext('2d'), {
+                    // Use real data if available, otherwise use default values
+                    const readingTimeMinutes = latestEnglish ? Math.round(latestEnglish.reading_time / 60) : 3;
+                    const totalWords = latestEnglish ? latestEnglish.total_words : 250;
+                    const readingSpeed = latestEnglish ? latestEnglish.reading_speed : 83;
+
+                    window.chartInstances.speedChart = new Chart(canvas.getContext('2d'), {
                         type: 'bar',
                         data: {
-                            labels: ['Reading Time', 'Total Words'],
+                            labels: ['Reading Time (min)', 'Total Words', 'Speed (WPM)'],
                             datasets: [{
-                                data: [3, 250],
+                                data: [readingTimeMinutes, totalWords, readingSpeed],
                                 backgroundColor: [
-                                    '#4fc3f7',
-                                    '#f56565'
+                                    '#1E3A8A',
+                                    '#EA580C',
+                                    '#0F766E'
                                 ],
                                 borderWidth: 0,
                                 borderRadius: 4
@@ -887,7 +919,7 @@
                     });
                 }
 
-                // Reading Comprehension Chart
+                // Reading Comprehension Chart (English)
                 const comprehensionCtx = document.getElementById('reading-comprehension-chart');
                 if (comprehensionCtx) {
                     // Create canvas element
@@ -895,15 +927,21 @@
                     canvas.style.height = '200px';
                     comprehensionCtx.appendChild(canvas);
 
-                    new Chart(canvas.getContext('2d'), {
+                    // Use real data if available, otherwise use default values
+                    const correctAnswers = latestEnglish ? latestEnglish.correct_answers : 7;
+                    const totalQuestions = latestEnglish ? latestEnglish.total_questions : 10;
+                    const comprehensionScore = latestEnglish ? latestEnglish.comprehension : 70;
+
+                    window.chartInstances.comprehensionChart = new Chart(canvas.getContext('2d'), {
                         type: 'bar',
                         data: {
-                            labels: ['Correct Answers', 'Total Questions'],
+                            labels: ['Correct Answers', 'Total Questions', 'Comprehension %'],
                             datasets: [{
-                                data: [7, 10],
+                                data: [correctAnswers, totalQuestions, comprehensionScore],
                                 backgroundColor: [
-                                    '#38b2ac',
-                                    '#ed8936'
+                                    '#0F766E',
+                                    '#EA580C',
+                                    '#1E3A8A'
                                 ],
                                 borderWidth: 0,
                                 borderRadius: 4
@@ -913,7 +951,7 @@
                     });
                 }
 
-                // Word Reading Chart
+                // Word Reading Chart (English)
                 const wordCtx = document.getElementById('word-reading-chart');
                 if (wordCtx) {
                     // Create canvas element
@@ -921,16 +959,22 @@
                     canvas.style.height = '200px';
                     wordCtx.appendChild(canvas);
 
-                    new Chart(canvas.getContext('2d'), {
+                    // Use real data if available, otherwise use default values
+                    const miscues = latestEnglish ? latestEnglish.miscues : 101;
+                    const totalWords = latestEnglish ? latestEnglish.total_words : 250;
+                    const correctWords = totalWords - miscues;
+                    const correctReadingPercent = latestEnglish ? latestEnglish.correct_reading : 60;
+
+                    window.chartInstances.wordChart = new Chart(canvas.getContext('2d'), {
                         type: 'bar',
                         data: {
-                            labels: ['Reading Miscues', 'Correct Reading', 'Total Words'],
+                            labels: ['Reading Miscues', 'Correct Words', 'Accuracy %'],
                             datasets: [{
-                                data: [101, 149, 250],
+                                data: [miscues, correctWords, correctReadingPercent],
                                 backgroundColor: [
-                                    '#f56565',
-                                    '#38b2ac',
-                                    '#ed8936'
+                                    '#DC2626',
+                                    '#0F766E',
+                                    '#1E3A8A'
                                 ],
                                 borderWidth: 0,
                                 borderRadius: 4
@@ -948,15 +992,21 @@
                     canvas.style.height = '200px';
                     filipinoSpeedCtx.appendChild(canvas);
 
-                    new Chart(canvas.getContext('2d'), {
+                    // Use real data if available, otherwise use default values
+                    const filipinoReadingTimeMinutes = latestFilipino ? Math.round(latestFilipino.reading_time / 60) : 3;
+                    const filipinoTotalWords = latestFilipino ? latestFilipino.total_words : 250;
+                    const filipinoReadingSpeed = latestFilipino ? latestFilipino.reading_speed : 83;
+
+                    window.chartInstances.filipinoSpeedChart = new Chart(canvas.getContext('2d'), {
                         type: 'bar',
                         data: {
-                            labels: ['Oras ng Pagbasa', 'Kabuuang Salita'],
+                            labels: ['Oras ng Pagbasa (min)', 'Kabuuang Salita', 'Bilis (WPM)'],
                             datasets: [{
-                                data: [3, 250],
+                                data: [filipinoReadingTimeMinutes, filipinoTotalWords, filipinoReadingSpeed],
                                 backgroundColor: [
-                                    '#4fc3f7',
-                                    '#f56565'
+                                    '#1E3A8A',
+                                    '#EA580C',
+                                    '#0F766E'
                                 ],
                                 borderWidth: 0,
                                 borderRadius: 4
@@ -974,15 +1024,21 @@
                     canvas.style.height = '200px';
                     filipinoComprehensionCtx.appendChild(canvas);
 
-                    new Chart(canvas.getContext('2d'), {
+                    // Use real data if available, otherwise use default values
+                    const filipinoCorrectAnswers = latestFilipino ? latestFilipino.correct_answers : 7;
+                    const filipinoTotalQuestions = latestFilipino ? latestFilipino.total_questions : 10;
+                    const filipinoComprehensionScore = latestFilipino ? latestFilipino.comprehension : 70;
+
+                    window.chartInstances.filipinoComprehensionChart = new Chart(canvas.getContext('2d'), {
                         type: 'bar',
                         data: {
-                            labels: ['Tamang Sagot', 'Kabuuang Tanong'],
+                            labels: ['Tamang Sagot', 'Kabuuang Tanong', 'Pag-unawa %'],
                             datasets: [{
-                                data: [7, 10],
+                                data: [filipinoCorrectAnswers, filipinoTotalQuestions, filipinoComprehensionScore],
                                 backgroundColor: [
-                                    '#38b2ac',
-                                    '#ed8936'
+                                    '#0F766E',
+                                    '#EA580C',
+                                    '#1E3A8A'
                                 ],
                                 borderWidth: 0,
                                 borderRadius: 4
@@ -1000,16 +1056,22 @@
                     canvas.style.height = '200px';
                     filipinoWordCtx.appendChild(canvas);
 
-                    new Chart(canvas.getContext('2d'), {
+                    // Use real data if available, otherwise use default values
+                    const filipinoMiscues = latestFilipino ? latestFilipino.miscues : 15;
+                    const filipinoTotalWords = latestFilipino ? latestFilipino.total_words : 250;
+                    const filipinoCorrectWords = filipinoTotalWords - filipinoMiscues;
+                    const filipinoCorrectReadingPercent = latestFilipino ? latestFilipino.correct_reading : 94;
+
+                    window.chartInstances.filipinoWordChart = new Chart(canvas.getContext('2d'), {
                         type: 'bar',
                         data: {
-                            labels: ['Mali sa Pagbasa', 'Tamang Pagbasa', 'Kabuuang Salita'],
+                            labels: ['Mali sa Pagbasa', 'Tamang Salita', 'Tumpak %'],
                             datasets: [{
-                                data: [15, 235, 250],
+                                data: [filipinoMiscues, filipinoCorrectWords, filipinoCorrectReadingPercent],
                                 backgroundColor: [
-                                    '#f56565',
-                                    '#38b2ac',
-                                    '#ed8936'
+                                    '#DC2626',
+                                    '#0F766E',
+                                    '#1E3A8A'
                                 ],
                                 borderWidth: 0,
                                 borderRadius: 4
@@ -1019,6 +1081,111 @@
                     });
                 }
             });
+
+            // Function to refresh charts with new data
+            window.refreshChartsWithNewData = function (studentId) {
+                if (!studentId) {
+                    console.log('No student ID provided for chart refresh');
+                    return;
+                }
+
+                console.log('Refreshing charts for student ID:', studentId);
+
+                // Fetch updated student assessment data
+                fetch(`/teacher/get-student-assessments/${studentId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log('Updated assessment data:', data.data);
+
+                            const assessments = data.data.assessments;
+                            const latestEnglish = assessments.english;
+                            const latestFilipino = assessments.filipino;
+
+                            // Update English charts
+                            updateEnglishCharts(latestEnglish);
+
+                            // Update Filipino charts
+                            updateFilipinoCharts(latestFilipino);
+
+                            console.log('Charts updated successfully with new data');
+
+                        } else {
+                            console.error('Error fetching updated data:', data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error refreshing charts:', error);
+                    });
+            };
+
+            // Function to update English charts
+            function updateEnglishCharts(latestEnglish) {
+                // Update Reading Speed Chart
+                if (window.chartInstances.speedChart) {
+                    const readingTimeMinutes = latestEnglish ? Math.round(latestEnglish.reading_time / 60) : 3;
+                    const totalWords = latestEnglish ? latestEnglish.total_words : 250;
+                    const readingSpeed = latestEnglish ? latestEnglish.reading_speed : 83;
+
+                    window.chartInstances.speedChart.data.datasets[0].data = [readingTimeMinutes, totalWords, readingSpeed];
+                    window.chartInstances.speedChart.update();
+                }
+
+                // Update Comprehension Chart
+                if (window.chartInstances.comprehensionChart) {
+                    const correctAnswers = latestEnglish ? latestEnglish.correct_answers : 7;
+                    const totalQuestions = latestEnglish ? latestEnglish.total_questions : 10;
+                    const comprehensionScore = latestEnglish ? latestEnglish.comprehension : 70;
+
+                    window.chartInstances.comprehensionChart.data.datasets[0].data = [correctAnswers, totalQuestions, comprehensionScore];
+                    window.chartInstances.comprehensionChart.update();
+                }
+
+                // Update Word Reading Chart
+                if (window.chartInstances.wordChart) {
+                    const miscues = latestEnglish ? latestEnglish.miscues : 101;
+                    const totalWords = latestEnglish ? latestEnglish.total_words : 250;
+                    const correctWords = totalWords - miscues;
+                    const correctReadingPercent = latestEnglish ? latestEnglish.correct_reading : 60;
+
+                    window.chartInstances.wordChart.data.datasets[0].data = [miscues, correctWords, correctReadingPercent];
+                    window.chartInstances.wordChart.update();
+                }
+            }
+
+            // Function to update Filipino charts
+            function updateFilipinoCharts(latestFilipino) {
+                // Update Filipino Reading Speed Chart
+                if (window.chartInstances.filipinoSpeedChart) {
+                    const filipinoReadingTimeMinutes = latestFilipino ? Math.round(latestFilipino.reading_time / 60) : 3;
+                    const filipinoTotalWords = latestFilipino ? latestFilipino.total_words : 250;
+                    const filipinoReadingSpeed = latestFilipino ? latestFilipino.reading_speed : 83;
+
+                    window.chartInstances.filipinoSpeedChart.data.datasets[0].data = [filipinoReadingTimeMinutes, filipinoTotalWords, filipinoReadingSpeed];
+                    window.chartInstances.filipinoSpeedChart.update();
+                }
+
+                // Update Filipino Comprehension Chart
+                if (window.chartInstances.filipinoComprehensionChart) {
+                    const filipinoCorrectAnswers = latestFilipino ? latestFilipino.correct_answers : 7;
+                    const filipinoTotalQuestions = latestFilipino ? latestFilipino.total_questions : 10;
+                    const filipinoComprehensionScore = latestFilipino ? latestFilipino.comprehension : 70;
+
+                    window.chartInstances.filipinoComprehensionChart.data.datasets[0].data = [filipinoCorrectAnswers, filipinoTotalQuestions, filipinoComprehensionScore];
+                    window.chartInstances.filipinoComprehensionChart.update();
+                }
+
+                // Update Filipino Word Reading Chart
+                if (window.chartInstances.filipinoWordChart) {
+                    const filipinoMiscues = latestFilipino ? latestFilipino.miscues : 15;
+                    const filipinoTotalWords = latestFilipino ? latestFilipino.total_words : 250;
+                    const filipinoCorrectWords = filipinoTotalWords - filipinoMiscues;
+                    const filipinoCorrectReadingPercent = latestFilipino ? latestFilipino.correct_reading : 94;
+
+                    window.chartInstances.filipinoWordChart.data.datasets[0].data = [filipinoMiscues, filipinoCorrectWords, filipinoCorrectReadingPercent];
+                    window.chartInstances.filipinoWordChart.update();
+                }
+            }
         </script>
 
         <script>

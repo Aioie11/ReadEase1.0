@@ -8,7 +8,7 @@
         <div class="dashboard">
             <div class="dashboard-header">
                 <h1>Filipino Question</h1>
-                <p>Read each passage and answer the questions.</p>
+                <p>Read each passage and answer the questions given.</p>
             </div>
 
             @if(session('success'))
@@ -89,8 +89,8 @@
             <h2>Confirm Submission</h2>
             <p>Are you sure you want to submit your answers? This action cannot be undone.</p>
             <div class="confirmation-buttons">
-                <button class="confirm-submit" onclick="submitForm()">Ipasa</button>
-                <button class="cancel-submit" onclick="closeConfirmationModal()">Kanselahin</button>
+                <button class="confirm-submit" onclick="submitForm()">Submit</button>
+                <button class="cancel-submit" onclick="closeConfirmationModal()">cancel</button>
             </div>
         </div>
     </div>

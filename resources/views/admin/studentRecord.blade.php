@@ -13,6 +13,7 @@
 
         /* Main Content */
         .main-content {
+            margin-top: 50px;
             margin-left: 280px;
             padding: 6rem 5% 2rem;
             transition: var(--transition);
@@ -261,9 +262,9 @@
         }
 
         .close {
-            position: sticky;
-            top: 0;
-            right: 1.5rem;
+            /* Remove sticky positioning so it scrolls with content */
+            position: static;
+            right: auto;
             float: right;
             font-size: 1.5rem;
             cursor: pointer;
@@ -272,10 +273,13 @@
             background: var(--neutral-light);
             padding: 0.5rem;
             z-index: 1;
+            border-radius: 0;
+            box-shadow: none;
         }
 
         .close:hover {
             color: var(--text);
+            background: var(--neutral);
         }
 
         .form-row {
@@ -673,7 +677,7 @@
         <!-- Add Student Modal -->
         <div id="addStudentModal" class="modal">
             <div class="modal-content">
-                <span class="close" onclick="closeModal()">&times;</span>
+                <span class="close" onclick="closeModal('addStudentModal')">&times;</span>
                 <h2>Add New Student</h2>
                 <form id="addStudentForm">
                     @csrf
@@ -732,7 +736,7 @@
                     </div>
                     <div class="button-group">
                         <button type="button" class="clear-btn" onclick="clearForm()">Clear Form</button>
-                        <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
+                        <button type="button" class="cancel-btn" onclick="closeModal('addStudentModal')">Cancel</button>
                         <button type="submit" class="save-btn">Save Student</button>
                     </div>
                 </form>
@@ -872,8 +876,11 @@
             updateSections(); // Initialize sections for the default grade level
         }
 
-        function closeModal() {
-            document.getElementById('addStudentModal').style.display = 'none';
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+            }
         }
 
         function clearForm() {
@@ -1028,7 +1035,7 @@
                     alert('Student added successfully!');
                     
                     // Close the modal and clear the form
-                    closeModal();
+                    closeModal('addStudentModal');
                     clearForm();
                 } else {
                     alert('Error: Could not find grade section');
