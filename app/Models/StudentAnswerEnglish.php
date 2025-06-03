@@ -14,6 +14,7 @@ class StudentAnswerEnglish extends Model
         'student_id',
         'answers',
         'score',
+        'total_questions',
         'reading_time',
         'start_time',
         'end_time'

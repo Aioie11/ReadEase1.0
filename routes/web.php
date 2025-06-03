@@ -140,6 +140,10 @@ Route::middleware(['web'])->group(function () {
         Route::get('/get-student-assessments/{studentId}', [ReportsController::class, 'getStudentAssessments'])->name('teacher.get-student-assessments');
         Route::get('/grade-level-data', [ReportsController::class, 'getGradeLevelData'])->name('teacher.grade-level-data');
 
+        // Comprehension Details Routes
+        Route::get('/get-student-comprehension/{studentId}/{language?}', [TeacherController::class, 'getStudentComprehensionDetails'])->name('teacher.get-student-comprehension');
+        Route::get('/get-students-by-section', [TeacherController::class, 'getStudentsBySection'])->name('teacher.get-students-by-section');
+
         // Add search route for teachers
         Route::get('/search-student', [StudentController::class, 'search'])->name('teacher.search-student');
 
