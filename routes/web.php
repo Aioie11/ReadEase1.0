@@ -235,3 +235,11 @@ Route::get('/teacher/studentManagement', function () {
     return view('teacher.studentManagement');
 });
 
+// Student Assessment Routes
+Route::post('/api/compute-student-assessment', [ReportsController::class, 'computeStudentAssessment']);
+Route::get('/api/student-assessment/{studentName}/{grade}/{section}/{language}', [ReportsController::class, 'getStudentAssessment']);
+
+// Reading Level Distribution Routes
+Route::get('/api/reading-level-distribution/english', [ReportsController::class, 'getEnglishReadingLevelDistribution']);
+Route::get('/api/reading-level-distribution/filipino', [ReportsController::class, 'getFilipinoReadingLevelDistribution']);
+

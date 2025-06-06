@@ -13,6 +13,7 @@
 
     /* Main Content */
     .main-content {
+        margin-top: 50px;
         margin-left: 280px;
         padding: 6rem 5% 2rem;
         transition: var(--transition);
@@ -20,29 +21,40 @@
 
     /* Dashboard Metrics */
     .dashboard-metrics {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: stretch;
+        gap: 2rem;
         margin-bottom: 2rem;
     }
 
     .metric-card {
         background: var(--neutral-light);
-        padding: 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        flex: 1 1 0;
+        min-width: 220px;
+        max-width: 320px;
+        height: 130px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
     }
 
     .metric-card h2 {
         color: var(--text-light);
-        font-size: 1rem;
+        font-size: 1.1rem;
         margin-bottom: 0.5rem;
+        font-weight: 600;
     }
 
     .metric-card p {
         color: var(--primary);
-        font-size: 2rem;
-        font-weight: 600;
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin: 0;
     }
 
     /* Chart Section */
@@ -110,19 +122,18 @@
     }
 
     /* Responsive Design */
-    @media (max-width: 768px) {
-        .main-content {
-            margin-left: 0;
-        }
-
+    @media (max-width: 900px) {
         .dashboard-metrics {
-            grid-template-columns: 1fr;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .metric-card {
+            max-width: 100%;
+            width: 100%;
         }
     }
 </style>
-</head>
 
-<body>
     <!-- Main Content -->
     <main class="main-content">
         <div class="dashboard-metrics">
@@ -140,23 +151,14 @@
             </div>
         </div>
 
-        <div class="chart-section">
-            <h2>Reading Level Distribution By Grade</h2>
-            <canvas id="readingLevelChart"></canvas>
-            <div style="margin-top:1rem; font-size:0.95rem;">
-                <strong>Legend:</strong>
-                <span style="color:#00B8A9; font-weight:bold;">■</span> Independent (Word Reading: 97-100,
-                Comprehension: 80-100)
-                <span style="color:#F6AD55; font-weight:bold; margin-left:1.5rem;">■</span> Instructional (Word Reading:
-                90-96, Comprehension: 59-79)
-                <span style="color:#E53E3E; font-weight:bold; margin-left:1.5rem;">■</span> Frustration (Word Reading:
-                89 BELOW, Comprehension: 58 BELOW)
-            </div>
-        </div>
+        <hr style="margin: 2rem 0; border: none; border-top: 2px solid #e0e0e0;">
 
         <div class="recent-tests">
-            <h2>Recent Tests</h2>
-            <table>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2>Recent Tests</h2>
+                <input type="text" id="searchInput" placeholder="Search by student or test type..." style="padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc; width: 250px;">
+            </div>
+            <table id="recentTestsTable">
                 <thead>
                     <tr>
                         <th>Student</th>
@@ -168,113 +170,102 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($recentTests as $test)
+                    @if(count($recentTests) > 0)
+                        @foreach($recentTests as $test)
+                            <tr>
+                                <td>{{ $test->student_name }}</td>
+                                <td>{{ $test->test_type }}</td>
+                                <td>{{ $test->score }}%</td>
+                                <td>{{ $test->created_at->format('F d, Y') }}</td>
+                                <td>{{ $test->status }}</td>
+                                <td>
+                                    <form action="{{ route('admin.delete.test', $test->id) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete this test?')">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @else
                         <tr>
-                            <td>{{ $test->student_name }}</td>
-                            <td>{{ $test->test_type }}</td>
-                            <td>{{ $test->score }}%</td>
-                            <td>{{ $test->created_at->format('F d, Y') }}</td>
-                            <td>{{ $test->status }}</td>
-                            <td>
-                                <form action="{{ route('admin.delete.test', $test->id) }}" method="POST"
-                                    style="display: inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="delete-btn"
-                                        onclick="return confirm('Are you sure you want to delete this test?')">Delete</button>
-                                </form>
-                            </td>
+                            <td colspan="6" style="text-align: center; color: #888;">No recent tests found.</td>
                         </tr>
-                    @endforeach
+                    @endif
                 </tbody>
             </table>
+            <!-- Pagination Controls -->
+            <div id="pagination" style="margin-top: 1rem; display: flex; justify-content: flex-end; gap: 0.5rem;"></div>
         </div>
     </main>
 
-    <!-- Include Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- JavaScript for Chart -->
     <script>
-        const distribution = @json($readingLevelDistribution ?? []);
-
-        // Filter for grades 7-10
-        const grades = ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'];
-        const independent = grades.map(g => distribution[g]?.['Independent'] || 0);
-        const instructional = grades.map(g => distribution[g]?.['Instructional'] || 0);
-        const frustration = grades.map(g => distribution[g]?.['Frustration'] || 0);
-
-        const readingData = {
-            labels: grades,
-            datasets: [
-                {
-                    label: 'Independent',
-                    data: independent,
-                    backgroundColor: '#00B8A9',
-                    borderColor: '#00B8A9',
-                    borderWidth: 2,
-                    borderRadius: 8,
-                    stack: 'Stack 0',
-                },
-                {
-                    label: 'Instructional',
-                    data: instructional,
-                    backgroundColor: '#F6AD55',
-                    borderColor: '#F6AD55',
-                    borderWidth: 2,
-                    borderRadius: 8,
-                    stack: 'Stack 0',
-                },
-                {
-                    label: 'Frustration',
-                    data: frustration,
-                    backgroundColor: '#E53E3E',
-                    borderColor: '#E53E3E',
-                    borderWidth: 2,
-                    borderRadius: 8,
-                    stack: 'Stack 0',
-                }
-            ]
-        };
-
-        // Config for Stacked Bar Chart
-        const readingConfig = {
-            type: 'bar',
-            data: readingData,
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                    },
-                    title: {
-                        display: false
-                    }
-                },
-                scales: {
-                    x: {
-                        stacked: true,
-                        title: {
-                            display: true,
-                            text: 'Grade Level'
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keyup', function() {
+                    let filter = this.value.toLowerCase();
+                    let rows = document.querySelectorAll('#recentTestsTable tbody tr');
+                    rows.forEach(row => {
+                        let student = row.children[0].textContent.toLowerCase();
+                        let testType = row.children[1].textContent.toLowerCase();
+                        if (student.includes(filter) || testType.includes(filter)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
                         }
-                    },
-                    y: {
-                        stacked: true,
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Number of Students'
-                        }
+                    });
+                    paginateTable();
+                });
+            }
+
+            // Pagination functionality
+            const rowsPerPage = 5;
+            let currentPage = 1;
+
+            function paginateTable() {
+                let rows = Array.from(document.querySelectorAll('#recentTestsTable tbody tr')).filter(row => row.style.display !== 'none');
+                let totalRows = rows.length;
+                let totalPages = Math.ceil(totalRows / rowsPerPage);
+                let pagination = document.getElementById('pagination');
+                if (pagination) {
+                    pagination.innerHTML = '';
+                    if (totalPages <= 1) return;
+                    for (let i = 1; i <= totalPages; i++) {
+                        let btn = document.createElement('button');
+                        btn.textContent = i;
+                        btn.style.padding = '0.5rem 1rem';
+                        btn.style.border = '1px solid #ccc';
+                        btn.style.background = i === currentPage ? '#00bcd4' : '#fff';
+                        btn.style.color = i === currentPage ? '#fff' : '#333';
+                        btn.style.cursor = 'pointer';
+                        btn.style.borderRadius = '4px';
+                        btn.onclick = function() {
+                            currentPage = i;
+                            showPage();
+                        };
+                        pagination.appendChild(btn);
                     }
+                    showPage();
                 }
             }
-        };
 
-        // Render Reading Level Chart
-        new Chart(document.getElementById('readingLevelChart'), readingConfig);
+            function showPage() {
+                let rows = Array.from(document.querySelectorAll('#recentTestsTable tbody tr')).filter(row => row.style.display !== 'none');
+                rows.forEach((row, idx) => {
+                    row.style.display = (idx >= (currentPage - 1) * rowsPerPage && idx < currentPage * rowsPerPage) ? '' : 'none';
+                });
+            }
+
+            // Initial pagination
+            paginateTable();
+        });
     </script>
-</body>
+<!-- </body>
+</html> -->
+@endsection
 
-</html>
+
+

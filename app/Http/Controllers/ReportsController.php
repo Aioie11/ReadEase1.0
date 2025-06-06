@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ReadingAssessment;
 use App\Models\Student;
+use App\Services\ReadingLevelService;
 use Illuminate\Support\Facades\Log;
 
 class ReportsController extends Controller
@@ -84,14 +85,13 @@ class ReportsController extends Controller
         $avgComprehension = round($assessments->avg('comprehension'), 1);
         $avgCorrectReading = round($assessments->avg('correct_reading'), 1);
 
-        // Calculate reading level distribution
-        $readingLevels = $assessments->groupBy(function ($assessment) {
-            $accuracy = $assessment->correct_reading;
-            if ($accuracy >= 90)
-                return 'Independent';
-            if ($accuracy >= 70)
-                return 'Instructional';
-            return 'Frustration';
+        // Calculate reading level distribution using the service
+        $readingLevelService = new ReadingLevelService();
+        $readingLevels = $assessments->groupBy(function ($assessment) use ($readingLevelService) {
+            return $readingLevelService->calculateReadingLevel(
+                $assessment->correct_reading,
+                $assessment->comprehension
+            );
         });
 
         $levelDistribution = [
@@ -123,13 +123,11 @@ class ReportsController extends Controller
                     return $studentAssessments->first();
                 });
 
-            $gradeLevels = $gradeAssessments->groupBy(function ($assessment) {
-                $accuracy = $assessment->correct_reading;
-                if ($accuracy >= 90)
-                    return 'Independent';
-                if ($accuracy >= 70)
-                    return 'Instructional';
-                return 'Frustration';
+            $gradeLevels = $gradeAssessments->groupBy(function ($assessment) use ($readingLevelService) {
+                return $readingLevelService->calculateReadingLevel(
+                    $assessment->correct_reading,
+                    $assessment->comprehension
+                );
             });
 
             $gradeDistribution["Grade $g"] = [
@@ -139,11 +137,11 @@ class ReportsController extends Controller
             ];
         }
 
-        // Determine overall reading level
+        // Determine overall reading level using correct criteria
         $overallReadingLevel = 'Instructional';
-        if ($avgCorrectReading >= 90) {
+        if ($avgCorrectReading >= 97 && $avgComprehension >= 80) {
             $overallReadingLevel = 'Independent';
-        } elseif ($avgCorrectReading < 70) {
+        } elseif ($avgCorrectReading < 90 || $avgComprehension < 59) {
             $overallReadingLevel = 'Frustration';
         }
 
@@ -449,6 +447,327 @@ class ReportsController extends Controller
                 'success' => false,
                 'message' => 'Error fetching student assessments: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function computeStudentAssessment(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'student_name' => 'required|string',
+                'grade' => 'required|string',
+                'section' => 'required|string',
+                'language' => 'required|string|in:english,filipino',
+                'reading_time' => 'required|numeric',
+                'miscues' => 'required|integer',
+                'total_words' => 'required|integer',
+                'correct_answers' => 'required|integer',
+                'total_questions' => 'required|integer'
+            ]);
+
+            // Calculate reading speed (words per minute)
+            $readingSpeed = round(($validated['total_words'] / ($validated['reading_time'] / 60)), 0);
+
+            // Calculate word reading accuracy
+            $wordReading = round(((($validated['total_words'] - $validated['miscues']) / $validated['total_words']) * 100), 0);
+
+            // Calculate comprehension percentage
+            $comprehension = round(($validated['correct_answers'] / $validated['total_questions']) * 100, 0);
+
+            // Determine reading level using the service for consistency
+            $readingLevelService = new ReadingLevelService();
+            $readingLevel = $readingLevelService->calculateReadingLevel($wordReading, $comprehension);
+
+            // Create or update the assessment record
+            $assessment = ReadingAssessment::updateOrCreate(
+                [
+                    'student_name' => $validated['student_name'],
+                    'grade' => $validated['grade'],
+                    'section' => $validated['section'],
+                    'language' => $validated['language']
+                ],
+                [
+                    'student_id' => $validated['student_id'],
+                    'reading_time' => $validated['reading_time'],
+                    'miscues' => $validated['miscues'],
+                    'total_words' => $validated['total_words'],
+                    'correct_answers' => $validated['correct_answers'],
+                    'total_questions' => $validated['total_questions'],
+                    'reading_speed' => $readingSpeed,
+                    'comprehension' => $comprehension,
+                    'correct_reading' => $wordReading,
+                    'overall_reading_level' => $readingLevel,
+                    'assessment_date' => now()
+                ]
+            );
+
+            // Get updated reading level distributions
+            $allAssessments = ReadingAssessment::select('reading_assessments.*', 'students.name as student_name')
+                ->join('students', 'reading_assessments.student_id', '=', 'students.id')
+                ->orderBy('reading_assessments.created_at', 'desc')
+                ->get();
+
+            $readingLevelDistributionEnglish = $this->calculateReadingLevelDistribution($allAssessments->where('language', 'english'));
+            $readingLevelDistributionFilipino = $this->calculateReadingLevelDistribution($allAssessments->where('language', 'filipino'));
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'assessment' => $assessment,
+                    'reading_level' => $readingLevel,
+                    'metrics' => [
+                        'reading_speed' => $readingSpeed,
+                        'word_reading' => $wordReading,
+                        'comprehension' => $comprehension
+                    ],
+                    'distributions' => [
+                        'english' => $readingLevelDistributionEnglish,
+                        'filipino' => $readingLevelDistributionFilipino
+                    ]
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error computing student assessment:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'input' => $request->all()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error computing assessment: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getStudentAssessment($studentName, $grade, $section, $language)
+    {
+        try {
+            $assessment = ReadingAssessment::where('student_name', $studentName)
+                ->where('grade', $grade)
+                ->where('section', $section)
+                ->where('language', $language)
+                ->latest()
+                ->first();
+
+            if (!$assessment) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No assessment found for this student'
+                ], 404);
+            }
+
+            // Determine reading level
+            $readingLevel = 'Frustration';
+            if ($assessment->correct_reading >= 97 && $assessment->comprehension >= 80) {
+                $readingLevel = 'Independent';
+            } elseif ($assessment->correct_reading >= 90 && $assessment->correct_reading <= 96 && 
+                     $assessment->comprehension >= 59 && $assessment->comprehension <= 79) {
+                $readingLevel = 'Instructional';
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'assessment' => $assessment,
+                    'reading_level' => $readingLevel,
+                    'metrics' => [
+                        'reading_speed' => $assessment->reading_speed,
+                        'word_reading' => $assessment->correct_reading,
+                        'comprehension' => $assessment->comprehension
+                    ]
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error fetching student assessment:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching assessment: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    private function calculateReadingLevelDistribution($assessments)
+    {
+        $distribution = [];
+        
+        // Group assessments by grade
+        $assessmentsByGrade = $assessments->groupBy('grade');
+        
+        // Calculate distribution for each grade
+        foreach ($assessmentsByGrade as $grade => $gradeAssessments) {
+            $gradeLevels = $gradeAssessments->groupBy(function ($assessment) {
+                // Get the scores
+                $wordReading = $assessment->correct_reading;
+                $comprehension = $assessment->comprehension;
+
+                // Determine reading level based on both word reading and comprehension
+                if ($wordReading >= 97 && $comprehension >= 80) {
+                    return 'Independent';
+                } elseif (($wordReading >= 90 && $wordReading <= 96) && ($comprehension >= 59 && $comprehension <= 79)) {
+                    return 'Instructional';
+                } else {
+                    return 'Frustration';
+                }
+            });
+
+            $distribution["Grade $grade"] = [
+                'Independent' => $gradeLevels->get('Independent', collect())->count(),
+                'Instructional' => $gradeLevels->get('Instructional', collect())->count(),
+                'Frustration' => $gradeLevels->get('Frustration', collect())->count()
+            ];
+        }
+
+        return $distribution;
+    }
+
+    public function getEnglishReadingLevelDistribution()
+    {
+        try {
+            $readingLevelService = new ReadingLevelService();
+
+            // Get distribution using the service
+            $distribution = $readingLevelService->getReadingLevelDistribution('english');
+
+            // Count total students
+            $assessments = ReadingAssessment::where('language', 'english')
+                ->orderBy('assessment_date', 'desc')
+                ->get()
+                ->groupBy('student_name')
+                ->map(function ($studentAssessments) {
+                    return $studentAssessments->first();
+                });
+
+            // Log the distribution for debugging
+            Log::info('English reading level distribution:', [
+                'total_students' => $assessments->count(),
+                'distribution' => $distribution
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'total_students' => $assessments->count(),
+                    'distribution' => $distribution
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error calculating English reading level distribution:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error calculating distribution: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getFilipinoReadingLevelDistribution()
+    {
+        try {
+            $readingLevelService = new ReadingLevelService();
+
+            // Get distribution using the service
+            $distribution = $readingLevelService->getReadingLevelDistribution('filipino');
+
+            // Count total students
+            $assessments = ReadingAssessment::where('language', 'filipino')
+                ->orderBy('assessment_date', 'desc')
+                ->get()
+                ->groupBy('student_name')
+                ->map(function ($studentAssessments) {
+                    return $studentAssessments->first();
+                });
+
+            // Log the distribution for debugging
+            Log::info('Filipino reading level distribution:', [
+                'total_students' => $assessments->count(),
+                'distribution' => $distribution
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'total_students' => $assessments->count(),
+                    'distribution' => $distribution
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error calculating Filipino reading level distribution:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error calculating distribution: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Calculate and store overall reading performance for a student
+     */
+    public function calculateOverallReadingPerformance($studentId, $language)
+    {
+        try {
+            // Get the latest assessment for the student in the specified language
+            $latestAssessment = ReadingAssessment::where('student_id', $studentId)
+                ->where('language', $language)
+                ->latest('assessment_date')
+                ->first();
+
+            if (!$latestAssessment) {
+                return null;
+            }
+
+            // Calculate overall reading level based on word reading and comprehension
+            $wordReading = $latestAssessment->correct_reading;
+            $comprehension = $latestAssessment->comprehension;
+            $readingSpeed = $latestAssessment->reading_speed;
+
+            // Determine reading level using the established criteria
+            $overallLevel = 'Frustration';
+            if ($wordReading >= 97 && $comprehension >= 80) {
+                $overallLevel = 'Independent';
+            } elseif ($wordReading >= 90 && $wordReading <= 96 && $comprehension >= 59 && $comprehension <= 79) {
+                $overallLevel = 'Instructional';
+            }
+
+            // Update the assessment record with the calculated overall level
+            $latestAssessment->update([
+                'overall_reading_level' => $overallLevel
+            ]);
+
+            return [
+                'student_id' => $studentId,
+                'language' => $language,
+                'overall_level' => $overallLevel,
+                'metrics' => [
+                    'reading_speed' => $readingSpeed,
+                    'word_reading' => $wordReading,
+                    'comprehension' => $comprehension
+                ],
+                'assessment_date' => $latestAssessment->assessment_date
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('Error calculating overall reading performance:', [
+                'student_id' => $studentId,
+                'language' => $language,
+                'error' => $e->getMessage()
+            ]);
+            return null;
         }
     }
 }

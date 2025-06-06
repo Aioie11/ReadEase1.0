@@ -205,62 +205,48 @@
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1002;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.35);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
             overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.2s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .modal-content {
-            position: relative;
-            background: var(--neutral-light);
-            margin: 2rem auto;
-            padding: 2rem;
-            width: 90%;
-            max-width: 600px;
-            border-radius: 12px;
-            box-shadow: var(--shadow-lg);
+            background: #e6eef7;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            padding: 2.5rem 2rem;
+            max-width: 650px;
+            width: 95vw;
             max-height: 90vh;
             overflow-y: auto;
-        }
-
-        .modal-content::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .modal-content::-webkit-scrollbar-track {
-            background: var(--neutral);
-            border-radius: 4px;
-        }
-
-        .modal-content::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 4px;
-        }
-
-        .modal-content::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-dark);
+            position: relative;
+            margin: 2rem 0;
         }
 
         .close-modal {
-            position: sticky;
-            top: 0;
+            position: absolute;
+            top: 1.2rem;
             right: 1.5rem;
-            float: right;
-            font-size: 1.5rem;
+            font-size: 2rem;
+            color: #888;
+            background: none;
+            border: none;
             cursor: pointer;
-            color: var(--text-light);
-            transition: var(--transition);
-            background: var(--neutral-light);
-            padding: 0.5rem;
-            z-index: 1;
-        }
-
-        .close-modal:hover {
-            color: var(--text);
+            z-index: 2;
         }
 
         .form-group {
@@ -379,18 +365,6 @@
             font-size: 1.1rem;
         }
     </style>
-</head>
-    <!-- Header -->
-    <header>
-        <div class="header-container">
-            <button class="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="user-info">
-                <span>Welcome, Admin</span>
-            </div>
-        </div>
-    </header>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -819,7 +793,7 @@
 
         // CRUD Operations
         function openCreateModal() {
-            document.getElementById('createModal').style.display = 'block';
+            document.getElementById('createModal').classList.add('active');
         }
 
         function openEditModal() {
@@ -933,7 +907,7 @@
                     addButton.textContent = 'Add Question';
                     addButton.onclick = addEditQuestion;
                     questionsContainer.appendChild(addButton);
-                    document.getElementById('editModal').style.display = 'block';
+                    document.getElementById('editModal').classList.add('active');
                 } else {
                     alert('No reading material found for the selected grade and subject');
                 }
@@ -945,7 +919,7 @@
         }
 
         function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
+            document.getElementById(modalId).classList.remove('active');
         }
 
         function addQuestion() {
@@ -1066,8 +1040,8 @@
 
         // Close modals when clicking outside
         window.onclick = function(event) {
-            if (event.target.className === 'modal') {
-                event.target.style.display = 'none';
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
             }
         }
 
@@ -1371,6 +1345,7 @@
             });
         }
     </script>
-</body>
+<!-- </body>
 
-</html>
+</html> -->
+@endsection

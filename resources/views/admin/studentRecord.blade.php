@@ -1278,6 +1278,6 @@
             header.classList.toggle('collapsed');
         }
     </script>
-</body>
-</html>
+<!-- </body>
+</html> -->
 @endsection

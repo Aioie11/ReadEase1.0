@@ -13,6 +13,8 @@ class CreateStudentAnswerTagalogTable extends Migration // Class name matches fi
             $table->string('student_id'); // or $table->unsignedBigInteger('student_id') for foreign key
             $table->json('answers'); // Store all answers in a JSON column
             $table->integer('score')->default(0);
+            $table->integer('reading_time')->nullable()->comment('Reading time in seconds');
+            $table->integer('reading_speed')->nullable()->comment('Reading speed in words per minute');
             $table->timestamps();
         });
     }
