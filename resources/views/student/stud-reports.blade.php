@@ -160,25 +160,35 @@
                                 <th>Question Category</th>
                                 <th>Date</th>
                                 <th>Score</th>
-                                <th>Time Spent</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Filipino Question</td>
-                                <td>2024-03-15</td>
-                                <td>90%</td>
-                                <td>25 mins</td>
-                                <td><span class="status completed">Completed</span></td>
-                            </tr>
-                            <tr>
-                                <td>English Question</td>
-                                <td>2024-03-10</td>
-                                <td>85%</td>
-                                <td>20 mins</td>
-                                <td><span class="status completed">Completed</span></td>
-                            </tr>
+                            @php
+                                $hasAnswers = ($englishAnswers->count() > 0) || ($filipinoAnswers->count() > 0);
+                            @endphp
+                            @if($hasAnswers)
+                                @foreach($filipinoAnswers as $answer)
+                                    <tr>
+                                        <td>Filipino Question</td>
+                                        <td>{{ $answer->created_at->format('Y-m-d') }}</td>
+                                        <td>{{ $answer->score }}%</td>
+                                        <td><span class="status completed">Completed</span></td>
+                                    </tr>
+                                @endforeach
+                                @foreach($englishAnswers as $answer)
+                                    <tr>
+                                        <td>English Question</td>
+                                        <td>{{ $answer->created_at->format('Y-m-d') }}</td>
+                                        <td>{{ $answer->score }}%</td>
+                                        <td><span class="status completed">Completed</span></td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="4" style="text-align:center;">No answers yet.</td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>

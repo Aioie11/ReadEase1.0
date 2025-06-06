@@ -230,7 +230,7 @@
             color: var(--text);
             text-decoration: none;
             transition: var(--transition);
-            border-bottom: 1px solid var(--neutral-dark);
+          
         }
 
         .dropdown-item:last-child {
