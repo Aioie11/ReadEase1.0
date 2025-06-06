@@ -23,7 +23,8 @@ class ReadingAssessment extends Model
         'section',
         'language',
         'grade',
-        'assessment_date'
+        'assessment_date',
+        'overall_reading_level'
     ];
 
     protected $casts = [
@@ -41,5 +42,45 @@ class ReadingAssessment extends Model
     public function student()
     {
         return $this->belongsTo(Student::class, 'student_id', 'student_number');
+    }
+
+    /**
+     * Calculate and return the overall reading level based on word reading and comprehension scores
+     */
+    public function calculateOverallReadingLevel()
+    {
+        $wordReading = $this->correct_reading;
+        $comprehension = $this->comprehension;
+
+        // Apply the established reading level criteria
+        if ($wordReading >= 97 && $comprehension >= 80) {
+            return 'Independent';
+        } elseif ($wordReading >= 90 && $wordReading <= 96 && $comprehension >= 59 && $comprehension <= 79) {
+            return 'Instructional';
+        } else {
+            return 'Frustration';
+        }
+    }
+
+    /**
+     * Update the overall reading level and save to database
+     */
+    public function updateOverallReadingLevel()
+    {
+        $this->overall_reading_level = $this->calculateOverallReadingLevel();
+        $this->save();
+        return $this->overall_reading_level;
+    }
+
+    /**
+     * Get the overall reading level (calculate if not stored)
+     */
+    public function getOverallReadingLevelAttribute($value)
+    {
+        // If overall_reading_level is not set, calculate it
+        if (is_null($value)) {
+            return $this->calculateOverallReadingLevel();
+        }
+        return $value;
     }
 }

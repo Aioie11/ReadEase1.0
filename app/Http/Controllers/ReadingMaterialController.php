@@ -179,13 +179,14 @@ class ReadingMaterialController extends Controller
         try {
             $readingMaterial = ReadingMaterial::findOrFail($id);
             
-            // Unpublish previous materials for this grade and subject
-            ReadingMaterial::where('grade_level', $readingMaterial->grade_level)
-                ->where('subject', $readingMaterial->subject)
-                ->where('id', '!=', $readingMaterial->id)
-                ->update(['is_published' => false]);
+            // Validate that the material has both grade level and subject
+            if (!$readingMaterial->grade_level || !$readingMaterial->subject) {
+                return response()->json([
+                    'message' => 'Reading material must have both grade level and subject before publishing'
+                ], 422);
+            }
 
-            // Publish the selected material
+            // Publish the selected material without unpublishing others
             $readingMaterial->is_published = true;
             $readingMaterial->published_at = now();
             $readingMaterial->save();
@@ -226,12 +227,11 @@ class ReadingMaterialController extends Controller
             // For students, use their grade level
             $grade = $user->role === 'teacher' ? $grade : $user->grade;
 
-            // Get the most recently published material for this grade and subject
+            // Get the published material for this specific grade and subject
             $readingMaterial = ReadingMaterial::with('questions')
                 ->where('grade_level', $grade)
                 ->where('subject', $subject)
                 ->where('is_published', true)
-                ->latest('published_at')
                 ->first();
 
             if (!$readingMaterial) {

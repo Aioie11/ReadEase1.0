@@ -410,8 +410,8 @@
                     <input type="text" id="profileMiddleInitial" name="middleInitial" maxlength="1" placeholder="Enter middle initial">
                 </div>
                 <div class="form-group">
-                    <label for="profileEmail">Email Address</label>
-                    <input type="email" id="profileEmail" name="email" required placeholder="Enter email address">
+                    <label for="profileEmail">Email Address (Optional)</label>
+                    <input type="email" id="profileEmail" name="email" placeholder="Enter email address">
                 </div>
                 <div class="form-group">
                     <label for="profilePassword">Password</label>
@@ -489,8 +489,8 @@
                     <input type="text" id="editProfileName" name="name" required placeholder="Enter full name">
                 </div>
                 <div class="form-group">
-                    <label for="editProfileEmail">Email Address</label>
-                    <input type="email" id="editProfileEmail" name="email" required placeholder="Enter email address">
+                    <label for="editProfileEmail">Email Address (Optional)</label>
+                    <input type="email" id="editProfileEmail" name="email" placeholder="Enter email address">
                 </div>
                 <div class="form-group">
                     <label for="editProfilePassword">New Password (optional)</label>
@@ -857,5 +857,6 @@
         sidebar.classList.toggle('active');
     });
     </script>
-</body>
-</html>
+<!-- </body>
+</html> -->
+@endsection
