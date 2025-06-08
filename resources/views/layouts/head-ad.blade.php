@@ -709,7 +709,7 @@
                         <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
                     </svg>
                 </button>
-                <a class="logo" href="{{ route('admin.dashboard') }}" style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1rem;">
+                <a class="logo" style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1rem;">
                     <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo" style="height: 32px; width: 32px; object-fit: contain;">
                     <span>ReadEase</span>
                 </a>

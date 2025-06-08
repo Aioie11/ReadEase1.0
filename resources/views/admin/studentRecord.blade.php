@@ -109,36 +109,79 @@
 
         /* Grade Section */
         .grade-section {
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             background: var(--neutral-light);
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-md);
             transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .grade-section:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
         }
 
         .grade-header {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: var(--neutral-light);
-            padding: 1.2rem 1.5rem;
+            padding: 1.5rem 2rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: space-between;
             transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grade-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .grade-header:hover::before {
+            left: 100%;
         }
 
         .grade-header:hover {
-            background: var(--primary-dark);
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+        }
+
+        .grade-header span {
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         .grade-header i {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             transition: transform 0.3s ease;
         }
 
         .grade-header.collapsed i {
             transform: rotate(-90deg);
+        }
+
+        .grade-stats {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .grade-stats .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
         }
 
         .student-list {
@@ -153,32 +196,61 @@
         .section-group {
             margin-bottom: 1rem;
             background: var(--neutral);
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
+            border-left: 4px solid var(--primary-light);
+            transition: var(--transition);
+        }
+
+        .section-group:hover {
+            border-left-color: var(--primary);
+            box-shadow: var(--shadow-sm);
         }
 
         .section-header {
-            background: var(--primary-light);
+            background: linear-gradient(135deg, var(--primary-light), #4a90e2);
             color: var(--neutral-light);
-            padding: 1rem 1.2rem;
-            font-weight: 500;
+            padding: 1.2rem 1.5rem;
+            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: space-between;
             transition: var(--transition);
+            position: relative;
         }
 
         .section-header:hover {
-            background: var(--primary-dark);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        }
+
+        .section-header span {
+            font-size: 1.1rem;
+            letter-spacing: 0.3px;
         }
 
         .section-header i {
             transition: transform 0.3s ease;
+            font-size: 1.1rem;
         }
 
         .section-header.collapsed i {
             transform: rotate(-90deg);
+        }
+
+        .section-stats {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .section-stats .stat-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
         }
 
         .section-content {
@@ -196,25 +268,187 @@
             width: 100%;
             border-collapse: collapse;
             background: var(--neutral-light);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
         }
 
         .student-table th {
-            background: var(--neutral);
+            background: linear-gradient(135deg, var(--neutral), var(--neutral-dark));
             color: var(--text);
-            font-weight: 500;
-            padding: 1rem;
+            font-weight: 600;
+            padding: 1.2rem 1rem;
             text-align: left;
-            border-bottom: 2px solid var(--neutral-dark);
+            border-bottom: 2px solid var(--primary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .student-table td {
             padding: 1rem;
             border-bottom: 1px solid var(--neutral-dark);
             color: var(--text);
+            vertical-align: middle;
         }
 
         .student-table tr:hover {
             background: var(--neutral);
+            transform: scale(1.01);
+            transition: var(--transition);
+        }
+
+        .student-table tr:nth-child(even) {
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .student-name-cell {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .student-number {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 0.2rem;
+        }
+
+        .gender-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .gender-badge.male {
+            background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+            color: #1976D2;
+            border: 1px solid #90CAF9;
+        }
+
+        .gender-badge.female {
+            background: linear-gradient(135deg, #FCE4EC, #F8BBD9);
+            color: #C2185B;
+            border: 1px solid #F48FB1;
+        }
+
+        /* Summary Statistics */
+        .summary-section {
+            margin-bottom: 2rem;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--neutral-light), #f8fafc);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--neutral-dark);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .stat-icon.male {
+            background: linear-gradient(135deg, #4FC3F7, #2196F3);
+        }
+
+        .stat-icon.female {
+            background: linear-gradient(135deg, #F48FB1, #E91E63);
+        }
+
+        .stat-content {
+            flex: 1;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 0.3rem;
+            font-weight: 500;
+        }
+
+        /* Masterlist Controls */
+        .masterlist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem 0;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .masterlist-controls {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .expand-all-btn, .collapse-all-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .expand-all-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .expand-all-btn:hover {
+            background: linear-gradient(135deg, #45a049, #3d8b40);
+            transform: translateY(-2px);
+        }
+
+        .collapse-all-btn {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+        }
+
+        .collapse-all-btn:hover {
+            background: linear-gradient(135deg, #f57c00, #ef6c00);
+            transform: translateY(-2px);
         }
 
         /* Modal Styles */
@@ -562,16 +796,94 @@
             </button>
         </section>
 
+        <!-- Summary Statistics Section -->
+        <section class="summary-section">
+            @php
+                $totalStudents = collect($students)->flatten()->count();
+                $totalMale = collect($students)->flatten()->where('gender', 'Male')->count();
+                $totalFemale = collect($students)->flatten()->where('gender', 'Female')->count();
+                $totalSections = collect($students)->map(function($gradeStudents) {
+                    return $gradeStudents->groupBy('section')->count();
+                })->sum();
+            @endphp
+
+            <div class="summary-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ $totalStudents }}</div>
+                        <div class="stat-label">Total Students</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon male">
+                        <i class="fas fa-mars"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ $totalMale }}</div>
+                        <div class="stat-label">Male Students</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon female">
+                        <i class="fas fa-venus"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ $totalFemale }}</div>
+                        <div class="stat-label">Female Students</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ $totalSections }}</div>
+                        <div class="stat-label">Total Sections</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Students Masterlist Section -->
         <section class="masterlist-section">
             <div class="masterlist-header">
                 <h2>STUDENTS MASTERLIST</h2>
+                <div class="masterlist-controls">
+                    <button class="expand-all-btn" onclick="expandAll()">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                        Expand All
+                    </button>
+                    <button class="collapse-all-btn" onclick="collapseAll()">
+                        <i class="fas fa-compress-arrows-alt"></i>
+                        Collapse All
+                    </button>
+                </div>
             </div>
 
             @foreach([7, 8, 9, 10] as $grade)
             <div class="grade-section">
                 <div class="grade-header collapsed" onclick="toggleGrade('grade{{ $grade }}')">
-                    <span>GRADE {{ $grade }}</span>
+                    <div>
+                        <span>GRADE {{ $grade }}</span>
+                        @if(isset($students[$grade]))
+                            <div class="grade-stats">
+                                <div class="stat-item">
+                                    <i class="fas fa-users"></i>
+                                    <span>{{ $students[$grade]->count() }} Students</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-layer-group"></i>
+                                    <span>{{ $students[$grade]->groupBy('section')->count() }} Sections</span>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div id="grade{{ $grade }}" class="student-list">
@@ -595,9 +907,31 @@
                         @endphp
 
                         @foreach($sections as $section)
+                            @php
+                                $sectionStudents = $students[$grade]->where('section', $section);
+                                $sectionCount = $sectionStudents->count();
+                            @endphp
                             <div class="section-group">
                                 <div class="section-header collapsed" onclick="toggleSection('section-{{ $grade }}-{{ $section }}')">
-                                    <span>{{ $section }}</span>
+                                    <div>
+                                        <span>{{ $section }}</span>
+                                        <div class="section-stats">
+                                            <div class="stat-badge">
+                                                <i class="fas fa-user-friends"></i>
+                                                {{ $sectionCount }} {{ $sectionCount == 1 ? 'Student' : 'Students' }}
+                                            </div>
+                                            @if($sectionCount > 0)
+                                                @php
+                                                    $maleCount = $sectionStudents->where('gender', 'Male')->count();
+                                                    $femaleCount = $sectionStudents->where('gender', 'Female')->count();
+                                                @endphp
+                                                <div class="stat-badge">
+                                                    <i class="fas fa-mars" style="color: #4FC3F7;"></i> {{ $maleCount }}
+                                                    <i class="fas fa-venus" style="color: #F48FB1; margin-left: 0.3rem;"></i> {{ $femaleCount }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
                                     <i class="fas fa-chevron-down"></i>
                                 </div>
                                 <div id="section-{{ $grade }}-{{ $section }}" class="section-content">
@@ -605,19 +939,27 @@
                                         <table class="student-table">
                                             <thead>
                                                 <tr>
-                                                    <th>Name</th>
+                                                    <th>#</th>
+                                                    <th>Student Information</th>
                                                     <th>Gender</th>
-                                                    <th>Grade Level</th>
                                                     <th>Test Status</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($students[$grade]->where('section', $section) as $student)
+                                                @foreach($students[$grade]->where('section', $section)->sortBy('last_name') as $index => $student)
                                                     <tr>
-                                                        <td>{{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}</td>
-                                                        <td>{{ $student->gender }}</td>
-                                                        <td>Grade {{ $student->grade_level }}</td>
+                                                        <td style="font-weight: 600; color: var(--primary);">{{ $index + 1 }}</td>
+                                                        <td class="student-name-cell">
+                                                            <div>{{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}</div>
+                                                            <div class="student-number">ID: {{ $student->student_number }}</div>
+                                                        </td>
+                                                        <td>
+                                                            <span class="gender-badge {{ strtolower($student->gender) }}">
+                                                                <i class="fas fa-{{ $student->gender == 'Male' ? 'mars' : 'venus' }}"></i>
+                                                                {{ $student->gender }}
+                                                            </span>
+                                                        </td>
                                                         <td>
                                                             @php
                                                                 $status = $student->test_status ?? 'not_started';
@@ -830,10 +1172,10 @@
         function toggleGrade(gradeId) {
             const gradeElement = document.getElementById(gradeId);
             const gradeHeader = gradeElement.previousElementSibling;
-            
+
             gradeElement.classList.toggle('active');
             gradeHeader.classList.toggle('collapsed');
-            
+
             // If closing the grade, also close all its sections
             if (!gradeElement.classList.contains('active')) {
                 const sections = gradeElement.querySelectorAll('.section-content');
@@ -841,6 +1183,53 @@
                 sections.forEach(section => section.classList.remove('active'));
                 headers.forEach(header => header.classList.add('collapsed'));
             }
+        }
+
+        // Toggle section
+        function toggleSection(sectionId) {
+            const sectionElement = document.getElementById(sectionId);
+            const sectionHeader = sectionElement.previousElementSibling;
+
+            sectionElement.classList.toggle('active');
+            sectionHeader.classList.toggle('collapsed');
+        }
+
+        // Expand all grades and sections
+        function expandAll() {
+            // Expand all grades
+            document.querySelectorAll('.student-list').forEach(gradeList => {
+                gradeList.classList.add('active');
+            });
+            document.querySelectorAll('.grade-header').forEach(header => {
+                header.classList.remove('collapsed');
+            });
+
+            // Expand all sections
+            document.querySelectorAll('.section-content').forEach(sectionContent => {
+                sectionContent.classList.add('active');
+            });
+            document.querySelectorAll('.section-header').forEach(header => {
+                header.classList.remove('collapsed');
+            });
+        }
+
+        // Collapse all grades and sections
+        function collapseAll() {
+            // Collapse all sections first
+            document.querySelectorAll('.section-content').forEach(sectionContent => {
+                sectionContent.classList.remove('active');
+            });
+            document.querySelectorAll('.section-header').forEach(header => {
+                header.classList.add('collapsed');
+            });
+
+            // Collapse all grades
+            document.querySelectorAll('.student-list').forEach(gradeList => {
+                gradeList.classList.remove('active');
+            });
+            document.querySelectorAll('.grade-header').forEach(header => {
+                header.classList.add('collapsed');
+            });
         }
 
         // Define sections for each grade level
@@ -912,12 +1301,12 @@
             
             // Search through all rows
             allRows.forEach(row => {
-                const nameCell = row.querySelector('td:first-child');
+                const nameCell = row.querySelector('.student-name-cell');
                 const fullName = nameCell.textContent.toLowerCase();
-                const [lastName, firstName] = fullName.split(',').map(part => part.trim());
-                
-                // Check if either last name or first name contains the search query
-                if (lastName.includes(query) || firstName.includes(query)) {
+                const studentNumber = row.querySelector('.student-number') ? row.querySelector('.student-number').textContent.toLowerCase() : '';
+
+                // Check if name or student number contains the search query
+                if (fullName.includes(query) || studentNumber.includes(query)) {
                     // Show the row
                     row.style.display = '';
                     

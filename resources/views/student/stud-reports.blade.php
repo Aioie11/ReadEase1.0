@@ -51,13 +51,80 @@
                     </div>
                 </div>
                 <div class="feedback-section">
-                    <h3>Teacher Feedback</h3>
-                    <div class="feedback-content">
-                        <div class="feedback-item">
-                            <div class="feedback-message">
-                                <p>No feedback yet</p>
-                            </div>
+                    <div class="feedback-header">
+                        <h3>
+                            <i class="fas fa-comments"></i>
+                            Teacher Feedback - English
+                        </h3>
+                        <div class="feedback-count">
+                            {{ $englishFeedback && $englishFeedback->count() > 0 ? $englishFeedback->count() : 0 }} feedback(s)
                         </div>
+                    </div>
+
+                    <div class="feedback-container">
+                        @if($englishFeedback && $englishFeedback->count() > 0)
+                            <div class="feedback-list">
+                                @foreach($englishFeedback as $index => $feedback)
+                                    <div class="feedback-card" data-feedback-id="{{ $index }}">
+                                        <div class="feedback-card-header">
+                                            <div class="feedback-info">
+                                                <span class="feedback-date">
+                                                    <i class="fas fa-calendar-alt"></i>
+                                                    {{ $feedback->sent_at->format('M d, Y') }}
+                                                </span>
+                                                <span class="feedback-teacher">
+                                                    <i class="fas fa-user-tie"></i>
+                                                    {{ $feedback->teacher_name }}
+                                                </span>
+                                            </div>
+                                            <button class="feedback-toggle" onclick="toggleFeedback({{ $index }})">
+                                                <i class="fas fa-chevron-down"></i>
+                                            </button>
+                                        </div>
+
+                                        <div class="feedback-content" id="feedback-content-{{ $index }}">
+                                            @if($feedback->strengths)
+                                                <div class="feedback-section-item strengths">
+                                                    <div class="feedback-label">
+                                                        <i class="fas fa-star"></i>
+                                                        <strong>Strengths</strong>
+                                                    </div>
+                                                    <p>{{ $feedback->strengths }}</p>
+                                                </div>
+                                            @endif
+
+                                            @if($feedback->areas_for_improvement)
+                                                <div class="feedback-section-item improvements">
+                                                    <div class="feedback-label">
+                                                        <i class="fas fa-arrow-up"></i>
+                                                        <strong>Areas for Improvement</strong>
+                                                    </div>
+                                                    <p>{{ $feedback->areas_for_improvement }}</p>
+                                                </div>
+                                            @endif
+
+                                            @if($feedback->recommendations)
+                                                <div class="feedback-section-item recommendations">
+                                                    <div class="feedback-label">
+                                                        <i class="fas fa-lightbulb"></i>
+                                                        <strong>Recommendations</strong>
+                                                    </div>
+                                                    <p>{{ $feedback->recommendations }}</p>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="no-feedback">
+                                <div class="no-feedback-icon">
+                                    <i class="fas fa-comment-slash"></i>
+                                </div>
+                                <p>No feedback yet</p>
+                                <small>Your teacher hasn't provided feedback for English assessments yet.</small>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -100,13 +167,80 @@
                     </div>
                 </div>
                 <div class="feedback-section">
-                    <h3>Teacher Feedback</h3>
-                    <div class="feedback-content">
-                        <div class="feedback-item">
-                            <div class="feedback-message">
-                                <p>No feedback yet</p>
-                            </div>
+                    <div class="feedback-header">
+                        <h3>
+                            <i class="fas fa-comments"></i>
+                            Teacher Feedback - Filipino
+                        </h3>
+                        <div class="feedback-count">
+                            {{ $filipinoFeedback && $filipinoFeedback->count() > 0 ? $filipinoFeedback->count() : 0 }} feedback(s)
                         </div>
+                    </div>
+
+                    <div class="feedback-container">
+                        @if($filipinoFeedback && $filipinoFeedback->count() > 0)
+                            <div class="feedback-list">
+                                @foreach($filipinoFeedback as $index => $feedback)
+                                    <div class="feedback-card" data-feedback-id="filipino-{{ $index }}">
+                                        <div class="feedback-card-header">
+                                            <div class="feedback-info">
+                                                <span class="feedback-date">
+                                                    <i class="fas fa-calendar-alt"></i>
+                                                    {{ $feedback->sent_at->format('M d, Y') }}
+                                                </span>
+                                                <span class="feedback-teacher">
+                                                    <i class="fas fa-user-tie"></i>
+                                                    {{ $feedback->teacher_name }}
+                                                </span>
+                                            </div>
+                                            <button class="feedback-toggle" onclick="toggleFeedback('filipino-{{ $index }}')">
+                                                <i class="fas fa-chevron-down"></i>
+                                            </button>
+                                        </div>
+
+                                        <div class="feedback-content" id="feedback-content-filipino-{{ $index }}">
+                                            @if($feedback->strengths)
+                                                <div class="feedback-section-item strengths">
+                                                    <div class="feedback-label">
+                                                        <i class="fas fa-star"></i>
+                                                        <strong>Strengths</strong>
+                                                    </div>
+                                                    <p>{{ $feedback->strengths }}</p>
+                                                </div>
+                                            @endif
+
+                                            @if($feedback->areas_for_improvement)
+                                                <div class="feedback-section-item improvements">
+                                                    <div class="feedback-label">
+                                                        <i class="fas fa-arrow-up"></i>
+                                                        <strong>Areas for Improvement</strong>
+                                                    </div>
+                                                    <p>{{ $feedback->areas_for_improvement }}</p>
+                                                </div>
+                                            @endif
+
+                                            @if($feedback->recommendations)
+                                                <div class="feedback-section-item recommendations">
+                                                    <div class="feedback-label">
+                                                        <i class="fas fa-lightbulb"></i>
+                                                        <strong>Recommendations</strong>
+                                                    </div>
+                                                    <p>{{ $feedback->recommendations }}</p>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="no-feedback">
+                                <div class="no-feedback-icon">
+                                    <i class="fas fa-comment-slash"></i>
+                                </div>
+                                <p>No feedback yet</p>
+                                <small>Your teacher hasn't provided feedback for Filipino assessments yet.</small>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -384,125 +518,210 @@
         }
 
         .feedback-section {
-            margin-top: 20px;
+            margin-top: 25px;
+            background: #fafbfc;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e1e5e9;
         }
 
         .feedback-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 3px solid #0E61BA;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e1e5e9;
         }
 
         .feedback-header h3 {
-            color: #0E61BA;
-            font-size: 1.2rem;
-            margin: 0;
-        }
-
-        .feedback-form {
-            display: grid;
-            gap: 1.5rem;
-        }
-
-        .feedback-group {
-            display: grid;
-            gap: 0.5rem;
-        }
-
-        .feedback-group label {
             color: #2c3e50;
-            font-weight: 500;
-        }
-
-        .feedback-input {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .feedback-input:focus {
-            outline: none;
-            border-color: #0E61BA;
-            box-shadow: 0 0 0 2px rgba(14, 97, 186, 0.1);
-        }
-
-
-
-        .feedback-actions {
+            font-size: 1.3rem;
+            margin: 0;
             display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            margin-top: 1rem;
+            align-items: center;
+            gap: 10px;
         }
 
-        .btn-save {
-            background: #0E61BA;
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
+        .feedback-header h3 i {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        .feedback-count {
+            background: #e9ecef;
+            color: #495057;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
             font-weight: 500;
-            cursor: pointer;
+        }
+
+        .feedback-container {
+            min-height: 120px;
+        }
+
+        .feedback-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .feedback-card {
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #dee2e6;
+            overflow: hidden;
             transition: all 0.3s ease;
         }
 
-        .btn-save:hover {
-            background: #3b82f6;
+        .feedback-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             transform: translateY(-2px);
         }
 
-        .btn-cancel {
-            background: #f5f6fa;
-            color: #2c3e50;
-            border: 1px solid #ddd;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 500;
+        .feedback-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
             cursor: pointer;
+        }
+
+        .feedback-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .feedback-date,
+        .feedback-teacher {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .feedback-date i,
+        .feedback-teacher i {
+            color: #adb5bd;
+            font-size: 0.8rem;
+        }
+
+        .feedback-toggle {
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
             transition: all 0.3s ease;
         }
 
-        .btn-cancel:hover {
-            background: #ddd;
+        .feedback-toggle:hover {
+            background: #e9ecef;
+            color: #495057;
         }
 
-        .feedback-history {
-            margin-top: 2rem;
+        .feedback-toggle i {
+            transition: transform 0.3s ease;
         }
 
-        .feedback-history h4 {
-            color: #2c3e50;
-            margin-bottom: 1rem;
-        }
-
-        .feedback-item {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .feedback-meta {
-            display: flex;
-            justify-content: space-between;
-            color: #7f8c8d;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
+        .feedback-toggle.active i {
+            transform: rotate(180deg);
         }
 
         .feedback-content {
-            color: #2c3e50;
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-content.active {
+            padding: 20px;
+            max-height: 500px;
+        }
+
+        .feedback-section-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #dee2e6;
+        }
+
+        .feedback-section-item.strengths {
+            background: #f8f9fa;
+            border-left-color: #28a745;
+        }
+
+        .feedback-section-item.improvements {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+
+        .feedback-section-item.recommendations {
+            background: #d1ecf1;
+            border-left-color: #17a2b8;
+        }
+
+        .feedback-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+
+        .feedback-label i {
+            font-size: 0.9rem;
+        }
+
+        .feedback-section-item.strengths .feedback-label i {
+            color: #28a745;
+        }
+
+        .feedback-section-item.improvements .feedback-label i {
+            color: #ffc107;
+        }
+
+        .feedback-section-item.recommendations .feedback-label i {
+            color: #17a2b8;
+        }
+
+        .feedback-section-item p {
+            margin: 0;
+            color: #495057;
             line-height: 1.5;
         }
+
+        .no-feedback {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+
+        .no-feedback-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .no-feedback p {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: #495057;
+        }
+
+        .no-feedback small {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+
 
 
 
@@ -840,6 +1059,38 @@
                         }
                     }
                 }
+            }
+        });
+
+        // Feedback Toggle Functionality
+        function toggleFeedback(feedbackId) {
+            const content = document.getElementById('feedback-content-' + feedbackId);
+            const toggle = document.querySelector(`[data-feedback-id="${feedbackId}"] .feedback-toggle`);
+
+            if (content && toggle) {
+                const isActive = content.classList.contains('active');
+
+                if (isActive) {
+                    content.classList.remove('active');
+                    toggle.classList.remove('active');
+                } else {
+                    content.classList.add('active');
+                    toggle.classList.add('active');
+                }
+            }
+        }
+
+        // Auto-expand first feedback item if available
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstEnglishFeedback = document.querySelector('[data-feedback-id="0"]');
+            const firstFilipinoFeedback = document.querySelector('[data-feedback-id="filipino-0"]');
+
+            if (firstEnglishFeedback) {
+                toggleFeedback('0');
+            }
+
+            if (firstFilipinoFeedback) {
+                toggleFeedback('filipino-0');
             }
         });
 

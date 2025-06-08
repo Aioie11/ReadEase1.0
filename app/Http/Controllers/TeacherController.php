@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Student;
 use App\Models\ReadingMaterial;
+use App\Models\TeacherFeedback;
 
 class TeacherController extends Controller
 {
@@ -191,6 +192,149 @@ class TeacherController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error retrieving comprehension details: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function saveFeedback(Request $request)
+    {
+        try {
+            $request->validate([
+                'student_id' => 'required|string',
+                'language' => 'required|string|in:english,filipino',
+                'grade_level' => 'required|integer',
+                'section' => 'required|string',
+                'strengths' => 'nullable|string',
+                'areas_for_improvement' => 'nullable|string',
+                'recommendations' => 'nullable|string'
+            ]);
+
+            $user = Auth::user();
+
+            // Verify student exists
+            $student = Student::where('student_number', $request->student_id)->first();
+            if (!$student) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Student not found with student number: ' . $request->student_id
+                ], 404);
+            }
+
+            // Check if feedback already exists for this student and language
+            $existingFeedback = TeacherFeedback::where('student_id', $request->student_id)
+                ->where('language', $request->language)
+                ->where('is_sent', false)
+                ->first();
+
+            if ($existingFeedback) {
+                // Update existing feedback
+                $existingFeedback->update([
+                    'teacher_id' => $user->id,
+                    'teacher_name' => $user->name,
+                    'grade_level' => $request->grade_level,
+                    'section' => $request->section,
+                    'strengths' => $request->strengths,
+                    'areas_for_improvement' => $request->areas_for_improvement,
+                    'recommendations' => $request->recommendations
+                ]);
+                $feedback = $existingFeedback;
+            } else {
+                // Create new feedback
+                $feedback = TeacherFeedback::create([
+                    'student_id' => $request->student_id,
+                    'teacher_id' => $user->id,
+                    'teacher_name' => $user->name,
+                    'language' => $request->language,
+                    'grade_level' => $request->grade_level,
+                    'section' => $request->section,
+                    'strengths' => $request->strengths,
+                    'areas_for_improvement' => $request->areas_for_improvement,
+                    'recommendations' => $request->recommendations
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Feedback saved successfully!',
+                'feedback' => $feedback
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error saving feedback: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function sendFeedback(Request $request)
+    {
+        try {
+            $request->validate([
+                'feedback_id' => 'required|integer',
+                'student_id' => 'required|string'
+            ]);
+
+            $feedback = TeacherFeedback::findOrFail($request->feedback_id);
+
+            // Verify the feedback belongs to the specified student
+            if ($feedback->student_id !== $request->student_id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Feedback does not belong to the specified student'
+                ], 400);
+            }
+
+            // Mark feedback as sent
+            $feedback->update([
+                'is_sent' => true,
+                'sent_at' => now()
+            ]);
+
+            // Get student information
+            $student = Student::where('student_number', $request->student_id)->first();
+
+            return response()->json([
+                'success' => true,
+                'message' => "Successfully sent feedback to {$student->first_name} {$student->last_name}",
+                'feedback' => $feedback
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error sending feedback: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getFeedbackHistory(Request $request)
+    {
+        try {
+            $studentId = $request->get('student_id');
+            $language = $request->get('language', 'english');
+
+            $query = TeacherFeedback::with('student');
+
+            if ($studentId) {
+                $query->where('student_id', $studentId);
+            }
+
+            if ($language) {
+                $query->where('language', $language);
+            }
+
+            $feedback = $query->orderBy('created_at', 'desc')->get();
+
+            return response()->json([
+                'success' => true,
+                'feedback' => $feedback
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error retrieving feedback history: ' . $e->getMessage()
             ], 500);
         }
     }
