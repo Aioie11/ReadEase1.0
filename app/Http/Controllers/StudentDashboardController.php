@@ -8,6 +8,7 @@ use App\Models\StudentAnswerEnglish;
 use App\Models\StudentAnswerTagalog;
 use App\Models\ReadingMaterial;
 use App\Models\ReadingQuestion;
+use App\Models\TeacherFeedback;
 use Carbon\Carbon;
 
 class StudentDashboardController extends Controller
@@ -180,6 +181,28 @@ class StudentDashboardController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+        // Get teacher feedback for this student
+        $englishFeedback = TeacherFeedback::where('student_id', $user->userId)
+            ->where('language', 'english')
+            ->where('is_sent', true)
+            ->orderBy('sent_at', 'desc')
+            ->get();
+
+        $filipinoFeedback = TeacherFeedback::where('student_id', $user->userId)
+            ->where('language', 'filipino')
+            ->where('is_sent', true)
+            ->orderBy('sent_at', 'desc')
+            ->get();
+
+        // Mark feedback as read when student views reports
+        TeacherFeedback::where('student_id', $user->userId)
+            ->where('is_sent', true)
+            ->where('is_read', false)
+            ->update([
+                'is_read' => true,
+                'read_at' => now()
+            ]);
+
         // Set session variables for graphs
         if ($latestEnglishActivity) {
             session([
@@ -218,7 +241,24 @@ class StudentDashboardController extends Controller
             'latestEnglishActivity',
             'latestFilipinoActivity',
             'englishAnswers',
-            'filipinoAnswers'
+            'filipinoAnswers',
+            'englishFeedback',
+            'filipinoFeedback'
         ));
     }
-} 
+
+    public function getUnreadFeedbackCount(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['count' => 0]);
+        }
+
+        $count = TeacherFeedback::where('student_id', $user->userId)
+            ->where('is_sent', true)
+            ->where('is_read', false)
+            ->count();
+
+        return response()->json(['count' => $count]);
+    }
+}

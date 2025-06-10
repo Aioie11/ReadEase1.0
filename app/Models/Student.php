@@ -37,4 +37,14 @@ class Student extends Model
     {
         return $this->hasMany(ReadingAssessment::class, 'student_id', 'student_number');
     }
+
+    public function teacherFeedback()
+    {
+        return $this->hasMany(TeacherFeedback::class, 'student_id', 'student_number');
+    }
+
+    public function getUnreadFeedbackCount()
+    {
+        return $this->teacherFeedback()->where('is_sent', true)->where('is_read', false)->count();
+    }
 }

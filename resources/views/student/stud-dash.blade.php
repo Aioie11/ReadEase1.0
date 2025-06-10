@@ -15,6 +15,13 @@
                             <h2>{{ $user->name }}</h2>
                             <p>Grade {{ $user->grade }}: Section {{ $user->section }}</p>
                         </div>
+                        <div class="notification-indicator" id="feedbackNotification" style="display: none;">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-count" id="notificationCount">0</span>
+                            <div class="notification-message">
+                                You have new feedback from your teacher!
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -292,6 +299,58 @@
             color: #7f8c8d;
         }
 
+        /* Notification Indicator Styles */
+        .notification-indicator {
+            position: relative;
+            background: #e74c3c;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+            font-weight: 500;
+            box-shadow: 0 2px 10px rgba(231, 76, 60, 0.3);
+            animation: pulse 2s infinite;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .notification-indicator:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .notification-count {
+            background: white;
+            color: #e74c3c;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .notification-message {
+            font-size: 0.85em;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 2px 10px rgba(231, 76, 60, 0.3);
+            }
+            50% {
+                box-shadow: 0 2px 20px rgba(231, 76, 60, 0.6);
+            }
+            100% {
+                box-shadow: 0 2px 10px rgba(231, 76, 60, 0.3);
+            }
+        }
+
         @media (max-width: 768px) {
             .profile-header {
                 flex-direction: column;
@@ -301,6 +360,51 @@
             .stats-overview {
                 grid-template-columns: 1fr;
             }
+
+            .notification-indicator {
+                margin-top: 15px;
+                align-self: center;
+            }
         }
     </style>
+
+    <script>
+        // Check for unread feedback notifications
+        function checkUnreadFeedback() {
+            fetch('/student/unread-feedback-count')
+                .then(response => response.json())
+                .then(data => {
+                    const notificationIndicator = document.getElementById('feedbackNotification');
+                    const notificationCount = document.getElementById('notificationCount');
+
+                    if (data.count > 0) {
+                        notificationIndicator.style.display = 'flex';
+                        notificationCount.textContent = data.count;
+                    } else {
+                        notificationIndicator.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking feedback notifications:', error);
+                });
+        }
+
+        // Add click handler to notification
+        document.addEventListener('DOMContentLoaded', function() {
+            const notificationIndicator = document.getElementById('feedbackNotification');
+
+            if (notificationIndicator) {
+                notificationIndicator.addEventListener('click', function() {
+                    // Redirect to reports page where feedback is displayed
+                    window.location.href = '/stud-reports';
+                });
+            }
+
+            // Check for unread feedback on page load
+            checkUnreadFeedback();
+
+            // Check for unread feedback every 30 seconds
+            setInterval(checkUnreadFeedback, 30000);
+        });
+    </script>
 @endsection

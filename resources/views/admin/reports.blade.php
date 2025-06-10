@@ -18,99 +18,56 @@
         margin-left: 280px;
         padding: 2rem 5% 2rem;
         transition: var(--transition);
+        max-width: calc(100% - 280px);
     }
 
-    /* Reports Content Styles */
-    .reports-content {
-        background: var(--neutral-light);
-        border-radius: 15px;
-        padding: 2rem;
-        box-shadow: var(--shadow-md);
-    }
-
+    /* Reports Header */
     .reports-header {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
         margin-bottom: 2rem;
-    }
-
-    .reports-header h1 {
-        color: var(--primary);
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .reports-header p {
-        color: var(--text-light);
-    }
-
-    /* Reports Grid */
-    .reports-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        margin-bottom: 3rem;
-    }
-
-    .report-card {
-        background: var(--neutral-light);
-        border-radius: 15px;
-        padding: 1.5rem;
-        box-shadow: var(--shadow-md);
-        transition: var(--transition);
-    }
-
-    .report-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-lg);
-    }
-
-    .report-card h3 {
-        color: var(--primary);
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .report-card h3 i {
-        color: var(--accent);
-    }
-
-    .report-stats {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         display: flex;
         justify-content: space-between;
-        margin-top: 1rem;
-        padding-top: 1rem;
-        border-top: 1px solid var(--neutral-dark);
+        align-items: center;
     }
 
-    .stat-item {
-        text-align: center;
+    .header-content h1 {
+        color: #2c3e50;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
     }
 
-    .stat-value {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: var(--primary);
+    .header-content h1 i {
+        color: #6c757d;
+        font-size: 1.8rem;
     }
 
-    .stat-label {
-        font-size: 0.9rem;
-        color: var(--text-light);
+    .header-content p {
+        color: #6c757d;
+        margin: 0;
+        font-size: 1rem;
     }
+
+
 
     /* Charts Section */
     .charts-section {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
         gap: 2rem;
-        margin-bottom: 3rem;
+        margin-bottom: 2rem;
     }
 
     .chart-container {
-        background: var(--neutral-light);
-        border-radius: 15px;
+        background: white;
+        border-radius: 12px;
         padding: 1.5rem;
-        box-shadow: var(--shadow-md);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
     .chart-header {
@@ -118,184 +75,194 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e9ecef;
     }
 
     .chart-header h3 {
-        color: var(--primary);
+        color: #2c3e50;
         font-size: 1.2rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
-    /* Recent Reports Table */
-    .recent-reports {
-        background: var(--neutral-light);
-        border-radius: 15px;
-        padding: 1.5rem;
-        box-shadow: var(--shadow-md);
+    .chart-header h3 i {
+        color: #6c757d;
+        font-size: 1rem;
     }
 
-    .reports-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
+
+
+    .chart-content {
+        position: relative;
     }
 
-    .reports-table th,
-    .reports-table td {
-        padding: 1rem;
-        text-align: left;
+    .chart-legend {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e9ecef;
     }
 
-    .reports-table th {
-        background: var(--neutral);
-        color: var(--text);
-        font-weight: 600;
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+        font-size: 0.85rem;
+        color: #495057;
     }
 
-    .reports-table tr {
-        transition: var(--transition);
+    .legend-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 2px;
     }
 
-    .reports-table tr:hover {
-        background: var(--neutral);
+    .legend-color.independent {
+        background-color: #4caf50;
     }
 
-    .status-badge {
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-size: 0.9rem;
-        font-weight: 500;
+    .legend-color.instructional {
+        background-color: #ffb300;
     }
 
-    .status-completed {
-        background: #e8f5e9;
-        color: #2e7d32;
+    .legend-color.frustration {
+        background-color: #e53935;
     }
 
-    .status-pending {
-        background: #fff3e0;
-        color: #ef6c00;
-    }
+
+
+
 
     /* Responsive Design */
     @media (max-width: 768px) {
-        .sidebar {
-            transform: translateX(-100%);
-        }
-
-        .sidebar.active {
-            transform: translateX(0);
-        }
-
         .main-content {
             margin-left: 0;
+            padding: 1rem;
         }
 
-        header {
-            margin-left: 0;
+        .reports-header {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .header-actions {
             width: 100%;
+            justify-content: center;
         }
 
-        .menu-toggle {
-            display: block;
+        .summary-cards {
+            grid-template-columns: 1fr;
+        }
+
+        .filter-controls {
+            grid-template-columns: 1fr;
         }
 
         .charts-section {
             grid-template-columns: 1fr;
         }
-    }
 
-    /* Menu Toggle Button */
-    .menu-toggle {
-        display: none;
-        background: none;
-        border: none;
-        color: var(--neutral-light);
-        font-size: 1.5rem;
-        cursor: pointer;
-        padding: 0.5rem;
-    }
-
-    /* Chart containers */
-    .pie-charts-container {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 30px;
-        margin-bottom: 30px;
-    }
-
-    .chart-wrapper {
-        background-color: var(--neutral-light);
-        padding: 50px;
-        border-radius: 8px;
-        box-shadow: var(--shadow-lg);
-        height: 380px;
-    }
-
-    .chart-title {
-        text-align: center;
-        margin-bottom: 15px;
-        font-weight: bold;
-        color: var(--primary);
-        font-size: 1.1rem;
-    }
-
-    .comparison-charts-container {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 30px;
-    }
-
-    .month-title {
-        text-align: center;
-        margin-bottom: 15px;
-        font-weight: bold;
-        color: var(--primary);
-        font-size: 1.1rem;
-    }
-
-    /* Responsive design */
-    @media (max-width: 768px) {
-        .pie-charts-container,
-        .comparison-charts-container {
+        .trends-content {
             grid-template-columns: 1fr;
+        }
+
+        .analysis-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .table-header {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .table-actions {
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .search-box input {
+            width: 200px;
+        }
+
+        .table-pagination {
+            flex-direction: column;
+            gap: 1rem;
         }
     }
 
-    .chart-section {
-        background: var(--neutral-light);
-        padding: 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin-bottom: 2.5rem;
-    }
 
-    .chart-section h2 {
-        color: var(--text);
-        font-size: 1.2rem;
-        margin-bottom: 1rem;
-    }
 </style>
 
 <!-- Main Content -->
 <main class="main-content">
-    <div class="chart-section">
-        <h2>English Reading Level Distribution By Grade</h2>
-        <canvas id="readingLevelChartEnglish"></canvas>
-        <div style="margin-top:1rem; font-size:0.95rem;">
-            <strong>Legend:</strong>
-            <span style="color:#4caf50; font-weight:bold;">■</span> Independent (Word Reading: 97-100, Comprehension: 80-100)
-            <span style="color:#ffb300; font-weight:bold; margin-left:1.5rem;">■</span> Instructional (Word Reading: 90-96, Comprehension: 59-79)
-            <span style="color:#e53935; font-weight:bold; margin-left:1.5rem;">■</span> Frustration (Word Reading: 89 BELOW, Comprehension: 58 BELOW)
+    <!-- Reports Header -->
+    <div class="reports-header">
+        <div class="header-content">
+            <h1>
+                <i class="fas fa-chart-line"></i>
+                Reading Level Distribution Reports
+            </h1>
+            <p>Analysis of student reading levels by grade and language</p>
         </div>
     </div>
-    <div class="chart-section">
-        <h2>Filipino Reading Level Distribution By Grade</h2>
-        <canvas id="readingLevelChartFilipino"></canvas>
-        <div style="margin-top:1rem; font-size:0.95rem;">
-            <strong>Legend:</strong>
-            <span style="color:#4caf50; font-weight:bold;">■</span> Independent (Word Reading: 97-100, Comprehension: 80-100)
-            <span style="color:#ffb300; font-weight:bold; margin-left:1.5rem;">■</span> Instructional (Word Reading: 90-96, Comprehension: 59-79)
-            <span style="color:#e53935; font-weight:bold; margin-left:1.5rem;">■</span> Frustration (Word Reading: 89 BELOW, Comprehension: 58 BELOW)
+
+    <!-- Charts Section -->
+    <div class="charts-section">
+        <!-- Reading Level Distribution Charts -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3>
+                    <i class="fas fa-chart-bar"></i>
+                    English Reading Level Distribution By Grade
+                </h3>
+            </div>
+            <div class="chart-content">
+                <canvas id="readingLevelChartEnglish"></canvas>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <span class="legend-color independent"></span>
+                        <span>Independent (Word Reading: 97-100%, Comprehension: 80-100%)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color instructional"></span>
+                        <span>Instructional (Word Reading: 90-96%, Comprehension: 59-79%)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color frustration"></span>
+                        <span>Frustration (Word Reading: Below 90% or Comprehension: Below 59%)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3>
+                    <i class="fas fa-chart-bar"></i>
+                    Filipino Reading Level Distribution By Grade
+                </h3>
+            </div>
+            <div class="chart-content">
+                <canvas id="readingLevelChartFilipino"></canvas>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <span class="legend-color independent"></span>
+                        <span>Independent (Word Reading: 97-100%, Comprehension: 80-100%)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color instructional"></span>
+                        <span>Instructional (Word Reading: 90-96%, Comprehension: 59-79%)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color frustration"></span>
+                        <span>Frustration (Word Reading: Below 90% or Comprehension: Below 59%)</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </main>

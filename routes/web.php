@@ -160,6 +160,11 @@ Route::middleware(['web'])->group(function () {
         Route::get('/reading-progress', function () {
             return view('teacher.report');
         })->name('teacher.reading-progress');
+
+        // Feedback routes
+        Route::post('/save-feedback', [TeacherController::class, 'saveFeedback'])->name('teacher.save.feedback');
+        Route::post('/send-feedback', [TeacherController::class, 'sendFeedback'])->name('teacher.send.feedback');
+        Route::get('/feedback-history', [TeacherController::class, 'getFeedbackHistory'])->name('teacher.feedback.history');
     });
 
     // Admin Routes
@@ -199,6 +204,7 @@ Route::middleware(['web'])->group(function () {
         Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('student.dashboard');
         Route::get('/reports', [StudentDashboardController::class, 'reports'])->name('student.reports');
         Route::post('/add/english', [StudentAnswerEnglishController::class, 'store'])->name('student.add.english');
+        Route::get('/unread-feedback-count', [StudentDashboardController::class, 'getUnreadFeedbackCount'])->name('student.unread.feedback.count');
     });
 
     // Reading Materials Routes

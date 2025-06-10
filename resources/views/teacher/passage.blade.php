@@ -735,7 +735,7 @@
                         <option value="">Choose a student...</option>
                         @foreach($students as $student)
                             @if($student->grade_level == str_replace('grade', '', $grade) && $student->section == ucfirst($section))
-                                <option value="{{ $student->id }}">{{ $student->last_name }}, {{ $student->first_name }}
+                                <option value="{{ $student->student_number }}">{{ $student->last_name }}, {{ $student->first_name }}
                                     {{ $student->middle_name }}
                                 </option>
                             @endif
@@ -806,8 +806,16 @@
                     <button type="submit" class="btn-save">Save Feedback</button>
                 </div>
             </form>
-
             <div class="feedback-history">
+                <h4>Previous Feedback</h4>
+                <div id="feedbackHistory"></div>
+                <div class="empty-state" id="noFeedbackMessage" style="display: none;">
+                    <i class="fas fa-comment-slash"></i>
+                    <p>No previous feedback available.</p>
+                </div>
+            </div>
+
+            <!-- <div class="feedback-history">
                 <h4>Previous Feedback</h4>
                 <div class="feedback-item">
                     <div class="feedback-meta">
@@ -827,7 +835,7 @@
                         <span class="send-status sent">✓ Sent</span>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 
@@ -1017,24 +1025,67 @@
         feedbackForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
+            const studentSelect = document.getElementById('studentSelect');
+            const studentId = studentSelect.value;
+
+            if (!studentId) {
+                alert('Please select a student first!');
+                return;
+            }
+
+            // Get current page parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const grade = urlParams.get('grade') || 'grade7';
+            const section = urlParams.get('section') || 'narra';
+            const language = urlParams.get('language') || 'english';
+
             const feedback = {
+                student_id: studentId,
+                language: language,
+                grade_level: parseInt(grade.replace('grade', '')),
+                section: section,
                 strengths: document.getElementById('strengths').value,
-                areasForImprovement: document.getElementById('areasForImprovement').value,
-                recommendations: document.getElementById('recommendations').value,
-                date: new Date().toLocaleDateString()
+                areas_for_improvement: document.getElementById('areasForImprovement').value,
+                recommendations: document.getElementById('recommendations').value
             };
 
-            // Here you would typically send this to your backend
-            console.log('Feedback submitted:', feedback);
+            // Show loading state
+            const saveButton = feedbackForm.querySelector('.btn-save');
+            const originalText = saveButton.textContent;
+            saveButton.disabled = true;
+            saveButton.textContent = 'Saving...';
 
-            // Add to feedback history (for demo purposes)
-            addFeedbackToHistory(feedback);
+            // Send to backend
+            fetch('/teacher/save-feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify(feedback)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Feedback saved successfully!');
 
-            // Reset form
-            resetFeedback();
+                        // Add to feedback history
+                        addFeedbackToHistory(data.feedback);
 
-            // Show success message
-            alert('Feedback saved successfully!');
+                        // Reset form
+                        resetFeedback();
+                    } else {
+                        alert('Error saving feedback: ' + (data.message || 'Unknown error'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error saving feedback. Please try again.');
+                })
+                .finally(() => {
+                    saveButton.disabled = false;
+                    saveButton.textContent = originalText;
+                });
         });
 
         function resetFeedback() {
@@ -1046,27 +1097,31 @@
             const feedbackItem = document.createElement('div');
             feedbackItem.className = 'feedback-item';
 
-            // Generate unique ID for this feedback
-            const feedbackId = 'feedback-' + Date.now();
+            // Use the feedback ID from the backend
+            const feedbackId = feedback.id;
+            const feedbackDate = new Date(feedback.created_at).toLocaleDateString();
 
             feedbackItem.innerHTML = `
-                                                                                                                                                                                                                                                            <div class="feedback-meta">
-                                                                                                                                                                                                                                                                <span>Date: ${feedback.date}</span>
-                                                                                                                                                                                                                                                                <span>Reading Level: Grade 7</span>
-                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                            <div class="feedback-content">
-                                                                                                                                                                                                                                                                <p><strong>Strengths:</strong> ${feedback.strengths}</p>
-                                                                                                                                                                                                                                                                <p><strong>Areas for Improvement:</strong> ${feedback.areasForImprovement}</p>
-                                                                                                                                                                                                                                                                <p><strong>Recommendations:</strong> ${feedback.recommendations}</p>
-                                                                                                                                                                                                                                                            </div>
+                <div class="feedback-meta">
+                    <span>Date: ${feedbackDate}</span>
+                    <span>Reading Level: Grade ${feedback.grade_level}</span>
+                    <span>Language: ${feedback.language.charAt(0).toUpperCase() + feedback.language.slice(1)}</span>
+                </div>
+                <div class="feedback-content">
+                    <p><strong>Strengths:</strong> ${feedback.strengths || 'Not specified'}</p>
+                    <p><strong>Areas for Improvement:</strong> ${feedback.areas_for_improvement || 'Not specified'}</p>
+                    <p><strong>Recommendations:</strong> ${feedback.recommendations || 'Not specified'}</p>
+                </div>
 
-                                                                                                                                                                                                                                                            <div class="feedback-actions-history">
-                                                                                                                                                                                                                                                                <button class="btn-send" onclick="sendFeedbackToStudent(this, '${feedbackId}')">
-                                                                                                                                                                                                                                                                    <i class="fas fa-paper-plane"></i> Send to Student
-                                                                                                                                                                                                                                                                </button>
-                                                                                                                                                                                                                                                                <span class="send-status not-sent">Not Sent</span>
-                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                        `;
+                <div class="feedback-actions-history">
+                    <button class="btn-send" onclick="sendFeedbackToStudent(this, ${feedbackId})">
+                        <i class="fas fa-paper-plane"></i> Send to Student
+                    </button>
+                    <span class="send-status ${feedback.is_sent ? 'sent' : 'not-sent'}">
+                        ${feedback.is_sent ? '✓ Sent' : 'Not Sent'}
+                    </span>
+                </div>
+            `;
 
             // Store feedback data for sending
             feedbackItem.dataset.feedbackData = JSON.stringify(feedback);
@@ -1087,10 +1142,14 @@
             const statusSpan = feedbackItem.querySelector('.send-status');
             const feedbackData = JSON.parse(feedbackItem.dataset.feedbackData || '{}');
 
-            // Get current student info from URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            const grade = urlParams.get('grade') || 'grade7';
-            const section = urlParams.get('section') || 'narra';
+            // Get current student ID
+            const studentSelect = document.getElementById('studentSelect');
+            const studentId = studentSelect.value;
+
+            if (!studentId) {
+                alert('Please select a student first!');
+                return;
+            }
 
             // Update button and status to show sending
             button.disabled = true;
@@ -1098,49 +1157,55 @@
             statusSpan.className = 'send-status pending';
             statusSpan.textContent = 'Sending...';
 
-            // Simulate sending to backend (replace with actual API call)
-            setTimeout(() => {
-                // Prepare feedback data for student
-                const studentFeedback = {
-                    id: feedbackId,
-                    teacherName: 'Ms. Johnson', // This would come from authenticated user
-                    subject: 'Reading Assessment Feedback',
-                    grade: grade.replace('grade', ''),
-                    section: section.charAt(0).toUpperCase() + section.slice(1),
-                    strengths: feedbackData.strengths,
-                    areasForImprovement: feedbackData.areasForImprovement,
-                    recommendations: feedbackData.recommendations,
-                    date: feedbackData.date,
-                    sentDate: new Date().toLocaleDateString(),
-                    type: 'reading_feedback',
-                    priority: 'normal'
-                };
+            // Send to backend
+            fetch('/teacher/send-feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    feedback_id: feedbackId,
+                    student_id: studentId
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update UI to show sent status
+                        button.innerHTML = '<i class="fas fa-check"></i> Sent';
+                        button.style.background = '#388e3c';
+                        statusSpan.className = 'send-status sent';
+                        statusSpan.textContent = '✓ Sent';
 
-                // Here you would typically send this to your backend
-                console.log('Sending feedback to student:', studentFeedback);
+                        // Show success message
+                        alert(data.message);
 
-                // Simulate successful send
-                button.disabled = false;
-                button.innerHTML = '<i class="fas fa-check"></i> Sent';
-                button.style.background = '#388e3c';
-                statusSpan.className = 'send-status sent';
-                statusSpan.textContent = '✓ Sent';
+                        // Disable button after successful send
+                        setTimeout(() => {
+                            button.disabled = true;
+                        }, 1000);
+                    } else {
+                        // Reset button on error
+                        button.disabled = false;
+                        button.innerHTML = '<i class="fas fa-paper-plane"></i> Send to Student';
+                        statusSpan.className = 'send-status not-sent';
+                        statusSpan.textContent = 'Not Sent';
 
-                // Store in localStorage for demo (in real app, this would be in database)
-                const existingFeedback = JSON.parse(localStorage.getItem('studentFeedback') || '[]');
-                existingFeedback.unshift(studentFeedback);
-                localStorage.setItem('studentFeedback', JSON.stringify(existingFeedback));
+                        alert('Error sending feedback: ' + (data.message || 'Unknown error'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
 
-                // Show success message
-                alert(`Feedback sent successfully to student!\n\nGrade: ${studentFeedback.grade}\nSection: ${studentFeedback.section}\nFeedback: Comprehensive reading assessment feedback`);
+                    // Reset button on error
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-paper-plane"></i> Send to Student';
+                    statusSpan.className = 'send-status not-sent';
+                    statusSpan.textContent = 'Not Sent';
 
-                // Disable button after successful send
-                setTimeout(() => {
-                    button.disabled = true;
-                    button.innerHTML = '<i class="fas fa-check"></i> Sent';
-                }, 1000);
-
-            }, 2000); // Simulate network delay
+                    alert('Error sending feedback. Please try again.');
+                });
         }
 
 
