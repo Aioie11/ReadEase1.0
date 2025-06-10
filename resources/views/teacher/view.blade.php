@@ -797,7 +797,7 @@
                 <!-- Reading Comprehension Chart -->
                 <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100 hover-card">
                     <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-lg font-medium text-gray-700">Pag-unawa sa Binasa</h2>
+                        <h2 class="text-lg font-medium text-gray-700">Reading Comprehension</h2>
                         <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600">
                             <i class="ri-mental-health-line"></i>
                         </div>
@@ -1442,14 +1442,16 @@
                 // Reading Comprehension Chart (English)
                 const comprehensionCtx = document.getElementById('reading-comprehension-chart');
                 if (comprehensionCtx) {
+                    // Remove previous canvas if any
+                    comprehensionCtx.innerHTML = '';
                     // Create canvas element
                     const canvas = document.createElement('canvas');
                     canvas.style.height = '200px';
                     comprehensionCtx.appendChild(canvas);
 
-                    // Use real data if available, otherwise use default values
-                    const correctAnswers = latestEnglish ? latestEnglish.correct_answers : 0;
-                    const totalQuestions = latestEnglish ? latestEnglish.total_questions : 0;
+                    // Use session variables as in stud-reports.blade.php
+                    const correctAnswers = {{ session('english_score', 0) }};
+                    const totalQuestions = {{ session('english_total_questions', 0) }};
 
                     window.chartInstances.comprehensionChart = new Chart(canvas.getContext('2d'), {
                         type: 'bar',
@@ -1566,19 +1568,21 @@
                 // Filipino Reading Comprehension Chart
                 const filipinoComprehensionCtx = document.getElementById('filipino-reading-comprehension-chart');
                 if (filipinoComprehensionCtx) {
+                    // Remove previous canvas if any
+                    filipinoComprehensionCtx.innerHTML = '';
                     // Create canvas element
                     const canvas = document.createElement('canvas');
                     canvas.style.height = '200px';
                     filipinoComprehensionCtx.appendChild(canvas);
 
-                    // Use real data if available, otherwise use default values
-                    const filipinoCorrectAnswers = latestFilipino ? latestFilipino.correct_answers : 0;
-                    const filipinoTotalQuestions = latestFilipino ? latestFilipino.total_questions : 0;
+                    // Use session variables as in stud-reports.blade.php
+                    const filipinoCorrectAnswers = {{ session('filipino_score', 0) }};
+                    const filipinoTotalQuestions = {{ session('filipino_total_questions', 0) }};
 
                     window.chartInstances.filipinoComprehensionChart = new Chart(canvas.getContext('2d'), {
                         type: 'bar',
                         data: {
-                            labels: ['Tamang Sagot', 'Kabuuang Tanong'],
+                            labels: ['Correct Answers', 'Total Questions'],
                             datasets: [{
                                 data: [filipinoCorrectAnswers, filipinoTotalQuestions],
                                 backgroundColor: [

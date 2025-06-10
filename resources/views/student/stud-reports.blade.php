@@ -132,14 +132,14 @@
                             <tr>
                                 <td>Pagbibilang ng mga Oras</td>
                                 <td>2024-03-15</td>
-                                <td>90%</td>
+                                <td>{{ session('filipino_score', 0) }}/{{ session('filipino_total_questions', 0) }}</td>
                                 <td>25 mins</td>
                                 <td><span class="status completed">Completed</span></td>
                             </tr>
                             <tr>
                                 <td>Telling Time</td>
                                 <td>2024-03-10</td>
-                                <td>85%</td>
+                                <td>{{ session('english_score', 0) }}/{{ session('english_total_questions', 0) }}</td>
                                 <td>20 mins</td>
                                 <td><span class="status completed">Completed</span></td>
                             </tr>
@@ -168,22 +168,28 @@
                                 $hasAnswers = ($englishAnswers->count() > 0) || ($filipinoAnswers->count() > 0);
                             @endphp
                             @if($hasAnswers)
-                                @foreach($filipinoAnswers as $answer)
+                                @if($filipinoAnswers->count() > 0)
+                                    @php
+                                        $latestFilipino = $filipinoAnswers->first();
+                                    @endphp
                                     <tr>
                                         <td>Filipino Question</td>
-                                        <td>{{ $answer->created_at->format('Y-m-d') }}</td>
-                                        <td>{{ $answer->score }}%</td>
+                                        <td>{{ $latestFilipino->created_at->format('Y-m-d') }}</td>
+                                        <td>{{ session('filipino_score', 0) }}/{{ session('filipino_total_questions', 0) }}</td>
                                         <td><span class="status completed">Completed</span></td>
                                     </tr>
-                                @endforeach
-                                @foreach($englishAnswers as $answer)
+                                @endif
+                                @if($englishAnswers->count() > 0)
+                                    @php
+                                        $latestEnglish = $englishAnswers->first();
+                                    @endphp
                                     <tr>
                                         <td>English Question</td>
-                                        <td>{{ $answer->created_at->format('Y-m-d') }}</td>
-                                        <td>{{ $answer->score }}%</td>
+                                        <td>{{ $latestEnglish->created_at->format('Y-m-d') }}</td>
+                                        <td>{{ session('english_score', 0) }}/{{ session('english_total_questions', 0) }}</td>
                                         <td><span class="status completed">Completed</span></td>
                                     </tr>
-                                @endforeach
+                                @endif
                             @else
                                 <tr>
                                     <td colspan="4" style="text-align:center;">No answers yet.</td>

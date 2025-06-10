@@ -15,6 +15,8 @@ class CreateStudentAnswerTagalogTable extends Migration // Class name matches fi
             $table->integer('score')->default(0);
             $table->integer('reading_time')->nullable()->comment('Reading time in seconds');
             $table->integer('reading_speed')->nullable()->comment('Reading speed in words per minute');
+            $table->timestamp('start_time')->nullable();
+            $table->timestamp('end_time')->nullable();
             $table->timestamps();
         });
     }

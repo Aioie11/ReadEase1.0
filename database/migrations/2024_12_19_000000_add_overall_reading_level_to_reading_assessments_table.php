@@ -11,12 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('reading_assessments', function (Blueprint $table) {
-            $table->enum('overall_reading_level', ['Independent', 'Instructional', 'Frustration'])
-                  ->nullable()
-                  ->after('grade')
-                  ->comment('Overall reading performance level calculated from word reading and comprehension');
-        });
+        // This migration is now empty. Logic moved to 2025_05_28_074609_add_assessment_fields_to_reading_assessments_table.php
     }
 
     /**
@@ -24,8 +19,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('reading_assessments', function (Blueprint $table) {
-            $table->dropColumn('overall_reading_level');
-        });
+        // This migration is now empty.
     }
 };

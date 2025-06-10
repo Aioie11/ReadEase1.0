@@ -459,8 +459,19 @@
             readingTimeInput.name = 'reading_time';
             readingTimeInput.value = readingTimeSeconds;
 
+            // Calculate reading speed (words per minute)
+            const totalWords = document.querySelector('.passage').textContent.trim().split(/\s+/).length;
+            const readingSpeed = Math.round((totalWords / readingTimeSeconds) * 60);
+
+            // Create hidden input for reading speed
+            const readingSpeedInput = document.createElement('input');
+            readingSpeedInput.type = 'hidden';
+            readingSpeedInput.name = 'reading_speed';
+            readingSpeedInput.value = readingSpeed;
+
             this.appendChild(readingTimeInput);
-            console.log('Submitting Filipino form with reading time:', readingTimeSeconds, 'seconds');
+            this.appendChild(readingSpeedInput);
+            console.log('Submitting Filipino form with reading time:', readingTimeSeconds, 'seconds and reading speed:', readingSpeed, 'WPM');
         });
     </script>
 @endsection

@@ -79,9 +79,6 @@ class StudentAnswerTagalogController extends Controller
             // Update reading assessment with comprehension data
             $this->updateReadingAssessmentWithComprehension($user, $score, $totalQuestions, 'filipino');
 
-            // Add success message to session
-            session()->flash('success', 'Ang iyong mga sagot ay matagumpay na naipasa!');
-
             return redirect()->route('student.reports');
         } catch (\Exception $e) {
             \Log::error('Error saving Filipino answers: ' . $e->getMessage());
