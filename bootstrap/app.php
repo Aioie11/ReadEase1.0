@@ -11,7 +11,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'password.change' => \App\Http\Middleware\RequirePasswordChange::class,
+            'role' => \App\Http\Middleware\CheckRole::class,
+            'student' => \App\Http\Middleware\StudentMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

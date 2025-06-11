@@ -80,6 +80,8 @@
             margin-left: 0;
         }
 
+
+
         .header-container {
             display: flex;
             justify-content: space-between;
@@ -536,6 +538,24 @@
             background: var(--secondary);
             color: var(--neutral-light);
             transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(246, 173, 85, 0.3);
+        }
+
+        .nav-link.active {
+            background: var(--secondary);
+            position: relative;
+        }
+
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: -1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 100%;
+            background: var(--neutral-light);
+            border-radius: 2px;
         }
 
         .nav-link i {
@@ -655,32 +675,32 @@
             <ul class="nav-menu">
                 <div class="nav-section">
                     <li class="nav-item">
-                        <a href="{{ route('admin.dashboard') }}" class="nav-link">
+                        <a href="{{ route('admin.dashboard') }}" class="nav-link {{ Route::currentRouteName() == 'admin.dashboard' ? 'active' : '' }}">
                             <i class="fas fa-home"></i>
                             Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('admin.test-management') }}" class="nav-link">
+                        <a href="{{ route('admin.test-management') }}" class="nav-link {{ Route::currentRouteName() == 'admin.test-management' ? 'active' : '' }}">
                             <i class="fas fa-question"></i>
                             Test Management
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('admin.student-records') }}" class="nav-link">
-                            <i class="fas fa-question"></i>
+                        <a href="{{ route('admin.student-records') }}" class="nav-link {{ Route::currentRouteName() == 'admin.student-records' ? 'active' : '' }}">
+                            <i class="fas fa-users"></i>
                             Student Records
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('admin.reports') }}" class="nav-link">
+                        <a href="{{ route('admin.reports') }}" class="nav-link {{ Route::currentRouteName() == 'admin.reports' ? 'active' : '' }}">
                             <i class="fas fa-chart-line"></i>
                             Reports
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('admin.user-management') }}" class="nav-link">
-                            <i class="fas fa-chart-line"></i>
+                        <a href="{{ route('admin.user-management') }}" class="nav-link {{ Route::currentRouteName() == 'admin.user-management' ? 'active' : '' }}">
+                            <i class="fas fa-users-cog"></i>
                             User Management
                         </a>
                     </li>
@@ -860,14 +880,8 @@
             });
         }
 
-        // Add active state to nav links
-        const navLinks = document.querySelectorAll('.nav-link');
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                navLinks.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-            });
-        });
+        // Active state is now handled by Laravel route detection
+        // No need for manual JavaScript active state management
     </script>
 </body>
 

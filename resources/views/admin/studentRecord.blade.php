@@ -495,25 +495,48 @@
             background: var(--primary-dark);
         }
 
-        .close {
-            /* Remove sticky positioning so it scrolls with content */
-            position: static;
-            right: auto;
-            float: right;
-            font-size: 1.5rem;
+        .close, .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            background: var(--neutral);
+            border: 2px solid var(--neutral-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
             cursor: pointer;
             color: var(--text-light);
             transition: var(--transition);
-            background: var(--neutral-light);
-            padding: 0.5rem;
-            z-index: 1;
-            border-radius: 0;
-            box-shadow: none;
+            z-index: 10;
+            font-weight: bold;
         }
 
-        .close:hover {
-            color: var(--text);
-            background: var(--neutral);
+        .close:hover, .close-modal:hover {
+            background: #dc2626;
+            color: white;
+            border-color: #dc2626;
+            transform: scale(1.1);
+        }
+
+        /* Modal Header */
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: 600;
         }
 
         .form-row {
@@ -939,7 +962,7 @@
                                         <table class="student-table">
                                             <thead>
                                                 <tr>
-                                                    <th>#</th>
+                                                    <th>Student ID</th>
                                                     <th>Student Information</th>
                                                     <th>Gender</th>
                                                     <th>Test Status</th>
@@ -949,10 +972,9 @@
                                             <tbody>
                                                 @foreach($students[$grade]->where('section', $section)->sortBy('last_name') as $index => $student)
                                                     <tr>
-                                                        <td style="font-weight: 600; color: var(--primary);">{{ $index + 1 }}</td>
+                                                        <td style="font-weight: 600; color: var(--primary);">{{ $student->student_number }}</td>
                                                         <td class="student-name-cell">
                                                             <div>{{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}</div>
-                                                            <div class="student-number">ID: {{ $student->student_number }}</div>
                                                         </td>
                                                         <td>
                                                             <span class="gender-badge {{ strtolower($student->gender) }}">
@@ -1019,8 +1041,10 @@
         <!-- Add Student Modal -->
         <div id="addStudentModal" class="modal">
             <div class="modal-content">
-                <span class="close" onclick="closeModal('addStudentModal')">&times;</span>
-                <h2>Add New Student</h2>
+                <div class="modal-header">
+                    <h2>Add New Student</h2>
+                    <span class="close" onclick="closeModal('addStudentModal')">&times;</span>
+                </div>
                 <form id="addStudentForm">
                     @csrf
                     <div class="form-row">
@@ -1088,8 +1112,10 @@
         <!-- Edit Modal -->
         <div id="editModal" class="modal">
             <div class="modal-content">
-                <span class="close-modal" onclick="closeModal('editModal')">&times;</span>
-                <h2>Edit Student Record</h2>
+                <div class="modal-header">
+                    <h2>Edit Student Record</h2>
+                    <span class="close-modal" onclick="closeModal('editModal')">&times;</span>
+                </div>
                 <form id="editStudentForm" method="POST">
                     @csrf
                     @method('PUT')

@@ -14,28 +14,34 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Admin User
+        // Admin User (existing user, no password change required)
         User::create([
             'name' => 'Admin User',
             'userId' => 'ADMIN123',
             'password' => Hash::make('admin123'),
-            'role' => 'admin'
+            'role' => 'admin',
+            'must_change_password' => false,
+            'password_changed_at' => now()
         ]);
 
-        // Teacher User
+        // Teacher User (existing user, no password change required)
         User::create([
             'name' => 'Test Teacher',
             'userId' => 'TECH123',
             'password' => Hash::make('tech123'),
-            'role' => 'teacher'
+            'role' => 'teacher',
+            'must_change_password' => false,
+            'password_changed_at' => now()
         ]);
 
-        // Student User
+        // Student User (existing user, no password change required)
         User::create([
             'name' => 'Test Student',
             'userId' => 'STUD123',
             'password' => Hash::make('stud123'),
-            'role' => 'student'
+            'role' => 'student',
+            'must_change_password' => false,
+            'password_changed_at' => now()
         ]);
     }
 }

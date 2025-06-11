@@ -330,9 +330,9 @@
                 <div class="flex-grow">
                     <h1 class="text-2xl font-bold mb-4">
                         @if(isset($student))
-                            {{ $student->first_name }} {{ $student->last_name }}
+                            {{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}
                         @else
-                            Emma Brown
+                            Brown, Emma
                         @endif
                     </h1>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
