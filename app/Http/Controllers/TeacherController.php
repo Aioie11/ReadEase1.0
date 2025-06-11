@@ -78,7 +78,30 @@ class TeacherController extends Controller
             $query->where('section', str_replace('Section ', '', $section));
         }
 
-        $students = $query->get();
+        $students = $query->with('readingAssessments')
+            ->orderBy('grade_level')
+            ->orderBy('section')
+            ->orderBy('last_name')
+            ->get()
+            ->map(function ($student) {
+                $latestAssessment = $student->readingAssessments()->latest('assessment_date')->first();
+                $avgScore = $student->readingAssessments()->count() > 0
+                    ? round(($student->readingAssessments()->avg('comprehension') + $student->readingAssessments()->avg('correct_reading')) / 2, 1)
+                    : 0;
+
+                return [
+                    'id' => $student->id,
+                    'student_number' => $student->student_number,
+                    'name' => $student->last_name . ', ' . $student->first_name . ' ' . ($student->middle_name ? $student->middle_name : ''),
+                    'initials' => strtoupper(substr($student->first_name, 0, 1) . substr($student->last_name, 0, 1)),
+                    'grade_level' => $student->grade_level,
+                    'section' => $student->section,
+                    'total_assessments' => $student->readingAssessments()->count(),
+                    'latest_score' => $avgScore,
+                    'latest_assessment_date' => $latestAssessment ? $latestAssessment->assessment_date : null,
+                    'status' => $avgScore >= 90 ? 'Excellent' : ($avgScore >= 80 ? 'Good' : ($avgScore >= 70 ? 'Average' : ($avgScore > 0 ? 'Needs Improvement' : 'No Assessment')))
+                ];
+            });
 
         return view('teacher.studentManagement', compact('students'));
     }
@@ -96,7 +119,7 @@ class TeacherController extends Controller
             ->map(function ($student) {
                 return [
                     'id' => $student->student_number,
-                    'name' => $student->last_name . ', ' . $student->first_name
+                    'name' => $student->last_name . ', ' . $student->first_name . ' ' . ($student->middle_name ? $student->middle_name : '')
                 ];
             });
 

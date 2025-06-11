@@ -5,200 +5,343 @@
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <style>
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            color: var(--neutral-light);
-        }
-
         /* Main Content */
         .main-content {
             margin-top: 50px;
             margin-left: 280px;
             padding: 6rem 5% 2rem;
             transition: var(--transition);
+            background: var(--background);
+            min-height: 100vh;
         }
 
-        /* Content Box */
-        .content-box {
-            background: var(--neutral-light);
+        /* Page Header */
+        .page-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .page-header h1 {
+            color: var(--text-dark);
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .page-header p {
+            color: var(--text-light);
+            margin: 0.5rem 0 0 0;
+            font-size: 0.95rem;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: white;
             padding: 1.5rem;
             border-radius: 12px;
-            box-shadow: var(--shadow-md);
+            box-shadow: var(--shadow-sm);
             margin-bottom: 2rem;
         }
 
-        /* Admin Controls */
-        .admin-controls {
-            display: flex;
-            gap: 1rem;
+        .control-section {
             margin-bottom: 1.5rem;
         }
 
-        .admin-btn {
-            padding: 0.8rem 1.5rem;
-            border: none;
+        .control-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .action-btn {
+            padding: 0.875rem 1.25rem;
+            border: 1px solid var(--neutral-light);
             border-radius: 8px;
-            background: var(--primary);
-            color: var(--neutral-light);
+            background: white;
+            color: var(--text);
             cursor: pointer;
             transition: var(--transition);
             font-weight: 500;
-        }
-
-        .admin-btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-
-        .admin-btn.delete {
-            background: #dc2626;
-        }
-
-        .admin-btn.delete:hover {
-            background: #b91c1c;
-        }
-
-        /* Grade Selector */
-        .grade-selector {
-            background: var(--neutral);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
         }
 
-        .grade-selector select {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--neutral-dark);
-            border-radius: 6px;
-            background: var(--neutral-light);
+        .action-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .action-btn.primary {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .action-btn.primary:hover {
+            background: var(--primary-dark);
+            color: white;
+        }
+
+        .action-btn.danger {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .action-btn.danger:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Filter Controls */
+        .filter-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--neutral-light);
+            border-radius: 8px;
+            background: white;
+            color: var(--text);
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.1);
+        }
+
+        /* Subject Tabs */
+        .subject-tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .subject-tab {
+            padding: 0.75rem 1.5rem;
+            border: 1px solid var(--neutral-light);
+            border-radius: 8px;
+            background: white;
+            color: var(--text);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .subject-tab:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .subject-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Content Display */
+        .content-display {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .content-card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--neutral-light);
+            background: var(--background-secondary);
+        }
+
+        .content-card-header h3 {
+            color: var(--text-dark);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .content-card-body {
+            padding: 1.5rem;
+        }
+
+        /* Reading Passage Styles */
+        .reading-content {
+            line-height: 1.7;
             color: var(--text);
             font-size: 0.95rem;
         }
 
-        /* Subject Selection */
-        .subject-selection {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .subject-btn {
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            background: var(--neutral);
-            color: var(--text);
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: 500;
-        }
-
-        .subject-btn:hover, .subject-btn.active {
-            background: var(--primary);
-            color: var(--neutral-light);
-        }
-
-        /* Reading Passage */
-        .reading-passage {
-            background: var(--neutral-light);
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .reading-passage h3 {
-            color: var(--text);
+        .reading-title {
+            color: var(--text-dark);
+            font-size: 1.2rem;
+            font-weight: 600;
             margin-bottom: 1rem;
         }
 
-        /* Questions Section */
-        .questions-section {
-            background: var(--neutral-light);
-            padding: 1.5rem;
+        /* Questions Display */
+        .question-item {
+            background: var(--background);
+            padding: 1.25rem;
             border-radius: 8px;
-            box-shadow: var(--shadow-sm);
+            margin-bottom: 1rem;
+            border-left: 3px solid var(--primary);
         }
 
-        .questions-section h3 {
-            color: var(--text);
-            margin-bottom: 1.5rem;
+        .question-item:last-child {
+            margin-bottom: 0;
         }
 
-        .question {
-            background: var(--neutral);
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-        }
-
-        .radio-option {
-            display: block;
-            padding: 1rem;
-            margin: 0.5rem 0;
-            background: var(--neutral-light);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .radio-option:hover {
-            background: var(--primary-light);
-            color: var(--neutral-light);
-        }
-
-        .text-input {
-            width: 100%;
-            padding: 1rem;
-            border: 1px solid var(--neutral-dark);
-            border-radius: 6px;
-            margin: 0.5rem 0;
+        .question-text {
+            color: var(--text-dark);
+            font-weight: 500;
+            margin-bottom: 0.75rem;
             font-size: 0.95rem;
         }
 
-        /* Button Group */
-        .button-group {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
+        .question-options {
+            display: grid;
+            gap: 0.5rem;
         }
 
-        .submit-btn {
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            background: var(--primary);
-            color: var(--neutral-light);
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: 500;
+        .option-item {
+            padding: 0.75rem;
+            background: white;
+            border: 1px solid var(--neutral-light);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 0.9rem;
         }
 
-        .submit-btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-
-        .clear-btn {
-            padding: 0.8rem 1.5rem;
-            border: 1px solid var(--primary);
-            border-radius: 8px;
-            background: transparent;
+        .correct-answer {
+            background: rgba(0, 184, 169, 0.1);
+            border-color: var(--primary);
             color: var(--primary);
-            cursor: pointer;
-            transition: var(--transition);
             font-weight: 500;
         }
 
-        .clear-btn:hover {
-            background: var(--primary);
-            color: var(--neutral-light);
+        .text-answer {
+            padding: 0.75rem;
+            background: rgba(0, 184, 169, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 6px;
+            color: var(--primary);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: var(--background);
+            border-radius: 12px;
+            border: 2px dashed var(--neutral-light);
+        }
+
+        .empty-state-icon {
+            font-size: 2.5rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state-title {
+            color: var(--text);
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state-text {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Loading State */
+        .loading-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid var(--neutral-light);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Status Indicators */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-published {
+            background: rgba(0, 184, 169, 0.1);
+            color: var(--primary);
+        }
+
+        .status-draft {
+            background: rgba(113, 128, 150, 0.1);
+            color: var(--text-light);
         }
 
         /* Modal Styles */
@@ -207,7 +350,7 @@
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.35);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 2000;
             justify-content: center;
             align-items: center;
@@ -216,7 +359,7 @@
 
         .modal.active {
             display: flex;
-            animation: fadeIn 0.2s;
+            animation: fadeIn 0.3s ease;
         }
 
         @keyframes fadeIn {
@@ -225,11 +368,11 @@
         }
 
         .modal-content {
-            background: #e6eef7;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-            padding: 2.5rem 2rem;
-            max-width: 650px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            padding: 2rem;
+            max-width: 700px;
             width: 95vw;
             max-height: 90vh;
             overflow-y: auto;
@@ -237,202 +380,227 @@
             margin: 2rem 0;
         }
 
-        .close-modal {
-            position: absolute;
-            top: 1.2rem;
-            right: 1.5rem;
-            font-size: 2rem;
-            color: #888;
-            background: none;
-            border: none;
-            cursor: pointer;
-            z-index: 2;
+        .modal-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--neutral-light);
         }
 
+        .modal-title {
+            color: var(--text-dark);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 2rem;
+            height: 2rem;
+            border: none;
+            background: var(--neutral-light);
+            border-radius: 50%;
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            background: var(--neutral);
+        }
+
+        /* Form Styles */
         .form-group {
             margin-bottom: 1.5rem;
         }
 
-        .form-group label {
+        .form-label {
             display: block;
             margin-bottom: 0.5rem;
-            color: var(--text);
+            color: var(--text-dark);
             font-weight: 500;
+            font-size: 0.9rem;
         }
 
-        .form-group input[type="text"],
-        .form-group textarea,
-        .form-group select {
+        .form-input,
+        .form-textarea,
+        .form-select {
             width: 100%;
-            padding: 0.8rem;
-            border: 1px solid var(--neutral-dark);
-            border-radius: 6px;
+            padding: 0.75rem;
+            border: 1px solid var(--neutral-light);
+            border-radius: 8px;
             font-size: 0.95rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.1);
         }
 
         .question-container {
-            background: var(--neutral);
+            background: var(--background);
             padding: 1.5rem;
             border-radius: 8px;
             margin: 1rem 0;
+            border: 1px solid var(--neutral-light);
         }
-
-        /* Menu Toggle Button */
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--neutral-light);
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0.5rem;
-        }
-
         /* Responsive Design */
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
             .main-content {
                 margin-left: 0;
+                padding: 6rem 3% 2rem;
             }
 
-            header {
-                margin-left: 0;
-                width: 100%;
+            .filter-controls {
+                grid-template-columns: 1fr;
+                gap: 1rem;
             }
 
-            .menu-toggle {
-                display: block;
+            .action-buttons {
+                grid-template-columns: 1fr;
             }
 
-            .admin-controls {
+            .subject-tabs {
                 flex-direction: column;
             }
 
-            .subject-selection {
-                flex-direction: column;
+            .modal-content {
+                width: 98vw;
+                margin: 1rem 0;
+                padding: 1.5rem;
             }
-
-            .button-group {
-                flex-direction: column;
-            }
-        }
-
-        /* Add these new styles */
-        .options-list {
-            margin-top: 1rem;
-        }
-
-        .option-item {
-            padding: 0.8rem;
-            margin: 0.5rem 0;
-            background: var(--neutral);
-            border-radius: 6px;
-            color: var(--text);
-        }
-
-        .text-answer {
-            padding: 0.8rem;
-            margin: 0.5rem 0;
-            background: var(--neutral);
-            border-radius: 6px;
-            color: var(--text);
-            font-style: italic;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            background: var(--neutral);
-            border-radius: 8px;
-            margin: 1.5rem 0;
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            color: var(--text-light);
-            margin-bottom: 1rem;
-        }
-
-        .empty-state p {
-            color: var(--text-light);
-            font-size: 1.1rem;
         }
     </style>
 
     <!-- Main Content -->
     <main class="main-content">
-        <div class="content-box">
-            <h2 style="margin-bottom: 2rem;">QUESTIONS</h2>
-            
-            <!-- Admin Controls -->
-            <div class="admin-controls">
-                <button class="admin-btn" onclick="openCreateModal()">Add New Reading Material</button>
-                <button class="admin-btn" onclick="openEditModal()">Edit Selected</button>
-                <button class="admin-btn delete" onclick="deleteSelected()">Delete Selected</button>
-                <button class="admin-btn" style="background: #10B981;" onclick="publishMaterial()">Publish</button>
-            </div>
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-clipboard-list"></i> Test Management</h1>
+            <p>Create, edit, and manage reading comprehension tests for students</p>
+        </div>
 
-            <!-- Grade Selection Dropdowns -->
-            <div class="grade-selector">
-                <i class="fas fa-graduation-cap"></i>
-                <select>
-                    <option value="7">GRADE 7</option>
-                    <option value="8">GRADE 8</option>
-                    <option value="9">GRADE 9</option>
-                    <option value="10">GRADE 10</option>
-                </select>
-            </div>
-
-            <!-- Subject Selection -->
-            <div class="subject-selection">
-                <button class="subject-btn" data-subject="english">English</button>
-                <button class="subject-btn" data-subject="filipino">Filipino</button>
-            </div>
-
-            <!-- Reading Passage -->
-            <div class="reading-passage">
-                <h3>Reading Passage</h3>
-                <div class="empty-state">
-                    <i class="fas fa-book"></i>
-                    <p>No reading passage added yet. Click "Add New Reading Material" to create content.</p>
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <!-- Action Buttons -->
+            <div class="control-section">
+                <label class="control-label">Actions</label>
+                <div class="action-buttons">
+                    <button class="action-btn primary" onclick="openCreateModal()">
+                        <i class="fas fa-plus"></i>
+                        Add New Material
+                    </button>
+                    <button class="action-btn" onclick="openEditModal()">
+                        <i class="fas fa-edit"></i>
+                        Edit Selected
+                    </button>
+                    <button class="action-btn danger" onclick="deleteSelected()">
+                        <i class="fas fa-trash"></i>
+                        Delete Selected
+                    </button>
+                    <button class="action-btn" onclick="publishMaterial()">
+                        <i class="fas fa-paper-plane"></i>
+                        Publish Material
+                    </button>
                 </div>
             </div>
 
-            <!-- Questions Section -->
-            <div class="questions-section">
-                <h3>Reading Comprehension Questions</h3>
-                
-                <!-- Empty State -->
-                <div class="empty-state">
-                    <i class="fas fa-question-circle"></i>
-                    <p>No questions added yet. Click "Add New Reading Material" to create questions.</p>
+            <!-- Filter Controls -->
+            <div class="control-section">
+                <label class="control-label">Filters</label>
+                <div class="filter-controls">
+                    <div class="filter-group">
+                        <label class="form-label">Grade Level</label>
+                        <select class="filter-select" id="gradeFilter">
+                            <option value="7">Grade 7</option>
+                            <option value="8">Grade 8</option>
+                            <option value="9">Grade 9</option>
+                            <option value="10">Grade 10</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="form-label">Subject</label>
+                        <div class="subject-tabs">
+                            <button class="subject-tab" data-subject="english">
+                                <i class="fas fa-language"></i>
+                                English
+                            </button>
+                            <button class="subject-tab" data-subject="filipino">
+                                <i class="fas fa-flag"></i>
+                                Filipino
+                            </button>
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Button Group -->
-                <div class="button-group">
-                    <button class="submit-btn">Save Questions</button>
-                    <button class="clear-btn">Clear Form</button>
+        <!-- Content Display -->
+        <div class="content-display">
+            <!-- Reading Passage Card -->
+            <div class="content-card">
+                <div class="content-card-header">
+                    <h3><i class="fas fa-book-open"></i> Reading Passage</h3>
+                </div>
+                <div class="content-card-body" id="readingPassageContent">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="empty-state-title">No Reading Passage</div>
+                        <div class="empty-state-text">
+                            Select a grade and subject to view reading materials, or create new content using the "Add New Material" button above.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Questions Card -->
+            <div class="content-card">
+                <div class="content-card-header">
+                    <h3><i class="fas fa-question-circle"></i> Comprehension Questions</h3>
+                </div>
+                <div class="content-card-body" id="questionsContent">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <div class="empty-state-title">No Questions Available</div>
+                        <div class="empty-state-text">
+                            Questions will appear here when you select a reading material that contains comprehension questions.
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Modals -->
+    <!-- Create Modal -->
     <div id="createModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('createModal')">&times;</span>
-            <h2>Create New Reading Material</h2>
+            <button class="close-modal" onclick="closeModal('createModal')">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title">Create New Reading Material</h2>
+            </div>
             <form id="createForm">
                 <div class="form-group">
-                    <label for="grade">Grade Level:</label>
-                    <select id="grade" required>
+                    <label class="form-label" for="grade">Grade Level</label>
+                    <select class="form-select" id="grade" required>
                         <option value="7">Grade 7</option>
                         <option value="8">Grade 8</option>
                         <option value="9">Grade 9</option>
@@ -440,39 +608,52 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="subject">Subject:</label>
-                    <select id="subject" required>
+                    <label class="form-label" for="subject">Subject</label>
+                    <select class="form-select" id="subject" required>
                         <option value="english">English</option>
                         <option value="filipino">Filipino</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="title">Reading Title:</label>
-                    <input type="text" id="title" required>
+                    <label class="form-label" for="title">Reading Title</label>
+                    <input class="form-input" type="text" id="title" required placeholder="Enter the title of the reading material">
                 </div>
                 <div class="form-group">
-                    <label for="content">Reading Content:</label>
-                    <textarea id="content" rows="6" required></textarea>
+                    <label class="form-label" for="content">Reading Content</label>
+                    <textarea class="form-textarea" id="content" rows="6" required placeholder="Enter the reading passage content"></textarea>
                 </div>
                 <div id="questionsContainer">
-                    <h3>Questions</h3>
-                    <button type="button" class="admin-btn" onclick="addQuestion()">Add Question</button>
+                    <div class="form-group">
+                        <label class="form-label">Questions</label>
+                        <button type="button" class="action-btn" onclick="addQuestion()">
+                            <i class="fas fa-plus"></i>
+                            Add Question
+                        </button>
+                    </div>
                 </div>
-                <div style="margin-top: 2rem;">
-                    <button type="submit" class="admin-btn">Save Reading Material</button>
+                <div class="form-group" style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--neutral-light);">
+                    <button type="submit" class="action-btn primary" style="width: 100%;">
+                        <i class="fas fa-save"></i>
+                        Save Reading Material
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Edit Modal -->
     <div id="editModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('editModal')">&times;</span>
-            <h2>Edit Reading Material</h2>
+            <button class="close-modal" onclick="closeModal('editModal')">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-header">
+                <h2 class="modal-title">Edit Reading Material</h2>
+            </div>
             <form id="editForm">
                 <div class="form-group">
-                    <label for="edit-grade">Grade Level:</label>
-                    <select id="edit-grade" required>
+                    <label class="form-label" for="edit-grade">Grade Level</label>
+                    <select class="form-select" id="edit-grade" required>
                         <option value="7">Grade 7</option>
                         <option value="8">Grade 8</option>
                         <option value="9">Grade 9</option>
@@ -480,26 +661,34 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="edit-subject">Subject:</label>
-                    <select id="edit-subject" required>
+                    <label class="form-label" for="edit-subject">Subject</label>
+                    <select class="form-select" id="edit-subject" required>
                         <option value="english">English</option>
                         <option value="filipino">Filipino</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="edit-title">Reading Title:</label>
-                    <input type="text" id="edit-title" required>
+                    <label class="form-label" for="edit-title">Reading Title</label>
+                    <input class="form-input" type="text" id="edit-title" required>
                 </div>
                 <div class="form-group">
-                    <label for="edit-content">Reading Content:</label>
-                    <textarea id="edit-content" rows="6" required></textarea>
+                    <label class="form-label" for="edit-content">Reading Content</label>
+                    <textarea class="form-textarea" id="edit-content" rows="6" required></textarea>
                 </div>
                 <div id="editQuestionsContainer">
-                    <h3>Questions</h3>
-                    <button type="button" class="admin-btn" onclick="addEditQuestion()">Add Question</button>
+                    <div class="form-group">
+                        <label class="form-label">Questions</label>
+                        <button type="button" class="action-btn" onclick="addEditQuestion()">
+                            <i class="fas fa-plus"></i>
+                            Add Question
+                        </button>
+                    </div>
                 </div>
-                <div style="margin-top: 2rem;">
-                    <button type="submit" class="admin-btn">Save Changes</button>
+                <div class="form-group" style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--neutral-light);">
+                    <button type="submit" class="action-btn primary" style="width: 100%;">
+                        <i class="fas fa-save"></i>
+                        Save Changes
+                    </button>
                 </div>
             </form>
         </div>
@@ -508,35 +697,54 @@
     <script>
         // Function to fetch and display reading materials
         function fetchAndDisplayReadingMaterials() {
-            const selectedGrade = document.querySelector('.grade-selector select').value;
-            const selectedSubjectButton = document.querySelector('.subject-btn.active');
+            const selectedGrade = document.querySelector('#gradeFilter').value;
+            const selectedSubjectButton = document.querySelector('.subject-tab.active');
             const selectedSubject = selectedSubjectButton ? selectedSubjectButton.dataset.subject : null;
+
+            const readingContent = document.getElementById('readingPassageContent');
+            const questionsContent = document.getElementById('questionsContent');
 
             if (!selectedGrade || !selectedSubject) {
                 console.log('Grade or subject not selected.');
                 // Show empty state
-                document.querySelector('.reading-passage').innerHTML = `
-                    <h3>Reading Passage</h3>
+                readingContent.innerHTML = `
                     <div class="empty-state">
-                        <i class="fas fa-book"></i>
-                        <p>Select a grade and subject to view reading materials.</p>
+                        <div class="empty-state-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="empty-state-title">No Reading Passage</div>
+                        <div class="empty-state-text">
+                            Select a grade and subject to view reading materials, or create new content using the "Add New Material" button above.
+                        </div>
                     </div>
                 `;
-                document.querySelector('.questions-section').innerHTML = `
-                    <h3>Reading Comprehension Questions</h3>
+                questionsContent.innerHTML = `
                     <div class="empty-state">
-                        <i class="fas fa-question-circle"></i>
-                        <p>Select a grade and subject to view questions.</p>
+                        <div class="empty-state-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <div class="empty-state-title">No Questions Available</div>
+                        <div class="empty-state-text">
+                            Questions will appear here when you select a reading material that contains comprehension questions.
+                        </div>
                     </div>
                 `;
                 return;
             }
 
             // Show loading state
-            const readingPassageDiv = document.querySelector('.reading-passage');
-            const questionsSectionDiv = document.querySelector('.questions-section');
-            readingPassageDiv.innerHTML = '<h3>Reading Passage</h3><div class="empty-state"><i class="fas fa-sync fa-spin"></i><p>Loading...</p></div>';
-            questionsSectionDiv.innerHTML = '<h3>Reading Comprehension Questions</h3><div class="empty-state"><i class="fas fa-sync fa-spin"></i><p>Loading...</p></div>';
+            readingContent.innerHTML = `
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>Loading reading material...</p>
+                </div>
+            `;
+            questionsContent.innerHTML = `
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>Loading questions...</p>
+                </div>
+            `;
 
             // Get CSRF token
             const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -562,25 +770,28 @@
                 if (data && data.length > 0) {
                     // Display Reading Passage
                     const material = data[0];
-                    readingPassageDiv.innerHTML = `
-                        <h3>${material.title}</h3>
-                        <div class="reading-content">
-                            <p>${material.content}</p>
+                    readingContent.innerHTML = `
+                        <div class="reading-title">${material.title}</div>
+                        <div class="reading-content">${material.content}</div>
+                        <div class="status-indicator status-published" style="margin-top: 1rem;">
+                            <i class="fas fa-check-circle"></i>
+                            Published
                         </div>
                     `;
 
                     // Display Questions
-                    let questionsHtml = '<h3>Reading Comprehension Questions</h3>';
+                    let questionsHtml = '';
                     if (material.questions && material.questions.length > 0) {
-                        material.questions.forEach(question => {
+                        material.questions.forEach((question, index) => {
                             questionsHtml += `
-                                <div class="question">
-                                    <p><strong>${question.question}</strong></p>
+                                <div class="question-item">
+                                    <div class="question-text">Question ${index + 1}: ${question.question}</div>
                             `;
                             if (question.type === 'multiple' && question.options) {
-                                questionsHtml += '<div class="options-list">';
+                                questionsHtml += '<div class="question-options">';
                                 question.options.forEach(option => {
-                                    questionsHtml += `<div class="option-item">${option}</div>`;
+                                    const isCorrect = option === question.correct_answer;
+                                    questionsHtml += `<div class="option-item ${isCorrect ? 'correct-answer' : ''}">${option}${isCorrect ? ' ✓' : ''}</div>`;
                                 });
                                 questionsHtml += '</div>';
                             } else if (question.type === 'text') {
@@ -589,28 +800,41 @@
                             questionsHtml += `</div>`;
                         });
                     } else {
-                        questionsHtml += `
+                        questionsHtml = `
                             <div class="empty-state">
-                                <i class="fas fa-question-circle"></i>
-                                <p>No questions available for this reading material.</p>
+                                <div class="empty-state-icon">
+                                    <i class="fas fa-question-circle"></i>
+                                </div>
+                                <div class="empty-state-title">No Questions Available</div>
+                                <div class="empty-state-text">
+                                    No questions available for this reading material.
+                                </div>
                             </div>
                         `;
                     }
-                    questionsSectionDiv.innerHTML = questionsHtml;
+                    questionsContent.innerHTML = questionsHtml;
                 } else {
                     // Display empty state if no data
-                    readingPassageDiv.innerHTML = `
-                        <h3>Reading Passage</h3>
+                    readingContent.innerHTML = `
                         <div class="empty-state">
-                            <i class="fas fa-book"></i>
-                            <p>No reading passage added yet. Click "Add New Reading Material" to create content.</p>
+                            <div class="empty-state-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="empty-state-title">No Reading Passage</div>
+                            <div class="empty-state-text">
+                                No reading passage added yet. Click "Add New Material" to create content.
+                            </div>
                         </div>
                     `;
-                    questionsSectionDiv.innerHTML = `
-                        <h3>Reading Comprehension Questions</h3>
+                    questionsContent.innerHTML = `
                         <div class="empty-state">
-                            <i class="fas fa-question-circle"></i>
-                            <p>No questions added yet. Click "Add New Reading Material" to create questions.</p>
+                            <div class="empty-state-icon">
+                                <i class="fas fa-question-circle"></i>
+                            </div>
+                            <div class="empty-state-title">No Questions Available</div>
+                            <div class="empty-state-text">
+                                No questions added yet. Click "Add New Material" to create questions.
+                            </div>
                         </div>
                     `;
                 }
@@ -618,51 +842,57 @@
             .catch(error => {
                 console.error('Error fetching reading materials:', error);
                 // Display error state
-                readingPassageDiv.innerHTML = `
-                    <h3>Reading Passage</h3>
+                readingContent.innerHTML = `
                     <div class="empty-state">
-                        <i class="fas fa-exclamation-triangle" style="color: #dc2626;"></i>
-                        <p style="color: #dc2626;">Error loading reading materials: ${error.message}</p>
+                        <div class="empty-state-icon" style="color: var(--danger);">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="empty-state-title" style="color: var(--danger);">Error Loading Content</div>
+                        <div class="empty-state-text" style="color: var(--danger);">
+                            Error loading reading materials: ${error.message}
+                        </div>
                     </div>
                 `;
-                questionsSectionDiv.innerHTML = `
-                    <h3>Reading Comprehension Questions</h3>
+                questionsContent.innerHTML = `
                     <div class="empty-state">
-                        <i class="fas fa-exclamation-triangle" style="color: #dc2626;"></i>
-                        <p style="color: #dc2626;">Error loading questions: ${error.message}</p>
+                        <div class="empty-state-icon" style="color: var(--danger);">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="empty-state-title" style="color: var(--danger);">Error Loading Questions</div>
+                        <div class="empty-state-text" style="color: var(--danger);">
+                            Error loading questions: ${error.message}
+                        </div>
                     </div>
                 `;
             });
         }
 
         // Grade selector functionality
-        document.querySelector('.grade-selector select').addEventListener('change', function(e) {
+        document.querySelector('#gradeFilter').addEventListener('change', function(e) {
             const selectedGrade = e.target.value;
             console.log('Selected grade:', selectedGrade);
-            // Add your grade change logic here
-            fetchAndDisplayReadingMaterials(); // Call the new function
+            fetchAndDisplayReadingMaterials();
         });
 
-        // Subject button functionality
-        document.querySelectorAll('.subject-btn').forEach(button => {
+        // Subject tab functionality
+        document.querySelectorAll('.subject-tab').forEach(button => {
             button.addEventListener('click', function() {
                 // Remove active class from all buttons
-                document.querySelectorAll('.subject-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.subject-tab').forEach(btn => btn.classList.remove('active'));
                 // Add active class to clicked button
                 this.classList.add('active');
-                
+
                 const subject = this.dataset.subject;
                 console.log('Selected subject:', subject);
-                // Add your subject change logic here
-                fetchAndDisplayReadingMaterials(); // Call the new function
+                fetchAndDisplayReadingMaterials();
             });
         });
 
         // Initial load: Select a default subject (e.g., English) and fetch data
         document.addEventListener('DOMContentLoaded', function() {
-            const defaultSubjectButton = document.querySelector('.subject-btn[data-subject="english"]');
-            if (defaultSubjectButton) {
-                defaultSubjectButton.classList.add('active');
+            const defaultSubjectTab = document.querySelector('.subject-tab[data-subject="english"]');
+            if (defaultSubjectTab) {
+                defaultSubjectTab.classList.add('active');
             }
             fetchAndDisplayReadingMaterials();
         });
@@ -700,23 +930,30 @@
             questionContainers.forEach(container => {
                 const questionText = container.querySelector('input[name="questions[]"]').value;
                 const questionType = container.querySelector('select[name="questionTypes[]"]').value;
-                const options = container.querySelector('textarea[name="options[]"]').value.split('\n').filter(opt => opt.trim());
-                const correctAnswer = container.querySelector('select[name="correct[]"]').value;
+                let correctAnswer;
+                let options = null;
+
+                if (questionType === 'multiple') {
+                    options = container.querySelector('textarea[name="options[]"]').value.split('\n').filter(opt => opt.trim());
+                    correctAnswer = container.querySelector('select[name="correct[]"]').value;
+
+                    if (options.length < 2) {
+                        alert('Multiple choice questions must have at least 2 options');
+                        return;
+                    }
+                } else {
+                    correctAnswer = container.querySelector('input[name="correct-text[]"]').value;
+                }
 
                 if (!questionText || !questionType || !correctAnswer) {
                     alert('Please fill in all question fields');
                     return;
                 }
 
-                if (questionType === 'multiple' && options.length < 2) {
-                    alert('Multiple choice questions must have at least 2 options');
-                    return;
-                }
-
                 formData.questions.push({
                     question: questionText,
                     type: questionType,
-                    options: questionType === 'multiple' ? options : null,
+                    options: options,
                     correct_answer: correctAnswer
                 });
             });
@@ -771,25 +1008,78 @@
             });
         });
 
-        // Clear form functionality
-        document.querySelector('.clear-btn').addEventListener('click', function() {
-            // Clear radio buttons
-            document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
-            // Clear text input
-            document.querySelector('.text-input').value = '';
-            // Remove active class from subject buttons
-            document.querySelectorAll('.subject-btn').forEach(btn => btn.classList.remove('active'));
-            // Reset grade selector
-            document.querySelector('.grade-selector select').selectedIndex = 0;
-        });
+        // Publish material function
+        function publishMaterial() {
+            const selectedGrade = document.querySelector('#gradeFilter').value;
+            const selectedSubjectButton = document.querySelector('.subject-tab.active');
+            const selectedSubject = selectedSubjectButton ? selectedSubjectButton.dataset.subject : null;
 
-        // Add values to radio buttons
-        document.querySelectorAll('input[name="q1"]').forEach((radio, index) => {
-            radio.value = radio.parentElement.textContent.trim();
-        });
-        document.querySelectorAll('input[name="q2"]').forEach((radio, index) => {
-            radio.value = radio.parentElement.textContent.trim();
-        });
+            if (!selectedGrade || !selectedSubject) {
+                alert('Please select a grade and subject first');
+                return;
+            }
+
+            if (!confirm('Are you sure you want to publish the reading material for Grade ' + selectedGrade + ' ' + selectedSubject + '? This will make it available to students.')) {
+                return;
+            }
+
+            // Get CSRF token
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            // First, get the material ID using the admin endpoint
+            fetch(`/api/reading-materials/admin/${selectedGrade}/${selectedSubject}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': token
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.length > 0) {
+                    const materialId = data[0].id;
+                    // Now publish the material
+                    return fetch(`/api/reading-materials/${materialId}/publish`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': token,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({}),
+                        credentials: 'same-origin'
+                    });
+                } else {
+                    throw new Error('No reading material found to publish');
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to publish reading material');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert(`Reading material published successfully!\n\nGrade: ${selectedGrade}\nSubject: ${selectedSubject.charAt(0).toUpperCase() + selectedSubject.slice(1)}\n\nThis material is now visible to Grade ${selectedGrade} students in the ${selectedSubject.charAt(0).toUpperCase() + selectedSubject.slice(1)} section.`);
+                    // Refresh the display
+                    fetchAndDisplayReadingMaterials();
+                } else {
+                    throw new Error(data.message || 'Failed to publish reading material');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error: ' + (error.message || 'Failed to publish reading material'));
+            });
+        }
 
         // CRUD Operations
         function openCreateModal() {
@@ -797,8 +1087,8 @@
         }
 
         function openEditModal() {
-            const selectedGrade = document.querySelector('.grade-selector select').value;
-            const selectedSubjectButton = document.querySelector('.subject-btn.active');
+            const selectedGrade = document.querySelector('#gradeFilter').value;
+            const selectedSubjectButton = document.querySelector('.subject-tab.active');
             const selectedSubject = selectedSubjectButton ? selectedSubjectButton.dataset.subject : null;
 
             if (!selectedGrade || !selectedSubject) {
@@ -833,78 +1123,96 @@
                     document.getElementById('edit-title').value = material.title;
                     document.getElementById('edit-content').value = material.content;
                     const questionsContainer = document.getElementById('editQuestionsContainer');
-                    questionsContainer.innerHTML = '<h3>Questions</h3>';
+                    questionsContainer.innerHTML = `
+                        <div class="form-group">
+                            <label class="form-label">Questions</label>
+                        </div>
+                    `;
                     material.questions.forEach(question => {
                         const questionDiv = document.createElement('div');
                         questionDiv.className = 'question-container';
                         if (question.type === 'multiple') {
                             questionDiv.innerHTML = `
                                 <div class="form-group">
-                                    <label>Question:</label>
-                                    <input type="text" name="edit-questions[]" value="${question.question}" required>
+                                    <label class="form-label">Question</label>
+                                    <input class="form-input" type="text" name="edit-questions[]" value="${question.question}" required placeholder="Enter your question">
                                 </div>
                                 <div class="form-group">
-                                    <label>Question Type:</label>
-                                    <select name="edit-questionTypes[]" onchange="toggleEditAnswerType(this)">
+                                    <label class="form-label">Question Type</label>
+                                    <select class="form-select" name="edit-questionTypes[]" onchange="toggleEditAnswerType(this)">
                                         <option value="multiple" selected>Multiple Choice</option>
                                         <option value="text">Text Answer</option>
                                     </select>
                                 </div>
                                 <div class="multiple-choice-options" style="display: block">
                                     <div class="form-group">
-                                        <label>Options (one per line):</label>
-                                        <textarea name="edit-options[]" rows="4" placeholder="Enter each option on a new line">${question.options ? question.options.join('\n') : ''}</textarea>
+                                        <label class="form-label">Options (one per line)</label>
+                                        <textarea class="form-textarea" name="edit-options[]" rows="4" placeholder="Enter each option on a new line">${question.options ? question.options.join('\n') : ''}</textarea>
                                     </div>
                                     <div class="form-group">
-                                        <label>Correct Answer:</label>
-                                        <select name="edit-correct[]">
+                                        <label class="form-label">Correct Answer</label>
+                                        <select class="form-select" name="edit-correct[]">
                                             <option value="">Select correct answer</option>
-                                            ${question.options ? question.options.map(opt => 
+                                            ${question.options ? question.options.map(opt =>
                                                 `<option value="${opt}" ${opt === question.correct_answer ? 'selected' : ''}>${opt}</option>`
                                             ).join('') : ''}
                                         </select>
                                     </div>
                                 </div>
-                                <button type="button" class="admin-btn delete" onclick="removeEditQuestion(this)">Remove Question</button>
+                                <div class="text-answer-option" style="display: none;">
+                                    <div class="form-group">
+                                        <label class="form-label">Correct Answer (Text)</label>
+                                        <input class="form-input" type="text" name="edit-correct-text[]" placeholder="Enter correct answer">
+                                    </div>
+                                </div>
+                                <button type="button" class="action-btn danger" onclick="removeEditQuestion(this)" style="margin-top: 1rem;">
+                                    <i class="fas fa-trash"></i>
+                                    Remove Question
+                                </button>
                             `;
                         } else {
                             questionDiv.innerHTML = `
                                 <div class="form-group">
-                                    <label>Question:</label>
-                                    <input type="text" name="edit-questions[]" value="${question.question}" required>
+                                    <label class="form-label">Question</label>
+                                    <input class="form-input" type="text" name="edit-questions[]" value="${question.question}" required placeholder="Enter your question">
                                 </div>
                                 <div class="form-group">
-                                    <label>Question Type:</label>
-                                    <select name="edit-questionTypes[]" onchange="toggleEditAnswerType(this)">
+                                    <label class="form-label">Question Type</label>
+                                    <select class="form-select" name="edit-questionTypes[]" onchange="toggleEditAnswerType(this)">
                                         <option value="multiple">Multiple Choice</option>
                                         <option value="text" selected>Text Answer</option>
                                     </select>
                                 </div>
                                 <div class="multiple-choice-options" style="display: none">
                                     <div class="form-group">
-                                        <label>Options (one per line):</label>
-                                        <textarea name="edit-options[]" rows="4" placeholder="Enter each option on a new line"></textarea>
+                                        <label class="form-label">Options (one per line)</label>
+                                        <textarea class="form-textarea" name="edit-options[]" rows="4" placeholder="Enter each option on a new line"></textarea>
                                     </div>
                                     <div class="form-group">
-                                        <label>Correct Answer:</label>
-                                        <select name="edit-correct[]">
+                                        <label class="form-label">Correct Answer</label>
+                                        <select class="form-select" name="edit-correct[]">
                                             <option value="">Select correct answer</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Correct Answer (Text):</label>
-                                    <input type="text" name="edit-correct-text[]" value="${question.correct_answer || ''}" placeholder="Enter correct answer">
+                                <div class="text-answer-option" style="display: block;">
+                                    <div class="form-group">
+                                        <label class="form-label">Correct Answer (Text)</label>
+                                        <input class="form-input" type="text" name="edit-correct-text[]" value="${question.correct_answer || ''}" placeholder="Enter correct answer">
+                                    </div>
                                 </div>
-                                <button type="button" class="admin-btn delete" onclick="removeEditQuestion(this)">Remove Question</button>
+                                <button type="button" class="action-btn danger" onclick="removeEditQuestion(this)" style="margin-top: 1rem;">
+                                    <i class="fas fa-trash"></i>
+                                    Remove Question
+                                </button>
                             `;
                         }
                         questionsContainer.appendChild(questionDiv);
                     });
                     const addButton = document.createElement('button');
                     addButton.type = 'button';
-                    addButton.className = 'admin-btn';
-                    addButton.textContent = 'Add Question';
+                    addButton.className = 'action-btn';
+                    addButton.innerHTML = '<i class="fas fa-plus"></i> Add Question';
                     addButton.onclick = addEditQuestion;
                     questionsContainer.appendChild(addButton);
                     document.getElementById('editModal').classList.add('active');
@@ -928,29 +1236,38 @@
             questionDiv.className = 'question-container';
             questionDiv.innerHTML = `
                 <div class="form-group">
-                    <label>Question:</label>
-                    <input type="text" name="questions[]" required>
+                    <label class="form-label">Question</label>
+                    <input class="form-input" type="text" name="questions[]" required placeholder="Enter your question">
                 </div>
                 <div class="form-group">
-                    <label>Question Type:</label>
-                    <select name="questionTypes[]" onchange="toggleAnswerType(this)">
+                    <label class="form-label">Question Type</label>
+                    <select class="form-select" name="questionTypes[]" onchange="toggleAnswerType(this)">
                         <option value="multiple">Multiple Choice</option>
                         <option value="text">Text Answer</option>
                     </select>
                 </div>
                 <div class="multiple-choice-options">
                     <div class="form-group">
-                        <label>Options (one per line):</label>
-                        <textarea name="options[]" rows="4" placeholder="Enter each option on a new line"></textarea>
+                        <label class="form-label">Options (one per line)</label>
+                        <textarea class="form-textarea" name="options[]" rows="4" placeholder="Enter each option on a new line"></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Correct Answer:</label>
-                        <select name="correct[]">
+                        <label class="form-label">Correct Answer</label>
+                        <select class="form-select" name="correct[]">
                             <option value="">Select correct answer</option>
                         </select>
                     </div>
                 </div>
-                <button type="button" class="admin-btn delete" onclick="removeQuestion(this)">Remove Question</button>
+                <div class="text-answer-option" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Correct Answer (Text)</label>
+                        <input class="form-input" type="text" name="correct-text[]" placeholder="Enter correct answer">
+                    </div>
+                </div>
+                <button type="button" class="action-btn danger" onclick="removeQuestion(this)" style="margin-top: 1rem;">
+                    <i class="fas fa-trash"></i>
+                    Remove Question
+                </button>
             `;
             container.appendChild(questionDiv);
         }
@@ -960,13 +1277,22 @@
         }
 
         function toggleAnswerType(select) {
-            const multipleChoiceDiv = select.parentElement.nextElementSibling;
-            multipleChoiceDiv.style.display = select.value === 'multiple' ? 'block' : 'none';
+            const container = select.closest('.question-container');
+            const multipleChoiceDiv = container.querySelector('.multiple-choice-options');
+            const textAnswerDiv = container.querySelector('.text-answer-option');
+
+            if (select.value === 'multiple') {
+                multipleChoiceDiv.style.display = 'block';
+                textAnswerDiv.style.display = 'none';
+            } else {
+                multipleChoiceDiv.style.display = 'none';
+                textAnswerDiv.style.display = 'block';
+            }
         }
 
         function deleteSelected() {
-            const selectedGrade = document.querySelector('.grade-selector select').value;
-            const selectedSubjectButton = document.querySelector('.subject-btn.active');
+            const selectedGrade = document.querySelector('#gradeFilter').value;
+            const selectedSubjectButton = document.querySelector('.subject-tab.active');
             const selectedSubject = selectedSubjectButton ? selectedSubjectButton.dataset.subject : null;
 
             if (!selectedGrade || !selectedSubject) {
@@ -1057,14 +1383,15 @@
 
         // Update the select options when options textarea changes
         function updateCorrectAnswerOptions(textarea) {
-            const select = textarea.parentElement.nextElementSibling.querySelector('select');
+            const container = textarea.closest('.question-container');
+            const select = container.querySelector('select[name="correct[]"]');
             const options = textarea.value.split('\n').filter(option => option.trim() !== '');
-            
+
             // Clear existing options except the first one
             while (select.options.length > 1) {
                 select.remove(1);
             }
-            
+
             // Add new options
             options.forEach(option => {
                 const optionElement = document.createElement('option');
@@ -1087,29 +1414,38 @@
             questionDiv.className = 'question-container';
             questionDiv.innerHTML = `
                 <div class="form-group">
-                    <label>Question:</label>
-                    <input type="text" name="edit-questions[]" required>
+                    <label class="form-label">Question</label>
+                    <input class="form-input" type="text" name="edit-questions[]" required placeholder="Enter your question">
                 </div>
                 <div class="form-group">
-                    <label>Question Type:</label>
-                    <select name="edit-questionTypes[]" onchange="toggleEditAnswerType(this)">
+                    <label class="form-label">Question Type</label>
+                    <select class="form-select" name="edit-questionTypes[]" onchange="toggleEditAnswerType(this)">
                         <option value="multiple">Multiple Choice</option>
                         <option value="text">Text Answer</option>
                     </select>
                 </div>
                 <div class="multiple-choice-options">
                     <div class="form-group">
-                        <label>Options (one per line):</label>
-                        <textarea name="edit-options[]" rows="4" placeholder="Enter each option on a new line"></textarea>
+                        <label class="form-label">Options (one per line)</label>
+                        <textarea class="form-textarea" name="edit-options[]" rows="4" placeholder="Enter each option on a new line"></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Correct Answer:</label>
-                        <select name="edit-correct[]">
+                        <label class="form-label">Correct Answer</label>
+                        <select class="form-select" name="edit-correct[]">
                             <option value="">Select correct answer</option>
                         </select>
                     </div>
                 </div>
-                <button type="button" class="admin-btn delete" onclick="removeEditQuestion(this)">Remove Question</button>
+                <div class="text-answer-option" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Correct Answer (Text)</label>
+                        <input class="form-input" type="text" name="edit-correct-text[]" placeholder="Enter correct answer">
+                    </div>
+                </div>
+                <button type="button" class="action-btn danger" onclick="removeEditQuestion(this)" style="margin-top: 1rem;">
+                    <i class="fas fa-trash"></i>
+                    Remove Question
+                </button>
             `;
             container.appendChild(questionDiv);
         }
@@ -1119,8 +1455,17 @@
         }
 
         function toggleEditAnswerType(select) {
-            const multipleChoiceDiv = select.parentElement.nextElementSibling;
-            multipleChoiceDiv.style.display = select.value === 'multiple' ? 'block' : 'none';
+            const container = select.closest('.question-container');
+            const multipleChoiceDiv = container.querySelector('.multiple-choice-options');
+            const textAnswerDiv = container.querySelector('.text-answer-option');
+
+            if (select.value === 'multiple') {
+                multipleChoiceDiv.style.display = 'block';
+                textAnswerDiv.style.display = 'none';
+            } else {
+                multipleChoiceDiv.style.display = 'none';
+                textAnswerDiv.style.display = 'block';
+            }
         }
 
         // Update the select options when options textarea changes for edit form
@@ -1131,14 +1476,15 @@
         });
 
         function updateEditCorrectAnswerOptions(textarea) {
-            const select = textarea.parentElement.nextElementSibling.querySelector('select');
+            const container = textarea.closest('.question-container');
+            const select = container.querySelector('select[name="edit-correct[]"]');
             const options = textarea.value.split('\n').filter(option => option.trim() !== '');
-            
+
             // Clear existing options except the first one
             while (select.options.length > 1) {
                 select.remove(1);
             }
-            
+
             // Add new options
             options.forEach(option => {
                 const optionElement = document.createElement('option');
@@ -1181,23 +1527,30 @@
             questionContainers.forEach(container => {
                 const questionText = container.querySelector('input[name="edit-questions[]"]').value;
                 const questionType = container.querySelector('select[name="edit-questionTypes[]"]').value;
-                const options = container.querySelector('textarea[name="edit-options[]"]').value.split('\n').filter(opt => opt.trim());
-                const correctAnswer = container.querySelector('select[name="edit-correct[]"]').value;
+                let correctAnswer;
+                let options = null;
+
+                if (questionType === 'multiple') {
+                    options = container.querySelector('textarea[name="edit-options[]"]').value.split('\n').filter(opt => opt.trim());
+                    correctAnswer = container.querySelector('select[name="edit-correct[]"]').value;
+
+                    if (options.length < 2) {
+                        alert('Multiple choice questions must have at least 2 options');
+                        return;
+                    }
+                } else {
+                    correctAnswer = container.querySelector('input[name="edit-correct-text[]"]').value;
+                }
 
                 if (!questionText || !questionType || !correctAnswer) {
                     alert('Please fill in all question fields');
                     return;
                 }
 
-                if (questionType === 'multiple' && options.length < 2) {
-                    alert('Multiple choice questions must have at least 2 options');
-                    return;
-                }
-
                 formData.questions.push({
                     question: questionText,
                     type: questionType,
-                    options: questionType === 'multiple' ? options : null,
+                    options: options,
                     correct_answer: correctAnswer
                 });
             });
@@ -1209,8 +1562,8 @@
             submitButton.textContent = 'Saving...';
 
             // Get the material ID from the current selection
-            const selectedGrade = document.querySelector('.grade-selector select').value;
-            const selectedSubjectButton = document.querySelector('.subject-btn.active');
+            const selectedGrade = document.querySelector('#gradeFilter').value;
+            const selectedSubjectButton = document.querySelector('.subject-tab.active');
             const selectedSubject = selectedSubjectButton ? selectedSubjectButton.dataset.subject : null;
 
             // Send to server
@@ -1272,78 +1625,7 @@
             });
         });
 
-        // Publish functionality
-        function publishMaterial() {
-            const selectedGrade = document.querySelector('.grade-selector select').value;
-            const selectedSubjectButton = document.querySelector('.subject-btn.active');
-            const selectedSubject = selectedSubjectButton ? selectedSubjectButton.dataset.subject : null;
 
-            if (!selectedGrade || !selectedSubject) {
-                alert('Please select a grade and subject first');
-                return;
-            }
-
-            if (!confirm('Are you sure you want to publish this reading material? This will make it available to students.')) {
-                return;
-            }
-
-            // Get CSRF token
-            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-            // First, get the material ID using the admin endpoint
-            fetch(`/api/reading-materials/admin/${selectedGrade}/${selectedSubject}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': token
-                },
-                credentials: 'same-origin'
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data && data.length > 0) {
-                    const materialId = data[0].id;
-                    // Now publish the material
-                    return fetch(`/api/reading-materials/${materialId}/publish`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': token,
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({}),
-                        credentials: 'same-origin'
-                    });
-                } else {
-                    throw new Error('No reading material found to publish');
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to publish reading material');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    alert(`Reading material published successfully!\n\nGrade: ${selectedGrade}\nSubject: ${selectedSubject}\n\nThis material will now be visible to ${selectedGrade} students in the ${selectedSubject} section.`);
-                    // Refresh the display
-                    fetchAndDisplayReadingMaterials();
-                } else {
-                    throw new Error(data.message || 'Failed to publish reading material');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error: ' + (error.message || 'Failed to publish reading material'));
-            });
-        }
     </script>
 <!-- </body>
 

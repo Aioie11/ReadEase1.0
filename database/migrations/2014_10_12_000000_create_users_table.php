@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('role')->default('teacher');
             $table->string('grade')->nullable();
             $table->string('section')->nullable();
+            $table->boolean('must_change_password')->default(true);
+            $table->timestamp('password_changed_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

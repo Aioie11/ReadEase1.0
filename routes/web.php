@@ -37,8 +37,14 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-// Protected Routes
-Route::middleware(['web'])->group(function () {
+// Password Change Routes (require auth but NOT password.change middleware)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/change-password', [LoginController::class, 'showChangePasswordForm'])->name('password.change');
+    Route::post('/change-password', [LoginController::class, 'changePassword'])->name('password.change.post');
+});
+
+// Protected Routes (require authentication and password change if needed)
+Route::middleware(['web', 'auth', 'password.change'])->group(function () {
     // Teacher Routes
     Route::prefix('teacher')->group(function () {
         Route::get('/dashboard', [TeacherController::class, 'dashboard'])->name('teacher.dashboard');
@@ -62,7 +68,7 @@ Route::middleware(['web'])->group(function () {
                     return [
                         'id' => $student->id,
                         'student_number' => $student->student_number,
-                        'name' => $student->first_name . ' ' . $student->last_name,
+                        'name' => $student->last_name . ', ' . $student->first_name . ' ' . ($student->middle_name ? $student->middle_name : ''),
                         'initials' => strtoupper(substr($student->first_name, 0, 1) . substr($student->last_name, 0, 1)),
                         'grade_level' => $student->grade_level,
                         'section' => $student->section,

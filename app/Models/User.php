@@ -20,11 +20,16 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'email',
         'userId',
         'password',
         'role',
         'grade',
         'section',
+        'gender',
+        'teacherGrade',
+        'must_change_password',
+        'password_changed_at',
     ];
 
     /**
@@ -45,6 +50,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'must_change_password' => 'boolean',
+        'password_changed_at' => 'datetime',
     ];
 
     public static function generateUserId($role)
