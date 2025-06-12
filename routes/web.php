@@ -137,9 +137,7 @@ Route::middleware(['web', 'auth', 'password.change'])->group(function () {
 
         Route::get('/viewreports', [ReportsController::class, 'index'])->name('teacher.viewreports');
 
-        Route::get('/filipinoreport', function () {
-            return view('teacher.filipinoreport');
-        })->name('teacher.filipinoreport');
+        Route::get('/filipinoreport', [ReportsController::class, 'filipinoReport'])->name('teacher.filipinoreport');
 
         // Reading Assessment Routes
         Route::post('/save-reading-assessment', [ReportsController::class, 'saveReadingAssessment'])->name('teacher.save-reading-assessment');
@@ -254,4 +252,8 @@ Route::get('/api/student-assessment/{studentName}/{grade}/{section}/{language}',
 // Reading Level Distribution Routes
 Route::get('/api/reading-level-distribution/english', [ReportsController::class, 'getEnglishReadingLevelDistribution']);
 Route::get('/api/reading-level-distribution/filipino', [ReportsController::class, 'getFilipinoReadingLevelDistribution']);
+
+// Comprehension Level Distribution Routes
+Route::get('/api/comprehension-level-distribution/english', [ReportsController::class, 'getEnglishComprehensionLevelDistribution']);
+Route::get('/api/comprehension-level-distribution/filipino', [ReportsController::class, 'getFilipinoComprehensionLevelDistribution']);
 

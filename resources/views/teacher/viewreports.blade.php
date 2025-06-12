@@ -18,7 +18,7 @@
             <div class="dashboard-column main-column">
                 <div class="filter-controls">
                     <div class="filter-group">
-
+                        <div class="filter-label">Subject</div>
                         <div class="filter-options">
                             <button class="filter-btn active">English</button>
                             <button class="filter-btn"
@@ -28,21 +28,15 @@
                     <div class="filter-group">
                         <div class="filter-label">View by</div>
                         <div class="filter-options">
-                            <select class="custom-select" id="sectionFilter" onchange="updateGradeLevelData()">
-                                <option value="all" {{ ($section ?? 'all') == 'all' ? 'selected' : '' }}>All Sections
-                                </option>
-                                <option value="narra" {{ ($section ?? '') == 'narra' ? 'selected' : '' }}>Narra</option>
-                                <option value="lawaan" {{ ($section ?? '') == 'lawaan' ? 'selected' : '' }}>Lawaan
-                                </option>
-                                <option value="dao" {{ ($section ?? '') == 'dao' ? 'selected' : '' }}>Dao</option>
-                                <option value="mahugani" {{ ($section ?? '') == 'mahugani' ? 'selected' : '' }}>Mahugani
-                                </option>
+                            <select class="custom-select" id="gradeFilter" onchange="updateSectionOptions()">
+                                <option value="7" {{ (string)($grade ?? '7') == '7' ? 'selected' : '' }}>Grade 7</option>
+                                <option value="8" {{ (string)($grade ?? '7') == '8' ? 'selected' : '' }}>Grade 8</option>
+                                <option value="9" {{ (string)($grade ?? '7') == '9' ? 'selected' : '' }}>Grade 9</option>
+                                <option value="10" {{ (string)($grade ?? '7') == '10' ? 'selected' : '' }}>Grade 10</option>
                             </select>
-                            <select class="custom-select" id="gradeFilter" onchange="updateGradeLevelData()">
-                                <option value="7" {{ ($grade ?? '7') == '7' ? 'selected' : '' }}>Grade 7</option>
-                                <option value="8" {{ ($grade ?? '7') == '8' ? 'selected' : '' }}>Grade 8</option>
-                                <option value="9" {{ ($grade ?? '7') == '9' ? 'selected' : '' }}>Grade 9</option>
-                                <option value="10" {{ ($grade ?? '7') == '10' ? 'selected' : '' }}>Grade 10</option>
+                            <select class="custom-select" id="sectionFilter" onchange="updateGradeLevelData()">
+                                <option value="all" {{ (string)($section ?? 'all') == 'all' ? 'selected' : '' }}>All Sections</option>
+                                <!-- Dynamic options will be populated by JavaScript -->
                             </select>
                         </div>
                     </div>
@@ -50,9 +44,9 @@
 
                 <div class="chart-panel">
                     <div class="chart-panel-header">
-                        <h3>📊 Reading Performance Distribution by Grade Level</h3>
+                        <h3 id="chartTitle">📊 Reading Performance Distribution - Grade {{ (string)($grade ?? '7') }}</h3>
                         <div class="time-selector">
-                            <button class="time-btn active">All Grades</button>
+                            <button class="time-btn active">Selected Grade</button>
                         </div>
                     </div>
                     <div class="chart-panel-body">
@@ -927,68 +921,76 @@
         // Get chart data from backend
         const gradeDistribution = @json($grade_distribution ?? []);
         const readingLevelDistribution = @json($reading_level_distribution ?? []);
+        const currentGrade = '{{ (string)($grade ?? "7") }}';
 
-        // Prepare chart data
-        const chartLabels = Object.keys(gradeDistribution);
-        const independentData = chartLabels.map(grade => gradeDistribution[grade]?.Independent || 0);
-        const instructionalData = chartLabels.map(grade => gradeDistribution[grade]?.Instructional || 0);
-        const frustrationData = chartLabels.map(grade => gradeDistribution[grade]?.Frustration || 0);
+        // Function to get chart data for specific grade
+        function getChartDataForGrade(selectedGrade) {
+            const gradeKey = `Grade ${selectedGrade}`;
+            const gradeData = gradeDistribution[gradeKey] || { Independent: 0, Instructional: 0, Frustration: 0 };
+
+            return {
+                labels: [gradeKey],
+                independentData: [gradeData.Independent || 0],
+                instructionalData: [gradeData.Instructional || 0],
+                frustrationData: [gradeData.Frustration || 0]
+            };
+        }
+
+        // Get initial chart data for current grade
+        const initialChartData = getChartDataForGrade(currentGrade);
 
         window.mainChart = new Chart(mainCtx, {
-            type: 'bar',
+            type: 'pie',
             data: {
-                labels: chartLabels.length > 0 ? chartLabels : ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'],
-                datasets: [
-                    {
-                        label: 'Independent Level (90-100%)',
-                        data: independentData.length > 0 ? independentData : [0, 0, 0, 0],
-                        backgroundColor: '#00B8A9',
-                        borderColor: '#00B8A9',
-                        borderWidth: 2,
-                        borderRadius: 8,
-                        borderSkipped: false,
-                    },
-                    {
-                        label: 'Instructional Level (70-89%)',
-                        data: instructionalData.length > 0 ? instructionalData : [0, 0, 0, 0],
-                        backgroundColor: '#F6AD55',
-                        borderColor: '#F6AD55',
-                        borderWidth: 2,
-                        borderRadius: 8,
-                        borderSkipped: false,
-                    },
-                    {
-                        label: 'Frustration Level (Below 70%)',
-                        data: frustrationData.length > 0 ? frustrationData : [0, 0, 0, 0],
-                        backgroundColor: '#E53E3E',
-                        borderColor: '#E53E3E',
-                        borderWidth: 2,
-                        borderRadius: 8,
-                        borderSkipped: false,
-                    }
-                ]
+                labels: ['Independent Level (90-100%)', 'Instructional Level (70-89%)', 'Frustration Level (Below 70%)'],
+                datasets: [{
+                    data: [
+                        initialChartData.independentData[0],
+                        initialChartData.instructionalData[0],
+                        initialChartData.frustrationData[0]
+                    ],
+                    backgroundColor: ['#00B8A9', '#F6AD55', '#E53E3E'],
+                    borderColor: '#FFFFFF',
+                    borderWidth: 2,
+                }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
                 plugins: {
                     legend: {
                         display: true,
-                        position: 'top',
+                        position: 'right',
                         align: 'center',
                         labels: {
                             usePointStyle: true,
-                            pointStyle: 'rect',
+                            pointStyle: 'circle',
                             padding: 20,
                             font: {
                                 size: 12,
                                 weight: '600'
                             },
-                            color: '#2D3748'
+                            color: '#2D3748',
+                            generateLabels: function(chart) {
+                                const data = chart.data;
+                                if (data.labels.length && data.datasets.length) {
+                                    return data.labels.map(function(label, i) {
+                                        const value = data.datasets[0].data[i];
+                                        const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        
+                                        return {
+                                            text: `${label}: ${value} students (${percentage}%)`,
+                                            fillStyle: data.datasets[0].backgroundColor[i],
+                                            strokeStyle: data.datasets[0].backgroundColor[i],
+                                            lineWidth: 2,
+                                            hidden: isNaN(data.datasets[0].data[i]),
+                                            index: i
+                                        };
+                                    });
+                                }
+                                return [];
+                            }
                         }
                     },
                     tooltip: {
@@ -1008,175 +1010,170 @@
                             size: 13
                         },
                         callbacks: {
-                            title: function (context) {
-                                return `${context[0].label} Reading Performance`;
-                            },
-                            label: function (context) {
-                                const datasetLabel = context.dataset.label;
-                                const value = context.parsed.y;
-                                const total = context.chart.data.datasets.reduce((sum, dataset) => {
-                                    return sum + dataset.data[context.dataIndex];
-                                }, 0);
+                            title: function(context) {
+                                const label = context[0].label;
+                                const value = context[0].raw;
+                                const total = context[0].dataset.data.reduce((a, b) => a + b, 0);
                                 const percentage = ((value / total) * 100).toFixed(1);
-
-                                return `${datasetLabel}: ${value} students (${percentage}%)`;
+                                return `${label}\n${value} students (${percentage}%)`;
                             },
-                            afterBody: function (context) {
-                                const dataIndex = context[0].dataIndex;
-                                const total = context[0].chart.data.datasets.reduce((sum, dataset) => {
-                                    return sum + dataset.data[dataIndex];
-                                }, 0);
-                                return `Total Students: ${total}`;
+                            label: function(context) {
+                                const label = context.label;
+                                const value = context.raw;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                
+                                let description = '';
+                                if (label.includes('Independent')) {
+                                    description = 'Students who read fluently without assistance';
+                                } else if (label.includes('Instructional')) {
+                                    description = 'Students who can read with teacher support';
+                                } else if (label.includes('Frustration')) {
+                                    description = 'Students who struggle with reading material';
+                                }
+                                
+                                return [
+                                    `Total Students: ${total}`,
+                                    `Reading Level: ${label.split(' ')[0]}`,
+                                    `Description: ${description}`
+                                ];
                             }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        stacked: false,
-                        grid: {
-                            color: 'rgba(0, 184, 169, 0.1)',
-                            drawBorder: false,
-                            lineWidth: 1
-                        },
-                        ticks: {
-                            padding: 15,
-                            font: {
-                                size: 12,
-                                weight: '500'
-                            },
-                            color: '#4A5568',
-                            callback: function (value) {
-                                return value + ' students';
-                            }
-                        },
-                        title: {
-                            display: true,
-                            text: 'Number of Students',
-                            font: {
-                                size: 14,
-                                weight: 'bold'
-                            },
-                            color: '#2D3748',
-                            padding: 20
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks: {
-                            padding: 15,
-                            font: {
-                                size: 13,
-                                weight: '600'
-                            },
-                            color: '#2D3748'
-                        },
-                        title: {
-                            display: true,
-                            text: 'Grade Levels',
-                            font: {
-                                size: 14,
-                                weight: 'bold'
-                            },
-                            color: '#2D3748',
-                            padding: 15
                         }
                     }
                 }
             }
         });
 
-        // Define clean chart options with consistent design
-        const cleanChartOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(255, 255, 255, 0.98)',
-                    titleColor: '#1A202C',
-                    bodyColor: '#2D3748',
-                    borderColor: '#00B8A9',
-                    borderWidth: 2,
-                    cornerRadius: 8,
-                    displayColors: true,
-                    padding: 12,
-                    titleFont: {
-                        size: 13,
-                        weight: 'bold'
-                    },
-                    bodyFont: {
-                        size: 12
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(0, 184, 169, 0.1)',
-                        drawBorder: false,
-                        lineWidth: 1
-                    },
-                    ticks: {
-                        padding: 10,
-                        font: {
-                            size: 11,
-                            weight: '500'
-                        },
-                        color: '#4A5568'
-                    }
-                },
-                x: {
-                    grid: {
-                        display: false,
-                        drawBorder: false
-                    },
-                    ticks: {
-                        padding: 10,
-                        font: {
-                            size: 11,
-                            weight: '500'
-                        },
-                        color: '#2D3748'
-                    }
-                }
-            }
+        // Function to update chart for selected grade
+        function updateChartForGrade(selectedGrade) {
+            const chartData = getChartDataForGrade(selectedGrade);
+
+            // Update chart data
+            window.mainChart.data.datasets[0].data = [
+                chartData.independentData[0],
+                chartData.instructionalData[0],
+                chartData.frustrationData[0]
+            ];
+
+            // Update chart title
+            document.getElementById('chartTitle').textContent = `📊 Reading Performance Distribution - Grade ${selectedGrade}`;
+
+            // Update chart
+            window.mainChart.update('active');
+        }
+
+        // Grade to Section mapping
+        const gradeSectionMapping = {
+            '7': ['narra', 'lawaan', 'dao', 'mahugani'],
+            '8': ['avocado', 'duhat', 'mango', 'guava'],
+            '9': ['gold', 'zinc', 'silver'],
+            '10': ['galileo', 'newton', 'edison']
         };
 
+        // Make functions globally accessible
+        window.updateSectionOptions = updateSectionOptions;
+        window.updateGradeLevelData = updateGradeLevelData;
 
-    });
+        // Function to update section options based on selected grade
+        function updateSectionOptions() {
+            const gradeSelect = document.getElementById('gradeFilter');
+            const sectionSelect = document.getElementById('sectionFilter');
+            const selectedGrade = gradeSelect.value;
 
-    // Function to update grade level data
-    function updateGradeLevelData() {
-        const grade = document.getElementById('gradeFilter').value;
-        const section = document.getElementById('sectionFilter').value;
-        const language = 'english'; // Current language from filter
+            console.log('Grade changed to:', selectedGrade);
 
-        // Show loading state
-        document.getElementById('totalStudents').textContent = 'Loading...';
-        document.getElementById('avgReadingSpeed').textContent = 'Loading...';
-        document.getElementById('avgComprehension').textContent = 'Loading...';
+            // Clear current section options except "All Sections"
+            sectionSelect.innerHTML = '<option value="all">All Sections</option>';
 
-        // Reload page with new parameters
-        const currentUrl = new URL(window.location);
-        currentUrl.searchParams.set('grade', grade);
-        currentUrl.searchParams.set('section', section);
-        currentUrl.searchParams.set('language', language);
+            // Add sections for the selected grade
+            if (gradeSectionMapping[selectedGrade]) {
+                gradeSectionMapping[selectedGrade].forEach(section => {
+                    const option = document.createElement('option');
+                    option.value = section.toLowerCase();
+                    option.textContent = section.charAt(0).toUpperCase() + section.slice(1);
+                    sectionSelect.appendChild(option);
+                });
+            }
 
-        window.location.href = currentUrl.toString();
-    }
+            // Reset section to "All Sections" when grade changes
+            sectionSelect.value = 'all';
 
-    // Initialize page with current data
-    document.addEventListener('DOMContentLoaded', function () {
-        console.log('ViewReports page loaded with real data');
-        console.log('Total students:', {{ $total_students ?? 0 }});
-        console.log('Grade distribution:', @json($grade_distribution ?? []));
+            // Update the chart immediately for the selected grade
+            updateChartForGrade(selectedGrade);
+
+            // Update the data with new grade and reset section - IMMEDIATELY like Filipino version
+            updateGradeLevelData();
+        }
+
+        // Function to update grade level data
+        function updateGradeLevelData() {
+            const selectedGrade = document.getElementById('gradeFilter') ? document.getElementById('gradeFilter').value : '7';
+            const selectedSection = document.getElementById('sectionFilter') ? document.getElementById('sectionFilter').value : 'all';
+            const language = 'english';
+
+            console.log('Updating English grade level data:', {
+                grade: selectedGrade,
+                section: selectedSection,
+                language: language
+            });
+
+            // Show loading state if elements exist
+            const totalStudentsEl = document.getElementById('totalStudents');
+            const avgReadingSpeedEl = document.getElementById('avgReadingSpeed');
+            const avgComprehensionEl = document.getElementById('avgComprehension');
+
+            if (totalStudentsEl) totalStudentsEl.textContent = 'Loading...';
+            if (avgReadingSpeedEl) avgReadingSpeedEl.textContent = 'Loading...';
+            if (avgComprehensionEl) avgComprehensionEl.textContent = 'Loading...';
+
+            // Reload page with new parameters for English
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('grade', selectedGrade);
+            currentUrl.searchParams.set('section', selectedSection);
+            currentUrl.searchParams.set('language', language);
+
+            console.log('Redirecting to:', currentUrl.toString());
+
+            window.location.href = currentUrl.toString();
+        }
+
+        // Initialize page with current data
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('ViewReports page loaded with real data');
+            console.log('Total students:', {{ $total_students ?? 0 }});
+            console.log('Grade distribution:', @json($grade_distribution ?? []));
+
+            // Initialize section options based on current grade
+            const currentGrade = document.getElementById('gradeFilter').value;
+            const currentSection = '{{ is_string($section ?? "all") ? ($section ?? "all") : "all" }}';
+
+            console.log('Page loaded with:', {
+                currentGrade: currentGrade,
+                currentSection: currentSection,
+                backendGrade: '{{ (string)($grade ?? "7") }}',
+                backendSection: '{{ is_string($section ?? "all") ? ($section ?? "all") : "all" }}'
+            });
+
+            // Update section options for the current grade
+            const sectionSelect = document.getElementById('sectionFilter');
+            sectionSelect.innerHTML = '<option value="all">All Sections</option>';
+
+            if (gradeSectionMapping[currentGrade]) {
+                gradeSectionMapping[currentGrade].forEach(section => {
+                    const option = document.createElement('option');
+                    option.value = section.toLowerCase();
+                    option.textContent = section.charAt(0).toUpperCase() + section.slice(1);
+                    if (section.toLowerCase() === currentSection.toLowerCase()) {
+                        option.selected = true;
+                    }
+                    sectionSelect.appendChild(option);
+                });
+            }
+
+            // Set the current section if it exists
+            if (currentSection !== 'all') {
+                sectionSelect.value = currentSection.toLowerCase();
+            }
+        });
     });
 </script>

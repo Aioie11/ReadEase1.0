@@ -35,7 +35,7 @@
 
     .header-content h1 {
         color: #2c3e50;
-        font-size: 2rem;
+        font-size: 1.8rem;
         margin-bottom: 0.5rem;
         display: flex;
         align-items: center;
@@ -81,7 +81,7 @@
 
     .chart-header h3 {
         color: #2c3e50;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         margin: 0;
         display: flex;
         align-items: center;
@@ -204,9 +204,9 @@
         <div class="header-content">
             <h1>
                 <i class="fas fa-chart-line"></i>
-                Reading Level Distribution Reports
+                Reading and Comprehension Assessment Distribution Reports
             </h1>
-            <p>Analysis of student reading levels by grade and language</p>
+            <p>Analysis of student word reading and comprehension performance by grade and language</p>
         </div>
     </div>
 
@@ -217,7 +217,7 @@
             <div class="chart-header">
                 <h3>
                     <i class="fas fa-chart-bar"></i>
-                    English Reading Level Distribution By Grade
+                    English Word Reading Level Distribution By Grade
                 </h3>
             </div>
             <div class="chart-content">
@@ -225,15 +225,15 @@
                 <div class="chart-legend">
                     <div class="legend-item">
                         <span class="legend-color independent"></span>
-                        <span>Independent (Word Reading: 97-100%, Comprehension: 80-100%)</span>
+                        <span>Independent (Word Reading: 97-100%)</span>
                     </div>
                     <div class="legend-item">
                         <span class="legend-color instructional"></span>
-                        <span>Instructional (Word Reading: 90-96%, Comprehension: 59-79%)</span>
+                        <span>Instructional (Word Reading: 90-96%)</span>
                     </div>
                     <div class="legend-item">
                         <span class="legend-color frustration"></span>
-                        <span>Frustration (Word Reading: Below 90% or Comprehension: Below 59%)</span>
+                        <span>Frustration (Word Reading: Below 90%)</span>
                     </div>
                 </div>
             </div>
@@ -251,15 +251,68 @@
                 <div class="chart-legend">
                     <div class="legend-item">
                         <span class="legend-color independent"></span>
-                        <span>Independent (Word Reading: 97-100%, Comprehension: 80-100%)</span>
+                        <span>Independent (Word Reading: 97-100%)</span>
                     </div>
                     <div class="legend-item">
                         <span class="legend-color instructional"></span>
-                        <span>Instructional (Word Reading: 90-96%, Comprehension: 59-79%)</span>
+                        <span>Instructional (Word Reading: 90-96%)</span>
                     </div>
                     <div class="legend-item">
                         <span class="legend-color frustration"></span>
-                        <span>Frustration (Word Reading: Below 90% or Comprehension: Below 59%)</span>
+                        <span>Frustration (Word Reading: Below 90%)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comprehension Level Distribution Charts -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3>
+                    <i class="fas fa-brain"></i>
+                    English Comprehension Level Distribution By Grade
+                </h3>
+            </div>
+            <div class="chart-content">
+                <canvas id="comprehensionLevelChartEnglish"></canvas>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <span class="legend-color independent"></span>
+                        <span>Independent (Comprehension: 80-100%)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color instructional"></span>
+                        <span>Instructional (Comprehension: 59-79%)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color frustration"></span>
+                        <span>Frustration (Comprehension: Below 59%)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">
+                <h3>
+                    <i class="fas fa-brain"></i>
+                    Filipino Comprehension Level Distribution By Grade
+                </h3>
+            </div>
+            <div class="chart-content">
+                <canvas id="comprehensionLevelChartFilipino"></canvas>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <span class="legend-color independent"></span>
+                        <span>Independent (Comprehension: 80-100%)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color instructional"></span>
+                        <span>Instructional (Comprehension: 59-79%)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color frustration"></span>
+                        <span>Frustration (Comprehension: Below 59%)</span>
                     </div>
                 </div>
             </div>
@@ -314,6 +367,54 @@
             }
         } catch (error) {
             console.error('Error fetching Filipino reading level distribution:', error);
+        }
+    }
+
+    // Fetch English comprehension level distribution
+    async function fetchEnglishComprehensionLevelDistribution() {
+        try {
+            const response = await fetch('/api/comprehension-level-distribution/english');
+            const data = await response.json();
+
+            if (data.success) {
+                const distribution = data.data.distribution;
+                const grades = ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'];
+
+                // Update English Comprehension Chart
+                const englishCompChart = Chart.getChart('comprehensionLevelChartEnglish');
+                if (englishCompChart) {
+                    englishCompChart.data.datasets[0].data = grades.map(g => distribution[g]?.['Independent'] || 0);
+                    englishCompChart.data.datasets[1].data = grades.map(g => distribution[g]?.['Instructional'] || 0);
+                    englishCompChart.data.datasets[2].data = grades.map(g => distribution[g]?.['Frustration'] || 0);
+                    englishCompChart.update();
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching English comprehension level distribution:', error);
+        }
+    }
+
+    // Fetch Filipino comprehension level distribution
+    async function fetchFilipinoComprehensionLevelDistribution() {
+        try {
+            const response = await fetch('/api/comprehension-level-distribution/filipino');
+            const data = await response.json();
+
+            if (data.success) {
+                const distribution = data.data.distribution;
+                const grades = ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'];
+
+                // Update Filipino Comprehension Chart
+                const filipinoCompChart = Chart.getChart('comprehensionLevelChartFilipino');
+                if (filipinoCompChart) {
+                    filipinoCompChart.data.datasets[0].data = grades.map(g => distribution[g]?.['Independent'] || 0);
+                    filipinoCompChart.data.datasets[1].data = grades.map(g => distribution[g]?.['Instructional'] || 0);
+                    filipinoCompChart.data.datasets[2].data = grades.map(g => distribution[g]?.['Frustration'] || 0);
+                    filipinoCompChart.update();
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching Filipino comprehension level distribution:', error);
         }
     }
 
@@ -426,8 +527,116 @@
 
     new Chart(document.getElementById('readingLevelChartFilipino'), readingConfigFilipino);
 
+    // English Comprehension Chart
+    const comprehensionDataEnglish = {
+        labels: grades,
+        datasets: [
+            {
+                label: 'Independent',
+                data: [0, 0, 0, 0],
+                backgroundColor: '#4caf50',
+                stack: 'Stack 0',
+            },
+            {
+                label: 'Instructional',
+                data: [0, 0, 0, 0],
+                backgroundColor: '#ffb300',
+                stack: 'Stack 0',
+            },
+            {
+                label: 'Frustration',
+                data: [0, 0, 0, 0],
+                backgroundColor: '#e53935',
+                stack: 'Stack 0',
+            }
+        ]
+    };
+
+    const comprehensionConfigEnglish = {
+        type: 'bar',
+        data: comprehensionDataEnglish,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true, position: 'top' },
+                title: { display: false }
+            },
+            scales: {
+                x: { stacked: true, title: { display: true, text: 'Grade Level' } },
+                y: {
+                    stacked: true,
+                    beginAtZero: true,
+                    title: { display: true, text: 'Number of Students' },
+                    ticks: {
+                        stepSize: 1,
+                        callback: function(value) {
+                            return Math.round(value);
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    new Chart(document.getElementById('comprehensionLevelChartEnglish'), comprehensionConfigEnglish);
+
+    // Filipino Comprehension Chart
+    const comprehensionDataFilipino = {
+        labels: grades,
+        datasets: [
+            {
+                label: 'Independent',
+                data: [0, 0, 0, 0],
+                backgroundColor: '#4caf50',
+                stack: 'Stack 0',
+            },
+            {
+                label: 'Instructional',
+                data: [0, 0, 0, 0],
+                backgroundColor: '#ffb300',
+                stack: 'Stack 0',
+            },
+            {
+                label: 'Frustration',
+                data: [0, 0, 0, 0],
+                backgroundColor: '#e53935',
+                stack: 'Stack 0',
+            }
+        ]
+    };
+
+    const comprehensionConfigFilipino = {
+        type: 'bar',
+        data: comprehensionDataFilipino,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true, position: 'top' },
+                title: { display: false }
+            },
+            scales: {
+                x: { stacked: true, title: { display: true, text: 'Grade Level' } },
+                y: {
+                    stacked: true,
+                    beginAtZero: true,
+                    title: { display: true, text: 'Number of Students' },
+                    ticks: {
+                        stepSize: 1,
+                        callback: function(value) {
+                            return Math.round(value);
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    new Chart(document.getElementById('comprehensionLevelChartFilipino'), comprehensionConfigFilipino);
+
     // Fetch initial data
     fetchEnglishReadingLevelDistribution();
     fetchFilipinoReadingLevelDistribution();
+    fetchEnglishComprehensionLevelDistribution();
+    fetchFilipinoComprehensionLevelDistribution();
 </script>
 @endsection
