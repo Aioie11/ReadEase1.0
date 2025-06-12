@@ -16,6 +16,10 @@ return new class extends Migration {
             $table->integer('comprehension')->default(0)->after('total_questions');
             $table->integer('correct_reading')->default(0)->after('comprehension');
             $table->string('grade')->default('7')->after('correct_reading');
+            $table->enum('overall_reading_level', ['Independent', 'Instructional', 'Frustration'])
+                ->nullable()
+                ->after('grade')
+                ->comment('Overall reading performance level calculated from word reading and comprehension');
         });
     }
 
@@ -25,7 +29,7 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('reading_assessments', function (Blueprint $table) {
-            $table->dropColumn(['correct_answers', 'total_questions', 'comprehension', 'correct_reading', 'grade']);
+            $table->dropColumn(['correct_answers', 'total_questions', 'comprehension', 'correct_reading', 'grade', 'overall_reading_level']);
         });
     }
 };

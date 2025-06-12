@@ -234,6 +234,9 @@ Route::get('/stud-fil', [ReadingMaterialController::class, 'getPublishedMaterial
 
 Route::get('/stud-reports', [StudentDashboardController::class, 'reports'])->name('student.reports');
 
+// Route for checking reading assessment updates (auto-refresh)
+Route::get('/student/check-reading-updates/{studentId}', [StudentDashboardController::class, 'checkReadingUpdates'])->name('student.check.reading.updates');
+
 
 Route::get('/admin/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.dashboard');
 

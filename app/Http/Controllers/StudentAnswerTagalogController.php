@@ -79,8 +79,8 @@ class StudentAnswerTagalogController extends Controller
             // Update reading assessment with comprehension data
             $this->updateReadingAssessmentWithComprehension($user, $score, $totalQuestions, 'filipino');
 
-            // Add success message to session
-            session()->flash('success', 'Ang iyong mga sagot ay matagumpay na naipasa!');
+            // Trigger dashboard update notification for student dashboard
+            $this->triggerDashboardUpdate($user->userId, 'filipino');
 
             return redirect()->route('student.reports');
         } catch (\Exception $e) {
@@ -142,6 +142,30 @@ class StudentAnswerTagalogController extends Controller
                 'language' => $language,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+
+    /**
+     * Trigger dashboard update notification for student dashboard
+     */
+    private function triggerDashboardUpdate($studentId, $language)
+    {
+        try {
+            // Store assessment completion flag in cache for dashboard auto-refresh
+            cache()->put("assessment_completed_{$studentId}_{$language}", true, 300); // 5 minutes
+
+            \Log::info('Dashboard update triggered for student', [
+                'student_id' => $studentId,
+                'language' => $language,
+                'timestamp' => now(),
+                'cache_key' => "assessment_completed_{$studentId}_{$language}"
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error triggering dashboard update', [
+                'student_id' => $studentId,
+                'language' => $language,
+                'error' => $e->getMessage()
             ]);
         }
     }
