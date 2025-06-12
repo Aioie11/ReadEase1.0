@@ -687,147 +687,154 @@
         </div>
 
         <!-- English Language Test Results -->
-        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-3xl font-bold text-gray-800">English Language Test Results</h2>
-                <div class="flex items-center space-x-4">
-                    <button onclick="window.forceChartRefresh()"
-                        class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        <i class="ri-refresh-line mr-1"></i>
-                        Refresh Charts
-                    </button>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-sm text-gray-500">View:</span>
-                        <select class="text-sm border-gray-200 rounded-md focus:ring-primary focus:border-primary">
-                            <option>Detailed View</option>
-                            <option>Summary View</option>
-                        </select>
-                    </div>
-                </div>
+        <div class="results-section">
+            <div class="results-header">
+                <h2>English Language Test Results</h2>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <!-- Reading Speed Chart -->
-                <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100 hover-card">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-lg font-medium text-gray-700">Reading Speed</h2>
-                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
-                            <i class="ri-speed-line"></i>
-                        </div>
+            <div class="charts-container">
+                <div class="reading-passage">
+                    <div class="chart-card">
+                        <canvas id="myChart"></canvas>
                     </div>
-                    <div id="reading-speed-chart" class="chart-container"></div>
-                    <div class="mt-4 pt-4 border-t border-gray-200">
-                        <div class="flex justify-between items-center">
-                            <p class="text-xl font-bold text-primary"></p>
-                            <span class="text-sm text-green-600"></span>
-                        </div>
-                        <p class="text-gray-600 text-sm mt-1"></p>
+                    <div class="reading-metrics">
+                        <p><strong>{{ session('english_reading_speed', 0) }} WPM</strong></p>
+                        @php
+                            $englishTime = session('english_reading_time', 0);
+                            $englishTimeFormatted = $englishTime >= 60 ? floor($englishTime / 60) . ' min ' . ($englishTime % 60) . ' sec' : $englishTime . ' sec';
+                        @endphp
+                        <p>Reading Time: {{ $englishTimeFormatted }}</p>
+                        <p>Total Words: {{ session('english_total_words', 0) }}</p>
                     </div>
                 </div>
 
-                <!-- Reading Comprehension Chart -->
-                <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100 hover-card">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-lg font-medium text-gray-700">Reading Comprehension</h2>
-                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600">
-                            <i class="ri-mental-health-line"></i>
-                        </div>
+                <div class="reading-passage">
+                    <div class="chart-card">
+                        <canvas id="myChart1"></canvas>
                     </div>
-                    <div id="reading-comprehension-chart" class="chart-container"></div>
-                    <div class="mt-4 pt-4 border-t border-gray-200">
-                        <div class="flex justify-between items-center">
-                            <p class="text-xl font-bold text-primary"></p>
-                            <span class="text-sm text-green-600"></span>
-                        </div>
-                        <p class="text-gray-600 text-sm mt-1"></p>
+                    <div class="reading-metrics">
+                        @php
+                            $englishScore = session('english_score', 0);
+                            $englishTotal = session('english_total_questions', 0);
+                            $englishPercentage = $englishTotal > 0 ? round(($englishScore / $englishTotal) * 100) : 0;
+
+                            if ($englishPercentage >= 80) {
+                                $englishLevel = 'Independent Level';
+                                $englishLevelClass = 'text-success';
+                            } elseif ($englishPercentage >= 59) {
+                                $englishLevel = 'Instructional Level';
+                                $englishLevelClass = 'text-warning';
+                            } else {
+                                $englishLevel = 'Frustrational Level';
+                                $englishLevelClass = 'text-danger';
+                            }
+                        @endphp
+                        <p><strong class="{{ $englishLevelClass }}">{{ $englishLevel }}</strong></p>
+                        <p>{{ $englishPercentage }}% comprehension score</p>
+                        <p>{{ $englishScore }} out of {{ $englishTotal }} correct answers </p>
                     </div>
                 </div>
 
-                <!-- Word Reading Chart -->
-                <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100 hover-card">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-lg font-medium text-gray-700">Word Reading</h2>
-                        <div
-                            class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600">
-                            <i class="ri-book-read-line"></i>
-                        </div>
+                <div class="reading-passage">
+                    <div class="chart-card">
+                        <canvas id="myChart2"></canvas>
                     </div>
-                    <div id="word-reading-chart" class="chart-container"></div>
-                    <div class="mt-4 pt-4 border-t border-gray-200">
-                        <div class="flex justify-between items-center">
-                            <p class="text-xl font-bold text-primary"></p>
-                            <span class="text-sm text-green-600"></span>
-                        </div>
-                        <p class="text-gray-600 text-sm mt-1"></p>
+                    <div class="reading-metrics">
+                        @php
+                            $englishWordAccuracy = session('english_correct_reading', 0);
+
+                            if ($englishWordAccuracy >= 97) {
+                                $englishWordLevel = 'Independent Level';
+                                $englishWordLevelClass = 'text-success';
+                            } elseif ($englishWordAccuracy >= 90) {
+                                $englishWordLevel = 'Instructional Level';
+                                $englishWordLevelClass = 'text-warning';
+                            } else {
+                                $englishWordLevel = 'Frustrational Level';
+                                $englishWordLevelClass = 'text-danger';
+                            }
+                        @endphp
+                        <p><strong class="{{ $englishWordLevelClass }}">{{ $englishWordLevel }}</strong></p>
+                        <p>{{ $englishWordAccuracy }}% reading accuracy</p>
+                        <p>{{ session('english_miscues', 0) }} miscues out of {{ session('english_total_words', 0) }} words</p>
+
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Filipino Language Test Results -->
-        <div class="bg-white rounded-lg shadow-sm p-6">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-3xl font-bold text-gray-800">Filipino Language Test Results</h2>
-                <div class="flex items-center space-x-2">
-                    <span class="text-sm text-gray-500">View:</span>
-                    <select class="text-sm border-gray-200 rounded-md focus:ring-primary focus:border-primary">
-                        <option>Detailed View</option>
-                        <option>Summary View</option>
-                    </select>
-                </div>
+        <div class="results-section">
+            <div class="results-header">
+                <h2>Filipino Language Test Results</h2>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <!-- Reading Speed Chart -->
-                <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100 hover-card">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-lg font-medium text-gray-700">Bilis ng Pagbasa</h2>
-                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
-                            <i class="ri-speed-line"></i>
-                        </div>
+            <div class="charts-container">
+                <div class="reading-passage">
+                    <div class="chart-card">
+                        <canvas id="myChart3"></canvas>
                     </div>
-                    <div id="filipino-reading-speed-chart" class="chart-container"></div>
-                    <div class="mt-4 pt-4 border-t border-gray-200">
-                        <div class="flex justify-between items-center">
-                            <p class="text-xl font-bold text-primary"></p>
-                            <span class="text-sm text-green-600"></span>
-                        </div>
-                        <p class="text-gray-600 text-sm mt-1"></p>
+                    <div class="reading-metrics">
+                        <p><strong>{{ session('filipino_reading_speed', 0) }} WPM</strong></p>
+                        @php
+                            $filipinoTime = session('filipino_reading_time', 0);
+                            $filipinoTimeFormatted = $filipinoTime >= 60 ? floor($filipinoTime / 60) . ' min ' . ($filipinoTime % 60) . ' sec' : $filipinoTime . ' sec';
+                        @endphp
+                        <p>Reading Time: {{ $filipinoTimeFormatted }}</p>
+                        <p>Total Words: {{ session('filipino_total_words', 0) }}</p>
                     </div>
                 </div>
 
-                <!-- Reading Comprehension Chart -->
-                <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100 hover-card">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-lg font-medium text-gray-700">Reading Comprehension</h2>
-                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600">
-                            <i class="ri-mental-health-line"></i>
-                        </div>
+                <div class="reading-passage">
+                    <div class="chart-card">
+                        <canvas id="myChart4"></canvas>
                     </div>
-                    <div id="filipino-reading-comprehension-chart" class="chart-container"></div>
-                    <div class="mt-4 pt-4 border-t border-gray-200">
-                        <div class="flex justify-between items-center">
-                            <p class="text-xl font-bold text-primary"></p>
-                            <span class="text-sm text-green-600"></span>
-                        </div>
-                        <p class="text-gray-600 text-sm mt-1"></p>
+                    <div class="reading-metrics">
+                        @php
+                            $filipinoScore = session('filipino_score', 0);
+                            $filipinoTotal = session('filipino_total_questions', 0);
+                            $filipinoPercentage = $filipinoTotal > 0 ? round(($filipinoScore / $filipinoTotal) * 100) : 0;
+
+                            if ($filipinoPercentage >= 80) {
+                                $filipinoLevel = 'Independent Level';
+                                $filipinoLevelClass = 'text-success';
+                            } elseif ($filipinoPercentage >= 59) {
+                                $filipinoLevel = 'Instructional Level';
+                                $filipinoLevelClass = 'text-warning';
+                            } else {
+                                $filipinoLevel = 'Frustrational Level';
+                                $filipinoLevelClass = 'text-danger';
+                            }
+                        @endphp
+                        <p><strong class="{{ $filipinoLevelClass }}">{{ $filipinoLevel }}</strong></p>
+                        <p>{{ $filipinoPercentage }}% comprehension score</p>
+                        <p>{{ $filipinoScore }} out of {{ $filipinoTotal }} correct answers </p>
+
+
                     </div>
                 </div>
 
-                <!-- Word Reading Chart -->
-                <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100 hover-card">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-lg font-medium text-gray-700">Pagbasa ng Salita</h2>
-                        <div
-                            class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600">
-                            <i class="ri-book-read-line"></i>
-                        </div>
+                <div class="reading-passage">
+                    <div class="chart-card">
+                        <canvas id="myChart5"></canvas>
                     </div>
-                    <div id="filipino-word-reading-chart" class="chart-container"></div>
-                    <div class="mt-4 pt-4 border-t border-gray-200">
-                        <div class="flex justify-between items-center">
-                            <p class="text-xl font-bold text-primary"></p>
-                            <span class="text-sm text-green-600"></span>
-                        </div>
-                        <p class="text-gray-600 text-sm mt-1"></p>
+                    <div class="reading-metrics">
+                        @php
+                            $filipinoWordAccuracy = session('filipino_correct_reading', 0);
+
+                            if ($filipinoWordAccuracy >= 97) {
+                                $filipinoWordLevel = 'Independent Level';
+                                $filipinoWordLevelClass = 'text-success';
+                            } elseif ($filipinoWordAccuracy >= 90) {
+                                $filipinoWordLevel = 'Instructional Level';
+                                $filipinoWordLevelClass = 'text-warning';
+                            } else {
+                                $filipinoWordLevel = 'Frustrational Level';
+                                $filipinoWordLevelClass = 'text-danger';
+                            }
+                        @endphp
+                        <p><strong class="{{ $filipinoWordLevelClass }}">{{ $filipinoWordLevel }}</strong></p>
+                        <p>{{ $filipinoWordAccuracy }}% reading accuracy</p>
+                        <p>{{ session('filipino_miscues', 0) }} miscues out of {{ session('filipino_total_words', 0) }} words</p>
+
                     </div>
                 </div>
             </div>
@@ -846,6 +853,104 @@
             .hover-card:hover {
                 transform: translateY(-2px);
                 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+
+            /* Student Reports Chart Styles */
+            .results-section {
+                background: white;
+                padding: 25px;
+                border-radius: 12px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                margin-bottom: 30px;
+            }
+
+            .results-header h2 {
+                color: #2c3e50;
+                font-size: 1.8em;
+                margin-bottom: 25px;
+                padding-bottom: 15px;
+                border-bottom: 2px solid #95a5a6;
+            }
+
+            .charts-container {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 30px;
+                padding: 20px 0;
+                width: 100%;
+                margin-bottom: 30px;
+            }
+
+            .reading-passage {
+                background: white;
+                border-radius: 12px;
+                overflow: hidden;
+                transition: all 0.3s ease;
+                min-width: 0;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                border: 1px solid #e9ecef;
+            }
+
+            .reading-passage:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            }
+
+            .chart-card {
+                background: #fafbfc;
+                padding: 25px;
+                border-radius: 10px;
+                margin: 0;
+                height: 380px;
+                position: relative;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+            .chart-card canvas {
+                width: 100% !important;
+                height: 100% !important;
+            }
+
+            .reading-metrics {
+                background: white;
+                padding: 25px;
+                margin: 0;
+                border-radius: 0 0 12px 12px;
+                text-align: center;
+                border-top: 1px solid #e9ecef;
+            }
+
+            .reading-metrics p {
+                margin: 8px 0;
+                color: #2c3e50;
+                font-size: 1.1em;
+            }
+
+            .reading-metrics p:first-child {
+                color: #3498db;
+                font-size: 1.3em;
+                font-weight: 600;
+            }
+
+            .reading-metrics p:not(:first-child) {
+                color: #7f8c8d;
+                font-size: 0.95em;
+            }
+
+            /* Reading Level Color Coding */
+            .text-success {
+                color: #27ae60 !important;
+                font-weight: bold;
+            }
+
+            .text-warning {
+                color: #f39c12 !important;
+                font-weight: bold;
+            }
+
+            .text-danger {
+                color: #e74c3c !important;
+                font-weight: bold;
             }
 
             /* Comprehension Modal Styles */
@@ -1288,26 +1393,55 @@
                 // Store chart instances globally for updates
                 window.chartInstances = {};
 
-                // Chart.js configuration for uniform styling
+                // Chart.js configuration for uniform styling (from student reports)
                 const chartOptions = {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             display: false
+                        },
+                        title: {
+                            display: true,
+                            text: '',
+                            font: {
+                                size: 16,
+                                weight: '600',
+                                family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                            },
+                            color: '#2c3e50',
+                            padding: {
+                                top: 10,
+                                bottom: 20
+                            }
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
                             grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
+                                color: '#f1f2f6',
+                                lineWidth: 1
                             },
                             ticks: {
-                                color: '#000000',
                                 font: {
                                     size: 12,
-                                    weight: '600'
+                                    family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                                },
+                                color: '#7f8c8d',
+                                padding: 8
+                            },
+                            title: {
+                                display: true,
+                                text: 'Value',
+                                font: {
+                                    size: 13,
+                                    weight: '500',
+                                    family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                                },
+                                color: '#5a6c7d',
+                                padding: {
+                                    top: 10
                                 }
                             }
                         },
@@ -1316,13 +1450,36 @@
                                 display: false
                             },
                             ticks: {
-                                color: '#000000',
                                 font: {
                                     size: 12,
-                                    weight: '600'
+                                    family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
                                 },
-                                maxRotation: 45
+                                color: '#7f8c8d',
+                                maxRotation: 0,
+                                minRotation: 0,
+                                padding: 10
+                            },
+                            title: {
+                                display: true,
+                                text: 'Metrics',
+                                font: {
+                                    size: 13,
+                                    weight: '500',
+                                    family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                                },
+                                color: '#5a6c7d',
+                                padding: {
+                                    top: 15
+                                }
                             }
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            left: 15,
+                            right: 15,
+                            top: 15,
+                            bottom: 15
                         }
                     }
                 };
@@ -1382,401 +1539,332 @@
                     }
                 };
 
-                // Reading Speed Chart (English)
-                const speedCtx = document.getElementById('reading-speed-chart');
-                if (speedCtx) {
-                    // Create canvas element
-                    const canvas = document.createElement('canvas');
-                    canvas.style.height = '200px';
-                    speedCtx.appendChild(canvas);
+                // English Reading Speed Chart (Reading Time and Total Words)
+                const ctx = document.getElementById('myChart');
+                if (ctx) {
+                    const englishReadingTime = {{ session('english_reading_time', 0) }};
+                    const englishTotalWords = {{ session('english_total_words', 0) }};
 
-                    // Use real data if available, otherwise use default values (minimum 1 minute)
-                    let actualReadingTime = 3; // Default 3 minutes
-
-                    if (latestEnglish && latestEnglish.reading_time) {
-                        // Convert reading_time from seconds to minutes and ensure reasonable range
-                        const rawTime = latestEnglish.reading_time;
-                        console.log('Raw reading time from database:', rawTime, 'seconds');
-
-                        // If time is in seconds, convert to minutes
-                        if (rawTime > 60) {
-                            actualReadingTime = rawTime / 60; // Convert seconds to minutes
-                        } else {
-                            actualReadingTime = rawTime; // Already in minutes
-                        }
-
-                        // Cap maximum time to 10 minutes for realistic display
-                        actualReadingTime = Math.min(actualReadingTime, 10);
-                    }
-
-                    const readingTimeMinutes = Math.max(Math.round(actualReadingTime), 0); // Allow minimum 0 minutes, maximum 10
-                    const totalWords = latestEnglish ? latestEnglish.total_words : 250;
-                    const readingSpeed = latestEnglish ? latestEnglish.reading_speed : 83;
-
-                    console.log('English Chart - Raw time:', latestEnglish?.reading_time, 'Processed time:', actualReadingTime.toFixed(2), 'Display time:', readingTimeMinutes);
-
-                    // Add visual indicator for very short times
-                    if (actualReadingTime < 0.5 && latestEnglish) {
-                        console.log('ℹ️ SHORT READING TIME: Reading time was', actualReadingTime.toFixed(2), 'minutes, displayed as', readingTimeMinutes, 'minutes');
-                    }
-
-                    window.chartInstances.speedChart = new Chart(canvas.getContext('2d'), {
+                    new Chart(ctx.getContext('2d'), {
                         type: 'bar',
                         data: {
-                            labels: ['Reading Time (min)', 'Total Words', 'Speed (WPM)'],
+                            labels: ['Time (sec)', 'Words'],
                             datasets: [{
-                                data: [readingTimeMinutes, totalWords, readingSpeed],
+                                data: [englishReadingTime, englishTotalWords],
                                 backgroundColor: [
-                                    '#1E3A8A',
-                                    '#EA580C',
-                                    '#0F766E'
+                                    '#3498db',
+                                    '#e74c3c'
                                 ],
                                 borderWidth: 0,
-                                borderRadius: 4
+                                borderRadius: 6,
+                                barThickness: 60
                             }]
                         },
-                        options: readingSpeedChartOptions
+                        options: {
+                            ...chartOptions,
+                            plugins: {
+                                ...chartOptions.plugins,
+                                title: {
+                                    ...chartOptions.plugins.title,
+                                    text: 'Reading Speed'
+                                }
+                            },
+                            scales: {
+                                ...chartOptions.scales,
+                                y: {
+                                    ...chartOptions.scales.y,
+                                    title: {
+                                        ...chartOptions.scales.y.title,
+                                        text: 'Count'
+                                    }
+                                },
+                                x: {
+                                    ...chartOptions.scales.x,
+                                    title: {
+                                        ...chartOptions.scales.x.title,
+                                        text: 'Reading Metrics'
+                                    }
+                                }
+                            }
+                        }
                     });
                 }
 
-                // Reading Comprehension Chart (English)
-                const comprehensionCtx = document.getElementById('reading-comprehension-chart');
-                if (comprehensionCtx) {
-                    // Remove previous canvas if any
-                    comprehensionCtx.innerHTML = '';
-                    // Create canvas element
-                    const canvas = document.createElement('canvas');
-                    canvas.style.height = '200px';
-                    comprehensionCtx.appendChild(canvas);
+                // English Comprehension Chart
+                const ctx1 = document.getElementById('myChart1');
+                if (ctx1) {
+                    const englishCorrect = {{ session('english_score', 0) }};
+                    const englishTotal = {{ session('english_total_questions', 0) }};
 
-                    // Use session variables as in stud-reports.blade.php
-                    const correctAnswers = {{ session('english_score', 0) }};
-                    const totalQuestions = {{ session('english_total_questions', 0) }};
-
-                    window.chartInstances.comprehensionChart = new Chart(canvas.getContext('2d'), {
+                    new Chart(ctx1.getContext('2d'), {
                         type: 'bar',
                         data: {
                             labels: ['Correct Answers', 'Total Questions'],
                             datasets: [{
-                                data: [correctAnswers, totalQuestions],
+                                data: [englishCorrect, englishTotal],
                                 backgroundColor: [
-                                    'rgba(75, 192, 192, 0.8)',
-                                    'rgba(255, 159, 64, 0.8)'
-                                ],
-                                borderColor: [
-                                    'rgba(75, 192, 192, 1)',
-                                    'rgba(255, 159, 64, 1)'
-                                ],
-                                borderWidth: 1,
-                                borderRadius: 4
-                            }]
-                        },
-                        options: chartOptions
-                    });
-                }
-
-                // Word Reading Chart (English)
-                const wordCtx = document.getElementById('word-reading-chart');
-                if (wordCtx) {
-                    // Create canvas element
-                    const canvas = document.createElement('canvas');
-                    canvas.style.height = '200px';
-                    wordCtx.appendChild(canvas);
-
-                    // Use real data if available, otherwise use default values
-                    const miscues = latestEnglish ? latestEnglish.miscues : 101;
-                    const totalWords = latestEnglish ? latestEnglish.total_words : 250;
-                    const correctWords = totalWords - miscues;
-                    const correctReadingPercent = latestEnglish ? latestEnglish.correct_reading : 60;
-
-                    window.chartInstances.wordChart = new Chart(canvas.getContext('2d'), {
-                        type: 'bar',
-                        data: {
-                            labels: ['Reading Miscues', 'Correct Words', 'Accuracy %'],
-                            datasets: [{
-                                data: [miscues, correctWords, correctReadingPercent],
-                                backgroundColor: [
-                                    '#DC2626',
-                                    '#0F766E',
-                                    '#1E3A8A'
+                                    '#27ae60',
+                                    '#3498db'
                                 ],
                                 borderWidth: 0,
-                                borderRadius: 4
+                                borderRadius: 6,
+                                barThickness: 60
                             }]
                         },
-                        options: chartOptions
-                    });
-                }
-
-                // Filipino Reading Speed Chart
-                const filipinoSpeedCtx = document.getElementById('filipino-reading-speed-chart');
-                if (filipinoSpeedCtx) {
-                    // Create canvas element
-                    const canvas = document.createElement('canvas');
-                    canvas.style.height = '200px';
-                    filipinoSpeedCtx.appendChild(canvas);
-
-                    // Use real data if available, otherwise use default values (minimum 1 minute)
-                    let actualFilipinoReadingTime = 3; // Default 3 minutes
-
-                    if (latestFilipino && latestFilipino.reading_time) {
-                        // Convert reading_time from seconds to minutes and ensure reasonable range
-                        const rawTime = latestFilipino.reading_time;
-                        console.log('Raw Filipino reading time from database:', rawTime, 'seconds');
-
-                        // If time is in seconds, convert to minutes
-                        if (rawTime > 60) {
-                            actualFilipinoReadingTime = rawTime / 60; // Convert seconds to minutes
-                        } else {
-                            actualFilipinoReadingTime = rawTime; // Already in minutes
+                        options: {
+                            ...chartOptions,
+                            plugins: {
+                                ...chartOptions.plugins,
+                                title: {
+                                    ...chartOptions.plugins.title,
+                                    text: 'Reading Comprehension'
+                                }
+                            },
+                            scales: {
+                                ...chartOptions.scales,
+                                y: {
+                                    ...chartOptions.scales.y,
+                                    title: {
+                                        ...chartOptions.scales.y.title,
+                                        text: 'Questions'
+                                    },
+                                    ticks: {
+                                        ...chartOptions.scales.y.ticks,
+                                        stepSize: 1,
+                                        callback: function(value) {
+                                            if (Number.isInteger(value)) {
+                                                return value;
+                                            }
+                                        }
+                                    }
+                                },
+                                x: {
+                                    ...chartOptions.scales.x,
+                                    title: {
+                                        ...chartOptions.scales.x.title,
+                                        text: 'Comprehension Results'
+                                    }
+                                }
+                            }
                         }
-
-                        // Cap maximum time to 10 minutes for realistic display
-                        actualFilipinoReadingTime = Math.min(actualFilipinoReadingTime, 10);
-                    }
-
-                    const filipinoReadingTimeMinutes = Math.max(Math.round(actualFilipinoReadingTime), 0); // Allow minimum 0 minutes, maximum 10
-                    const filipinoTotalWords = latestFilipino ? latestFilipino.total_words : 250;
-                    const filipinoReadingSpeed = latestFilipino ? latestFilipino.reading_speed : 83;
-
-                    console.log('Filipino Chart - Raw time:', latestFilipino?.reading_time, 'Processed time:', actualFilipinoReadingTime.toFixed(2), 'Display time:', filipinoReadingTimeMinutes);
-
-                    // Add visual indicator for very short times
-                    if (actualFilipinoReadingTime < 0.5 && latestFilipino) {
-                        console.log('ℹ️ SHORT FILIPINO READING TIME: Reading time was', actualFilipinoReadingTime.toFixed(2), 'minutes, displayed as', filipinoReadingTimeMinutes, 'minutes');
-                    }
-
-                    window.chartInstances.filipinoSpeedChart = new Chart(canvas.getContext('2d'), {
-                        type: 'bar',
-                        data: {
-                            labels: ['Oras ng Pagbasa (min)', 'Kabuuang Salita', 'Bilis (WPM)'],
-                            datasets: [{
-                                data: [filipinoReadingTimeMinutes, filipinoTotalWords, filipinoReadingSpeed],
-                                backgroundColor: [
-                                    '#1E3A8A',
-                                    '#EA580C',
-                                    '#0F766E'
-                                ],
-                                borderWidth: 0,
-                                borderRadius: 4
-                            }]
-                        },
-                        options: readingSpeedChartOptions
                     });
                 }
 
-                // Filipino Reading Comprehension Chart
-                const filipinoComprehensionCtx = document.getElementById('filipino-reading-comprehension-chart');
-                if (filipinoComprehensionCtx) {
-                    // Remove previous canvas if any
-                    filipinoComprehensionCtx.innerHTML = '';
-                    // Create canvas element
-                    const canvas = document.createElement('canvas');
-                    canvas.style.height = '200px';
-                    filipinoComprehensionCtx.appendChild(canvas);
+                // English Word Reading Chart (Teacher Assessment Data)
+                const ctx2 = document.getElementById('myChart2');
+                if (ctx2) {
+                    const englishMiscues = {{ session('english_miscues', 0) }};
+                    const englishWords = {{ session('english_total_words', 0) }};
 
-                    // Use session variables as in stud-reports.blade.php
-                    const filipinoCorrectAnswers = {{ session('filipino_score', 0) }};
-                    const filipinoTotalQuestions = {{ session('filipino_total_questions', 0) }};
+                    new Chart(ctx2.getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            labels: ['Miscues', 'Total Words'],
+                            datasets: [{
+                                data: [englishMiscues, englishWords],
+                                backgroundColor: [
+                                    '#e74c3c',
+                                    '#3498db'
+                                ],
+                                borderWidth: 0,
+                                borderRadius: 6,
+                                barThickness: 60
+                            }]
+                        },
+                        options: {
+                            ...chartOptions,
+                            plugins: {
+                                ...chartOptions.plugins,
+                                title: {
+                                    ...chartOptions.plugins.title,
+                                    text: 'Word Reading'
+                                }
+                            },
+                            scales: {
+                                ...chartOptions.scales,
+                                y: {
+                                    ...chartOptions.scales.y,
+                                    title: {
+                                        ...chartOptions.scales.y.title,
+                                        text: 'Count'
+                                    }
+                                },
+                                x: {
+                                    ...chartOptions.scales.x,
+                                    title: {
+                                        ...chartOptions.scales.x.title,
+                                        text: 'Reading Analysis'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
 
-                    window.chartInstances.filipinoComprehensionChart = new Chart(canvas.getContext('2d'), {
+                // Filipino Reading Speed Chart (Reading Time and Total Words)
+                const ctx3 = document.getElementById('myChart3');
+                if (ctx3) {
+                    const filipinoReadingTime = {{ session('filipino_reading_time', 0) }};
+                    const filipinoTotalWords = {{ session('filipino_total_words', 0) }};
+
+                    new Chart(ctx3.getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            labels: ['Time (sec)', 'Words'],
+                            datasets: [{
+                                data: [filipinoReadingTime, filipinoTotalWords],
+                                backgroundColor: [
+                                    '#3498db',
+                                    '#e74c3c'
+                                ],
+                                borderWidth: 0,
+                                borderRadius: 6,
+                                barThickness: 60
+                            }]
+                        },
+                        options: {
+                            ...chartOptions,
+                            plugins: {
+                                ...chartOptions.plugins,
+                                title: {
+                                    ...chartOptions.plugins.title,
+                                    text: 'Reading Speed'
+                                }
+                            },
+                            scales: {
+                                ...chartOptions.scales,
+                                y: {
+                                    ...chartOptions.scales.y,
+                                    title: {
+                                        ...chartOptions.scales.y.title,
+                                        text: 'Count'
+                                    }
+                                },
+                                x: {
+                                    ...chartOptions.scales.x,
+                                    title: {
+                                        ...chartOptions.scales.x.title,
+                                        text: 'Reading Metrics'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // Filipino Comprehension Chart
+                const ctx4 = document.getElementById('myChart4');
+                if (ctx4) {
+                    const filipinoCorrect = {{ session('filipino_score', 0) }};
+                    const filipinoTotal = {{ session('filipino_total_questions', 0) }};
+
+                    new Chart(ctx4.getContext('2d'), {
                         type: 'bar',
                         data: {
                             labels: ['Correct Answers', 'Total Questions'],
                             datasets: [{
-                                data: [filipinoCorrectAnswers, filipinoTotalQuestions],
+                                data: [filipinoCorrect, filipinoTotal],
                                 backgroundColor: [
-                                    'rgba(75, 192, 192, 0.8)',
-                                    'rgba(255, 159, 64, 0.8)'
+                                    '#27ae60',
+                                    '#3498db'
                                 ],
-                                borderColor: [
-                                    'rgba(75, 192, 192, 1)',
-                                    'rgba(255, 159, 64, 1)'
-                                ],
-                                borderWidth: 1,
-                                borderRadius: 4
+                                borderWidth: 0,
+                                borderRadius: 6,
+                                barThickness: 60
                             }]
                         },
-                        options: chartOptions
+                        options: {
+                            ...chartOptions,
+                            plugins: {
+                                ...chartOptions.plugins,
+                                title: {
+                                    ...chartOptions.plugins.title,
+                                    text: 'Reading Comprehension'
+                                }
+                            },
+                            scales: {
+                                ...chartOptions.scales,
+                                y: {
+                                    ...chartOptions.scales.y,
+                                    title: {
+                                        ...chartOptions.scales.y.title,
+                                        text: 'Questions'
+                                    },
+                                    ticks: {
+                                        ...chartOptions.scales.y.ticks,
+                                        stepSize: 1,
+                                        callback: function(value) {
+                                            if (Number.isInteger(value)) {
+                                                return value;
+                                            }
+                                        }
+                                    }
+                                },
+                                x: {
+                                    ...chartOptions.scales.x,
+                                    title: {
+                                        ...chartOptions.scales.x.title,
+                                        text: 'Comprehension Results'
+                                    }
+                                }
+                            }
+                        }
                     });
                 }
 
-                // Filipino Word Reading Chart
-                const filipinoWordCtx = document.getElementById('filipino-word-reading-chart');
-                if (filipinoWordCtx) {
-                    // Create canvas element
-                    const canvas = document.createElement('canvas');
-                    canvas.style.height = '200px';
-                    filipinoWordCtx.appendChild(canvas);
+                // Filipino Word Reading Chart (Teacher Assessment Data)
+                const ctx5 = document.getElementById('myChart5');
+                if (ctx5) {
+                    const filipinoMiscues = {{ session('filipino_miscues', 0) }};
+                    const filipinoWords = {{ session('filipino_total_words', 0) }};
 
-                    // Use real data if available, otherwise use default values
-                    const filipinoMiscues = latestFilipino ? latestFilipino.miscues : 15;
-                    const filipinoTotalWords = latestFilipino ? latestFilipino.total_words : 250;
-                    const filipinoCorrectWords = filipinoTotalWords - filipinoMiscues;
-                    const filipinoCorrectReadingPercent = latestFilipino ? latestFilipino.correct_reading : 94;
-
-                    window.chartInstances.filipinoWordChart = new Chart(canvas.getContext('2d'), {
+                    new Chart(ctx5.getContext('2d'), {
                         type: 'bar',
                         data: {
-                            labels: ['Mali sa Pagbasa', 'Tamang Salita', 'Tumpak %'],
+                            labels: ['Miscues', 'Total Words'],
                             datasets: [{
-                                data: [filipinoMiscues, filipinoCorrectWords, filipinoCorrectReadingPercent],
+                                data: [filipinoMiscues, filipinoWords],
                                 backgroundColor: [
-                                    '#DC2626',
-                                    '#0F766E',
-                                    '#1E3A8A'
+                                    '#e74c3c',
+                                    '#3498db'
                                 ],
                                 borderWidth: 0,
-                                borderRadius: 4
+                                borderRadius: 6,
+                                barThickness: 60
                             }]
                         },
-                        options: chartOptions
+                        options: {
+                            ...chartOptions,
+                            plugins: {
+                                ...chartOptions.plugins,
+                                title: {
+                                    ...chartOptions.plugins.title,
+                                    text: 'Word Reading'
+                                }
+                            },
+                            scales: {
+                                ...chartOptions.scales,
+                                y: {
+                                    ...chartOptions.scales.y,
+                                    title: {
+                                        ...chartOptions.scales.y.title,
+                                        text: 'Count'
+                                    }
+                                },
+                                x: {
+                                    ...chartOptions.scales.x,
+                                    title: {
+                                        ...chartOptions.scales.x.title,
+                                        text: 'Reading Analysis'
+                                    }
+                                }
+                            }
+                        }
                     });
                 }
             });
 
-            // Function to refresh charts with new data
-            window.refreshChartsWithNewData = function (studentId) {
-                if (!studentId) {
-                    console.log('No student ID provided for chart refresh');
-                    return;
-                }
 
-                console.log('Refreshing charts for student ID:', studentId);
-
-                // Fetch updated student assessment data
-                fetch(`/teacher/get-student-assessments/${studentId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            console.log('Updated assessment data:', data.data);
-
-                            const assessments = data.data.assessments;
-                            const latestEnglish = assessments.english;
-                            const latestFilipino = assessments.filipino;
-
-                            // Update English charts
-                            updateEnglishCharts(latestEnglish);
-
-                            // Update Filipino charts
-                            updateFilipinoCharts(latestFilipino);
-
-                            console.log('Charts updated successfully with new data');
-
-                        } else {
-                            console.error('Error fetching updated data:', data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error refreshing charts:', error);
-                    });
-            };
-
-            // Function to update English charts
-            function updateEnglishCharts(latestEnglish) {
-                // Update Reading Speed Chart
-                if (window.chartInstances.speedChart) {
-                    let actualReadingTime = 3; // Default 3 minutes
-
-                    if (latestEnglish && latestEnglish.reading_time) {
-                        // Convert reading_time from seconds to minutes and ensure reasonable range
-                        const rawTime = latestEnglish.reading_time;
-                        console.log('Update - Raw English reading time from database:', rawTime, 'seconds');
-
-                        // If time is in seconds, convert to minutes
-                        if (rawTime > 60) {
-                            actualReadingTime = rawTime / 60; // Convert seconds to minutes
-                        } else {
-                            actualReadingTime = rawTime; // Already in minutes
-                        }
-
-                        // Cap maximum time to 10 minutes for realistic display
-                        actualReadingTime = Math.min(actualReadingTime, 10);
-                    }
-
-                    const readingTimeMinutes = Math.max(Math.round(actualReadingTime), 0); // Allow minimum 0 minutes, maximum 10
-                    const totalWords = latestEnglish ? latestEnglish.total_words : 250;
-                    const readingSpeed = latestEnglish ? latestEnglish.reading_speed : 83;
-
-                    console.log('Update English Chart - Raw time:', latestEnglish?.reading_time, 'Processed time:', actualReadingTime.toFixed(2), 'Display time:', readingTimeMinutes);
-
-                    window.chartInstances.speedChart.data.datasets[0].data = [readingTimeMinutes, totalWords, readingSpeed];
-                    window.chartInstances.speedChart.update();
-                }
-
-                // Update Comprehension Chart
-                if (window.chartInstances.comprehensionChart) {
-                    const correctAnswers = latestEnglish ? latestEnglish.correct_answers : 0;
-                    const totalQuestions = latestEnglish ? latestEnglish.total_questions : 0;
-
-                    window.chartInstances.comprehensionChart.data.datasets[0].data = [correctAnswers, totalQuestions];
-                    window.chartInstances.comprehensionChart.update();
-                }
-
-                // Update Word Reading Chart
-                if (window.chartInstances.wordChart) {
-                    const miscues = latestEnglish ? latestEnglish.miscues : 101;
-                    const totalWords = latestEnglish ? latestEnglish.total_words : 250;
-                    const correctWords = totalWords - miscues;
-                    const correctReadingPercent = latestEnglish ? latestEnglish.correct_reading : 60;
-
-                    window.chartInstances.wordChart.data.datasets[0].data = [miscues, correctWords, correctReadingPercent];
-                    window.chartInstances.wordChart.update();
-                }
-            }
-
-            // Function to update Filipino charts
-            function updateFilipinoCharts(latestFilipino) {
-                // Update Filipino Reading Speed Chart
-                if (window.chartInstances.filipinoSpeedChart) {
-                    let actualFilipinoReadingTime = 3; // Default 3 minutes
-
-                    if (latestFilipino && latestFilipino.reading_time) {
-                        // Convert reading_time from seconds to minutes and ensure reasonable range
-                        const rawTime = latestFilipino.reading_time;
-                        console.log('Update - Raw Filipino reading time from database:', rawTime, 'seconds');
-
-                        // If time is in seconds, convert to minutes
-                        if (rawTime > 60) {
-                            actualFilipinoReadingTime = rawTime / 60; // Convert seconds to minutes
-                        } else {
-                            actualFilipinoReadingTime = rawTime; // Already in minutes
-                        }
-
-                        // Cap maximum time to 10 minutes for realistic display
-                        actualFilipinoReadingTime = Math.min(actualFilipinoReadingTime, 10);
-                    }
-
-                    const filipinoReadingTimeMinutes = Math.max(Math.round(actualFilipinoReadingTime), 0); // Allow minimum 0 minutes, maximum 10
-                    const filipinoTotalWords = latestFilipino ? latestFilipino.total_words : 250;
-                    const filipinoReadingSpeed = latestFilipino ? latestFilipino.reading_speed : 83;
-
-                    console.log('Update Filipino Chart - Raw time:', latestFilipino?.reading_time, 'Processed time:', actualFilipinoReadingTime.toFixed(2), 'Display time:', filipinoReadingTimeMinutes);
-
-                    window.chartInstances.filipinoSpeedChart.data.datasets[0].data = [filipinoReadingTimeMinutes, filipinoTotalWords, filipinoReadingSpeed];
-                    window.chartInstances.filipinoSpeedChart.update();
-                }
-
-                // Update Filipino Comprehension Chart
-                if (window.chartInstances.filipinoComprehensionChart) {
-                    const filipinoCorrectAnswers = latestFilipino ? latestFilipino.correct_answers : 0;
-                    const filipinoTotalQuestions = latestFilipino ? latestFilipino.total_questions : 0;
-
-                    window.chartInstances.filipinoComprehensionChart.data.datasets[0].data = [filipinoCorrectAnswers, filipinoTotalQuestions];
-                    window.chartInstances.filipinoComprehensionChart.update();
-                }
-
-                // Update Filipino Word Reading Chart
-                if (window.chartInstances.filipinoWordChart) {
-                    const filipinoMiscues = latestFilipino ? latestFilipino.miscues : 15;
-                    const filipinoTotalWords = latestFilipino ? latestFilipino.total_words : 250;
-                    const filipinoCorrectWords = filipinoTotalWords - filipinoMiscues;
-                    const filipinoCorrectReadingPercent = latestFilipino ? latestFilipino.correct_reading : 94;
-
-                    window.chartInstances.filipinoWordChart.data.datasets[0].data = [filipinoMiscues, filipinoCorrectWords, filipinoCorrectReadingPercent];
-                    window.chartInstances.filipinoWordChart.update();
-                }
-            }
         </script>
 
         <script>
@@ -1858,36 +1946,7 @@
                 });
             });
 
-            // Force chart refresh function to ensure minimum time display
-            window.forceChartRefresh = function () {
-                console.log('Forcing chart refresh with minimum time constraints...');
 
-                // Get current student data
-                const studentData = @json(isset($student) ? $student->readingAssessments : []);
-                const englishAssessments = studentData.filter(assessment => assessment.language === 'english');
-                const filipinoAssessments = studentData.filter(assessment => assessment.language === 'filipino');
-                const latestEnglish = englishAssessments.length > 0 ? englishAssessments[0] : null;
-                const latestFilipino = filipinoAssessments.length > 0 ? filipinoAssessments[0] : null;
-
-                // Force update English charts
-                if (latestEnglish) {
-                    updateEnglishCharts(latestEnglish);
-                }
-
-                // Force update Filipino charts
-                if (latestFilipino) {
-                    updateFilipinoCharts(latestFilipino);
-                }
-
-                console.log('Chart refresh completed');
-            };
-
-            // Auto-refresh charts after page load to ensure minimum constraints
-            setTimeout(function () {
-                if (typeof window.forceChartRefresh === 'function') {
-                    window.forceChartRefresh();
-                }
-            }, 2000);
 
             // Comprehension Modal Functions
             function showComprehensionDetails(studentId, language = 'english') {

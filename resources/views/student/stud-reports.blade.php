@@ -24,9 +24,13 @@
                             <canvas id="myChart"></canvas>
                         </div>
                         <div class="reading-metrics">
-                            <p><strong>{{ $latestEnglishReadingSpeed ?? 0 }} (WPM) Words Per Minute</strong></p>
-                            <p><strong>Reading Time:</strong> {{ $latestEnglishReadingTime ?? 0 }} seconds</p>
-                            <p><strong>Total Words:</strong> {{ $latestEnglishTotalWords ?? 0 }}</p>
+                            <p><strong>{{ session('english_reading_speed', 0) }} WPM</strong></p>
+                            @php
+                                $englishTime = session('english_reading_time', 0);
+                                $englishTimeFormatted = $englishTime >= 60 ? floor($englishTime / 60) . ' min ' . ($englishTime % 60) . ' sec' : $englishTime . ' sec';
+                            @endphp
+                            <p>Reading Time: {{ $englishTimeFormatted }}</p>
+                            <p>Total Words: {{ session('english_total_words', 0) }}</p>
                         </div>
                     </div>
 
@@ -35,8 +39,25 @@
                             <canvas id="myChart1"></canvas>
                         </div>
                         <div class="reading-metrics">
-                            <p><strong>Instructional Level</strong></p>
-                            <p>{{ session('english_score', 0) }} out of {{ session('english_total_questions', 0) }} correct answers</p>
+                            @php
+                                $englishScore = session('english_score', 0);
+                                $englishTotal = session('english_total_questions', 0);
+                                $englishPercentage = $englishTotal > 0 ? round(($englishScore / $englishTotal) * 100) : 0;
+
+                                if ($englishPercentage >= 80) {
+                                    $englishLevel = 'Independent Level';
+                                    $englishLevelClass = 'text-success';
+                                } elseif ($englishPercentage >= 59) {
+                                    $englishLevel = 'Instructional Level';
+                                    $englishLevelClass = 'text-warning';
+                                } else {
+                                    $englishLevel = 'Frustrational Level';
+                                    $englishLevelClass = 'text-danger';
+                                }
+                            @endphp
+                            <p><strong class="{{ $englishLevelClass }}">{{ $englishLevel }}</strong></p>
+                            <p>{{ $englishPercentage }}% comprehension score</p>
+                            <p>{{ $englishScore }} out of {{ $englishTotal }} correct answers </p>
                         </div>
                     </div>
 
@@ -45,8 +66,24 @@
                             <canvas id="myChart2"></canvas>
                         </div>
                         <div class="reading-metrics">
-                            <p><strong>Independent Level</strong></p>
-                            <p>0 out of 0 words read correctly</p>
+                            @php
+                                $englishWordAccuracy = session('english_correct_reading', 0);
+
+                                if ($englishWordAccuracy >= 97) {
+                                    $englishWordLevel = 'Independent Level';
+                                    $englishWordLevelClass = 'text-success';
+                                } elseif ($englishWordAccuracy >= 90) {
+                                    $englishWordLevel = 'Instructional Level';
+                                    $englishWordLevelClass = 'text-warning';
+                                } else {
+                                    $englishWordLevel = 'Frustrational Level';
+                                    $englishWordLevelClass = 'text-danger';
+                                }
+                            @endphp
+                            <p><strong class="{{ $englishWordLevelClass }}">{{ $englishWordLevel }}</strong></p>
+                            <p>{{ $englishWordAccuracy }}% reading accuracy</p>
+                            <p>{{ session('english_miscues', 0) }} miscues out of {{ session('english_total_words', 0) }} words</p>
+                           
                         </div>
                     </div>
                 </div>
@@ -140,9 +177,13 @@
                             <canvas id="myChart3"></canvas>
                         </div>
                         <div class="reading-metrics">
-                            <p><strong>{{ $latestFilipinoReadingSpeed ?? 0 }} (WPM) Words Per Minute</strong></p>
-                            <p><strong>Reading Time:</strong> {{ $latestFilipinoReadingTime ?? 0 }} seconds</p>
-                            <p><strong>Total Words:</strong> {{ $latestFilipinoTotalWords ?? 0 }}</p>
+                            <p><strong>{{ session('filipino_reading_speed', 0) }} WPM</strong></p>
+                            @php
+                                $filipinoTime = session('filipino_reading_time', 0);
+                                $filipinoTimeFormatted = $filipinoTime >= 60 ? floor($filipinoTime / 60) . ' min ' . ($filipinoTime % 60) . ' sec' : $filipinoTime . ' sec';
+                            @endphp
+                            <p>Reading Time: {{ $filipinoTimeFormatted }}</p>
+                            <p>Total Words: {{ session('filipino_total_words', 0) }}</p>
                         </div>
                     </div>
 
@@ -151,8 +192,27 @@
                             <canvas id="myChart4"></canvas>
                         </div>
                         <div class="reading-metrics">
-                            <p><strong>Instructional Level</strong></p>
-                            <p>{{ session('filipino_score', 0) }} out of {{ session('filipino_total_questions', 0) }} correct answers</p>
+                            @php
+                                $filipinoScore = session('filipino_score', 0);
+                                $filipinoTotal = session('filipino_total_questions', 0);
+                                $filipinoPercentage = $filipinoTotal > 0 ? round(($filipinoScore / $filipinoTotal) * 100) : 0;
+
+                                if ($filipinoPercentage >= 80) {
+                                    $filipinoLevel = 'Independent Level';
+                                    $filipinoLevelClass = 'text-success';
+                                } elseif ($filipinoPercentage >= 59) {
+                                    $filipinoLevel = 'Instructional Level';
+                                    $filipinoLevelClass = 'text-warning';
+                                } else {
+                                    $filipinoLevel = 'Frustrational Level';
+                                    $filipinoLevelClass = 'text-danger';
+                                }
+                            @endphp
+                            <p><strong class="{{ $filipinoLevelClass }}">{{ $filipinoLevel }}</strong></p>
+                            <p>{{ $filipinoPercentage }}% comprehension score</p>
+                            <p>{{ $filipinoScore }} out of {{ $filipinoTotal }} correct answers </p>
+                            
+                            
                         </div>
                     </div>
 
@@ -161,8 +221,24 @@
                             <canvas id="myChart5"></canvas>
                         </div>
                         <div class="reading-metrics">
-                            <p><strong>Independent Level</strong></p>
-                            <p>0 out of 0 words read correctly</p>
+                            @php
+                                $filipinoWordAccuracy = session('filipino_correct_reading', 0);
+
+                                if ($filipinoWordAccuracy >= 97) {
+                                    $filipinoWordLevel = 'Independent Level';
+                                    $filipinoWordLevelClass = 'text-success';
+                                } elseif ($filipinoWordAccuracy >= 90) {
+                                    $filipinoWordLevel = 'Instructional Level';
+                                    $filipinoWordLevelClass = 'text-warning';
+                                } else {
+                                    $filipinoWordLevel = 'Frustrational Level';
+                                    $filipinoWordLevelClass = 'text-danger';
+                                }
+                            @endphp
+                            <p><strong class="{{ $filipinoWordLevelClass }}">{{ $filipinoWordLevel }}</strong></p>
+                            <p>{{ $filipinoWordAccuracy }}% reading accuracy</p>
+                            <p>{{ session('filipino_miscues', 0) }} miscues out of {{ session('filipino_total_words', 0) }} words</p>
+                           
                         </div>
                     </div>
                 </div>
@@ -263,20 +339,68 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Pagbibilang ng mga Oras</td>
-                                <td>2024-03-15</td>
-                                <td>{{ session('filipino_score', 0) }}/{{ session('filipino_total_questions', 0) }}</td>
-                                <td>25 mins</td>
-                                <td><span class="status completed">Completed</span></td>
-                            </tr>
-                            <tr>
-                                <td>Telling Time</td>
-                                <td>2024-03-10</td>
-                                <td>{{ session('english_score', 0) }}/{{ session('english_total_questions', 0) }}</td>
-                                <td>20 mins</td>
-                                <td><span class="status completed">Completed</span></td>
-                            </tr>
+                            @php
+                                // Get only the most recent English and Filipino reading assessments
+                                $latestEnglishAssessment = $allReadingAssessments->where('language', 'english')->first();
+                                $latestFilipinoAssessment = $allReadingAssessments->where('language', 'filipino')->first();
+
+                                $recentAssessments = collect();
+                                if ($latestEnglishAssessment) {
+                                    $recentAssessments->push($latestEnglishAssessment);
+                                }
+                                if ($latestFilipinoAssessment) {
+                                    $recentAssessments->push($latestFilipinoAssessment);
+                                }
+
+                                // Sort by assessment date (most recent first)
+                                $recentAssessments = $recentAssessments->sortByDesc('assessment_date');
+                            @endphp
+
+                            @if($recentAssessments->count() > 0)
+                                @foreach($recentAssessments as $assessment)
+                                    @php
+                                        // Find matching reading material by grade and language
+                                        $matchingMaterial = $readingMaterials->where('grade_level', $assessment->grade)
+                                            ->where('subject', $assessment->language)
+                                            ->first();
+
+                                        $readingTitle = $matchingMaterial ? $matchingMaterial->title : 'Reading Assessment (' . ucfirst($assessment->language) . ')';
+
+                                        // Calculate reading score using formula: (total words - miscues) / total words
+                                        $totalWords = $assessment->total_words;
+                                        $miscues = $assessment->miscues;
+                                        $correctWords = $totalWords - $miscues;
+                                        $readingScore = $correctWords . '/' . $totalWords;
+
+                                        // Format time spent (no WPM info)
+                                        $timeSpent = $assessment->reading_time;
+                                        if ($timeSpent >= 60) {
+                                            $minutes = floor($timeSpent / 60);
+                                            $seconds = $timeSpent % 60;
+                                            $timeFormatted = $minutes . ' min' . ($seconds > 0 ? ' ' . $seconds . ' sec' : '');
+                                        } else {
+                                            $timeFormatted = $timeSpent . ' sec';
+                                        }
+                                    @endphp
+                                    <tr>
+                                        <td>
+                                            <strong>{{ $readingTitle }}</strong>
+                                        </td>
+                                        <td>{{ $assessment->assessment_date->format('M j, Y') }}</td>
+                                        <td>
+                                            {{ $readingScore }}
+                                        </td>
+                                        <td>
+                                            {{ $timeFormatted }}
+                                        </td>
+                                        <td><span class="status completed">Completed</span></td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="5" style="text-align:center;">No reading assessments completed yet.</td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -307,7 +431,7 @@
                                         $latestFilipino = $filipinoAnswers->first();
                                     @endphp
                                     <tr>
-                                        <td>Filipino Question</td>
+                                        <td><strong>Filipino Question</strong></td>
                                         <td>{{ $latestFilipino->created_at->format('Y-m-d') }}</td>
                                         <td>{{ session('filipino_score', 0) }}/{{ session('filipino_total_questions', 0) }}</td>
                                         <td><span class="status completed">Completed</span></td>
@@ -318,7 +442,7 @@
                                         $latestEnglish = $englishAnswers->first();
                                     @endphp
                                     <tr>
-                                        <td>English Question</td>
+                                        <td><strong>English Question</strong></td>
                                         <td>{{ $latestEnglish->created_at->format('Y-m-d') }}</td>
                                         <td>{{ session('english_score', 0) }}/{{ session('english_total_questions', 0) }}</td>
                                         <td><span class="status completed">Completed</span></td>
@@ -339,7 +463,7 @@
     <style>
         .main-content {
             padding: 20px;
-            background-color: #f5f6fa;
+            background-color: #f8f9fa;
         }
 
         .dashboard {
@@ -353,9 +477,16 @@
 
         .profile-card {
             background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e9ecef;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
         }
 
         .profile-header {
@@ -473,34 +604,37 @@
         }
 
         .charts-container {
-            display: flex;
-            flex-direction: row;
-            gap: 10px;
-            padding: 10px 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            padding: 20px 0;
             width: 100%;
+            margin-bottom: 30px;
         }
 
         .reading-passage {
-            flex: 1;
-            background: #f8f9fa;
-            border-radius: 10px;
+            background: white;
+            border-radius: 12px;
             overflow: hidden;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
             min-width: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e9ecef;
         }
 
         .reading-passage:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
         }
 
         .chart-card {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            height: 350px;
+            background: #fafbfc;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 0;
+            height: 380px;
             position: relative;
+            border-bottom: 1px solid #e9ecef;
         }
 
         .chart-card canvas {
@@ -510,10 +644,11 @@
 
         .reading-metrics {
             background: white;
-            padding: 20px;
-            margin: 0 15px 15px 15px;
-            border-radius: 8px;
+            padding: 25px;
+            margin: 0;
+            border-radius: 0 0 12px 12px;
             text-align: center;
+            border-top: 1px solid #e9ecef;
         }
 
         .reading-metrics p {
@@ -531,6 +666,80 @@
         .reading-metrics p:not(:first-child) {
             color: #7f8c8d;
             font-size: 0.95em;
+        }
+
+        /* Reading Level Color Coding */
+        .text-success {
+            color: #27ae60 !important;
+            font-weight: bold;
+        }
+
+        .text-warning {
+            color: #f39c12 !important;
+            font-weight: bold;
+        }
+
+        .text-danger {
+            color: #e74c3c !important;
+            font-weight: bold;
+        }
+
+        .text-muted {
+            color: #6c757d !important;
+            font-size: 0.85em;
+        }
+
+        /* Results Table Styling */
+        .results-table {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        .results-table table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .results-table th {
+            background: #f8f9fa;
+            color: #2c3e50;
+            font-weight: 600;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .results-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #dee2e6;
+            color: #495057;
+        }
+
+        .results-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .status.completed {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.pending {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
         }
 
         .feedback-section {
@@ -788,6 +997,13 @@
             background: #2980b9;
         }
 
+        @media (max-width: 1200px) {
+            .charts-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 25px;
+            }
+        }
+
         @media (max-width: 768px) {
 
             .overview-header,
@@ -811,11 +1027,22 @@
             }
 
             .charts-container {
-                flex-direction: column;
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 15px 0;
             }
 
             .reading-passage {
-                flex: 0 0 100%;
+                margin-bottom: 20px;
+            }
+
+            .chart-card {
+                height: 320px;
+                padding: 20px;
+            }
+
+            .reading-metrics {
+                padding: 20px;
             }
         }
     </style>
@@ -832,61 +1059,105 @@
                 },
                 title: {
                     display: true,
+                    text: '',
                     font: {
-                        size: 14
+                        size: 16,
+                        weight: '600',
+                        family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
                     },
+                    color: '#2c3e50',
                     padding: {
-                        bottom: 10
+                        top: 10,
+                        bottom: 20
                     }
                 }
             },
             scales: {
                 y: {
                     beginAtZero: true,
+                    grid: {
+                        color: '#f1f2f6',
+                        lineWidth: 1
+                    },
                     ticks: {
                         font: {
-                            size: 11
+                            size: 12,
+                            family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                        },
+                        color: '#7f8c8d',
+                        padding: 8
+                    },
+                    title: {
+                        display: true,
+                        text: 'Value',
+                        font: {
+                            size: 13,
+                            weight: '500',
+                            family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                        },
+                        color: '#5a6c7d',
+                        padding: {
+                            top: 10
                         }
                     }
                 },
                 x: {
+                    grid: {
+                        display: false
+                    },
                     ticks: {
                         font: {
-                            size: 11
+                            size: 12,
+                            family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
                         },
-                        maxRotation: 45,
-                        minRotation: 45,
-                        padding: 5
+                        color: '#7f8c8d',
+                        maxRotation: 0,
+                        minRotation: 0,
+                        padding: 10
+                    },
+                    title: {
+                        display: true,
+                        text: 'Metrics',
+                        font: {
+                            size: 13,
+                            weight: '500',
+                            family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                        },
+                        color: '#5a6c7d',
+                        padding: {
+                            top: 15
+                        }
                     }
                 }
             },
             layout: {
                 padding: {
-                    left: 10,
-                    right: 10,
-                    top: 10,
-                    bottom: 10
+                    left: 15,
+                    right: 15,
+                    top: 15,
+                    bottom: 15
                 }
             }
         };
 
-        // English Reading Speed Chart
+        // English Reading Speed Chart (Reading Time and Total Words)
         const ctx = document.getElementById('myChart').getContext('2d');
+        const englishReadingTime = {{ session('english_reading_time', 0) }};
+        const englishTotalWords = {{ session('english_total_words', 0) }};
+
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Reading Time', 'Total Words'],
+                labels: ['Time (sec)', 'Words'],
                 datasets: [{
-                    data: [{{ session('english_reading_time', 0) }}, {{ session('english_reading_speed', 0) }}],
+                    data: [englishReadingTime, englishTotalWords],
                     backgroundColor: [
-                        'rgba(54, 162, 235, 0.8)',
-                        'rgba(255, 99, 132, 0.8)'
+                        '#3498db',
+                        '#e74c3c'
                     ],
-                    borderColor: [
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 99, 132, 1)'
-                    ],
-                    borderWidth: 1
+                    borderWidth: 0,
+                    borderRadius: 6,
+                    barThickness: 60
                 }]
             },
             options: {
@@ -894,10 +1165,24 @@
                 plugins: {
                     ...chartOptions.plugins,
                     title: {
-                        display: true,
-                        text: 'Reading Speed',
-                        font: {
-                            size: 14
+                        ...chartOptions.plugins.title,
+                        text: 'Reading Speed'
+                    }
+                },
+                scales: {
+                    ...chartOptions.scales,
+                    y: {
+                        ...chartOptions.scales.y,
+                        title: {
+                            ...chartOptions.scales.y.title,
+                            text: 'Count'
+                        }
+                    },
+                    x: {
+                        ...chartOptions.scales.x,
+                        title: {
+                            ...chartOptions.scales.x.title,
+                            text: 'Reading Metrics'
                         }
                     }
                 }
@@ -906,21 +1191,22 @@
 
         // English Comprehension Chart
         const ctx1 = document.getElementById('myChart1').getContext('2d');
+        const englishCorrect = {{ session('english_score', 0) }};
+        const englishTotal = {{ session('english_total_questions', 0) }};
+
         new Chart(ctx1, {
             type: 'bar',
             data: {
                 labels: ['Correct Answers', 'Total Questions'],
                 datasets: [{
-                    data: [{{ session('english_score', 0) }}, {{ session('english_total_questions', 0) }}],
+                    data: [englishCorrect, englishTotal],
                     backgroundColor: [
-                        'rgba(75, 192, 192, 0.8)',
-                        'rgba(255, 159, 64, 0.8)'
+                        '#27ae60',
+                        '#3498db'
                     ],
-                    borderColor: [
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
-                    borderWidth: 1
+                    borderWidth: 0,
+                    borderRadius: 6,
+                    barThickness: 60
                 }]
             },
             options: {
@@ -928,35 +1214,57 @@
                 plugins: {
                     ...chartOptions.plugins,
                     title: {
-                        display: true,
-                        text: 'Reading Comprehension',
-                        font: {
-                            size: 14
+                        ...chartOptions.plugins.title,
+                        text: 'Reading Comprehension'
+                    }
+                },
+                scales: {
+                    ...chartOptions.scales,
+                    y: {
+                        ...chartOptions.scales.y,
+                        title: {
+                            ...chartOptions.scales.y.title,
+                            text: 'Questions'
+                        },
+                        ticks: {
+                            ...chartOptions.scales.y.ticks,
+                            stepSize: 1,
+                            callback: function(value) {
+                                if (Number.isInteger(value)) {
+                                    return value;
+                                }
+                            }
+                        }
+                    },
+                    x: {
+                        ...chartOptions.scales.x,
+                        title: {
+                            ...chartOptions.scales.x.title,
+                            text: 'Comprehension Results'
                         }
                     }
                 }
             }
         });
 
-        // English Independent Level Chart
+        // English Word Reading Chart (Teacher Assessment Data)
         const ctx2 = document.getElementById('myChart2').getContext('2d');
+        const englishMiscues = {{ session('english_miscues', 0) }};
+        const englishWords = {{ session('english_total_words', 0) }};
+
         new Chart(ctx2, {
             type: 'bar',
             data: {
-                labels: ['Reading Miscues', 'Correct Reading', 'Total Words'],
+                labels: ['Miscues', 'Total Words'],
                 datasets: [{
-                    data: [0, 0, 0],
+                    data: [englishMiscues, englishWords],
                     backgroundColor: [
-                        'rgba(255, 99, 132, 0.8)',
-                        'rgba(75, 192, 192, 0.8)',
-                        'rgba(255, 159, 64, 0.8)'
+                        '#e74c3c',
+                        '#3498db'
                     ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
-                    borderWidth: 1
+                    borderWidth: 0,
+                    borderRadius: 6,
+                    barThickness: 60
                 }]
             },
             options: {
@@ -964,33 +1272,48 @@
                 plugins: {
                     ...chartOptions.plugins,
                     title: {
-                        display: true,
-                        text: 'Word Reading',
-                        font: {
-                            size: 14
+                        ...chartOptions.plugins.title,
+                        text: 'Word Reading'
+                    }
+                },
+                scales: {
+                    ...chartOptions.scales,
+                    y: {
+                        ...chartOptions.scales.y,
+                        title: {
+                            ...chartOptions.scales.y.title,
+                            text: 'Count'
+                        }
+                    },
+                    x: {
+                        ...chartOptions.scales.x,
+                        title: {
+                            ...chartOptions.scales.x.title,
+                            text: 'Reading Analysis'
                         }
                     }
                 }
             }
         });
 
-        // Filipino Reading Speed Chart
+        // Filipino Reading Speed Chart (Reading Time and Total Words)
         const ctx3 = document.getElementById('myChart3').getContext('2d');
+        const filipinoReadingTime = {{ session('filipino_reading_time', 0) }};
+        const filipinoTotalWords = {{ session('filipino_total_words', 0) }};
+
         new Chart(ctx3, {
             type: 'bar',
             data: {
-                labels: ['Reading Time', 'Total Words'],
+                labels: ['Time (sec)', 'Words'],
                 datasets: [{
-                    data: [{{ session('filipino_reading_time', 0) }}, {{ session('filipino_reading_speed', 0) }}],
+                    data: [filipinoReadingTime, filipinoTotalWords],
                     backgroundColor: [
-                        'rgba(54, 162, 235, 0.8)',
-                        'rgba(255, 99, 132, 0.8)'
+                        '#3498db',
+                        '#e74c3c'
                     ],
-                    borderColor: [
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 99, 132, 1)'
-                    ],
-                    borderWidth: 1
+                    borderWidth: 0,
+                    borderRadius: 6,
+                    barThickness: 60
                 }]
             },
             options: {
@@ -998,10 +1321,24 @@
                 plugins: {
                     ...chartOptions.plugins,
                     title: {
-                        display: true,
-                        text: 'Reading Speed',
-                        font: {
-                            size: 14
+                        ...chartOptions.plugins.title,
+                        text: 'Reading Speed'
+                    }
+                },
+                scales: {
+                    ...chartOptions.scales,
+                    y: {
+                        ...chartOptions.scales.y,
+                        title: {
+                            ...chartOptions.scales.y.title,
+                            text: 'Count'
+                        }
+                    },
+                    x: {
+                        ...chartOptions.scales.x,
+                        title: {
+                            ...chartOptions.scales.x.title,
+                            text: 'Reading Metrics'
                         }
                     }
                 }
@@ -1010,21 +1347,22 @@
 
         // Filipino Comprehension Chart
         const ctx4 = document.getElementById('myChart4').getContext('2d');
+        const filipinoCorrect = {{ session('filipino_score', 0) }};
+        const filipinoTotal = {{ session('filipino_total_questions', 0) }};
+
         new Chart(ctx4, {
             type: 'bar',
             data: {
                 labels: ['Correct Answers', 'Total Questions'],
                 datasets: [{
-                    data: [{{ session('filipino_score', 0) }}, {{ session('filipino_total_questions', 0) }}],
+                    data: [filipinoCorrect, filipinoTotal],
                     backgroundColor: [
-                        'rgba(75, 192, 192, 0.8)',
-                        'rgba(255, 159, 64, 0.8)'
+                        '#27ae60',
+                        '#3498db'
                     ],
-                    borderColor: [
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
-                    borderWidth: 1
+                    borderWidth: 0,
+                    borderRadius: 6,
+                    barThickness: 60
                 }]
             },
             options: {
@@ -1032,35 +1370,57 @@
                 plugins: {
                     ...chartOptions.plugins,
                     title: {
-                        display: true,
-                        text: 'Reading Comprehension',
-                        font: {
-                            size: 14
+                        ...chartOptions.plugins.title,
+                        text: 'Reading Comprehension'
+                    }
+                },
+                scales: {
+                    ...chartOptions.scales,
+                    y: {
+                        ...chartOptions.scales.y,
+                        title: {
+                            ...chartOptions.scales.y.title,
+                            text: 'Questions'
+                        },
+                        ticks: {
+                            ...chartOptions.scales.y.ticks,
+                            stepSize: 1,
+                            callback: function(value) {
+                                if (Number.isInteger(value)) {
+                                    return value;
+                                }
+                            }
+                        }
+                    },
+                    x: {
+                        ...chartOptions.scales.x,
+                        title: {
+                            ...chartOptions.scales.x.title,
+                            text: 'Comprehension Results'
                         }
                     }
                 }
             }
         });
 
-        // Filipino Independent Level Chart
+        // Filipino Word Reading Chart (Teacher Assessment Data)
         const ctx5 = document.getElementById('myChart5').getContext('2d');
+        const filipinoMiscues = {{ session('filipino_miscues', 0) }};
+        const filipinoWords = {{ session('filipino_total_words', 0) }};
+
         new Chart(ctx5, {
             type: 'bar',
             data: {
-                labels: ['Reading Miscues', 'Correct Reading', 'Total Words'],
+                labels: ['Miscues', 'Total Words'],
                 datasets: [{
-                    data: [0, 0, 0],
+                    data: [filipinoMiscues, filipinoWords],
                     backgroundColor: [
-                        'rgba(255, 99, 132, 0.8)',
-                        'rgba(75, 192, 192, 0.8)',
-                        'rgba(255, 159, 64, 0.8)'
+                        '#e74c3c',
+                        '#3498db'
                     ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
-                    borderWidth: 1
+                    borderWidth: 0,
+                    borderRadius: 6,
+                    barThickness: 60
                 }]
             },
             options: {
@@ -1068,10 +1428,24 @@
                 plugins: {
                     ...chartOptions.plugins,
                     title: {
-                        display: true,
-                        text: 'Word Reading',
-                        font: {
-                            size: 14
+                        ...chartOptions.plugins.title,
+                        text: 'Word Reading'
+                    }
+                },
+                scales: {
+                    ...chartOptions.scales,
+                    y: {
+                        ...chartOptions.scales.y,
+                        title: {
+                            ...chartOptions.scales.y.title,
+                            text: 'Count'
+                        }
+                    },
+                    x: {
+                        ...chartOptions.scales.x,
+                        title: {
+                            ...chartOptions.scales.x.title,
+                            text: 'Reading Analysis'
                         }
                     }
                 }

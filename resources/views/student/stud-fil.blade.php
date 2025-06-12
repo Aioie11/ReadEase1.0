@@ -185,7 +185,7 @@
     <style>
         .main-content {
             padding: 20px;
-            background-color: #f5f6fa;
+            background-color: #f8f9fa;
         }
 
         .dashboard {
@@ -195,50 +195,65 @@
 
         .dashboard-header {
             margin-bottom: 30px;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e9ecef;
         }
 
         .dashboard-header h1 {
-            color: var(--primary);
+            color: #2c3e50;
             font-size: 1.8em;
             margin-bottom: 10px;
+            font-weight: 700;
         }
 
         .dashboard-header p {
             color: #7f8c8d;
             margin: 0;
+            font-size: 1.1em;
         }
 
         .grade-card {
             background: white;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e9ecef;
             margin-bottom: 30px;
         }
 
         .grade-card h2 {
-            color: var(--primary);
+            color: #2c3e50;
             font-size: 1.5em;
             margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #95a5a6;
+            border-bottom: 2px solid #3498db;
+            font-weight: 700;
         }
 
         .passage-container {
             margin: 20px 0;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 10px;
+            padding: 25px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .passage-container h3 {
             color: #2c3e50;
             margin-bottom: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
         }
 
         .passage {
-            line-height: 1.6;
-            color: #333;
+            line-height: 1.7;
+            color: #2c3e50;
+            font-size: 1.05em;
         }
 
         .questions-container {
@@ -248,17 +263,28 @@
         .questions-container h3 {
             color: #2c3e50;
             margin-bottom: 20px;
+            font-weight: 600;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
         }
 
         .question-card {
-            background: #f8f9fa;
+            background: white;
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 12px;
             margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .question {
-            color: var(--primary-dark);
+            color: #2c3e50;
             font-size: 1.1em;
             margin-bottom: 15px;
             font-weight: 600;
@@ -267,42 +293,63 @@
         .choices {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .choice {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 10px;
-            background: white;
-            border-radius: 6px;
+            gap: 12px;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.2s ease;
         }
 
         .choice:hover {
-            background-color: #e9ecef;
+            background-color: #e3f2fd;
+            border-color: #3498db;
+        }
+
+        .choice input[type="radio"]:checked + span {
+            color: #3498db;
+            font-weight: 600;
+        }
+
+        .choice input[type="text"] {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 1em;
         }
 
         .submit-container {
             margin-top: 30px;
             text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
         }
 
         .submit-btn {
-            background-color: #3498db;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
-            padding: 12px 30px;
+            padding: 15px 40px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 1.1em;
+            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
         }
 
         .submit-btn:hover {
-            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
         }
 
         /* Modal Styles */

@@ -44,6 +44,18 @@ class StudentDashboardController extends Controller
             ->latest()
             ->first();
 
+        // Get latest English reading assessment
+        $latestEnglishReading = \App\Models\ReadingAssessment::where('student_id', $user->userId)
+            ->where('language', 'english')
+            ->latest('assessment_date')
+            ->first();
+
+        // Get latest Filipino reading assessment
+        $latestFilipinoReading = \App\Models\ReadingAssessment::where('student_id', $user->userId)
+            ->where('language', 'filipino')
+            ->latest('assessment_date')
+            ->first();
+
         // Get total questions from reading materials
         $totalEnglishQuestions = ReadingQuestion::whereHas('readingMaterial', function($query) {
             $query->where('subject', 'english')
@@ -55,45 +67,89 @@ class StudentDashboardController extends Controller
                   ->where('is_published', true);
         })->count();
 
-        // Calculate individual percentages and scores
-        $englishPercent = 0;
-        $filipinoPercent = 0;
+        // Calculate individual percentages and scores for all 4 activities
         $completedCount = 0;
         $totalPercent = 0;
         $latestEnglishScore = 0;
         $latestFilipinoScore = 0;
 
-        // Calculate English percentage if available
+        // 1. English Reading Assessment (teacher's submitted percentage)
+        if ($latestEnglishReading && $latestEnglishReading->correct_reading !== null) {
+            $englishReadingPercent = $latestEnglishReading->correct_reading;
+            $totalPercent += $englishReadingPercent;
+            $completedCount++;
+        }
+
+        // 2. Filipino Reading Assessment (teacher's submitted percentage)
+        if ($latestFilipinoReading && $latestFilipinoReading->correct_reading !== null) {
+            $filipinoReadingPercent = $latestFilipinoReading->correct_reading;
+            $totalPercent += $filipinoReadingPercent;
+            $completedCount++;
+        }
+
+        // 3. English Comprehension (correct answers / total questions)
         if ($latestEnglishActivity) {
             $latestEnglishScore = $latestEnglishActivity->score;
             $totalEnglishQuestions = count($latestEnglishActivity->answers ?? []);
             if ($totalEnglishQuestions > 0) {
-                $englishPercent = round(($latestEnglishScore / $totalEnglishQuestions) * 100);
-                $totalPercent += $englishPercent;
+                $englishComprehensionPercent = round(($latestEnglishScore / $totalEnglishQuestions) * 100);
+                $totalPercent += $englishComprehensionPercent;
                 $completedCount++;
             }
         }
 
-        // Calculate Filipino percentage if available
+        // 4. Filipino Comprehension (correct answers / total questions)
         if ($latestFilipinoActivity) {
             $latestFilipinoScore = $latestFilipinoActivity->score;
             $totalFilipinoQuestions = count($latestFilipinoActivity->answers ?? []);
             if ($totalFilipinoQuestions > 0) {
-                $filipinoPercent = round(($latestFilipinoScore / $totalFilipinoQuestions) * 100);
-                $totalPercent += $filipinoPercent;
+                $filipinoComprehensionPercent = round(($latestFilipinoScore / $totalFilipinoQuestions) * 100);
+                $totalPercent += $filipinoComprehensionPercent;
                 $completedCount++;
             }
         }
 
-        // Calculate average performance
+        // Calculate average performance based on completed activities
         $averageScore = $completedCount > 0 ? round($totalPercent / $completedCount) : 0;
+
+        // Log calculation details for debugging
+        \Log::info('📊 Student Dashboard Performance Calculation', [
+            'student_id' => $user->userId,
+            'completed_activities' => $completedCount,
+            'total_percent_sum' => $totalPercent,
+            'average_score' => $averageScore,
+            'completion_percentage' => round(($completedCount / 4) * 100),
+            'activities' => [
+                'english_reading' => $latestEnglishReading ? [
+                    'status' => 'completed',
+                    'teacher_submitted_percentage' => $latestEnglishReading->correct_reading,
+                    'assessment_date' => $latestEnglishReading->assessment_date
+                ] : 'pending',
+                'filipino_reading' => $latestFilipinoReading ? [
+                    'status' => 'completed',
+                    'teacher_submitted_percentage' => $latestFilipinoReading->correct_reading,
+                    'assessment_date' => $latestFilipinoReading->assessment_date
+                ] : 'pending',
+                'english_comprehension' => $latestEnglishActivity ? [
+                    'status' => 'completed',
+                    'score' => $latestEnglishActivity->score,
+                    'total_questions' => count($latestEnglishActivity->answers ?? [])
+                ] : 'pending',
+                'filipino_comprehension' => $latestFilipinoActivity ? [
+                    'status' => 'completed',
+                    'score' => $latestFilipinoActivity->score,
+                    'total_questions' => count($latestFilipinoActivity->answers ?? [])
+                ] : 'pending'
+            ]
+        ]);
 
         // Calculate completion percentage based on completed activities
         // Total possible activities: 4 (English Reading, English Answering, Filipino Reading, Filipino Answering)
         $completedActivities = 0;
         if ($latestEnglishActivity) $completedActivities++;
         if ($latestFilipinoActivity) $completedActivities++;
-        // Reading activities are not yet connected, so they count as 0
+        if ($latestEnglishReading) $completedActivities++;
+        if ($latestFilipinoReading) $completedActivities++;
         $completionPercentage = round(($completedActivities / 4) * 100);
 
         // Calculate total time spent
@@ -136,6 +192,8 @@ class StudentDashboardController extends Controller
             'user',
             'latestEnglishActivity',
             'latestFilipinoActivity',
+            'latestEnglishReading',
+            'latestFilipinoReading',
             'latestEnglishScore',
             'totalEnglishQuestions',
             'latestFilipinoScore',
@@ -144,6 +202,50 @@ class StudentDashboardController extends Controller
             'completionPercentage',
             'averageTimeFormatted'
         ));
+    }
+
+    /**
+     * Check for reading assessment updates for auto-refresh functionality
+     */
+    public function checkReadingUpdates($studentId)
+    {
+        try {
+            // Check if there are any recent reading assessments (within last 2 minutes)
+            $recentEnglishReading = \App\Models\ReadingAssessment::where('student_id', $studentId)
+                ->where('language', 'english')
+                ->where('updated_at', '>=', now()->subMinutes(2))
+                ->exists();
+
+            $recentFilipinoReading = \App\Models\ReadingAssessment::where('student_id', $studentId)
+                ->where('language', 'filipino')
+                ->where('updated_at', '>=', now()->subMinutes(2))
+                ->exists();
+
+            // Check cache flags set by assessment controllers
+            $englishUpdateFlag = cache()->get("assessment_completed_{$studentId}_english", false);
+            $filipinoUpdateFlag = cache()->get("assessment_completed_{$studentId}_filipino", false);
+
+            $hasUpdates = $recentEnglishReading || $recentFilipinoReading || $englishUpdateFlag || $filipinoUpdateFlag;
+
+            // Clear cache flags if they exist
+            if ($englishUpdateFlag) {
+                cache()->forget("assessment_completed_{$studentId}_english");
+            }
+            if ($filipinoUpdateFlag) {
+                cache()->forget("assessment_completed_{$studentId}_filipino");
+            }
+
+            return response()->json([
+                'hasUpdates' => $hasUpdates,
+                'timestamp' => now()->toISOString()
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'hasUpdates' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function reports()
@@ -170,6 +272,28 @@ class StudentDashboardController extends Controller
         $latestFilipinoActivity = StudentAnswerTagalog::where('student_id', $user->userId)
             ->latest()
             ->first();
+
+        // Get latest English reading assessment from teacher
+        $latestEnglishReading = \App\Models\ReadingAssessment::where('student_id', $user->userId)
+            ->where('language', 'english')
+            ->latest('assessment_date')
+            ->first();
+
+        // Get latest Filipino reading assessment from teacher
+        $latestFilipinoReading = \App\Models\ReadingAssessment::where('student_id', $user->userId)
+            ->where('language', 'filipino')
+            ->latest('assessment_date')
+            ->first();
+
+        // Get all reading assessments for this student (for Reading Results table)
+        $allReadingAssessments = \App\Models\ReadingAssessment::where('student_id', $user->userId)
+            ->orderBy('assessment_date', 'desc')
+            ->get();
+
+        // Get reading materials to match with assessments
+        $readingMaterials = \App\Models\ReadingMaterial::where('is_published', true)
+            ->orderBy('published_at', 'desc')
+            ->get();
 
         // Get all English answers for this student
         $englishAnswers = StudentAnswerEnglish::where('student_id', $user->userId)
@@ -203,43 +327,41 @@ class StudentDashboardController extends Controller
                 'read_at' => now()
             ]);
 
-        // Set session variables for graphs
-        if ($latestEnglishActivity) {
-            session([
-                'english_reading_time' => $latestEnglishActivity->reading_time ?? 0,
-                'english_reading_speed' => $latestEnglishActivity->reading_speed ?? 0,
-                'english_score' => $latestEnglishActivity->score ?? 0,
-                'english_total_questions' => count($latestEnglishActivity->answers ?? [])
-            ]);
-        } else {
-            session([
-                'english_reading_time' => 0,
-                'english_reading_speed' => 0,
-                'english_score' => 0,
-                'english_total_questions' => 0
-            ]);
-        }
+        // Set session variables for graphs - combine student activity and teacher assessment data
+        session([
+            // English comprehension data (from student activity)
+            'english_score' => $latestEnglishActivity ? $latestEnglishActivity->score ?? 0 : 0,
+            'english_total_questions' => $latestEnglishActivity ? count($latestEnglishActivity->answers ?? []) : 0,
 
-        if ($latestFilipinoActivity) {
-            session([
-                'filipino_reading_time' => $latestFilipinoActivity->reading_time ?? 0,
-                'filipino_reading_speed' => $latestFilipinoActivity->reading_speed ?? 0,
-                'filipino_score' => $latestFilipinoActivity->score ?? 0,
-                'filipino_total_questions' => count($latestFilipinoActivity->answers ?? [])
-            ]);
-        } else {
-            session([
-                'filipino_reading_time' => 0,
-                'filipino_reading_speed' => 0,
-                'filipino_score' => 0,
-                'filipino_total_questions' => 0
-            ]);
-        }
+            // English reading data (from teacher assessment)
+            'english_reading_time' => $latestEnglishReading ? $latestEnglishReading->reading_time ?? 0 : 0,
+            'english_reading_speed' => $latestEnglishReading ? $latestEnglishReading->reading_speed ?? 0 : 0,
+            'english_total_words' => $latestEnglishReading ? $latestEnglishReading->total_words ?? 0 : 0,
+            'english_miscues' => $latestEnglishReading ? $latestEnglishReading->miscues ?? 0 : 0,
+            'english_correct_reading' => $latestEnglishReading ? $latestEnglishReading->correct_reading ?? 0 : 0
+        ]);
+
+        session([
+            // Filipino comprehension data (from student activity)
+            'filipino_score' => $latestFilipinoActivity ? $latestFilipinoActivity->score ?? 0 : 0,
+            'filipino_total_questions' => $latestFilipinoActivity ? count($latestFilipinoActivity->answers ?? []) : 0,
+
+            // Filipino reading data (from teacher assessment)
+            'filipino_reading_time' => $latestFilipinoReading ? $latestFilipinoReading->reading_time ?? 0 : 0,
+            'filipino_reading_speed' => $latestFilipinoReading ? $latestFilipinoReading->reading_speed ?? 0 : 0,
+            'filipino_total_words' => $latestFilipinoReading ? $latestFilipinoReading->total_words ?? 0 : 0,
+            'filipino_miscues' => $latestFilipinoReading ? $latestFilipinoReading->miscues ?? 0 : 0,
+            'filipino_correct_reading' => $latestFilipinoReading ? $latestFilipinoReading->correct_reading ?? 0 : 0
+        ]);
 
         return view('student.stud-reports', compact(
             'user',
             'latestEnglishActivity',
             'latestFilipinoActivity',
+            'latestEnglishReading',
+            'latestFilipinoReading',
+            'allReadingAssessments',
+            'readingMaterials',
             'englishAnswers',
             'filipinoAnswers',
             'englishFeedback',

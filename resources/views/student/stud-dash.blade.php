@@ -45,7 +45,10 @@
                     <div class="stat-info">
                         <h3>Performance</h3>
                         <p class="stat-number">{{ $averageScore }}%</p>
-                        <p class="stat-label">Average Score</p>
+                        <p class="stat-label">
+                            Average Score
+                            
+                        </p>
                     </div>
                 </div>
             </div>
@@ -75,15 +78,25 @@
                             @endif
                         </div>
                     </div>
-                    <!-- English Reading (not yet connected, always show 0%) -->
+                    <!-- English Reading Assessment -->
                     <div class="activity-item">
-                        <div class="activity-icon in-progress">
-                            <i class="fas fa-spinner"></i>
+                        <div class="activity-icon {{ $latestEnglishReading ? 'completed' : 'in-progress' }}">
+                            <i class="fas {{ $latestEnglishReading ? 'fa-check' : 'fa-spinner' }}"></i>
                         </div>
                         <div class="activity-details">
                             <h4>English Reading</h4>
-                            <p>0% - Not yet completed</p>
-                            <span class="activity-time">Pending</span>
+                            @if($latestEnglishReading)
+                                @php
+                                    // Use teacher's submitted reading percentage for this student
+                                    $englishReadingPercent = $latestEnglishReading->correct_reading ?? 0;
+                                @endphp
+                                <p>Completed with {{ $englishReadingPercent }}% reading accuracy</p>
+                                
+                                <span class="activity-time">{{ $latestEnglishReading->assessment_date->diffForHumans() }}</span>
+                            @else
+                                <p>0% - Not yet completed</p>
+                                <span class="activity-time">Pending</span>
+                            @endif
                         </div>
                     </div>
                     <!-- Filipino Answering -->
@@ -105,15 +118,24 @@
                             @endif
                         </div>
                     </div>
-                    <!-- Filipino Reading (not yet connected, always show 0%) -->
+                    <!-- Filipino Reading Assessment -->
                     <div class="activity-item">
-                        <div class="activity-icon in-progress">
-                            <i class="fas fa-spinner"></i>
+                        <div class="activity-icon {{ $latestFilipinoReading ? 'completed' : 'in-progress' }}">
+                            <i class="fas {{ $latestFilipinoReading ? 'fa-check' : 'fa-spinner' }}"></i>
                         </div>
                         <div class="activity-details">
                             <h4>Filipino Reading</h4>
-                            <p>0% - Not yet completed</p>
-                            <span class="activity-time">Pending</span>
+                            @if($latestFilipinoReading)
+                                @php
+                                    // Use teacher's submitted reading percentage for this student
+                                    $filipinoReadingPercent = $latestFilipinoReading->correct_reading ?? 0;
+                                @endphp
+                                <p>Completed with {{ $filipinoReadingPercent }}% reading accuracy</p>
+                                <span class="activity-time">{{ $latestFilipinoReading->assessment_date->diffForHumans() }}</span>
+                            @else
+                                <p>0% - Not yet completed</p>
+                                <span class="activity-time">Pending</span>
+                            @endif
                         </div>
                     </div>
 
@@ -127,7 +149,8 @@
     <style>
         .main-content {
             padding: 20px;
-            background-color: #f5f6fa;
+            background-color: #f8f9fa;
+            min-height: 100vh;
         }
 
         .dashboard {
@@ -136,15 +159,22 @@
         }
 
         .profile-section {
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
 
         .profile-card {
             background: white;
-            padding: 20px;
+            padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e9ecef;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
             margin-bottom: 30px;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
         }
 
         .profile-header {
@@ -183,16 +213,35 @@
             background: white;
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             display: flex;
             align-items: center;
             gap: 15px;
-            transition: transform 0.2s;
+            transition: all 0.2s ease;
+            border: 1px solid #e9ecef;
+            border-left: 4px solid #3498db;
         }
 
         .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            border-left-color: #2980b9;
+        }
+
+        .stat-card:nth-child(1) {
+            border-left-color: #3498db;
+        }
+
+        .stat-card:nth-child(2) {
+            border-left-color: #27ae60;
+        }
+
+        .stat-card:nth-child(3) {
+            border-left-color: #e67e22;
+        }
+
+        .stat-card:nth-child(4) {
+            border-left-color: #9b59b6;
         }
 
         .stat-icon {
@@ -205,6 +254,22 @@
             justify-content: center;
             font-size: 1.5em;
             color: white;
+        }
+
+        .stat-card:nth-child(1) .stat-icon {
+            background: #3498db;
+        }
+
+        .stat-card:nth-child(2) .stat-icon {
+            background: #27ae60;
+        }
+
+        .stat-card:nth-child(3) .stat-icon {
+            background: #e67e22;
+        }
+
+        .stat-card:nth-child(4) .stat-icon {
+            background: #9b59b6;
         }
 
         .stat-info h3 {
@@ -230,8 +295,15 @@
             background: white;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .results-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
         }
 
         .results-header h2 {
@@ -239,14 +311,14 @@
             font-size: 1.8em;
             margin-bottom: 25px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #95a5a6;
+            border-bottom: 2px solid #3498db;
             font-weight: 700;
         }
 
         .activity-list {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px;
         }
 
         .activity-item {
@@ -256,12 +328,14 @@
             padding: 15px;
             background: #f8f9fa;
             border-radius: 12px;
-            transition: transform 0.2s;
+            transition: all 0.2s ease;
+            border-left: 4px solid #3498db;
         }
 
         .activity-item:hover {
             transform: translateX(5px);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            background: white;
         }
 
         .activity-icon {
@@ -276,27 +350,53 @@
 
         .activity-icon.completed {
             background: #2ecc71;
+            animation: completedPulse 2s ease-in-out infinite;
         }
 
         .activity-icon.in-progress {
             background: #f1c40f;
+            animation: inProgressSpin 2s linear infinite;
+        }
+
+        .activity-icon.pending {
+            background: #95a5a6;
+        }
+
+        @keyframes completedPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes inProgressSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Reading accuracy styling */
+        .activity-details {
+            flex: 1;
         }
 
         .activity-details h4 {
-            margin: 0;
+            margin: 0 0 8px 0;
             color: #2c3e50;
-            font-size: 1.1em;
-            font-weight: 600;
+            font-size: 1.2em;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
         .activity-details p {
-            margin: 5px 0;
-            color: #7f8c8d;
+            margin: 4px 0;
+            color: #5a6c7d;
+            font-weight: 500;
+            font-size: 0.95em;
         }
 
         .activity-time {
-            font-size: 0.8em;
-            color: #7f8c8d;
+            font-size: 0.85em;
+            color: #95a5a6;
+            font-weight: 400;
+            margin-top: 8px;
         }
 
         /* Notification Indicator Styles */
@@ -352,13 +452,25 @@
         }
 
         @media (max-width: 768px) {
+            .main-content {
+                padding: 15px;
+            }
+
             .profile-header {
                 flex-direction: column;
                 text-align: center;
             }
 
+            .profile-card {
+                padding: 20px;
+            }
+
             .stats-overview {
                 grid-template-columns: 1fr;
+            }
+
+            .results-section {
+                padding: 20px;
             }
 
             .notification-indicator {
@@ -405,6 +517,28 @@
 
             // Check for unread feedback every 30 seconds
             setInterval(checkUnreadFeedback, 30000);
+
+            // Auto-refresh dashboard when reading assessments are completed
+            checkForReadingAssessmentUpdates();
+            setInterval(checkForReadingAssessmentUpdates, 30000);
         });
+
+        // Function to check for reading assessment updates
+        function checkForReadingAssessmentUpdates() {
+            const studentId = '{{ $user->userId }}';
+
+            fetch(`/student/check-reading-updates/${studentId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.hasUpdates) {
+                        console.log('📚 New reading assessment detected, refreshing dashboard...');
+                        // Refresh the page to show updated data
+                        window.location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking for reading updates:', error);
+                });
+        }
     </script>
 @endsection

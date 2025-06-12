@@ -78,6 +78,9 @@ class StudentAnswerEnglishController extends Controller
             // Update reading assessment with comprehension data
             $this->updateReadingAssessmentWithComprehension($user, $score, $totalQuestions, 'english');
 
+            // Trigger dashboard update notification
+            $this->triggerDashboardUpdate($user->userId, 'english');
+
             return redirect()->route('student.reports');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'There was an error submitting your answers. Please try again.');
@@ -128,6 +131,30 @@ class StudentAnswerEnglishController extends Controller
         } catch (\Exception $e) {
             \Log::error('Error updating reading assessment with comprehension data', [
                 'student_id' => $user->userId,
+                'language' => $language,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Trigger dashboard update notification for student dashboard
+     */
+    private function triggerDashboardUpdate($studentId, $language)
+    {
+        try {
+            // Store assessment completion flag in cache for dashboard auto-refresh
+            cache()->put("assessment_completed_{$studentId}_{$language}", true, 300); // 5 minutes
+
+            \Log::info('Dashboard update triggered for student', [
+                'student_id' => $studentId,
+                'language' => $language,
+                'timestamp' => now(),
+                'cache_key' => "assessment_completed_{$studentId}_{$language}"
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error triggering dashboard update', [
+                'student_id' => $studentId,
                 'language' => $language,
                 'error' => $e->getMessage()
             ]);
