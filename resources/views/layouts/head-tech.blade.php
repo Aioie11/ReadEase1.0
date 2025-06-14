@@ -72,15 +72,17 @@
             background-color: var(--neutral);
         }
 
-        /* Header Styles */
+        /* Header Styles - Fixed Top Header */
         header {
             background: var(--primary);
-            padding: 1rem 5%;
+            padding: 1.2rem 2rem;
             position: fixed;
             width: 100%;
             top: 0;
+            left: 0;
             z-index: 1000;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .header-container {
@@ -95,12 +97,48 @@
         .header-left {
             display: flex;
             align-items: center;
+            gap: 1.5rem;
         }
 
         .header-right {
             display: flex;
             align-items: center;
             margin-left: auto;
+        }
+
+        /* Header Logo and System Name - Unified Branding */
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--neutral-light);
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .header-logo:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.1);
+        }
+
+        .header-logo img {
+            height: 80px;
+            width: 80px;
+            object-fit: contain;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-logo-text {
+            font-size: 2.4rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .logo {
@@ -451,140 +489,210 @@
         .sidebar {
             position: fixed;
             left: 0;
-            top: 0;
-            height: 100vh;
-            width: 280px;
+            top: 120px;
+            height: calc(100vh - 120px);
+            width: 240px;
             background: var(--primary);
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-            z-index: 1001;
-            box-shadow: var(--shadow-lg);
-            overflow: hidden;
+            padding: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            overflow-y: auto;
+            overflow-x: hidden;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Custom scrollbar for sidebar */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
         }
 
         .sidebar.collapsed {
             width: 70px;
-            padding: 1.5rem 0.5rem;
         }
 
-        .sidebar.collapsed .sidebar-logo span,
+        .sidebar.collapsed .sidebar-nav {
+            padding: 1.5rem 0;
+        }
+
+        .sidebar.collapsed .nav-section-title,
         .sidebar.collapsed .nav-link span,
-        .sidebar.collapsed .admin-info {
+        .sidebar.collapsed .teacher-info {
             opacity: 0;
             visibility: hidden;
+            transform: translateX(-20px);
         }
 
         .sidebar.collapsed .nav-link {
             justify-content: center;
-            padding: 0.8rem;
+            padding: 1rem 0.5rem;
+            border-left: none;
         }
 
-        .sidebar.collapsed .admin-profile {
+        .sidebar.collapsed .nav-link:hover,
+        .sidebar.collapsed .nav-link.active {
+            transform: none;
+        }
+
+        .sidebar.collapsed .teacher-profile {
             justify-content: center;
+            padding: 0.5rem;
         }
 
-        .sidebar-header {
-            padding: 2rem 0;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        .sidebar.collapsed .teacher-avatar {
+            width: 36px;
+            height: 36px;
+            font-size: 0.9rem;
         }
 
-        .sidebar-logo {
-            color: var(--neutral-light);
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
 
-        .sidebar-logo img {
-            height: 75px;
-            width: 75px;
-            object-fit: contain;
-        }
 
-        .sidebar-logo span {
-            font-size: 2.0rem;
-            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-            font-weight: 800;
+        /* Navigation Container */
+        .sidebar-nav {
+            flex: 1;
+            padding: 2rem 0 1rem 0;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         .nav-menu {
             list-style: none;
-            margin-bottom: 2rem;
+            margin: 0;
+            padding: 0;
         }
 
         .nav-section {
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .nav-section:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            bottom: -1rem;
+            left: 1.5rem;
+            right: 1.5rem;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
         }
 
         .nav-section-title {
-            color: var(--neutral-light);
-            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.85rem;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 0 1rem;
+            letter-spacing: 1.2px;
+            padding: 0 1.5rem 0.75rem 1.5rem;
             margin-bottom: 0.5rem;
-            opacity: 0.7;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
         }
 
         .nav-item {
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.25rem;
         }
 
         .nav-link {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            padding: 0.8rem 1rem;
-            color: var(--neutral-light);
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            color: rgba(255, 255, 255, 0.95);
             text-decoration: none;
-            border-radius: 8px;
-            transition: var(--transition);
-            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1.05rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            position: relative;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: rgba(255, 255, 255, 0.05);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .nav-link:hover,
         .nav-link.active {
-            background: var(--secondary);
-            color: var(--neutral-light);
-            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            border-left-color: var(--secondary);
+            transform: translateX(2px);
         }
 
-        .nav-link i {
-            width: 20px;
-            text-align: center;
-            font-size: 1.1rem;
+        .nav-link:hover::before,
+        .nav-link.active::before {
+            width: 100%;
+        }
+
+        .nav-link:hover .nav-icon,
+        .nav-link.active .nav-icon {
+            transform: scale(1.05);
         }
 
         .nav-icon {
-            width: 18px;
-            height: 18px;
+            width: 22px;
+            height: 22px;
             fill: currentColor;
             flex-shrink: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+        }
+
+        .nav-link span {
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-link:hover span,
+        .nav-link.active span {
+            font-weight: 600;
         }
 
         .nav-link .badge {
             margin-left: auto;
             background: var(--accent);
             color: var(--neutral-light);
-            padding: 0.2rem 0.5rem;
+            padding: 0.25rem 0.6rem;
             border-radius: 12px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
 
         .sidebar-footer {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            margin-top: auto;
             padding: 1.5rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.1) 100%);
         }
 
         .teacher-profile {
@@ -592,85 +700,160 @@
             align-items: center;
             gap: 1rem;
             color: var(--neutral-light);
+            padding: 0.75rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .teacher-profile:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .teacher-avatar {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            background: var(--accent);
+            background: linear-gradient(135deg, var(--accent) 0%, #4a90e2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .teacher-profile:hover .teacher-avatar {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
         }
 
         .teacher-info {
             flex: 1;
+            min-width: 0;
         }
 
         .teacher-name {
             font-weight: 600;
-            margin-bottom: 0.2rem;
-            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            font-size: 1.05rem;
             letter-spacing: 0.3px;
-            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         .teacher-role {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             opacity: 0.9;
-            color: #e0e0e0;
-            letter-spacing: 0.2px;
+            color: rgba(255, 255, 255, 0.85);
+            letter-spacing: 0.4px;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
         }
 
         /* Adjust main content for sidebar */
         .main-content {
-            margin-left: 280px;
-            padding-top: 5rem;
-            transition: all 0.3s ease;
+            margin-left: 240px;
+            padding-top: 120px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 100vh;
         }
 
         .main-content.expanded {
-            margin-left: 70px;
-        }
-
-        /* Adjust header for sidebar */
-        header {
-            margin-left: 280px;
-            width: calc(100% - 280px);
-            transition: all 0.3s ease;
-        }
-
-        header.expanded {
-            margin-left: 70px;
-            width: calc(100% - 70px);
+            margin-left: 0;
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+            }
+
+            .header-logo img {
+                height: 45px;
+                width: 45px;
+            }
+
+            .header-logo-text {
+                font-size: 1.8rem;
+            }
+
             .sidebar {
+                top: 85px;
+                height: calc(100vh - 85px);
                 transform: translateX(-100%);
+                width: 240px;
+                z-index: 1050;
             }
 
             .sidebar.active {
                 transform: translateX(0);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            }
+
+            .sidebar.hidden {
+                transform: translateX(-100%);
             }
 
             .main-content {
                 margin-left: 0;
+                padding-top: 85px;
             }
 
-            header {
+            .main-content.expanded {
                 margin-left: 0;
-                width: 100%;
             }
 
             .menu-toggle {
                 display: block;
+            }
+
+
+
+            /* Mobile navigation adjustments */
+            .nav-section-title {
+                font-size: 0.8rem;
+                padding: 0 1rem 0.5rem 1rem;
+            }
+
+            .nav-link {
+                padding: 0.9rem 1rem;
+                font-size: 1rem;
+            }
+
+            .nav-icon {
+                width: 18px;
+                height: 18px;
+            }
+
+            .teacher-profile {
+                padding: 0.5rem;
+            }
+
+            .teacher-avatar {
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
+            }
+
+            .teacher-name {
+                font-size: 1rem;
+            }
+
+            .teacher-role {
+                font-size: 0.85rem;
             }
 
             /* Mobile user dropdown adjustments */
@@ -690,6 +873,33 @@
             .user-dropdown {
                 padding: 0.3rem;
             }
+
+            /* Mobile overlay for sidebar */
+            .sidebar.active::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: -1;
+            }
+        }
+
+        /* Tablet adjustments */
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .sidebar {
+                width: 220px;
+            }
+
+            .main-content {
+                margin-left: 220px;
+            }
+
+            .nav-link {
+                padding: 0.9rem 1rem;
+            }
         }
 
         /* Menu Toggle Button */
@@ -703,39 +913,7 @@
             padding: 0.5rem;
         }
 
-        /* Sidebar Toggle Button */
-        .sidebar-toggle {
-            position: absolute;
-            top: 20px;
-            right: -15px;
-            background: var(--primary);
-            border: 2px solid var(--neutral-light);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--neutral-light);
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-            z-index: 1002;
-            box-shadow: var(--shadow-md);
-        }
 
-        .sidebar-toggle:hover {
-            background: var(--secondary);
-            transform: scale(1.1);
-        }
-
-        .sidebar.collapsed .sidebar-toggle {
-            transform: rotate(180deg);
-        }
-
-        .sidebar.collapsed .sidebar-toggle:hover {
-            transform: rotate(180deg) scale(1.1);
-        }
 
         /* Tooltip for collapsed sidebar */
         .sidebar.collapsed .nav-link {
@@ -745,29 +923,32 @@
         .sidebar.collapsed .nav-link:hover::after {
             content: attr(data-tooltip);
             position: absolute;
-            left: 60px;
+            left: 65px;
             top: 50%;
             transform: translateY(-50%);
-            background: var(--text);
+            background: rgba(0, 0, 0, 0.9);
             color: var(--neutral-light);
-            padding: 0.5rem 0.8rem;
-            border-radius: 6px;
+            padding: 0.6rem 0.9rem;
+            border-radius: 8px;
             font-size: 0.8rem;
+            font-weight: 500;
             white-space: nowrap;
             z-index: 1003;
             opacity: 1;
             visibility: visible;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
         }
 
         .sidebar.collapsed .nav-link:hover::before {
             content: '';
             position: absolute;
-            left: 55px;
+            left: 58px;
             top: 50%;
             transform: translateY(-50%);
-            border: 5px solid transparent;
-            border-right-color: var(--text);
+            border: 6px solid transparent;
+            border-right-color: rgba(0, 0, 0, 0.9);
             z-index: 1003;
         }
     </style>
@@ -777,47 +958,54 @@
     <!-- Sidebar -->
 
     <aside class="sidebar">
-        <!-- Sidebar Toggle Button -->
-        <button class="sidebar-toggle" onclick="toggleSidebar()">
-            <i class="fas fa-chevron-left"></i>
-        </button>
+        <div class="sidebar-nav">
+            <nav>
+                <ul class="nav-menu">
+                    <div class="nav-section">
+                        <div class="nav-section-title">Main Navigation</div>
+                        <li class="nav-item">
+                            <a href="{{ route('teacher.dashboard') }}"
+                                class="nav-link {{ Route::currentRouteName() == 'teacher.dashboard' ? 'active' : '' }}"
+                                data-tooltip="Dashboard">
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="nav-icon">
+                                    <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
+                                </svg>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                    </div>
 
-        <div class="sidebar-header">
-            <a class="sidebar-logo">
-                <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo">
-                <span>ReadEase</span>
-            </a>
+                    <div class="nav-section">
+                        <div class="nav-section-title">Management</div>
+                        <li class="nav-item">
+                            <a href="{{ route('teacher.student-management') }}"
+                                class="nav-link {{ Route::currentRouteName() == 'teacher.student-management' ? 'active' : '' }}"
+                                data-tooltip="Student Management">
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="nav-icon">
+                                    <path
+                                        d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A3.01 3.01 0 0 0 17.06 7H16.94c-1.05 0-1.99.68-2.34 1.68L12.5 16h2.5v6h5zM12.5 11.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5S11 9.17 11 10s.67 1.5 1.5 1.5zM5.5 6c1.11 0 2-.89 2-2s-.89-2-2-2-2 .89-2 2 .89 2 2 2zm1.5 2h-3C2.67 8 2 8.67 2 9.5v7h8v-7C10 8.67 9.33 8 8 8z" />
+                                </svg>
+                                <span>Student Management</span>
+                            </a>
+                        </li>
+                    </div>
+
+                    <div class="nav-section">
+                        <div class="nav-section-title">Analytics</div>
+                        <li class="nav-item">
+                            <a href="{{ route('teacher.viewreports') }}"
+                                class="nav-link {{ Route::currentRouteName() == 'teacher.viewreports' ? 'active' : '' }}"
+                                data-tooltip="View Reports">
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="nav-icon">
+                                    <path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z" />
+                                </svg>
+                                <span>Reports</span>
+                            </a>
+                        </li>
+                    </div>
+                </ul>
+            </nav>
         </div>
-        <nav>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="{{ route('teacher.dashboard') }}" class="nav-link" data-tooltip="Dashboard">
-                        <svg viewBox="0 0 24 24" fill="currentColor" class="nav-icon">
-                            <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
-                        </svg>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('teacher.student-management') }}" class="nav-link"
-                        data-tooltip="Student Management">
-                        <svg viewBox="0 0 24 24" fill="currentColor" class="nav-icon">
-                            <path
-                                d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A3.01 3.01 0 0 0 17.06 7H16.94c-1.05 0-1.99.68-2.34 1.68L12.5 16h2.5v6h5zM12.5 11.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5S11 9.17 11 10s.67 1.5 1.5 1.5zM5.5 6c1.11 0 2-.89 2-2s-.89-2-2-2-2 .89-2 2 .89 2 2 2zm1.5 2h-3C2.67 8 2 8.67 2 9.5v7h8v-7C10 8.67 9.33 8 8 8z" />
-                        </svg>
-                        <span>Student Management</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('teacher.viewreports') }}" class="nav-link" data-tooltip="View Reports">
-                        <svg viewBox="0 0 24 24" fill="currentColor" class="nav-icon">
-                            <path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z" />
-                        </svg>
-                        <span>Reports</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
 
         <div class="sidebar-footer">
             <div class="teacher-profile">
@@ -840,6 +1028,11 @@
                         <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
                     </svg>
                 </button>
+                <!-- Header Logo and System Name -->
+                <a href="{{ route('teacher.dashboard') }}" class="header-logo">
+                    <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo">
+                    <span class="header-logo-text">ReadEase</span>
+                </a>
             </div>
             <div class="header-right">
                 <div class="user-info">
@@ -910,7 +1103,6 @@
         document.querySelectorAll('.section-item').forEach(section => {
             section.addEventListener('click', () => {
                 // Add your section click handling logic here
-                console.log('Section clicked:', section.querySelector('.section-info span').textContent);
             });
         });
 
@@ -918,19 +1110,47 @@
         document.querySelectorAll('.action-card').forEach(card => {
             card.addEventListener('click', () => {
                 // Add your action card click handling logic here
-                console.log('Action clicked:', card.querySelector('h3').textContent);
             });
         });
 
-        // Sidebar collapse/expand functionality
+        // Sidebar collapse/expand functionality (only for mobile)
         function toggleSidebar() {
             const sidebar = document.querySelector('.sidebar');
             const mainContent = document.querySelector('.main-content');
-            const header = document.querySelector('header');
 
-            sidebar.classList.toggle('collapsed');
+            if (!sidebar || !mainContent) return;
+
+            // Only allow toggle on mobile devices (768px and below)
+            if (window.innerWidth > 768) {
+                return; // Don't hide sidebar on desktop/tablet
+            }
+
+            // Add smooth transition effect
+            sidebar.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            mainContent.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+
+            sidebar.classList.toggle('hidden');
             mainContent.classList.toggle('expanded');
-            header.classList.toggle('expanded');
+
+            // Don't store state in localStorage to ensure sidebar stays visible on page reload
+        }
+
+        // Restore sidebar state on page load
+        function restoreSidebarState() {
+            const sidebar = document.querySelector('.sidebar');
+            const mainContent = document.querySelector('.main-content');
+
+            // Always ensure sidebar is visible by default
+            if (sidebar) {
+                sidebar.classList.remove('hidden');
+                sidebar.style.transform = 'translateX(0)';
+            }
+            if (mainContent) {
+                mainContent.classList.remove('expanded');
+            }
+
+            // Clear any previous hidden state to ensure sidebar stays visible
+            localStorage.removeItem('sidebarHidden');
         }
 
         // User dropdown functionality
@@ -938,9 +1158,7 @@
             const dropdown = document.querySelector('.user-dropdown');
             const dropdownMenu = document.getElementById('userDropdownMenu');
 
-            console.log('Dropdown clicked!'); // Debug log
-            console.log('Dropdown element:', dropdown);
-            console.log('Menu element:', dropdownMenu);
+
 
             dropdown.classList.toggle('active');
             dropdownMenu.classList.toggle('show');
@@ -959,24 +1177,38 @@
             }
         }
 
+        // Ensure sidebar stays visible on window resize
+        window.addEventListener('resize', function () {
+            const sidebar = document.querySelector('.sidebar');
+            const mainContent = document.querySelector('.main-content');
+
+            // If screen is desktop/tablet size, always show sidebar
+            if (window.innerWidth > 768) {
+                if (sidebar) {
+                    sidebar.classList.remove('hidden');
+                    sidebar.style.transform = 'translateX(0)';
+                }
+                if (mainContent) {
+                    mainContent.classList.remove('expanded');
+                }
+            }
+        });
+
         // Initialize dropdown functionality when DOM is loaded
         document.addEventListener('DOMContentLoaded', function () {
+            // Restore sidebar state
+            restoreSidebarState();
+
             const userDropdownToggle = document.getElementById('userDropdownToggle');
-            console.log('DOM loaded, dropdown toggle element:', userDropdownToggle);
 
             if (userDropdownToggle) {
                 userDropdownToggle.addEventListener('click', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('User dropdown clicked!');
                     toggleUserDropdown();
                 });
 
-                // Also add a test alert
                 userDropdownToggle.style.cursor = 'pointer';
-                console.log('Dropdown event listener added successfully');
-            } else {
-                console.error('User dropdown toggle element not found!');
             }
         });
 

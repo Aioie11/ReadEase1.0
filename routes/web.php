@@ -55,9 +55,10 @@ Route::middleware(['web', 'auth', 'password.change'])->group(function () {
 
         Route::get('/student-management', function () {
             $students = \App\Models\Student::with('readingAssessments')
+                ->orderBy('last_name')
+                ->orderBy('first_name')
                 ->orderBy('grade_level')
                 ->orderBy('section')
-                ->orderBy('last_name')
                 ->get()
                 ->map(function ($student) {
                     $latestAssessment = $student->readingAssessments()->latest('assessment_date')->first();

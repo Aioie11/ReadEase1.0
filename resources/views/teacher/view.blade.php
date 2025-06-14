@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Profile - Emma Brown</title>
+    <title>Student Profile - {{ isset($student) ? $student->first_name . ' ' . $student->last_name : 'Student' }}
+    </title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
     <script>tailwind.config = { theme: { extend: { colors: { primary: '#0369a1', secondary: '#6b7280' }, borderRadius: { 'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px' } } } }</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -322,7 +323,11 @@
                 <div class="mr-6">
                     <div
                         class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-2xl font-bold">
-                        EB
+                        @if(isset($student))
+                            {{ strtoupper(substr($student->first_name, 0, 1) . substr($student->last_name, 0, 1)) }}
+                        @else
+                            ST
+                        @endif
                     </div>
                 </div>
 
@@ -332,7 +337,7 @@
                         @if(isset($student))
                             {{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}
                         @else
-                            Brown, Emma
+                            No Student Selected
                         @endif
                     </h1>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -343,7 +348,7 @@
                                     @if(isset($student))
                                         {{ $student->student_number }}
                                     @else
-                                        001
+                                        N/A
                                     @endif
                                 </p>
                             </div>
@@ -366,7 +371,7 @@
                                         @if(isset($student))
                                             Grade {{ $student->grade_level }} - {{ $student->section }}
                                         @else
-                                            Grade 7 - Narra
+                                            N/A
                                         @endif
                                     </p>
                                 </div>
@@ -379,109 +384,228 @@
 
         <!-- Performance Metrics -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            <!-- Reading Level -->
+            <!-- Average Correct Reading (Combined) -->
             <div class="bg-white p-5 rounded-lg shadow-sm">
-                <div class="flex justify-between mb-2">
+                <div class="flex justify-between mb-3">
                     <span class="text-gray-500 text-sm">Average Correct Reading</span>
                     <div class="w-5 h-5 flex items-center justify-center text-blue-500">
                         <i class="ri-book-open-line"></i>
                     </div>
                 </div>
-                <h3 class="text-2xl font-bold mb-2">
-                    @if(isset($student) && $student->readingAssessments->count() > 0)
-                        {{ round($student->readingAssessments->avg('correct_reading'), 1) }}%
-                    @else
-                        N/A
-                    @endif
-                </h3>
-                <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs">
-                    @if(isset($student) && $student->readingAssessments->count() > 0)
-                        @php
-                            $avgCorrect = $student->readingAssessments->avg('correct_reading');
-                        @endphp
-                        @if($avgCorrect >= 90)
-                            Excellent
-                        @elseif($avgCorrect >= 80)
-                            Good
-                        @elseif($avgCorrect >= 70)
-                            Fair
+
+                <!-- English Data -->
+                <div class="mb-3">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-sm text-gray-600">English:</span>
+                        <span class="text-lg font-bold text-blue-600">
+                            @if(isset($student) && $student->readingAssessments->where('language', 'english')->count() > 0)
+                                {{ round($student->readingAssessments->where('language', 'english')->avg('correct_reading'), 1) }}%
+                            @else
+                                N/A
+                            @endif
+                        </span>
+                    </div>
+                    <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs">
+                        @if(isset($student) && $student->readingAssessments->where('language', 'english')->count() > 0)
+                            @php
+                                $avgEnglishCorrect = $student->readingAssessments->where('language', 'english')->avg('correct_reading');
+                            @endphp
+                            @if($avgEnglishCorrect >= 90)
+                                Excellent
+                            @elseif($avgEnglishCorrect >= 80)
+                                Good
+                            @elseif($avgEnglishCorrect >= 70)
+                                Fair
+                            @else
+                                Needs Improvement
+                            @endif
                         @else
-                            Needs Improvement
+                            No Data
                         @endif
-                    @else
-                        No Data
-                    @endif
-                </span>
+                    </span>
+                </div>
+
+                <!-- Filipino Data -->
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-sm text-gray-600">Filipino:</span>
+                        <span class="text-lg font-bold text-green-600">
+                            @if(isset($student) && $student->readingAssessments->where('language', 'filipino')->count() > 0)
+                                {{ round($student->readingAssessments->where('language', 'filipino')->avg('correct_reading'), 1) }}%
+                            @else
+                                N/A
+                            @endif
+                        </span>
+                    </div>
+                    <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs">
+                        @if(isset($student) && $student->readingAssessments->where('language', 'filipino')->count() > 0)
+                            @php
+                                $avgFilipinoCorrect = $student->readingAssessments->where('language', 'filipino')->avg('correct_reading');
+                            @endphp
+                            @if($avgFilipinoCorrect >= 90)
+                                Excellent
+                            @elseif($avgFilipinoCorrect >= 80)
+                                Good
+                            @elseif($avgFilipinoCorrect >= 70)
+                                Fair
+                            @else
+                                Needs Improvement
+                            @endif
+                        @else
+                            No Data
+                        @endif
+                    </span>
+                </div>
             </div>
 
-            <!-- Comprehension Score -->
+            <!-- Average Comprehension (Combined) -->
             <div class="bg-white p-5 rounded-lg shadow-sm">
-                <div class="flex justify-between mb-2">
+                <div class="flex justify-between mb-3">
                     <span class="text-gray-500 text-sm">Average Comprehension</span>
-                    <div class="w-5 h-5 flex items-center justify-center text-blue-500">
+                    <div class="w-5 h-5 flex items-center justify-center text-purple-500">
                         <i class="ri-mental-health-line"></i>
                     </div>
                 </div>
-                <h3 class="text-2xl font-bold mb-2">
-                    @if(isset($student) && $student->readingAssessments->count() > 0)
-                        {{ round($student->readingAssessments->avg('comprehension'), 1) }}%
-                    @else
-                        N/A
-                    @endif
-                </h3>
-                <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs">
-                    @if(isset($student) && $student->readingAssessments->count() > 0)
-                        @php
-                            $avgComp = $student->readingAssessments->avg('comprehension');
-                        @endphp
-                        @if($avgComp >= 90)
-                            Excellent
-                        @elseif($avgComp >= 80)
-                            Good
-                        @elseif($avgComp >= 70)
-                            Fair
+
+                <!-- English Comprehension -->
+                <div class="mb-3">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-sm text-gray-600">English:</span>
+                        <span class="text-lg font-bold text-blue-600">
+                            @if(isset($student) && $student->readingAssessments->where('language', 'english')->count() > 0)
+                                {{ round($student->readingAssessments->where('language', 'english')->avg('comprehension'), 1) }}%
+                            @else
+                                N/A
+                            @endif
+                        </span>
+                    </div>
+                    <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs">
+                        @if(isset($student) && $student->readingAssessments->where('language', 'english')->count() > 0)
+                            @php
+                                $avgEnglishComp = $student->readingAssessments->where('language', 'english')->avg('comprehension');
+                            @endphp
+                            @if($avgEnglishComp >= 90)
+                                Excellent
+                            @elseif($avgEnglishComp >= 80)
+                                Good
+                            @elseif($avgEnglishComp >= 70)
+                                Fair
+                            @else
+                                Needs Improvement
+                            @endif
                         @else
-                            Needs Improvement
+                            No Data
                         @endif
-                    @else
-                        No Data
-                    @endif
-                </span>
+                    </span>
+                </div>
+
+                <!-- Filipino Comprehension -->
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-sm text-gray-600">Filipino:</span>
+                        <span class="text-lg font-bold text-green-600">
+                            @if(isset($student) && $student->readingAssessments->where('language', 'filipino')->count() > 0)
+                                {{ round($student->readingAssessments->where('language', 'filipino')->avg('comprehension'), 1) }}%
+                            @else
+                                N/A
+                            @endif
+                        </span>
+                    </div>
+                    <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs">
+                        @if(isset($student) && $student->readingAssessments->where('language', 'filipino')->count() > 0)
+                            @php
+                                $avgFilipinoComp = $student->readingAssessments->where('language', 'filipino')->avg('comprehension');
+                            @endphp
+                            @if($avgFilipinoComp >= 90)
+                                Excellent
+                            @elseif($avgFilipinoComp >= 80)
+                                Good
+                            @elseif($avgFilipinoComp >= 70)
+                                Fair
+                            @else
+                                Needs Improvement
+                            @endif
+                        @else
+                            No Data
+                        @endif
+                    </span>
+                </div>
             </div>
 
-            <!-- Reading Speed -->
+            <!-- Average Reading Speed (Combined) -->
             <div class="bg-white p-5 rounded-lg shadow-sm">
-                <div class="flex justify-between mb-2">
+                <div class="flex justify-between mb-3">
                     <span class="text-gray-500 text-sm">Average Reading Speed</span>
-                    <div class="w-5 h-5 flex items-center justify-center text-blue-500">
+                    <div class="w-5 h-5 flex items-center justify-center text-orange-500">
                         <i class="ri-speed-line"></i>
                     </div>
                 </div>
-                <h3 class="text-2xl font-bold mb-2">
-                    @if(isset($student) && $student->readingAssessments->count() > 0)
-                        {{ round($student->readingAssessments->avg('reading_speed'), 1) }} wpm
-                    @else
-                        N/A
-                    @endif
-                </h3>
-                <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs">
-                    @if(isset($student) && $student->readingAssessments->count() > 0)
-                        @php
-                            $avgSpeed = $student->readingAssessments->avg('reading_speed');
-                        @endphp
-                        @if($avgSpeed >= 120)
-                            Excellent
-                        @elseif($avgSpeed >= 100)
-                            Good
-                        @elseif($avgSpeed >= 80)
-                            Fair
+
+                <!-- English Reading Speed -->
+                <div class="mb-3">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-sm text-gray-600">English:</span>
+                        <span class="text-lg font-bold text-blue-600">
+                            @if(isset($student) && $student->readingAssessments->where('language', 'english')->count() > 0)
+                                {{ round($student->readingAssessments->where('language', 'english')->avg('reading_speed'), 1) }}
+                                wpm
+                            @else
+                                N/A
+                            @endif
+                        </span>
+                    </div>
+                    <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs">
+                        @if(isset($student) && $student->readingAssessments->where('language', 'english')->count() > 0)
+                            @php
+                                $avgEnglishSpeed = $student->readingAssessments->where('language', 'english')->avg('reading_speed');
+                            @endphp
+                            @if($avgEnglishSpeed >= 120)
+                                Excellent
+                            @elseif($avgEnglishSpeed >= 100)
+                                Good
+                            @elseif($avgEnglishSpeed >= 80)
+                                Fair
+                            @else
+                                Needs Improvement
+                            @endif
                         @else
-                            Needs Improvement
+                            No Data
                         @endif
-                    @else
-                        No Data
-                    @endif
-                </span>
+                    </span>
+                </div>
+
+                <!-- Filipino Reading Speed -->
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-sm text-gray-600">Filipino:</span>
+                        <span class="text-lg font-bold text-green-600">
+                            @if(isset($student) && $student->readingAssessments->where('language', 'filipino')->count() > 0)
+                                {{ round($student->readingAssessments->where('language', 'filipino')->avg('reading_speed'), 1) }}
+                                wpm
+                            @else
+                                N/A
+                            @endif
+                        </span>
+                    </div>
+                    <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs">
+                        @if(isset($student) && $student->readingAssessments->where('language', 'filipino')->count() > 0)
+                            @php
+                                $avgFilipinoSpeed = $student->readingAssessments->where('language', 'filipino')->avg('reading_speed');
+                            @endphp
+                            @if($avgFilipinoSpeed >= 120)
+                                Excellent
+                            @elseif($avgFilipinoSpeed >= 100)
+                                Good
+                            @elseif($avgFilipinoSpeed >= 80)
+                                Fair
+                            @else
+                                Needs Improvement
+                            @endif
+                        @else
+                            No Data
+                        @endif
+                    </span>
+                </div>
             </div>
         </div>
 
@@ -550,7 +674,7 @@
                                         <td class="py-4 px-4">
                                             <span
                                                 class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                                                                                                                                                                                                                                                                                                                                                                                                {{ $assessment->language == 'english' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        {{ $assessment->language == 'english' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
                                                 {{ ucfirst($assessment->language) }}
                                             </span>
                                         </td>
@@ -590,10 +714,10 @@
                                             @endphp
                                             <span
                                                 class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                                                                                                                                                                                                                                                                                                                                                                                                @if($overallScore >= 90) bg-green-100 text-green-800
-                                                                                                                                                                                                                                                                                                                                                                                                                @elseif($overallScore >= 80) bg-blue-100 text-blue-800
-                                                                                                                                                                                                                                                                                                                                                                                                                @elseif($overallScore >= 70) bg-yellow-100 text-yellow-800
-                                                                                                                                                                                                                                                                                                                                                                                                                @else bg-red-100 text-red-800 @endif">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @if($overallScore >= 90) bg-green-100 text-green-800
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @elseif($overallScore >= 80) bg-blue-100 text-blue-800
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @elseif($overallScore >= 70) bg-yellow-100 text-yellow-800
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @else bg-red-100 text-red-800 @endif">
                                                 @if($overallScore >= 90) Excellent
                                                 @elseif($overallScore >= 80) Good
                                                 @elseif($overallScore >= 70) Fair
@@ -886,7 +1010,7 @@
             }
 
             .modal-header {
-                background: linear-gradient(135deg, #1E3A8A, #3B82F6);
+                background: linear-gradient(135deg, #00B8A9, #009688);
                 color: white;
                 padding: 1.5rem 2rem;
                 border-radius: 12px 12px 0 0;
@@ -978,7 +1102,7 @@
                 display: block;
                 font-size: 1.25rem;
                 font-weight: 600;
-                color: #1E3A8A;
+                color: #00B8A9;
             }
 
             .score-badge small,
@@ -1041,13 +1165,13 @@
             }
 
             .question-item.correct {
-                border-left: 4px solid #10B981;
-                background: #F0FDF4;
+                border-left: 4px solid #00B8A9;
+                background: #E6FFFA;
             }
 
             .question-item.incorrect {
-                border-left: 4px solid #EF4444;
-                background: #FEF2F2;
+                border-left: 4px solid #F6AD55;
+                background: #FFFBEB;
             }
 
             .question-header {
@@ -1074,13 +1198,13 @@
             }
 
             .answer-status.correct {
-                background: #D1FAE5;
-                color: #065F46;
+                background: #B2F5EA;
+                color: #00695C;
             }
 
             .answer-status.incorrect {
-                background: #FEE2E2;
-                color: #991B1B;
+                background: #FED7AA;
+                color: #C05621;
             }
 
             .question-text {
@@ -1104,18 +1228,18 @@
             }
 
             .student-answer {
-                background: #FEF2F2;
-                border-left: 3px solid #EF4444;
+                background: #FFFBEB;
+                border-left: 3px solid #F6AD55;
             }
 
             .student-answer.correct-student {
-                background: #F0FDF4;
-                border-left: 3px solid #10B981;
+                background: #E6FFFA;
+                border-left: 3px solid #00B8A9;
             }
 
             .correct-answer {
-                background: #F0FDF4;
-                border-left: 3px solid #10B981;
+                background: #E6FFFA;
+                border-left: 3px solid #00B8A9;
             }
 
             .answer-label {
@@ -1127,15 +1251,15 @@
             }
 
             .student-answer .answer-label {
-                color: #991B1B;
+                color: #C05621;
             }
 
             .student-answer.correct-student .answer-label {
-                color: #065F46;
+                color: #00695C;
             }
 
             .correct-answer .answer-label {
-                color: #065F46;
+                color: #00695C;
             }
 
             .answer-text {
@@ -1165,15 +1289,15 @@
             }
 
             .stat-card.correct {
-                border-left: 4px solid #10B981;
+                border-left: 4px solid #00B8A9;
             }
 
             .stat-card.incorrect {
-                border-left: 4px solid #EF4444;
+                border-left: 4px solid #F6AD55;
             }
 
             .stat-card.total {
-                border-left: 4px solid #3B82F6;
+                border-left: 4px solid #009688;
             }
 
             .stat-icon {
@@ -1229,12 +1353,12 @@
             }
 
             .btn-primary {
-                background: #1E3A8A;
+                background: #00B8A9;
                 color: white;
             }
 
             .btn-primary:hover {
-                background: #1E40AF;
+                background: #009688;
             }
 
             @media (max-width: 768px) {
@@ -1390,8 +1514,8 @@
                     canvas.style.height = '200px';
                     speedCtx.appendChild(canvas);
 
-                    // Use real data if available, otherwise use default values (minimum 1 minute)
-                    let actualReadingTime = 3; // Default 3 minutes
+                    // Use real data if available, otherwise show empty chart
+                    let actualReadingTime = 0; // Default 0 minutes when no data
 
                     if (latestEnglish && latestEnglish.reading_time) {
                         // Convert reading_time from seconds to minutes and ensure reasonable range
@@ -1410,8 +1534,8 @@
                     }
 
                     const readingTimeMinutes = Math.max(Math.round(actualReadingTime), 0); // Allow minimum 0 minutes, maximum 10
-                    const totalWords = latestEnglish ? latestEnglish.total_words : 250;
-                    const readingSpeed = latestEnglish ? latestEnglish.reading_speed : 83;
+                    const totalWords = latestEnglish ? latestEnglish.total_words : 0;
+                    const readingSpeed = latestEnglish ? latestEnglish.reading_speed : 0;
 
                     console.log('English Chart - Raw time:', latestEnglish?.reading_time, 'Processed time:', actualReadingTime.toFixed(2), 'Display time:', readingTimeMinutes);
 
@@ -1447,10 +1571,10 @@
                     canvas.style.height = '200px';
                     comprehensionCtx.appendChild(canvas);
 
-                    // Use real data if available, otherwise use default values
-                    const correctAnswers = latestEnglish ? latestEnglish.correct_answers : 7;
-                    const totalQuestions = latestEnglish ? latestEnglish.total_questions : 10;
-                    const comprehensionScore = latestEnglish ? latestEnglish.comprehension : 70;
+                    // Use real data if available, otherwise show empty chart
+                    const correctAnswers = latestEnglish ? latestEnglish.correct_answers : 0;
+                    const totalQuestions = latestEnglish ? latestEnglish.total_questions : 0;
+                    const comprehensionScore = latestEnglish ? latestEnglish.comprehension : 0;
 
                     window.chartInstances.comprehensionChart = new Chart(canvas.getContext('2d'), {
                         type: 'bar',
@@ -1479,11 +1603,11 @@
                     canvas.style.height = '200px';
                     wordCtx.appendChild(canvas);
 
-                    // Use real data if available, otherwise use default values
-                    const miscues = latestEnglish ? latestEnglish.miscues : 101;
-                    const totalWords = latestEnglish ? latestEnglish.total_words : 250;
+                    // Use real data if available, otherwise show empty chart
+                    const miscues = latestEnglish ? latestEnglish.miscues : 0;
+                    const totalWords = latestEnglish ? latestEnglish.total_words : 0;
                     const correctWords = totalWords - miscues;
-                    const correctReadingPercent = latestEnglish ? latestEnglish.correct_reading : 60;
+                    const correctReadingPercent = latestEnglish ? latestEnglish.correct_reading : 0;
 
                     window.chartInstances.wordChart = new Chart(canvas.getContext('2d'), {
                         type: 'bar',
@@ -1512,8 +1636,8 @@
                     canvas.style.height = '200px';
                     filipinoSpeedCtx.appendChild(canvas);
 
-                    // Use real data if available, otherwise use default values (minimum 1 minute)
-                    let actualFilipinoReadingTime = 3; // Default 3 minutes
+                    // Use real data if available, otherwise show empty chart
+                    let actualFilipinoReadingTime = 0; // Default 0 minutes when no data
 
                     if (latestFilipino && latestFilipino.reading_time) {
                         // Convert reading_time from seconds to minutes and ensure reasonable range
@@ -1532,8 +1656,8 @@
                     }
 
                     const filipinoReadingTimeMinutes = Math.max(Math.round(actualFilipinoReadingTime), 0); // Allow minimum 0 minutes, maximum 10
-                    const filipinoTotalWords = latestFilipino ? latestFilipino.total_words : 250;
-                    const filipinoReadingSpeed = latestFilipino ? latestFilipino.reading_speed : 83;
+                    const filipinoTotalWords = latestFilipino ? latestFilipino.total_words : 0;
+                    const filipinoReadingSpeed = latestFilipino ? latestFilipino.reading_speed : 0;
 
                     console.log('Filipino Chart - Raw time:', latestFilipino?.reading_time, 'Processed time:', actualFilipinoReadingTime.toFixed(2), 'Display time:', filipinoReadingTimeMinutes);
 
@@ -1569,10 +1693,10 @@
                     canvas.style.height = '200px';
                     filipinoComprehensionCtx.appendChild(canvas);
 
-                    // Use real data if available, otherwise use default values
-                    const filipinoCorrectAnswers = latestFilipino ? latestFilipino.correct_answers : 7;
-                    const filipinoTotalQuestions = latestFilipino ? latestFilipino.total_questions : 10;
-                    const filipinoComprehensionScore = latestFilipino ? latestFilipino.comprehension : 70;
+                    // Use real data if available, otherwise show empty chart
+                    const filipinoCorrectAnswers = latestFilipino ? latestFilipino.correct_answers : 0;
+                    const filipinoTotalQuestions = latestFilipino ? latestFilipino.total_questions : 0;
+                    const filipinoComprehensionScore = latestFilipino ? latestFilipino.comprehension : 0;
 
                     window.chartInstances.filipinoComprehensionChart = new Chart(canvas.getContext('2d'), {
                         type: 'bar',
@@ -1601,11 +1725,11 @@
                     canvas.style.height = '200px';
                     filipinoWordCtx.appendChild(canvas);
 
-                    // Use real data if available, otherwise use default values
-                    const filipinoMiscues = latestFilipino ? latestFilipino.miscues : 15;
-                    const filipinoTotalWords = latestFilipino ? latestFilipino.total_words : 250;
+                    // Use real data if available, otherwise show empty chart
+                    const filipinoMiscues = latestFilipino ? latestFilipino.miscues : 0;
+                    const filipinoTotalWords = latestFilipino ? latestFilipino.total_words : 0;
                     const filipinoCorrectWords = filipinoTotalWords - filipinoMiscues;
-                    const filipinoCorrectReadingPercent = latestFilipino ? latestFilipino.correct_reading : 94;
+                    const filipinoCorrectReadingPercent = latestFilipino ? latestFilipino.correct_reading : 0;
 
                     window.chartInstances.filipinoWordChart = new Chart(canvas.getContext('2d'), {
                         type: 'bar',
@@ -1687,8 +1811,8 @@
                     }
 
                     const readingTimeMinutes = Math.max(Math.round(actualReadingTime), 0); // Allow minimum 0 minutes, maximum 10
-                    const totalWords = latestEnglish ? latestEnglish.total_words : 250;
-                    const readingSpeed = latestEnglish ? latestEnglish.reading_speed : 83;
+                    const totalWords = latestEnglish ? latestEnglish.total_words : 0;
+                    const readingSpeed = latestEnglish ? latestEnglish.reading_speed : 0;
 
                     console.log('Update English Chart - Raw time:', latestEnglish?.reading_time, 'Processed time:', actualReadingTime.toFixed(2), 'Display time:', readingTimeMinutes);
 
@@ -1698,9 +1822,9 @@
 
                 // Update Comprehension Chart
                 if (window.chartInstances.comprehensionChart) {
-                    const correctAnswers = latestEnglish ? latestEnglish.correct_answers : 7;
-                    const totalQuestions = latestEnglish ? latestEnglish.total_questions : 10;
-                    const comprehensionScore = latestEnglish ? latestEnglish.comprehension : 70;
+                    const correctAnswers = latestEnglish ? latestEnglish.correct_answers : 0;
+                    const totalQuestions = latestEnglish ? latestEnglish.total_questions : 0;
+                    const comprehensionScore = latestEnglish ? latestEnglish.comprehension : 0;
 
                     window.chartInstances.comprehensionChart.data.datasets[0].data = [correctAnswers, totalQuestions, comprehensionScore];
                     window.chartInstances.comprehensionChart.update();
@@ -1708,10 +1832,10 @@
 
                 // Update Word Reading Chart
                 if (window.chartInstances.wordChart) {
-                    const miscues = latestEnglish ? latestEnglish.miscues : 101;
-                    const totalWords = latestEnglish ? latestEnglish.total_words : 250;
+                    const miscues = latestEnglish ? latestEnglish.miscues : 0;
+                    const totalWords = latestEnglish ? latestEnglish.total_words : 0;
                     const correctWords = totalWords - miscues;
-                    const correctReadingPercent = latestEnglish ? latestEnglish.correct_reading : 60;
+                    const correctReadingPercent = latestEnglish ? latestEnglish.correct_reading : 0;
 
                     window.chartInstances.wordChart.data.datasets[0].data = [miscues, correctWords, correctReadingPercent];
                     window.chartInstances.wordChart.update();
@@ -1741,8 +1865,8 @@
                     }
 
                     const filipinoReadingTimeMinutes = Math.max(Math.round(actualFilipinoReadingTime), 0); // Allow minimum 0 minutes, maximum 10
-                    const filipinoTotalWords = latestFilipino ? latestFilipino.total_words : 250;
-                    const filipinoReadingSpeed = latestFilipino ? latestFilipino.reading_speed : 83;
+                    const filipinoTotalWords = latestFilipino ? latestFilipino.total_words : 0;
+                    const filipinoReadingSpeed = latestFilipino ? latestFilipino.reading_speed : 0;
 
                     console.log('Update Filipino Chart - Raw time:', latestFilipino?.reading_time, 'Processed time:', actualFilipinoReadingTime.toFixed(2), 'Display time:', filipinoReadingTimeMinutes);
 
@@ -1752,9 +1876,9 @@
 
                 // Update Filipino Comprehension Chart
                 if (window.chartInstances.filipinoComprehensionChart) {
-                    const filipinoCorrectAnswers = latestFilipino ? latestFilipino.correct_answers : 7;
-                    const filipinoTotalQuestions = latestFilipino ? latestFilipino.total_questions : 10;
-                    const filipinoComprehensionScore = latestFilipino ? latestFilipino.comprehension : 70;
+                    const filipinoCorrectAnswers = latestFilipino ? latestFilipino.correct_answers : 0;
+                    const filipinoTotalQuestions = latestFilipino ? latestFilipino.total_questions : 0;
+                    const filipinoComprehensionScore = latestFilipino ? latestFilipino.comprehension : 0;
 
                     window.chartInstances.filipinoComprehensionChart.data.datasets[0].data = [filipinoCorrectAnswers, filipinoTotalQuestions, filipinoComprehensionScore];
                     window.chartInstances.filipinoComprehensionChart.update();
@@ -1762,10 +1886,10 @@
 
                 // Update Filipino Word Reading Chart
                 if (window.chartInstances.filipinoWordChart) {
-                    const filipinoMiscues = latestFilipino ? latestFilipino.miscues : 15;
-                    const filipinoTotalWords = latestFilipino ? latestFilipino.total_words : 250;
+                    const filipinoMiscues = latestFilipino ? latestFilipino.miscues : 0;
+                    const filipinoTotalWords = latestFilipino ? latestFilipino.total_words : 0;
                     const filipinoCorrectWords = filipinoTotalWords - filipinoMiscues;
-                    const filipinoCorrectReadingPercent = latestFilipino ? latestFilipino.correct_reading : 94;
+                    const filipinoCorrectReadingPercent = latestFilipino ? latestFilipino.correct_reading : 0;
 
                     window.chartInstances.filipinoWordChart.data.datasets[0].data = [filipinoMiscues, filipinoCorrectWords, filipinoCorrectReadingPercent];
                     window.chartInstances.filipinoWordChart.update();
