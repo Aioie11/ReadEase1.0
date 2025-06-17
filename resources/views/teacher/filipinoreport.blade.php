@@ -1196,6 +1196,8 @@
             const sectionSelect = document.getElementById('sectionFilter');
             const selectedGrade = gradeSelect.value;
 
+            console.log('Grade changed to:', selectedGrade);
+
             // Clear current section options except "All Sections"
             sectionSelect.innerHTML = '<option value="all">All Sections</option>';
 
@@ -1212,22 +1214,54 @@
             // Reset section to "All Sections" when grade changes
             sectionSelect.value = 'all';
 
-            // Update the chart immediately for the selected grade
+            // Update the chart immediately for the selected grade (showing ALL sections data)
             updateFilipinoChartForGrade(selectedGrade);
 
-            // Update the data with new grade and reset section
-            updateFilipinoGradeData();
+            // Fetch and update data dynamically for the selected grade (all sections)
+            fetchFilipinoGradeData(selectedGrade, 'all');
         }
 
-        // Function to update Filipino grade level data
+        // Function to update Filipino grade level data (called when section changes)
         function updateFilipinoGradeData() {
             const selectedGrade = document.getElementById('gradeFilter') ? document.getElementById('gradeFilter').value : '7';
             const selectedSection = document.getElementById('sectionFilter') ? document.getElementById('sectionFilter').value : 'all';
 
-            console.log('Selected grade:', selectedGrade);
-            console.log('Selected section:', selectedSection);
+            console.log('Section changed - Selected grade:', selectedGrade);
+            console.log('Section changed - Selected section:', selectedSection);
 
-            // Show loading state if elements exist
+            // Update the chart for the selected section
+            updateFilipinoChartForGrade(selectedGrade);
+
+            // Fetch and update data dynamically for the selected grade and section
+            fetchFilipinoGradeData(selectedGrade, selectedSection);
+        }
+
+        // Function to fetch Filipino grade data via AJAX
+        function fetchFilipinoGradeData(grade, section) {
+            console.log('Fetching Filipino data for grade:', grade, 'section:', section);
+
+            // Show loading state
+            showFilipinoLoadingState();
+
+            // Make AJAX request to get updated data
+            fetch(`{{ route('teacher.grade-level-data') }}?grade=${grade}&section=${section}&language=filipino`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateFilipinoUIWithData(data.data, grade, section);
+                    } else {
+                        console.error('Error fetching Filipino data:', data.message);
+                        hideFilipinoLoadingState();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching Filipino grade data:', error);
+                    hideFilipinoLoadingState();
+                });
+        }
+
+        // Function to show loading state for Filipino
+        function showFilipinoLoadingState() {
             const totalStudentsEl = document.getElementById('totalStudents');
             const avgReadingSpeedEl = document.getElementById('avgReadingSpeed');
             const avgComprehensionEl = document.getElementById('avgComprehension');
@@ -1235,15 +1269,95 @@
             if (totalStudentsEl) totalStudentsEl.textContent = 'Loading...';
             if (avgReadingSpeedEl) avgReadingSpeedEl.textContent = 'Loading...';
             if (avgComprehensionEl) avgComprehensionEl.textContent = 'Loading...';
-
-            // Reload page with new parameters for Filipino
-            const currentUrl = new URL(window.location);
-            currentUrl.searchParams.set('grade', selectedGrade);
-            currentUrl.searchParams.set('section', selectedSection);
-            currentUrl.searchParams.set('language', 'filipino');
-
-            window.location.href = currentUrl.toString();
         }
+
+        // Function to hide loading state for Filipino
+        function hideFilipinoLoadingState() {
+            // This will be called after data is updated or on error
+        }
+
+        // Function to update UI with fetched Filipino data
+        function updateFilipinoUIWithData(data, grade, section) {
+            console.log('Updating Filipino UI with data:', data);
+
+            // Update summary statistics
+            const totalStudentsEl = document.getElementById('totalStudents');
+            const avgReadingSpeedEl = document.getElementById('avgReadingSpeed');
+            const avgComprehensionEl = document.getElementById('avgComprehension');
+
+            if (totalStudentsEl) totalStudentsEl.textContent = data.total_students || 0;
+            if (avgReadingSpeedEl) avgReadingSpeedEl.textContent = `${data.statistics.avg_reading_speed || 0} WPM`;
+            if (avgComprehensionEl) avgComprehensionEl.textContent = `${data.statistics.avg_comprehension || 0}%`;
+
+            // Update chart title
+            const chartTitle = section === 'all'
+                ? `📊 Pag-unlad sa Pagbasa - Baitang ${grade} (Lahat ng Seksyon)`
+                : `📊 Pag-unlad sa Pagbasa - Baitang ${grade} - ${section.charAt(0).toUpperCase() + section.slice(1)}`;
+            document.getElementById('filipinoChartTitle').textContent = chartTitle;
+
+            // Update chart data
+            const levelDistribution = data.reading_level_distribution;
+            window.filipinoProgressChart.data.datasets[0].data = [
+                levelDistribution.Independent || 0,
+                levelDistribution.Instructional || 0,
+                levelDistribution.Frustration || 0
+            ];
+            window.filipinoProgressChart.update('active');
+
+            // Update section table
+            updateFilipinoSectionTable(data.section_data, section);
+        }
+
+        // Function to update Filipino section table
+        function updateFilipinoSectionTable(sectionData, selectedSection) {
+            const tableBody = document.getElementById('sectionTableBody');
+            if (!tableBody) return;
+
+            if (!sectionData || sectionData.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-light);">
+                            Walang data na available para sa mga napiling filter
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let tableHTML = '';
+            sectionData.forEach(section => {
+                const sectionIcon = section.section.charAt(0).toUpperCase();
+                let performanceClass = 'green';
+                if (section.avg_comprehension < 80) performanceClass = 'yellow';
+                if (section.avg_comprehension < 70) performanceClass = 'red';
+
+                tableHTML += `
+                    <tr>
+                        <td>
+                            <div class="student-info">
+                                <div class="student-avatar">${sectionIcon}</div>
+                                <div>${section.section}</div>
+                            </div>
+                        </td>
+                        <td>${section.student_count} mga estudyante</td>
+                        <td>${section.avg_reading_speed} WPM</td>
+                        <td>${section.avg_comprehension}%</td>
+                        <td>${section.avg_correct_reading}%</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress ${performanceClass}" style="width: ${section.avg_comprehension}%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableBody.innerHTML = tableHTML;
+        }
+
+        // Make functions globally accessible
+        window.updateSectionOptions = updateSectionOptions;
+        window.updateFilipinoGradeData = updateFilipinoGradeData;
 
         // Initialize page with current data
         document.addEventListener('DOMContentLoaded', function () {
@@ -1273,6 +1387,15 @@
             if (currentSection !== 'all') {
                 sectionSelect.value = currentSection.toLowerCase();
             }
+
+            console.log('Current grade:', currentGrade);
+            console.log('Current section:', currentSection);
+
+            // Update chart title based on current selection
+            const chartTitle = currentSection === 'all'
+                ? `📊 Pag-unlad sa Pagbasa - Baitang ${currentGrade} (Lahat ng Seksyon)`
+                : `📊 Pag-unlad sa Pagbasa - Baitang ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
+            document.getElementById('filipinoChartTitle').textContent = chartTitle;
         });
     </script>
 @endsection
