@@ -361,4 +361,9 @@ class TeacherController extends Controller
             ], 500);
         }
     }
+
+    public function readingAssessmentControls()
+    {
+        return view('teacher.reading-assessment-controls');
+    }
 }

@@ -214,13 +214,29 @@
 
             .timer-controls {
                 display: flex;
-                align-items: center;
+                align-items: flex-end;
                 gap: 1rem;
                 padding: 1rem;
                 background: var(--neutral-light);
                 border-radius: 8px;
                 border: 1px solid #e0e0e0;
                 flex-wrap: wrap;
+                justify-content: space-between;
+            }
+
+            .timer-controls .control-group {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-right: 1rem;
+            }
+
+            .timer-controls .control-group label {
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: var(--text);
+                margin-bottom: 0.2rem;
+                white-space: nowrap;
             }
 
             .timer-buttons {
@@ -237,6 +253,52 @@
                 margin-top: 1rem;
             }
 
+            .assessment-buttons {
+                display: flex;
+                gap: 0.5rem;
+                align-items: flex-end;
+                margin-left: auto;
+            }
+
+            /* Save Assessment buttons within timer-controls */
+            .timer-controls .save-assessment {
+                background: var(--secondary);
+                color: white;
+                border: none;
+                padding: 0.7rem 1.5rem;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: var(--transition);
+                height: 42px;
+                font-size: 0.9rem;
+                min-width: 80px;
+            }
+
+            .timer-controls .save-assessment:hover {
+                background: #4fa13a;
+                transform: translateY(-2px);
+            }
+
+            .timer-controls .clear-assessment {
+                background: var(--neutral);
+                color: var(--text);
+                border: 1px solid #ddd;
+                padding: 0.7rem 1.5rem;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: var(--transition);
+                height: 42px;
+                font-size: 0.9rem;
+                min-width: 90px;
+            }
+
+            .timer-controls .clear-assessment:hover {
+                background: #e5e5e5;
+            }
+
+            /* Legacy save-assessment styles for other contexts */
             .save-assessment {
                 background: var(--secondary);
                 color: white;
@@ -273,7 +335,10 @@
                 border: 1px solid #ccc;
                 border-radius: 8px;
                 font-size: 1rem;
-                width: 90px;
+                width: 80px;
+                max-width: 80px;
+                height: 40px;
+                box-sizing: border-box;
             }
 
             .timer {
@@ -282,6 +347,15 @@
                 margin: 0 1rem;
                 font-weight: 600;
                 color: var(--primary);
+                height: 40px;
+                display: flex;
+                align-items: center;
+                padding: 0 0.5rem;
+                background: var(--neutral);
+                border-radius: 8px;
+                border: 1px solid #ddd;
+                min-width: 100px;
+                justify-content: center;
             }
 
             .btn {
@@ -294,6 +368,18 @@
                 cursor: pointer;
                 transition: var(--transition);
                 margin-right: 0.5rem;
+            }
+
+            /* Timer button specific styles */
+            .timer-controls .btn {
+                padding: 0.6rem;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 0.3rem;
+                font-size: 1rem;
             }
 
             .btn.start {
@@ -323,11 +409,18 @@
                 background: #a50c36;
             }
 
+            .header-controls {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1.5rem;
+                gap: 1rem;
+            }
+
             .back-btn {
                 background: var(--neutral);
                 color: var(--primary);
                 border: 1px solid var(--primary);
-                margin-bottom: 1.5rem;
             }
 
             .back-btn:hover {
@@ -652,6 +745,12 @@
                     padding: 0;
                 }
 
+                .header-controls {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 1rem;
+                }
+
                 .card,
                 .student-card {
                     padding: 1rem;
@@ -680,54 +779,99 @@
                     gap: 0.7rem;
                 }
             }
+
+            /* Floating controls styles */
+            .floating-controls {
+                position: sticky;
+                bottom: 0;
+                z-index: 100;
+                background: var(--neutral-light);
+                box-shadow: 0 -2px 8px rgba(0,0,0,0.07);
+                border-radius: var(--radius);
+                margin-top: 1.5rem;
+                transition: box-shadow 0.2s;
+            }
+            .reading-sticky-container {
+                max-height: 500px;
+                overflow-y: auto;
+                position: relative;
+                margin-bottom: 2rem;
+            }
+            @media (max-width: 700px) {
+                .floating-controls {
+                    position: static;
+                    box-shadow: none;
+                }
+                .reading-sticky-container {
+                    max-height: none;
+                    overflow-y: visible;
+                }
+            }
         </style>
 
         <div class="main">
-            <button class="btn back-btn" onclick="window.history.back()">
-                <i class="fas fa-arrow-left"></i> Back
-            </button>
-
-            <div class="card">
-                <div class="card-header-row">
-                    <div class="dropdown">
-                        <a href="#">Reading Languages <i class="fas fa-caret-down"></i></a>
-                        <div class="dropdown-content">
-                            <a href="#" id="lang-english">English</a>
-                            <a href="#" id="lang-filipino">Filipino</a>
-                        </div>
+            <div class="header-controls">
+                <button class="btn back-btn" onclick="window.history.back()">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <div class="dropdown">
+                    <a href="#">Reading Languages <i class="fas fa-caret-down"></i></a>
+                    <div class="dropdown-content">
+                        <a href="#" id="lang-english">English</a>
+                        <a href="#" id="lang-filipino">Filipino</a>
                     </div>
-                </div>
-
-                <div class="passage-header">
-                    <div class="section-title" id="passage-title">READING PASSAGE</div>
-                    <div class="word-count-display">
-                        <i class="fas fa-file-word"></i>
-                        <span>Total Words: <strong id="passageWordCount">0</strong></span>
-                    </div>
-                </div>
-                <div class="passage" id="passage-text">
-                    @if(isset($readingMaterial))
-                        <h3>{{ $readingMaterial->title }}</h3>
-                        <div class="reading-content">
-                            <p>{{ $readingMaterial->content }}</p>
-                        </div>
-                    @else
-                        <div class="empty-state">
-                            <i class="fas fa-book"></i>
-                            <p>No reading material has been published for this grade level and subject yet.</p>
-                        </div>
-                    @endif
                 </div>
             </div>
 
+            <!-- Sticky Reading Container -->
+            <div class="reading-sticky-container" style="max-height: 500px; overflow-y: auto; position: relative; margin-bottom: 2rem;">
+                <div class="card">
+                    <div class="passage-header">
+                        <div class="section-title" id="passage-title">READING PASSAGE</div>
+                    </div>
+                    <div class="passage" id="passage-text">
+                        @if(isset($readingMaterial))
+                            <h3>{{ $readingMaterial->title }}</h3>
+                            <div class="reading-content">
+                                <p>{{ $readingMaterial->content }}</p>
+                            </div>
+                        @else
+                            <div class="empty-state">
+                                <i class="fas fa-book"></i>
+                                <p>No reading material has been published for this grade level and subject yet.</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+                <div class="timer-controls floating-controls">
+                    <!-- Reading Miscues -->
+                    <div class="control-group">
+                        <label for="miscues">Miscues</label>
+                        <input type="number" id="miscues" class="miscues-input" min="0" value="0" style="text-align: center;">
+                    </div>
+                    <!-- Total Words -->
+                    <div class="control-group">
+                        <label for="totalWords">Total Words</label>
+                        <input type="number" id="totalWords" class="miscues-input" readonly style="text-align: center; background-color: var(--neutral-light); cursor: not-allowed;">
+                    </div>
+                    <span class="timer" id="timer">00:00:00</span>
+                    <button class="btn start" onclick="startTimer()"><i class="fas fa-play"></i></button>
+                    <button class="btn stop" onclick="stopTimer()"><i class="fas fa-stop"></i></button>
+                    <button class="btn reset" onclick="resetTimer()"><i class="fas fa-redo"></i></button>
+                    <!-- Save Assessment Buttons -->
+                    <div class="assessment-buttons">
+                        <button class="btn save-assessment" onclick="saveAssessment()">Save</button>
+                        <button class="btn clear-assessment" onclick="clearAssessment()">Clear All</button>
+                    </div>
+                </div>
+            </div>
 
-
+            <!-- Student Reading Assessment positioned below the reading passage box -->
             <div class="student-card">
                 <div class="student-header">Student Reading Assessment</div>
                 <div class="student-meta">Section: {{ ucfirst($section ?? 'Narra') }} &nbsp; | &nbsp; Grade Level:
                     {{ str_replace('grade', '', $grade ?? 'grade7') }}
                 </div>
-
                 <!-- Student Selection -->
                 <div class="assessment-group">
                     <label for="studentSelect">Select Student:</label>
@@ -741,38 +885,6 @@
                             @endif
                         @endforeach
                     </select>
-                </div>
-
-
-
-                <!-- Assessment Controls -->
-                <div class="assessment-controls">
-                    <!-- Reading Miscues -->
-                    <div class="control-group">
-                        <label for="miscues">Reading Miscues</label>
-                        <input type="number" id="miscues" class="assessment-input" min="0" value="0">
-                    </div>
-
-                    <!-- Total Words (Auto-calculated) -->
-                    <div class="control-group">
-                        <label for="totalWords">Total Words (Auto-calculated)</label>
-                        <input type="number" id="totalWords" class="assessment-input" readonly>
-                        <div class="input-note">This field is automatically updated based on the reading passage</div>
-                    </div>
-                </div>
-
-                <!-- Timer Controls -->
-                <div class="timer-controls">
-                    <span class="timer" id="timer">00:00:00</span>
-                    <button class="btn start" onclick="startTimer()">Start Time</button>
-                    <button class="btn stop" onclick="stopTimer()">Stop Time</button>
-                    <button class="btn reset" onclick="resetTimer()">Reset Time</button>
-                </div>
-
-                <!-- Save Assessment Button -->
-                <div class="save-controls">
-                    <button class="btn save-assessment" onclick="saveAssessment()">Save Assessment</button>
-                    <button class="btn clear-assessment" onclick="clearAssessment()">Clear All</button>
                 </div>
             </div>
         </div>
@@ -1292,22 +1404,32 @@
                 },
                 body: JSON.stringify(assessmentData)
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
+                .then(async response => {
+                    let data;
+                    try {
+                        data = await response.json();
+                    } catch (e) {
+                        throw new Error('Invalid JSON response');
+                    }
+                    if (response.ok && data.success) {
                         alert(`Assessment saved successfully!\n\nStudent: ${studentName}\nReading Speed: ${readingSpeed} WPM\nCorrect Reading: ${correctReading}%\nNote: Comprehension will be assessed on student side`);
-
                         // Refresh charts with new data
                         refreshStudentCharts(studentId);
-
                         clearAssessment();
+                    } else if (response.status === 422 && data.errors) {
+                        // Show all validation errors
+                        let errorMsg = 'Validation failed:';
+                        for (const [field, messages] of Object.entries(data.errors)) {
+                            errorMsg += `\n- ${field}: ${messages.join(', ')}`;
+                        }
+                        alert(errorMsg);
                     } else {
                         alert('Error saving assessment: ' + (data.message || 'Unknown error'));
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Error saving assessment. Please try again.');
+                    alert('Error saving assessment. Please try again. ' + (error.message || ''));
                 })
                 .finally(() => {
                     saveButton.disabled = false;
