@@ -75,6 +75,42 @@
                     </div>
                 </div>
 
+                <!-- Filipino Comprehension Performance Distribution -->
+                <div class="chart-panel">
+                    <div class="chart-panel-header">
+                        <h3 id="filipinoComprehensionChartTitle">🧠 Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang {{ (string)($grade ?? '7') }}</h3>
+                        <div class="time-selector">
+                            <button class="time-btn active">Napiling Baitang</button>
+                        </div>
+                    </div>
+                    <div class="chart-panel-body">
+                        <canvas id="filipinoComprehensionChart"></canvas>
+
+                        <!-- Comprehension Level Legend -->
+                        <!-- <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #00B8A9;">
+                            <h4 style="margin: 0 0 10px 0; color: #2D3748; font-size: 14px; font-weight: 600;">🧠
+                                Mga Antas ng Pagganap sa Pag-unawa:</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 15px; font-size: 12px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 16px; height: 16px; background: #00B8A9; border-radius: 4px;">
+                                    </div>
+                                    <span><strong>Independiyente (80-100%):</strong> Napakahusay na kakayahan sa pag-unawa</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 16px; height: 16px; background: #F6AD55; border-radius: 4px;">
+                                    </div>
+                                    <span><strong>Pagtuturo (59-79%):</strong> Mabuting pag-unawa sa tulong</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 16px; height: 16px; background: #E53E3E; border-radius: 4px;">
+                                    </div>
+                                    <span><strong>Pagkabalisa (Below 59%):</strong> Kailangan ng pagpapabuti sa pag-unawa</span>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+
                 <!-- Filipino Section Performance Summary -->
                 <div class="student-table-panel">
                     <div class="panel-header">
@@ -1164,6 +1200,131 @@
             }
         });
 
+        // Filipino Comprehension Performance Chart
+        const filipinoComprehensionCtx = document.getElementById('filipinoComprehensionChart').getContext('2d');
+
+        // Function to get Filipino comprehension chart data for specific grade
+        function getFilipinoComprehensionChartDataForGrade(selectedGrade) {
+            const gradeKey = `Grade ${selectedGrade}`;
+            // We'll calculate comprehension levels based on comprehension scores only
+            const gradeData = gradeDistribution[gradeKey] || { Independent: 0, Instructional: 0, Frustration: 0 };
+
+            return {
+                labels: [gradeKey],
+                independentData: [gradeData.Independent || 0],
+                instructionalData: [gradeData.Instructional || 0],
+                frustrationData: [gradeData.Frustration || 0]
+            };
+        }
+
+        // Get initial Filipino comprehension chart data for current grade
+        const initialFilipinoComprehensionChartData = getFilipinoComprehensionChartDataForGrade(currentGrade);
+
+        window.filipinoComprehensionChart = new Chart(filipinoComprehensionCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Independiyente (80-100%)', 'Pagtuturo (59-79%)', 'Pagkabalisa (Below 59%)'],
+                datasets: [{
+                    data: [
+                        initialFilipinoComprehensionChartData.independentData[0],
+                        initialFilipinoComprehensionChartData.instructionalData[0],
+                        initialFilipinoComprehensionChartData.frustrationData[0]
+                    ],
+                    backgroundColor: ['#00B8A9', '#F6AD55', '#E53E3E'],
+                    borderColor: '#FFFFFF',
+                    borderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'right',
+                        align: 'center',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 20,
+                            font: {
+                                size: 12,
+                                weight: '600'
+                            },
+                            color: '#2D3748',
+                            generateLabels: function(chart) {
+                                const data = chart.data;
+                                if (data.labels.length && data.datasets.length) {
+                                    return data.labels.map(function(label, i) {
+                                        const value = data.datasets[0].data[i];
+                                        const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                        const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
+
+                                        return {
+                                            text: `${label}: ${value} mag-aaral (${percentage}%)`,
+                                            fillStyle: data.datasets[0].backgroundColor[i],
+                                            strokeStyle: data.datasets[0].backgroundColor[i],
+                                            lineWidth: 2,
+                                            hidden: isNaN(data.datasets[0].data[i]),
+                                            index: i
+                                        };
+                                    });
+                                }
+                                return [];
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                        titleColor: '#1A202C',
+                        bodyColor: '#2D3748',
+                        borderColor: '#00B8A9',
+                        borderWidth: 2,
+                        cornerRadius: 12,
+                        displayColors: true,
+                        padding: 16,
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        callbacks: {
+                            title: function(context) {
+                                const label = context[0].label;
+                                const value = context[0].raw;
+                                const total = context[0].dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
+                                return `${label}\n${value} mag-aaral (${percentage}%)`;
+                            },
+                            label: function(context) {
+                                const label = context.label;
+                                const value = context.raw;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
+
+                                let description = '';
+                                if (label.includes('Independiyente')) {
+                                    description = 'Mga mag-aaral na may napakahusay na kakayahan sa pag-unawa';
+                                } else if (label.includes('Pagtuturo')) {
+                                    description = 'Mga mag-aaral na may mabuting pag-unawa sa tulong';
+                                } else if (label.includes('Pagkabalisa')) {
+                                    description = 'Mga mag-aaral na kailangan ng pagpapabuti sa pag-unawa';
+                                }
+
+                                return [
+                                    `Kabuuang Mag-aaral: ${total}`,
+                                    `Antas ng Pag-unawa: ${label.split(' ')[0]}`,
+                                    `Paglalarawan: ${description}`
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
         // Function to update chart for selected grade
         function updateFilipinoChartForGrade(selectedGrade) {
             const chartData = getFilipinoChartDataForGrade(selectedGrade);
@@ -1304,6 +1465,9 @@
             ];
             window.filipinoProgressChart.update('active');
 
+            // Update comprehension chart data (fetch from API)
+            fetchFilipinoComprehensionData(grade, section);
+
             // Update section table
             updateFilipinoSectionTable(data.section_data, section);
         }
@@ -1396,6 +1560,45 @@
                 ? `📊 Pag-unlad sa Pagbasa - Baitang ${currentGrade} (Lahat ng Seksyon)`
                 : `📊 Pag-unlad sa Pagbasa - Baitang ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
             document.getElementById('filipinoChartTitle').textContent = chartTitle;
+
+            // Load initial comprehension data
+            fetchFilipinoComprehensionData(currentGrade, currentSection);
         });
+
+        // Function to fetch Filipino comprehension data
+        function fetchFilipinoComprehensionData(grade, section) {
+            fetch(`{{ route('teacher.comprehension-level-data') }}?grade=${grade}&section=${section}&language=filipino`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateFilipinoComprehensionChart(data.data, grade, section);
+                    } else {
+                        console.error('Error fetching Filipino comprehension data:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching Filipino comprehension data:', error);
+                });
+        }
+
+        // Function to update Filipino comprehension chart
+        function updateFilipinoComprehensionChart(data, grade, section) {
+            const gradeKey = `Grade ${grade}`;
+            const gradeData = data.distribution[gradeKey] || { Independent: 0, Instructional: 0, Frustration: 0 };
+
+            // Update chart title
+            const chartTitle = section === 'all'
+                ? `🧠 Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang ${grade} (Lahat ng Seksyon)`
+                : `🧠 Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang ${grade} - ${section.charAt(0).toUpperCase() + section.slice(1)}`;
+            document.getElementById('filipinoComprehensionChartTitle').textContent = chartTitle;
+
+            // Update chart data
+            window.filipinoComprehensionChart.data.datasets[0].data = [
+                gradeData.Independent || 0,
+                gradeData.Instructional || 0,
+                gradeData.Frustration || 0
+            ];
+            window.filipinoComprehensionChart.update('active');
+        }
     </script>
 @endsection

@@ -8,7 +8,7 @@
     <div class="dashboard-wrapper">
         <div class="dashboard-header">
             <div class="header-content">
-                <h1>View Reports</h1>
+                <h1>English Reports</h1>
                 <p>Comprehensive insights into student reading performance and progress</p>
             </div>
         </div>
@@ -81,7 +81,41 @@
                     </div>
                 </div>
 
+                <!-- English Comprehension Performance Distribution -->
+                <div class="chart-panel">
+                    <div class="chart-panel-header">
+                        <h3 id="englishComprehensionChartTitle">🧠 English Comprehension Performance Distribution - Grade {{ (string)($grade ?? '7') }}</h3>
+                        <div class="time-selector">
+                            <button class="time-btn active">Selected Grade</button>
+                        </div>
+                    </div>
+                    <div class="chart-panel-body">
+                        <canvas id="englishComprehensionChart"></canvas>
 
+                        <!-- Comprehension Level Legend -->
+                        <!-- <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #00B8A9;">
+                            <h4 style="margin: 0 0 10px 0; color: #2D3748; font-size: 14px; font-weight: 600;">🧠
+                                Comprehension Performance Levels:</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 15px; font-size: 12px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 16px; height: 16px; background: #00B8A9; border-radius: 4px;">
+                                    </div>
+                                    <span><strong>Independent (80-100%):</strong> Excellent comprehension skills</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 16px; height: 16px; background: #F6AD55; border-radius: 4px;">
+                                    </div>
+                                    <span><strong>Instructional (59-79%):</strong> Good comprehension with support</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 16px; height: 16px; background: #E53E3E; border-radius: 4px;">
+                                    </div>
+                                    <span><strong>Frustration (Below 59%):</strong> Needs comprehension improvement</span>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
 
                 <div class="student-table-panel">
                     <div class="panel-header">
@@ -1052,6 +1086,131 @@
             }
         });
 
+        // English Comprehension Performance Chart
+        const englishComprehensionCtx = document.getElementById('englishComprehensionChart').getContext('2d');
+
+        // Function to get English comprehension chart data for specific grade
+        function getEnglishComprehensionChartDataForGrade(selectedGrade) {
+            const gradeKey = `Grade ${selectedGrade}`;
+            // We'll calculate comprehension levels based on comprehension scores only
+            const gradeData = gradeDistribution[gradeKey] || { Independent: 0, Instructional: 0, Frustration: 0 };
+
+            return {
+                labels: [gradeKey],
+                independentData: [gradeData.Independent || 0],
+                instructionalData: [gradeData.Instructional || 0],
+                frustrationData: [gradeData.Frustration || 0]
+            };
+        }
+
+        // Get initial comprehension chart data for current grade
+        const initialEnglishComprehensionChartData = getEnglishComprehensionChartDataForGrade(currentGrade);
+
+        window.englishComprehensionChart = new Chart(englishComprehensionCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Independent Level (80-100%)', 'Instructional Level (59-79%)', 'Frustration Level (Below 59%)'],
+                datasets: [{
+                    data: [
+                        initialEnglishComprehensionChartData.independentData[0],
+                        initialEnglishComprehensionChartData.instructionalData[0],
+                        initialEnglishComprehensionChartData.frustrationData[0]
+                    ],
+                    backgroundColor: ['#00B8A9', '#F6AD55', '#E53E3E'],
+                    borderColor: '#FFFFFF',
+                    borderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'right',
+                        align: 'center',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 20,
+                            font: {
+                                size: 12,
+                                weight: '600'
+                            },
+                            color: '#2D3748',
+                            generateLabels: function(chart) {
+                                const data = chart.data;
+                                if (data.labels.length && data.datasets.length) {
+                                    return data.labels.map(function(label, i) {
+                                        const value = data.datasets[0].data[i];
+                                        const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                        const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
+
+                                        return {
+                                            text: `${label}: ${value} students (${percentage}%)`,
+                                            fillStyle: data.datasets[0].backgroundColor[i],
+                                            strokeStyle: data.datasets[0].backgroundColor[i],
+                                            lineWidth: 2,
+                                            hidden: isNaN(data.datasets[0].data[i]),
+                                            index: i
+                                        };
+                                    });
+                                }
+                                return [];
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                        titleColor: '#1A202C',
+                        bodyColor: '#2D3748',
+                        borderColor: '#00B8A9',
+                        borderWidth: 2,
+                        cornerRadius: 12,
+                        displayColors: true,
+                        padding: 16,
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        callbacks: {
+                            title: function(context) {
+                                const label = context[0].label;
+                                const value = context[0].raw;
+                                const total = context[0].dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
+                                return `${label}\n${value} students (${percentage}%)`;
+                            },
+                            label: function(context) {
+                                const label = context.label;
+                                const value = context.raw;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
+
+                                let description = '';
+                                if (label.includes('Independent')) {
+                                    description = 'Students with excellent comprehension skills';
+                                } else if (label.includes('Instructional')) {
+                                    description = 'Students with good comprehension with support';
+                                } else if (label.includes('Frustration')) {
+                                    description = 'Students who need comprehension improvement';
+                                }
+
+                                return [
+                                    `Total Students: ${total}`,
+                                    `Comprehension Level: ${label.split(' ')[0]}`,
+                                    `Description: ${description}`
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
         // Function to update chart for selected grade (this will be updated by AJAX call)
         function updateChartForGrade(selectedGrade) {
             // This function is now mainly used for immediate visual feedback
@@ -1177,6 +1336,9 @@
             ];
             window.mainChart.update('active');
 
+            // Update comprehension chart data (fetch from API)
+            fetchEnglishComprehensionData(grade, section);
+
             // Update section table
             updateSectionTable(data.section_data, section);
         }
@@ -1227,6 +1389,42 @@
 
             tableBody.innerHTML = tableHTML;
         }
+
+        // Function to fetch English comprehension data
+        function fetchEnglishComprehensionData(grade, section) {
+            fetch(`{{ route('teacher.comprehension-level-data') }}?grade=${grade}&section=${section}&language=english`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateEnglishComprehensionChart(data.data, grade, section);
+                    } else {
+                        console.error('Error fetching English comprehension data:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching English comprehension data:', error);
+                });
+        }
+
+        // Function to update English comprehension chart
+        function updateEnglishComprehensionChart(data, grade, section) {
+            const gradeKey = `Grade ${grade}`;
+            const gradeData = data.distribution[gradeKey] || { Independent: 0, Instructional: 0, Frustration: 0 };
+
+            // Update chart title
+            const chartTitle = section === 'all'
+                ? `🧠 English Comprehension Performance Distribution - Grade ${grade} (All Sections)`
+                : `🧠 English Comprehension Performance Distribution - Grade ${grade} - ${section.charAt(0).toUpperCase() + section.slice(1)}`;
+            document.getElementById('englishComprehensionChartTitle').textContent = chartTitle;
+
+            // Update chart data
+            window.englishComprehensionChart.data.datasets[0].data = [
+                gradeData.Independent || 0,
+                gradeData.Instructional || 0,
+                gradeData.Frustration || 0
+            ];
+            window.englishComprehensionChart.update('active');
+        }
     });
 
     // Initialize page with current data
@@ -1274,6 +1472,9 @@
             ? `📊 Reading Performance Distribution - Grade ${currentGrade} (All Sections)`
             : `📊 Reading Performance Distribution - Grade ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
         document.getElementById('chartTitle').textContent = chartTitle;
+
+        // Load initial comprehension data
+        fetchEnglishComprehensionData(currentGrade, currentSection);
     });
 </script>
 @endsection

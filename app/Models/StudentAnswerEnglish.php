@@ -14,8 +14,8 @@ class StudentAnswerEnglish extends Model
         'student_id',
         'answers',
         'score',
-        'total_questions',
         'reading_time',
+        'reading_speed',
         'start_time',
         'end_time'
     ];
@@ -24,6 +24,8 @@ class StudentAnswerEnglish extends Model
         'answers' => 'array',
         'reading_time' => 'integer',
         'reading_speed' => 'integer',
+        'start_time' => 'datetime',
+        'end_time' => 'datetime'
     ];
 
     public function student()

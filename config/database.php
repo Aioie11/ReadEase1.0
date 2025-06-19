@@ -42,7 +42,7 @@ return [
     'driver'    => 'mysql',
     'database'  => 'readease',
     'username'  => 'root',
-    'password'  => 'Dasian@123',
+    'password'  => 'root',
     'charset'   => 'utf8',
     'collation' => 'utf8_unicode_ci',
     'prefix'    => '',
