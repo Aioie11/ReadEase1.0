@@ -158,6 +158,8 @@ Route::middleware(['web', 'auth', 'password.change'])->group(function () {
         Route::post('/save-feedback', [TeacherController::class, 'saveFeedback'])->name('teacher.save.feedback');
         Route::post('/send-feedback', [TeacherController::class, 'sendFeedback'])->name('teacher.send.feedback');
         Route::get('/feedback-history', [TeacherController::class, 'getFeedbackHistory'])->name('teacher.feedback.history');
+
+        Route::get('/reading-assessment-controls', [App\Http\Controllers\TeacherController::class, 'readingAssessmentControls'])->name('teacher.reading-assessment-controls');
     });
 
     // Admin Routes
