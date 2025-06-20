@@ -229,7 +229,7 @@
             font-size: 1.5em;
             margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #3498db;
+            border-bottom: 2px solid #666666;
             font-weight: 700;
         }
 
@@ -246,7 +246,7 @@
             color: #2c3e50;
             margin-bottom: 15px;
             font-weight: 600;
-            border-bottom: 2px solid #3498db;
+            border-bottom: 2px solid #666666;
             padding-bottom: 10px;
         }
 
@@ -264,7 +264,7 @@
             color: #2c3e50;
             margin-bottom: 20px;
             font-weight: 600;
-            border-bottom: 2px solid #3498db;
+            border-bottom: 2px solid #666666;
             padding-bottom: 10px;
         }
 

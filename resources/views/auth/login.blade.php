@@ -65,8 +65,8 @@
         }
 
         .logo-container {
-            width: 80px;
-            height: 80px;
+            width: 150px;
+            height: 150px;
             margin: 0 auto 2rem;
             background: rgba(255, 255, 255, 0.15);
             border-radius: 50%;
@@ -78,8 +78,8 @@
         }
 
         .logo-container img {
-            width: 40px;
-            height: 40px;
+            width: 90px;
+            height: 90px;
             object-fit: contain;
         }
 
@@ -327,7 +327,7 @@
                 @csrf
 
                 <div class="login-header">
-                    <h2 class="login-title">Welcome Back to ReadEase</h2>
+                    <h2 class="login-title">Welcome Back to ReadEase!</h2>
                     <p class="login-subtitle">Let's continue empowering smarter readers.</p>
                 </div>
 

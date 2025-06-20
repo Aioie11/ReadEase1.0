@@ -219,29 +219,11 @@
             gap: 15px;
             transition: all 0.2s ease;
             border: 1px solid #e9ecef;
-            border-left: 4px solid #3498db;
         }
 
         .stat-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-            border-left-color: #2980b9;
-        }
-
-        .stat-card:nth-child(1) {
-            border-left-color: #3498db;
-        }
-
-        .stat-card:nth-child(2) {
-            border-left-color: #27ae60;
-        }
-
-        .stat-card:nth-child(3) {
-            border-left-color: #e67e22;
-        }
-
-        .stat-card:nth-child(4) {
-            border-left-color: #9b59b6;
         }
 
         .stat-icon {
@@ -311,7 +293,7 @@
             font-size: 1.8em;
             margin-bottom: 25px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #3498db;
+            border-bottom: 1px solid #e9ecef;
             font-weight: 700;
         }
 
@@ -329,7 +311,7 @@
             background: #f8f9fa;
             border-radius: 12px;
             transition: all 0.2s ease;
-            border-left: 4px solid #3498db;
+            border: 1px solid #e9ecef;
         }
 
         .activity-item:hover {
