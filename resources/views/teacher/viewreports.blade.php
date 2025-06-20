@@ -8,7 +8,7 @@
     <div class="dashboard-wrapper">
         <div class="dashboard-header">
             <div class="header-content">
-                <h1>View Reports</h1>
+                <h1>English Reports</h1>
                 <p>Comprehensive insights into student reading performance and progress</p>
             </div>
         </div>
@@ -34,7 +34,7 @@
                                 <option value="9" {{ (string)($grade ?? '7') == '9' ? 'selected' : '' }}>Grade 9</option>
                                 <option value="10" {{ (string)($grade ?? '7') == '10' ? 'selected' : '' }}>Grade 10</option>
                             </select>
-                            <select class="custom-select" id="sectionFilter" onchange="updateGradeLevelData()">
+                            <select class="custom-select" id="sectionFilter" onchange="updateEnglishGradeData()">
                                 <option value="all" {{ (string)($section ?? 'all') == 'all' ? 'selected' : '' }}>All Sections</option>
                                 <!-- Dynamic options will be populated by JavaScript -->
                             </select>
@@ -81,7 +81,41 @@
                     </div>
                 </div>
 
+                <!-- English Comprehension Performance Distribution -->
+                <div class="chart-panel">
+                    <div class="chart-panel-header">
+                        <h3 id="englishComprehensionChartTitle">🧠 English Comprehension Performance Distribution - Grade {{ (string)($grade ?? '7') }}</h3>
+                        <div class="time-selector">
+                            <button class="time-btn active">Selected Grade</button>
+                        </div>
+                    </div>
+                    <div class="chart-panel-body">
+                        <canvas id="englishComprehensionChart"></canvas>
 
+                        <!-- Comprehension Level Legend -->
+                        <!-- <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #00B8A9;">
+                            <h4 style="margin: 0 0 10px 0; color: #2D3748; font-size: 14px; font-weight: 600;">🧠
+                                Comprehension Performance Levels:</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 15px; font-size: 12px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 16px; height: 16px; background: #00B8A9; border-radius: 4px;">
+                                    </div>
+                                    <span><strong>Independent (80-100%):</strong> Excellent comprehension skills</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 16px; height: 16px; background: #F6AD55; border-radius: 4px;">
+                                    </div>
+                                    <span><strong>Instructional (59-79%):</strong> Good comprehension with support</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 16px; height: 16px; background: #E53E3E; border-radius: 4px;">
+                                    </div>
+                                    <span><strong>Frustration (Below 59%):</strong> Needs comprehension improvement</span>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
 
                 <div class="student-table-panel">
                     <div class="panel-header">
@@ -883,6 +917,14 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+    // Grade to Section mapping - Define globally so both DOMContentLoaded listeners can access it
+    const gradeSectionMapping = {
+        '7': ['narra', 'lawaan', 'dao', 'mahugani'],
+        '8': ['avocado', 'duhat', 'mango', 'guava'],
+        '9': ['gold', 'zinc', 'silver'],
+        '10': ['galileo', 'newton', 'edison']
+    };
+
     document.addEventListener('DOMContentLoaded', function () {
         // Main Chart - Reading Progress Overview
         const mainCtx = document.getElementById('mainChart').getContext('2d');
@@ -1044,35 +1086,141 @@
             }
         });
 
-        // Function to update chart for selected grade
-        function updateChartForGrade(selectedGrade) {
-            const chartData = getChartDataForGrade(selectedGrade);
+        // English Comprehension Performance Chart
+        const englishComprehensionCtx = document.getElementById('englishComprehensionChart').getContext('2d');
 
-            // Update chart data
-            window.mainChart.data.datasets[0].data = [
-                chartData.independentData[0],
-                chartData.instructionalData[0],
-                chartData.frustrationData[0]
-            ];
+        // Function to get English comprehension chart data for specific grade
+        function getEnglishComprehensionChartDataForGrade(selectedGrade) {
+            const gradeKey = `Grade ${selectedGrade}`;
+            // We'll calculate comprehension levels based on comprehension scores only
+            const gradeData = gradeDistribution[gradeKey] || { Independent: 0, Instructional: 0, Frustration: 0 };
 
-            // Update chart title
-            document.getElementById('chartTitle').textContent = `📊 Reading Performance Distribution - Grade ${selectedGrade}`;
-
-            // Update chart
-            window.mainChart.update('active');
+            return {
+                labels: [gradeKey],
+                independentData: [gradeData.Independent || 0],
+                instructionalData: [gradeData.Instructional || 0],
+                frustrationData: [gradeData.Frustration || 0]
+            };
         }
 
-        // Grade to Section mapping
-        const gradeSectionMapping = {
-            '7': ['narra', 'lawaan', 'dao', 'mahugani'],
-            '8': ['avocado', 'duhat', 'mango', 'guava'],
-            '9': ['gold', 'zinc', 'silver'],
-            '10': ['galileo', 'newton', 'edison']
-        };
+        // Get initial comprehension chart data for current grade
+        const initialEnglishComprehensionChartData = getEnglishComprehensionChartDataForGrade(currentGrade);
+
+        window.englishComprehensionChart = new Chart(englishComprehensionCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Independent Level (80-100%)', 'Instructional Level (59-79%)', 'Frustration Level (Below 59%)'],
+                datasets: [{
+                    data: [
+                        initialEnglishComprehensionChartData.independentData[0],
+                        initialEnglishComprehensionChartData.instructionalData[0],
+                        initialEnglishComprehensionChartData.frustrationData[0]
+                    ],
+                    backgroundColor: ['#00B8A9', '#F6AD55', '#E53E3E'],
+                    borderColor: '#FFFFFF',
+                    borderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'right',
+                        align: 'center',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 20,
+                            font: {
+                                size: 12,
+                                weight: '600'
+                            },
+                            color: '#2D3748',
+                            generateLabels: function(chart) {
+                                const data = chart.data;
+                                if (data.labels.length && data.datasets.length) {
+                                    return data.labels.map(function(label, i) {
+                                        const value = data.datasets[0].data[i];
+                                        const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                        const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
+
+                                        return {
+                                            text: `${label}: ${value} students (${percentage}%)`,
+                                            fillStyle: data.datasets[0].backgroundColor[i],
+                                            strokeStyle: data.datasets[0].backgroundColor[i],
+                                            lineWidth: 2,
+                                            hidden: isNaN(data.datasets[0].data[i]),
+                                            index: i
+                                        };
+                                    });
+                                }
+                                return [];
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                        titleColor: '#1A202C',
+                        bodyColor: '#2D3748',
+                        borderColor: '#00B8A9',
+                        borderWidth: 2,
+                        cornerRadius: 12,
+                        displayColors: true,
+                        padding: 16,
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        callbacks: {
+                            title: function(context) {
+                                const label = context[0].label;
+                                const value = context[0].raw;
+                                const total = context[0].dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
+                                return `${label}\n${value} students (${percentage}%)`;
+                            },
+                            label: function(context) {
+                                const label = context.label;
+                                const value = context.raw;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
+
+                                let description = '';
+                                if (label.includes('Independent')) {
+                                    description = 'Students with excellent comprehension skills';
+                                } else if (label.includes('Instructional')) {
+                                    description = 'Students with good comprehension with support';
+                                } else if (label.includes('Frustration')) {
+                                    description = 'Students who need comprehension improvement';
+                                }
+
+                                return [
+                                    `Total Students: ${total}`,
+                                    `Comprehension Level: ${label.split(' ')[0]}`,
+                                    `Description: ${description}`
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Function to update chart for selected grade (this will be updated by AJAX call)
+        function updateChartForGrade(selectedGrade) {
+            // This function is now mainly used for immediate visual feedback
+            // The actual data update will be handled by the AJAX response in updateUIWithData
+            console.log('Chart update requested for grade:', selectedGrade);
+        }
 
         // Make functions globally accessible
         window.updateSectionOptions = updateSectionOptions;
-        window.updateGradeLevelData = updateGradeLevelData;
+        window.updateEnglishGradeData = updateEnglishGradeData;
 
         // Function to update section options based on selected grade
         function updateSectionOptions() {
@@ -1098,26 +1246,54 @@
             // Reset section to "All Sections" when grade changes
             sectionSelect.value = 'all';
 
-            // Update the chart immediately for the selected grade
+            // Update the chart immediately for the selected grade (showing ALL sections data)
             updateChartForGrade(selectedGrade);
 
-            // Update the data with new grade and reset section - IMMEDIATELY like Filipino version
-            updateGradeLevelData();
+            // Fetch and update data dynamically for the selected grade (all sections)
+            fetchGradeData(selectedGrade, 'all');
         }
 
-        // Function to update grade level data
-        function updateGradeLevelData() {
+        // Function to update English grade level data (called when section changes)
+        function updateEnglishGradeData() {
             const selectedGrade = document.getElementById('gradeFilter') ? document.getElementById('gradeFilter').value : '7';
             const selectedSection = document.getElementById('sectionFilter') ? document.getElementById('sectionFilter').value : 'all';
-            const language = 'english';
 
-            console.log('Updating English grade level data:', {
-                grade: selectedGrade,
-                section: selectedSection,
-                language: language
-            });
+            console.log('Section changed - Selected grade:', selectedGrade);
+            console.log('Section changed - Selected section:', selectedSection);
 
-            // Show loading state if elements exist
+            // Update the chart for the selected section
+            updateChartForGrade(selectedGrade);
+
+            // Fetch and update data dynamically for the selected grade and section
+            fetchGradeData(selectedGrade, selectedSection);
+        }
+
+        // Function to fetch grade data via AJAX
+        function fetchGradeData(grade, section) {
+            console.log('Fetching data for grade:', grade, 'section:', section);
+
+            // Show loading state
+            showLoadingState();
+
+            // Make AJAX request to get updated data
+            fetch(`{{ route('teacher.grade-level-data') }}?grade=${grade}&section=${section}&language=english`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateUIWithData(data.data, grade, section);
+                    } else {
+                        console.error('Error fetching data:', data.message);
+                        hideLoadingState();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching grade data:', error);
+                    hideLoadingState();
+                });
+        }
+
+        // Function to show loading state
+        function showLoadingState() {
             const totalStudentsEl = document.getElementById('totalStudents');
             const avgReadingSpeedEl = document.getElementById('avgReadingSpeed');
             const avgComprehensionEl = document.getElementById('avgComprehension');
@@ -1125,55 +1301,180 @@
             if (totalStudentsEl) totalStudentsEl.textContent = 'Loading...';
             if (avgReadingSpeedEl) avgReadingSpeedEl.textContent = 'Loading...';
             if (avgComprehensionEl) avgComprehensionEl.textContent = 'Loading...';
-
-            // Reload page with new parameters for English
-            const currentUrl = new URL(window.location);
-            currentUrl.searchParams.set('grade', selectedGrade);
-            currentUrl.searchParams.set('section', selectedSection);
-            currentUrl.searchParams.set('language', language);
-
-            console.log('Redirecting to:', currentUrl.toString());
-
-            window.location.href = currentUrl.toString();
         }
 
-        // Initialize page with current data
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log('ViewReports page loaded with real data');
-            console.log('Total students:', {{ $total_students ?? 0 }});
-            console.log('Grade distribution:', @json($grade_distribution ?? []));
+        // Function to hide loading state
+        function hideLoadingState() {
+            // This will be called after data is updated or on error
+        }
 
-            // Initialize section options based on current grade
-            const currentGrade = document.getElementById('gradeFilter').value;
-            const currentSection = '{{ is_string($section ?? "all") ? ($section ?? "all") : "all" }}';
+        // Function to update UI with fetched data
+        function updateUIWithData(data, grade, section) {
+            console.log('Updating UI with data:', data);
 
-            console.log('Page loaded with:', {
-                currentGrade: currentGrade,
-                currentSection: currentSection,
-                backendGrade: '{{ (string)($grade ?? "7") }}',
-                backendSection: '{{ is_string($section ?? "all") ? ($section ?? "all") : "all" }}'
+            // Update summary statistics
+            const totalStudentsEl = document.getElementById('totalStudents');
+            const avgReadingSpeedEl = document.getElementById('avgReadingSpeed');
+            const avgComprehensionEl = document.getElementById('avgComprehension');
+
+            if (totalStudentsEl) totalStudentsEl.textContent = data.total_students || 0;
+            if (avgReadingSpeedEl) avgReadingSpeedEl.textContent = `${data.statistics.avg_reading_speed || 0} WPM`;
+            if (avgComprehensionEl) avgComprehensionEl.textContent = `${data.statistics.avg_comprehension || 0}%`;
+
+            // Update chart title
+            const chartTitle = section === 'all'
+                ? `📊 Reading Performance Distribution - Grade ${grade} (All Sections)`
+                : `📊 Reading Performance Distribution - Grade ${grade} - ${section.charAt(0).toUpperCase() + section.slice(1)}`;
+            document.getElementById('chartTitle').textContent = chartTitle;
+
+            // Update chart data
+            const levelDistribution = data.reading_level_distribution;
+            window.mainChart.data.datasets[0].data = [
+                levelDistribution.Independent || 0,
+                levelDistribution.Instructional || 0,
+                levelDistribution.Frustration || 0
+            ];
+            window.mainChart.update('active');
+
+            // Update comprehension chart data (fetch from API)
+            fetchEnglishComprehensionData(grade, section);
+
+            // Update section table
+            updateSectionTable(data.section_data, section);
+        }
+
+        // Function to update section table
+        function updateSectionTable(sectionData, selectedSection) {
+            const tableBody = document.getElementById('sectionTableBody');
+            if (!tableBody) return;
+
+            if (!sectionData || sectionData.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-light);">
+                            No data available for the selected filters
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let tableHTML = '';
+            sectionData.forEach(section => {
+                const sectionIcon = section.section.charAt(0).toUpperCase();
+                let performanceClass = 'green';
+                if (section.avg_comprehension < 80) performanceClass = 'yellow';
+                if (section.avg_comprehension < 70) performanceClass = 'red';
+
+                tableHTML += `
+                    <tr>
+                        <td>
+                            <div class="student-info">
+                                <div class="student-avatar">${sectionIcon}</div>
+                                <div>${section.section}</div>
+                            </div>
+                        </td>
+                        <td>${section.student_count} students</td>
+                        <td>${section.avg_reading_speed} WPM</td>
+                        <td>${section.avg_comprehension}%</td>
+                        <td>${section.avg_correct_reading}%</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress ${performanceClass}" style="width: ${section.avg_comprehension}%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
             });
 
-            // Update section options for the current grade
-            const sectionSelect = document.getElementById('sectionFilter');
-            sectionSelect.innerHTML = '<option value="all">All Sections</option>';
+            tableBody.innerHTML = tableHTML;
+        }
 
-            if (gradeSectionMapping[currentGrade]) {
-                gradeSectionMapping[currentGrade].forEach(section => {
-                    const option = document.createElement('option');
-                    option.value = section.toLowerCase();
-                    option.textContent = section.charAt(0).toUpperCase() + section.slice(1);
-                    if (section.toLowerCase() === currentSection.toLowerCase()) {
-                        option.selected = true;
+        // Function to fetch English comprehension data
+        function fetchEnglishComprehensionData(grade, section) {
+            fetch(`{{ route('teacher.comprehension-level-data') }}?grade=${grade}&section=${section}&language=english`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateEnglishComprehensionChart(data.data, grade, section);
+                    } else {
+                        console.error('Error fetching English comprehension data:', data.message);
                     }
-                    sectionSelect.appendChild(option);
+                })
+                .catch(error => {
+                    console.error('Error fetching English comprehension data:', error);
                 });
-            }
+        }
 
-            // Set the current section if it exists
-            if (currentSection !== 'all') {
-                sectionSelect.value = currentSection.toLowerCase();
-            }
-        });
+        // Function to update English comprehension chart
+        function updateEnglishComprehensionChart(data, grade, section) {
+            const gradeKey = `Grade ${grade}`;
+            const gradeData = data.distribution[gradeKey] || { Independent: 0, Instructional: 0, Frustration: 0 };
+
+            // Update chart title
+            const chartTitle = section === 'all'
+                ? `🧠 English Comprehension Performance Distribution - Grade ${grade} (All Sections)`
+                : `🧠 English Comprehension Performance Distribution - Grade ${grade} - ${section.charAt(0).toUpperCase() + section.slice(1)}`;
+            document.getElementById('englishComprehensionChartTitle').textContent = chartTitle;
+
+            // Update chart data
+            window.englishComprehensionChart.data.datasets[0].data = [
+                gradeData.Independent || 0,
+                gradeData.Instructional || 0,
+                gradeData.Frustration || 0
+            ];
+            window.englishComprehensionChart.update('active');
+        }
+    });
+
+    // Initialize page with current data
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log('English Reports page loaded');
+        console.log('gradeSectionMapping:', gradeSectionMapping);
+
+        // Initialize section options based on current grade
+        const currentGrade = document.getElementById('gradeFilter').value;
+        const currentSection = '{{ is_string($section ?? "all") ? ($section ?? "all") : "all" }}';
+
+        console.log('Current grade:', currentGrade);
+        console.log('Current section:', currentSection);
+
+        // Update section options for the current grade
+        const sectionSelect = document.getElementById('sectionFilter');
+        console.log('Section select element:', sectionSelect);
+
+        sectionSelect.innerHTML = '<option value="all">All Sections</option>';
+
+        if (gradeSectionMapping[currentGrade]) {
+            console.log('Adding sections for grade:', currentGrade, gradeSectionMapping[currentGrade]);
+            gradeSectionMapping[currentGrade].forEach(section => {
+                const option = document.createElement('option');
+                option.value = section.toLowerCase();
+                option.textContent = section.charAt(0).toUpperCase() + section.slice(1);
+                if (section.toLowerCase() === currentSection.toLowerCase()) {
+                    option.selected = true;
+                }
+                sectionSelect.appendChild(option);
+            });
+        } else {
+            console.log('No sections found for grade:', currentGrade);
+        }
+
+        // Set the current section if it exists
+        if (currentSection !== 'all') {
+            sectionSelect.value = currentSection.toLowerCase();
+        }
+
+        console.log('Final section select HTML:', sectionSelect.innerHTML);
+
+        // Update chart title based on current selection
+        const chartTitle = currentSection === 'all'
+            ? `📊 Reading Performance Distribution - Grade ${currentGrade} (All Sections)`
+            : `📊 Reading Performance Distribution - Grade ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
+        document.getElementById('chartTitle').textContent = chartTitle;
+
+        // Load initial comprehension data
+        fetchEnglishComprehensionData(currentGrade, currentSection);
     });
 </script>
+@endsection

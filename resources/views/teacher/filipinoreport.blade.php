@@ -75,6 +75,42 @@
                     </div>
                 </div>
 
+                <!-- Filipino Comprehension Performance Distribution -->
+                <div class="chart-panel">
+                    <div class="chart-panel-header">
+                        <h3 id="filipinoComprehensionChartTitle">🧠 Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang {{ (string)($grade ?? '7') }}</h3>
+                        <div class="time-selector">
+                            <button class="time-btn active">Napiling Baitang</button>
+                        </div>
+                    </div>
+                    <div class="chart-panel-body">
+                        <canvas id="filipinoComprehensionChart"></canvas>
+
+                        <!-- Comprehension Level Legend -->
+                        <!-- <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #00B8A9;">
+                            <h4 style="margin: 0 0 10px 0; color: #2D3748; font-size: 14px; font-weight: 600;">🧠
+                                Mga Antas ng Pagganap sa Pag-unawa:</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 15px; font-size: 12px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 16px; height: 16px; background: #00B8A9; border-radius: 4px;">
+                                    </div>
+                                    <span><strong>Independiyente (80-100%):</strong> Napakahusay na kakayahan sa pag-unawa</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 16px; height: 16px; background: #F6AD55; border-radius: 4px;">
+                                    </div>
+                                    <span><strong>Pagtuturo (59-79%):</strong> Mabuting pag-unawa sa tulong</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 16px; height: 16px; background: #E53E3E; border-radius: 4px;">
+                                    </div>
+                                    <span><strong>Pagkabalisa (Below 59%):</strong> Kailangan ng pagpapabuti sa pag-unawa</span>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+
                 <!-- Filipino Section Performance Summary -->
                 <div class="student-table-panel">
                     <div class="panel-header">
@@ -1164,6 +1200,131 @@
             }
         });
 
+        // Filipino Comprehension Performance Chart
+        const filipinoComprehensionCtx = document.getElementById('filipinoComprehensionChart').getContext('2d');
+
+        // Function to get Filipino comprehension chart data for specific grade
+        function getFilipinoComprehensionChartDataForGrade(selectedGrade) {
+            const gradeKey = `Grade ${selectedGrade}`;
+            // We'll calculate comprehension levels based on comprehension scores only
+            const gradeData = gradeDistribution[gradeKey] || { Independent: 0, Instructional: 0, Frustration: 0 };
+
+            return {
+                labels: [gradeKey],
+                independentData: [gradeData.Independent || 0],
+                instructionalData: [gradeData.Instructional || 0],
+                frustrationData: [gradeData.Frustration || 0]
+            };
+        }
+
+        // Get initial Filipino comprehension chart data for current grade
+        const initialFilipinoComprehensionChartData = getFilipinoComprehensionChartDataForGrade(currentGrade);
+
+        window.filipinoComprehensionChart = new Chart(filipinoComprehensionCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Independiyente (80-100%)', 'Pagtuturo (59-79%)', 'Pagkabalisa (Below 59%)'],
+                datasets: [{
+                    data: [
+                        initialFilipinoComprehensionChartData.independentData[0],
+                        initialFilipinoComprehensionChartData.instructionalData[0],
+                        initialFilipinoComprehensionChartData.frustrationData[0]
+                    ],
+                    backgroundColor: ['#00B8A9', '#F6AD55', '#E53E3E'],
+                    borderColor: '#FFFFFF',
+                    borderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'right',
+                        align: 'center',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 20,
+                            font: {
+                                size: 12,
+                                weight: '600'
+                            },
+                            color: '#2D3748',
+                            generateLabels: function(chart) {
+                                const data = chart.data;
+                                if (data.labels.length && data.datasets.length) {
+                                    return data.labels.map(function(label, i) {
+                                        const value = data.datasets[0].data[i];
+                                        const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                        const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
+
+                                        return {
+                                            text: `${label}: ${value} mag-aaral (${percentage}%)`,
+                                            fillStyle: data.datasets[0].backgroundColor[i],
+                                            strokeStyle: data.datasets[0].backgroundColor[i],
+                                            lineWidth: 2,
+                                            hidden: isNaN(data.datasets[0].data[i]),
+                                            index: i
+                                        };
+                                    });
+                                }
+                                return [];
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                        titleColor: '#1A202C',
+                        bodyColor: '#2D3748',
+                        borderColor: '#00B8A9',
+                        borderWidth: 2,
+                        cornerRadius: 12,
+                        displayColors: true,
+                        padding: 16,
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        callbacks: {
+                            title: function(context) {
+                                const label = context[0].label;
+                                const value = context[0].raw;
+                                const total = context[0].dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
+                                return `${label}\n${value} mag-aaral (${percentage}%)`;
+                            },
+                            label: function(context) {
+                                const label = context.label;
+                                const value = context.raw;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
+
+                                let description = '';
+                                if (label.includes('Independiyente')) {
+                                    description = 'Mga mag-aaral na may napakahusay na kakayahan sa pag-unawa';
+                                } else if (label.includes('Pagtuturo')) {
+                                    description = 'Mga mag-aaral na may mabuting pag-unawa sa tulong';
+                                } else if (label.includes('Pagkabalisa')) {
+                                    description = 'Mga mag-aaral na kailangan ng pagpapabuti sa pag-unawa';
+                                }
+
+                                return [
+                                    `Kabuuang Mag-aaral: ${total}`,
+                                    `Antas ng Pag-unawa: ${label.split(' ')[0]}`,
+                                    `Paglalarawan: ${description}`
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
         // Function to update chart for selected grade
         function updateFilipinoChartForGrade(selectedGrade) {
             const chartData = getFilipinoChartDataForGrade(selectedGrade);
@@ -1196,6 +1357,8 @@
             const sectionSelect = document.getElementById('sectionFilter');
             const selectedGrade = gradeSelect.value;
 
+            console.log('Grade changed to:', selectedGrade);
+
             // Clear current section options except "All Sections"
             sectionSelect.innerHTML = '<option value="all">All Sections</option>';
 
@@ -1212,22 +1375,54 @@
             // Reset section to "All Sections" when grade changes
             sectionSelect.value = 'all';
 
-            // Update the chart immediately for the selected grade
+            // Update the chart immediately for the selected grade (showing ALL sections data)
             updateFilipinoChartForGrade(selectedGrade);
 
-            // Update the data with new grade and reset section
-            updateFilipinoGradeData();
+            // Fetch and update data dynamically for the selected grade (all sections)
+            fetchFilipinoGradeData(selectedGrade, 'all');
         }
 
-        // Function to update Filipino grade level data
+        // Function to update Filipino grade level data (called when section changes)
         function updateFilipinoGradeData() {
             const selectedGrade = document.getElementById('gradeFilter') ? document.getElementById('gradeFilter').value : '7';
             const selectedSection = document.getElementById('sectionFilter') ? document.getElementById('sectionFilter').value : 'all';
 
-            console.log('Selected grade:', selectedGrade);
-            console.log('Selected section:', selectedSection);
+            console.log('Section changed - Selected grade:', selectedGrade);
+            console.log('Section changed - Selected section:', selectedSection);
 
-            // Show loading state if elements exist
+            // Update the chart for the selected section
+            updateFilipinoChartForGrade(selectedGrade);
+
+            // Fetch and update data dynamically for the selected grade and section
+            fetchFilipinoGradeData(selectedGrade, selectedSection);
+        }
+
+        // Function to fetch Filipino grade data via AJAX
+        function fetchFilipinoGradeData(grade, section) {
+            console.log('Fetching Filipino data for grade:', grade, 'section:', section);
+
+            // Show loading state
+            showFilipinoLoadingState();
+
+            // Make AJAX request to get updated data
+            fetch(`{{ route('teacher.grade-level-data') }}?grade=${grade}&section=${section}&language=filipino`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateFilipinoUIWithData(data.data, grade, section);
+                    } else {
+                        console.error('Error fetching Filipino data:', data.message);
+                        hideFilipinoLoadingState();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching Filipino grade data:', error);
+                    hideFilipinoLoadingState();
+                });
+        }
+
+        // Function to show loading state for Filipino
+        function showFilipinoLoadingState() {
             const totalStudentsEl = document.getElementById('totalStudents');
             const avgReadingSpeedEl = document.getElementById('avgReadingSpeed');
             const avgComprehensionEl = document.getElementById('avgComprehension');
@@ -1235,15 +1430,98 @@
             if (totalStudentsEl) totalStudentsEl.textContent = 'Loading...';
             if (avgReadingSpeedEl) avgReadingSpeedEl.textContent = 'Loading...';
             if (avgComprehensionEl) avgComprehensionEl.textContent = 'Loading...';
-
-            // Reload page with new parameters for Filipino
-            const currentUrl = new URL(window.location);
-            currentUrl.searchParams.set('grade', selectedGrade);
-            currentUrl.searchParams.set('section', selectedSection);
-            currentUrl.searchParams.set('language', 'filipino');
-
-            window.location.href = currentUrl.toString();
         }
+
+        // Function to hide loading state for Filipino
+        function hideFilipinoLoadingState() {
+            // This will be called after data is updated or on error
+        }
+
+        // Function to update UI with fetched Filipino data
+        function updateFilipinoUIWithData(data, grade, section) {
+            console.log('Updating Filipino UI with data:', data);
+
+            // Update summary statistics
+            const totalStudentsEl = document.getElementById('totalStudents');
+            const avgReadingSpeedEl = document.getElementById('avgReadingSpeed');
+            const avgComprehensionEl = document.getElementById('avgComprehension');
+
+            if (totalStudentsEl) totalStudentsEl.textContent = data.total_students || 0;
+            if (avgReadingSpeedEl) avgReadingSpeedEl.textContent = `${data.statistics.avg_reading_speed || 0} WPM`;
+            if (avgComprehensionEl) avgComprehensionEl.textContent = `${data.statistics.avg_comprehension || 0}%`;
+
+            // Update chart title
+            const chartTitle = section === 'all'
+                ? `📊 Pag-unlad sa Pagbasa - Baitang ${grade} (Lahat ng Seksyon)`
+                : `📊 Pag-unlad sa Pagbasa - Baitang ${grade} - ${section.charAt(0).toUpperCase() + section.slice(1)}`;
+            document.getElementById('filipinoChartTitle').textContent = chartTitle;
+
+            // Update chart data
+            const levelDistribution = data.reading_level_distribution;
+            window.filipinoProgressChart.data.datasets[0].data = [
+                levelDistribution.Independent || 0,
+                levelDistribution.Instructional || 0,
+                levelDistribution.Frustration || 0
+            ];
+            window.filipinoProgressChart.update('active');
+
+            // Update comprehension chart data (fetch from API)
+            fetchFilipinoComprehensionData(grade, section);
+
+            // Update section table
+            updateFilipinoSectionTable(data.section_data, section);
+        }
+
+        // Function to update Filipino section table
+        function updateFilipinoSectionTable(sectionData, selectedSection) {
+            const tableBody = document.getElementById('sectionTableBody');
+            if (!tableBody) return;
+
+            if (!sectionData || sectionData.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-light);">
+                            Walang data na available para sa mga napiling filter
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let tableHTML = '';
+            sectionData.forEach(section => {
+                const sectionIcon = section.section.charAt(0).toUpperCase();
+                let performanceClass = 'green';
+                if (section.avg_comprehension < 80) performanceClass = 'yellow';
+                if (section.avg_comprehension < 70) performanceClass = 'red';
+
+                tableHTML += `
+                    <tr>
+                        <td>
+                            <div class="student-info">
+                                <div class="student-avatar">${sectionIcon}</div>
+                                <div>${section.section}</div>
+                            </div>
+                        </td>
+                        <td>${section.student_count} mga estudyante</td>
+                        <td>${section.avg_reading_speed} WPM</td>
+                        <td>${section.avg_comprehension}%</td>
+                        <td>${section.avg_correct_reading}%</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress ${performanceClass}" style="width: ${section.avg_comprehension}%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableBody.innerHTML = tableHTML;
+        }
+
+        // Make functions globally accessible
+        window.updateSectionOptions = updateSectionOptions;
+        window.updateFilipinoGradeData = updateFilipinoGradeData;
 
         // Initialize page with current data
         document.addEventListener('DOMContentLoaded', function () {
@@ -1273,6 +1551,54 @@
             if (currentSection !== 'all') {
                 sectionSelect.value = currentSection.toLowerCase();
             }
+
+            console.log('Current grade:', currentGrade);
+            console.log('Current section:', currentSection);
+
+            // Update chart title based on current selection
+            const chartTitle = currentSection === 'all'
+                ? `📊 Pag-unlad sa Pagbasa - Baitang ${currentGrade} (Lahat ng Seksyon)`
+                : `📊 Pag-unlad sa Pagbasa - Baitang ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
+            document.getElementById('filipinoChartTitle').textContent = chartTitle;
+
+            // Load initial comprehension data
+            fetchFilipinoComprehensionData(currentGrade, currentSection);
         });
+
+        // Function to fetch Filipino comprehension data
+        function fetchFilipinoComprehensionData(grade, section) {
+            fetch(`{{ route('teacher.comprehension-level-data') }}?grade=${grade}&section=${section}&language=filipino`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateFilipinoComprehensionChart(data.data, grade, section);
+                    } else {
+                        console.error('Error fetching Filipino comprehension data:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching Filipino comprehension data:', error);
+                });
+        }
+
+        // Function to update Filipino comprehension chart
+        function updateFilipinoComprehensionChart(data, grade, section) {
+            const gradeKey = `Grade ${grade}`;
+            const gradeData = data.distribution[gradeKey] || { Independent: 0, Instructional: 0, Frustration: 0 };
+
+            // Update chart title
+            const chartTitle = section === 'all'
+                ? `🧠 Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang ${grade} (Lahat ng Seksyon)`
+                : `🧠 Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang ${grade} - ${section.charAt(0).toUpperCase() + section.slice(1)}`;
+            document.getElementById('filipinoComprehensionChartTitle').textContent = chartTitle;
+
+            // Update chart data
+            window.filipinoComprehensionChart.data.datasets[0].data = [
+                gradeData.Independent || 0,
+                gradeData.Instructional || 0,
+                gradeData.Frustration || 0
+            ];
+            window.filipinoComprehensionChart.update('active');
+        }
     </script>
 @endsection

@@ -8,29 +8,17 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\ReadingController;
 use App\Http\Controllers\ReadingMaterialController;
-use App\Http\Controllers\ReadingLevelController;
+
 use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\StudentAnswerEnglishController;
 use App\Http\Controllers\StudentAnswerTagalogController;
 use App\Http\Controllers\TeacherController;
 use Illuminate\Http\Request;
 
-
-// //student part
-// use App\Http\Controllers\StudentAnswerEnglishController;
-// use App\Http\Controllers\StudentAnswerTagalogController;
-
-// Route::post('/student/add/english', [StudentAnswerEnglishController::class, 'store'])->name('student.add.english');
-// Route::post('/student/add/tagalog', [StudentAnswerTagalogController::class, 'store'])->name('student.add.tagalog');
-
-
 // Home Route
 Route::get('/', function () {
     return view('auth.login');
 });
-
-
-
 
 // Authentication Routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -109,6 +97,7 @@ Route::middleware(['web', 'auth', 'password.change'])->group(function () {
         Route::post('/save-reading-assessment', [ReportsController::class, 'saveReadingAssessment'])->name('teacher.save-reading-assessment');
         Route::get('/get-student-assessments/{studentId}', [ReportsController::class, 'getStudentAssessments'])->name('teacher.get-student-assessments');
         Route::get('/grade-level-data', [ReportsController::class, 'getGradeLevelData'])->name('teacher.grade-level-data');
+        Route::get('/comprehension-level-data', [ReportsController::class, 'getTeacherComprehensionLevelDistribution'])->name('teacher.comprehension-level-data');
 
         // Comprehension Details Routes
         Route::get('/get-student-comprehension/{studentId}/{language?}', [TeacherController::class, 'getStudentComprehensionDetails'])->name('teacher.get-student-comprehension');
@@ -135,13 +124,13 @@ Route::middleware(['web', 'auth', 'password.change'])->group(function () {
         Route::post('/save-feedback', [TeacherController::class, 'saveFeedback'])->name('teacher.save.feedback');
         Route::post('/send-feedback', [TeacherController::class, 'sendFeedback'])->name('teacher.send.feedback');
         Route::get('/feedback-history', [TeacherController::class, 'getFeedbackHistory'])->name('teacher.feedback.history');
+
+        Route::get('/reading-assessment-controls', [App\Http\Controllers\TeacherController::class, 'readingAssessmentControls'])->name('teacher.reading-assessment-controls');
     });
 
     // Admin Routes
     Route::prefix('admin')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('admin.AdminDashboard');
-        })->name('admin.dashboard');
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
         Route::get('/reports', function () {
             return view('admin.reports');
@@ -185,11 +174,9 @@ Route::middleware(['web', 'auth', 'password.change'])->group(function () {
         Route::put('/reading-materials/{id}', [ReadingMaterialController::class, 'update'])->name('reading-materials.update');
         Route::delete('/reading-materials/{id}', [ReadingMaterialController::class, 'destroy'])->name('reading-materials.destroy');
         Route::post('/reading-materials/{id}/publish', [ReadingMaterialController::class, 'publish'])->name('reading-materials.publish');
-        Route::get('/reading-levels/stats', [ReadingLevelController::class, 'getReadingLevelStats'])->name('reading-levels.stats');
-        Route::post('/reading-levels', [ReadingLevelController::class, 'store'])->name('reading-levels.store');
+
     });
 });
-
 
 // Student Routes
 Route::get('/stud-dash', [StudentDashboardController::class, 'index'])->name('student.dashboard');
@@ -200,10 +187,8 @@ Route::get('/stud-fil', [ReadingMaterialController::class, 'getPublishedMaterial
 
 Route::get('/stud-reports', [StudentDashboardController::class, 'reports'])->name('student.reports');
 
-
-Route::get('/admin/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.dashboard');
-
-Route::post('/student/add/english', [StudentAnswerEnglishController::class, 'store'])->name('student.add.english');
+// Route for checking reading assessment updates (auto-refresh)
+Route::get('/student/check-reading-updates/{studentId}', [StudentDashboardController::class, 'checkReadingUpdates'])->name('student.check.reading.updates');
 
 Route::post('/student/add/filipino', [StudentAnswerTagalogController::class, 'store'])->name('student.add.filipino');
 
@@ -216,4 +201,10 @@ Route::get('/api/student-assessment/{studentName}/{grade}/{section}/{language}',
 // Reading Level Distribution Routes
 Route::get('/api/reading-level-distribution/english', [ReportsController::class, 'getEnglishReadingLevelDistribution']);
 Route::get('/api/reading-level-distribution/filipino', [ReportsController::class, 'getFilipinoReadingLevelDistribution']);
+
+// Comprehension Level Distribution Routes
+Route::get('/api/comprehension-level-distribution/english', [ReportsController::class, 'getEnglishComprehensionLevelDistribution']);
+Route::get('/api/comprehension-level-distribution/filipino', [ReportsController::class, 'getFilipinoComprehensionLevelDistribution']);
+
+
 

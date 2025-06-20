@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ReadingMaterialController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,16 +14,5 @@ use App\Http\Controllers\Api\ReadingMaterialController;
 |
 */
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_middleware'),
-    'verified'
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-});
-
-// Reading Materials Routes
-Route::get('/reading-materials/{grade}/{subject}', [ReadingMaterialController::class, 'getByGradeAndSubject']);
-Route::post('/reading-materials/{id}/publish', [ReadingMaterialController::class, 'publish'])->name('reading-materials.publish'); 
+// Note: Most API routes have been moved to web.php for better organization
+// This file is kept minimal for future API expansion

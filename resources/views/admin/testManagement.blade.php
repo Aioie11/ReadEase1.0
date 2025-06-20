@@ -5,46 +5,72 @@
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <style>
+        /* Color Variables for Better Readability */
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --text-light: #9ca3af;
+            --border-color: #e5e7eb;
+            --border-light: #f3f4f6;
+            --success-color: #059669;
+            --danger-color: #dc2626;
+            --warning-color: #d97706;
+            --background-white: #ffffff;
+            --background-gray: #f9fafb;
+            --shadow-light: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
         /* Main Content */
         .main-content {
             margin-top: 50px;
             margin-left: 280px;
             padding: 6rem 5% 2rem;
-            transition: var(--transition);
-            background: var(--background);
+            transition: all 0.3s ease;
+            background: var(--background-white);
             min-height: 100vh;
         }
 
         /* Page Header */
         .page-header {
-            background: white;
+            background: var(--background-white);
             padding: 2rem;
             border-radius: 12px;
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-light);
             margin-bottom: 2rem;
-            border-left: 4px solid var(--primary);
+            border-left: 4px solid var(--primary-color);
         }
 
         .page-header h1 {
-            color: var(--text-dark);
+            color: var(--text-primary);
             font-size: 1.75rem;
             font-weight: 600;
             margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .page-header h1 i {
+            color: var(--primary-color);
         }
 
         .page-header p {
-            color: var(--text-light);
+            color: var(--text-secondary);
             margin: 0.5rem 0 0 0;
             font-size: 0.95rem;
+            line-height: 1.5;
         }
 
         /* Control Panel */
         .control-panel {
-            background: white;
+            background: var(--background-white);
             padding: 1.5rem;
             border-radius: 12px;
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-light);
             margin-bottom: 2rem;
+            border: 1px solid var(--border-light);
         }
 
         .control-section {
@@ -57,10 +83,10 @@
 
         .control-label {
             display: block;
-            font-weight: 500;
-            color: var(--text-dark);
+            font-weight: 600;
+            color: var(--text-primary);
             margin-bottom: 0.75rem;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -74,12 +100,12 @@
 
         .action-btn {
             padding: 0.875rem 1.25rem;
-            border: 1px solid var(--neutral-light);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            background: white;
-            color: var(--text);
+            background: var(--background-white);
+            color: var(--text-primary);
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.2s ease;
             font-weight: 500;
             font-size: 0.9rem;
             display: flex;
@@ -90,31 +116,34 @@
         }
 
         .action-btn:hover {
-            border-color: var(--primary);
-            color: var(--primary);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
             transform: translateY(-1px);
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-light);
         }
 
         .action-btn.primary {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
+            background: var(--primary-color);
+            color: var(--background-white);
+            border-color: var(--primary-color);
         }
 
         .action-btn.primary:hover {
             background: var(--primary-dark);
-            color: white;
+            color: var(--background-white);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-medium);
         }
 
         .action-btn.danger {
-            border-color: var(--danger);
-            color: var(--danger);
+            border-color: var(--danger-color);
+            color: var(--danger-color);
         }
 
         .action-btn.danger:hover {
-            background: var(--danger);
-            color: white;
+            background: var(--danger-color);
+            color: var(--background-white);
+            transform: translateY(-1px);
         }
 
         /* Filter Controls */
@@ -131,18 +160,18 @@
 
         .filter-select {
             padding: 0.75rem 1rem;
-            border: 1px solid var(--neutral-light);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            background: white;
-            color: var(--text);
+            background: var(--background-white);
+            color: var(--text-primary);
             font-size: 0.95rem;
-            transition: var(--transition);
+            transition: all 0.2s ease;
         }
 
         .filter-select:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.1);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
         /* Subject Tabs */
@@ -153,25 +182,30 @@
 
         .subject-tab {
             padding: 0.75rem 1.5rem;
-            border: 1px solid var(--neutral-light);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            background: white;
-            color: var(--text);
+            background: var(--background-white);
+            color: var(--text-primary);
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.2s ease;
             font-weight: 500;
             font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .subject-tab:hover {
-            border-color: var(--primary);
-            color: var(--primary);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateY(-1px);
         }
 
         .subject-tab.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
+            background: var(--primary-color);
+            color: var(--background-white);
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow-light);
         }
 
         /* Content Display */
@@ -181,26 +215,31 @@
         }
 
         .content-card {
-            background: white;
+            background: var(--background-white);
             border-radius: 12px;
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-light);
             overflow: hidden;
+            border: 1px solid var(--border-light);
         }
 
         .content-card-header {
             padding: 1.5rem;
-            border-bottom: 1px solid var(--neutral-light);
-            background: var(--background-secondary);
+            border-bottom: 1px solid var(--border-color);
+            background: var(--background-gray);
         }
 
         .content-card-header h3 {
-            color: var(--text-dark);
+            color: var(--text-primary);
             font-size: 1.1rem;
             font-weight: 600;
             margin: 0;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
+        }
+
+        .content-card-header h3 i {
+            color: var(--primary-color);
         }
 
         .content-card-body {
@@ -210,12 +249,12 @@
         /* Reading Passage Styles */
         .reading-content {
             line-height: 1.7;
-            color: var(--text);
+            color: var(--text-primary);
             font-size: 0.95rem;
         }
 
         .reading-title {
-            color: var(--text-dark);
+            color: var(--text-primary);
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 1rem;
@@ -223,11 +262,12 @@
 
         /* Questions Display */
         .question-item {
-            background: var(--background);
+            background: var(--background-white);
             padding: 1.25rem;
             border-radius: 8px;
             margin-bottom: 1rem;
-            border-left: 3px solid var(--primary);
+            border-left: 3px solid var(--primary-color);
+            border: 1px solid var(--border-light);
         }
 
         .question-item:last-child {
@@ -235,8 +275,8 @@
         }
 
         .question-text {
-            color: var(--text-dark);
-            font-weight: 500;
+            color: var(--text-primary);
+            font-weight: 600;
             margin-bottom: 0.75rem;
             font-size: 0.95rem;
         }
@@ -248,27 +288,27 @@
 
         .option-item {
             padding: 0.75rem;
-            background: white;
-            border: 1px solid var(--neutral-light);
+            background: var(--background-white);
+            border: 1px solid var(--border-color);
             border-radius: 6px;
-            color: var(--text);
+            color: var(--text-primary);
             font-size: 0.9rem;
         }
 
         .correct-answer {
-            background: rgba(0, 184, 169, 0.1);
-            border-color: var(--primary);
-            color: var(--primary);
-            font-weight: 500;
+            background: rgba(5, 150, 105, 0.1);
+            border-color: var(--success-color);
+            color: var(--success-color);
+            font-weight: 600;
         }
 
         .text-answer {
             padding: 0.75rem;
-            background: rgba(0, 184, 169, 0.1);
-            border: 1px solid var(--primary);
+            background: rgba(5, 150, 105, 0.1);
+            border: 1px solid var(--success-color);
             border-radius: 6px;
-            color: var(--primary);
-            font-weight: 500;
+            color: var(--success-color);
+            font-weight: 600;
             font-size: 0.9rem;
         }
 
@@ -276,9 +316,9 @@
         .empty-state {
             text-align: center;
             padding: 3rem 2rem;
-            background: var(--background);
+            background: var(--background-white);
             border-radius: 12px;
-            border: 2px dashed var(--neutral-light);
+            border: 2px dashed var(--border-color);
         }
 
         .empty-state-icon {
@@ -288,14 +328,14 @@
         }
 
         .empty-state-title {
-            color: var(--text);
+            color: var(--text-primary);
             font-size: 1.1rem;
-            font-weight: 500;
+            font-weight: 600;
             margin-bottom: 0.5rem;
         }
 
         .empty-state-text {
-            color: var(--text-light);
+            color: var(--text-secondary);
             font-size: 0.9rem;
             line-height: 1.5;
         }
@@ -304,15 +344,15 @@
         .loading-state {
             text-align: center;
             padding: 2rem;
-            color: var(--text-light);
+            color: var(--text-secondary);
         }
 
         .loading-spinner {
             display: inline-block;
             width: 2rem;
             height: 2rem;
-            border: 3px solid var(--neutral-light);
-            border-top: 3px solid var(--primary);
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 1rem;
@@ -331,17 +371,17 @@
             padding: 0.5rem 1rem;
             border-radius: 20px;
             font-size: 0.85rem;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .status-published {
-            background: rgba(0, 184, 169, 0.1);
-            color: var(--primary);
+            background: rgba(5, 150, 105, 0.1);
+            color: var(--success-color);
         }
 
         .status-draft {
-            background: rgba(113, 128, 150, 0.1);
-            color: var(--text-light);
+            background: rgba(107, 114, 128, 0.1);
+            color: var(--text-secondary);
         }
 
         /* Modal Styles */
@@ -350,11 +390,12 @@
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             z-index: 2000;
             justify-content: center;
             align-items: center;
             overflow-y: auto;
+            backdrop-filter: blur(2px);
         }
 
         .modal.active {
@@ -363,99 +404,217 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .modal-content {
-            background: white;
-            border-radius: 12px;
-            box-shadow: var(--shadow-lg);
+            background: var(--background-white);
+            border-radius: 16px;
+            box-shadow: var(--shadow-medium);
             padding: 2rem;
-            max-width: 700px;
+            max-width: 750px;
             width: 95vw;
             max-height: 90vh;
             overflow-y: auto;
             position: relative;
             margin: 2rem 0;
+            border: 1px solid var(--border-light);
         }
 
         .modal-header {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
             padding-bottom: 1rem;
-            border-bottom: 1px solid var(--neutral-light);
+            border-bottom: 2px solid var(--border-color);
         }
 
         .modal-title {
-            color: var(--text-dark);
-            font-size: 1.25rem;
-            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            font-weight: 700;
             margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .modal-title::before {
+            content: "📝";
+            font-size: 1.25rem;
         }
 
         .close-modal {
             position: absolute;
             top: 1rem;
             right: 1rem;
-            width: 2rem;
-            height: 2rem;
+            width: 2.5rem;
+            height: 2.5rem;
             border: none;
-            background: var(--neutral-light);
+            background: var(--background-gray);
             border-radius: 50%;
-            color: var(--text);
+            color: var(--text-secondary);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: var(--transition);
+            transition: all 0.2s ease;
+            font-size: 1rem;
         }
 
         .close-modal:hover {
-            background: var(--neutral);
+            background: var(--danger-color);
+            color: var(--background-white);
+            transform: scale(1.1);
         }
 
-        /* Form Styles */
+        /* Enhanced Form Styles */
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.75rem;
         }
 
         .form-label {
             display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-dark);
-            font-weight: 500;
-            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .form-input,
         .form-textarea,
         .form-select {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--neutral-light);
-            border-radius: 8px;
-            font-size: 0.95rem;
-            transition: var(--transition);
-            background: white;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--background-white);
+            color: var(--text-primary);
+            font-weight: 500;
         }
 
         .form-input:focus,
         .form-textarea:focus,
         .form-select:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.1);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: var(--text-light);
+            font-style: italic;
         }
 
         .question-container {
-            background: var(--background);
+            background: var(--background-gray);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            border: 2px solid var(--border-color);
+            position: relative;
+        }
+
+        .question-container::before {
+            content: "❓";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: var(--background-white);
+            padding: 0 10px;
+            font-size: 1.2rem;
+        }
+
+        /* Form Section Styling */
+        .form-section {
+            background: var(--background-gray);
             padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-light);
+        }
+
+        .form-section-title {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Enhanced Button Styling for Forms */
+        .form-submit-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: var(--background-white);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: var(--shadow-light);
+        }
+
+        .form-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .form-submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Question Type Toggle Styling */
+        .question-type-section {
+            background: var(--background-white);
+            padding: 1rem;
             border-radius: 8px;
+            border: 1px solid var(--border-color);
             margin: 1rem 0;
-            border: 1px solid var(--neutral-light);
+        }
+
+        .multiple-choice-options,
+        .text-answer-option {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--background-white);
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+        }
+
+        /* Remove Question Button */
+        .remove-question-btn {
+            background: var(--danger-color);
+            color: var(--background-white);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 1rem;
+        }
+
+        .remove-question-btn:hover {
+            background: #b91c1c;
+            transform: translateY(-1px);
         }
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -598,41 +757,62 @@
                 <h2 class="modal-title">Create New Reading Material</h2>
             </div>
             <form id="createForm">
-                <div class="form-group">
-                    <label class="form-label" for="grade">Grade Level</label>
-                    <select class="form-select" id="grade" required>
-                        <option value="7">Grade 7</option>
-                        <option value="8">Grade 8</option>
-                        <option value="9">Grade 9</option>
-                        <option value="10">Grade 10</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="subject">Subject</label>
-                    <select class="form-select" id="subject" required>
-                        <option value="english">English</option>
-                        <option value="filipino">Filipino</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="title">Reading Title</label>
-                    <input class="form-input" type="text" id="title" required placeholder="Enter the title of the reading material">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="content">Reading Content</label>
-                    <textarea class="form-textarea" id="content" rows="6" required placeholder="Enter the reading passage content"></textarea>
-                </div>
-                <div id="questionsContainer">
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-cog"></i>
+                        Basic Information
+                    </div>
                     <div class="form-group">
-                        <label class="form-label">Questions</label>
-                        <button type="button" class="action-btn" onclick="addQuestion()">
-                            <i class="fas fa-plus"></i>
-                            Add Question
-                        </button>
+                        <label class="form-label" for="grade">📚 Grade Level</label>
+                        <select class="form-select" id="grade" required>
+                            <option value="">Select Grade Level</option>
+                            <option value="7">Grade 7</option>
+                            <option value="8">Grade 8</option>
+                            <option value="9">Grade 9</option>
+                            <option value="10">Grade 10</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="subject">🌐 Subject</label>
+                        <select class="form-select" id="subject" required>
+                            <option value="">Select Subject</option>
+                            <option value="english">English</option>
+                            <option value="filipino">Filipino</option>
+                        </select>
                     </div>
                 </div>
-                <div class="form-group" style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--neutral-light);">
-                    <button type="submit" class="action-btn primary" style="width: 100%;">
+
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-book-open"></i>
+                        Reading Material
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="title">📖 Reading Title</label>
+                        <input class="form-input" type="text" id="title" required placeholder="Enter an engaging title for the reading material">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="content">📝 Reading Content</label>
+                        <textarea class="form-textarea" id="content" rows="8" required placeholder="Enter the complete reading passage content here..."></textarea>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-question-circle"></i>
+                        Comprehension Questions
+                    </div>
+                    <div id="questionsContainer">
+                        <div class="form-group">
+                            <button type="button" class="action-btn primary" onclick="addQuestion()">
+                                <i class="fas fa-plus"></i>
+                                Add New Question
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--border-color); text-align: center;">
+                    <button type="submit" class="form-submit-btn" style="width: 100%;">
                         <i class="fas fa-save"></i>
                         Save Reading Material
                     </button>
@@ -651,41 +831,60 @@
                 <h2 class="modal-title">Edit Reading Material</h2>
             </div>
             <form id="editForm">
-                <div class="form-group">
-                    <label class="form-label" for="edit-grade">Grade Level</label>
-                    <select class="form-select" id="edit-grade" required>
-                        <option value="7">Grade 7</option>
-                        <option value="8">Grade 8</option>
-                        <option value="9">Grade 9</option>
-                        <option value="10">Grade 10</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="edit-subject">Subject</label>
-                    <select class="form-select" id="edit-subject" required>
-                        <option value="english">English</option>
-                        <option value="filipino">Filipino</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="edit-title">Reading Title</label>
-                    <input class="form-input" type="text" id="edit-title" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="edit-content">Reading Content</label>
-                    <textarea class="form-textarea" id="edit-content" rows="6" required></textarea>
-                </div>
-                <div id="editQuestionsContainer">
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-cog"></i>
+                        Basic Information
+                    </div>
                     <div class="form-group">
-                        <label class="form-label">Questions</label>
-                        <button type="button" class="action-btn" onclick="addEditQuestion()">
-                            <i class="fas fa-plus"></i>
-                            Add Question
-                        </button>
+                        <label class="form-label" for="edit-grade">📚 Grade Level</label>
+                        <select class="form-select" id="edit-grade" required>
+                            <option value="7">Grade 7</option>
+                            <option value="8">Grade 8</option>
+                            <option value="9">Grade 9</option>
+                            <option value="10">Grade 10</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="edit-subject">🌐 Subject</label>
+                        <select class="form-select" id="edit-subject" required>
+                            <option value="english">English</option>
+                            <option value="filipino">Filipino</option>
+                        </select>
                     </div>
                 </div>
-                <div class="form-group" style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--neutral-light);">
-                    <button type="submit" class="action-btn primary" style="width: 100%;">
+
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-book-open"></i>
+                        Reading Material
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="edit-title">📖 Reading Title</label>
+                        <input class="form-input" type="text" id="edit-title" required placeholder="Enter an engaging title for the reading material">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="edit-content">📝 Reading Content</label>
+                        <textarea class="form-textarea" id="edit-content" rows="8" required placeholder="Enter the complete reading passage content here..."></textarea>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-question-circle"></i>
+                        Comprehension Questions
+                    </div>
+                    <div id="editQuestionsContainer">
+                        <div class="form-group">
+                            <button type="button" class="action-btn primary" onclick="addEditQuestion()">
+                                <i class="fas fa-plus"></i>
+                                Add New Question
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--border-color); text-align: center;">
+                    <button type="submit" class="form-submit-btn" style="width: 100%;">
                         <i class="fas fa-save"></i>
                         Save Changes
                     </button>
@@ -1627,7 +1826,4 @@
 
 
     </script>
-<!-- </body>
-
-</html> -->
 @endsection

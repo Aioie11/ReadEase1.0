@@ -144,13 +144,9 @@ class ReportsController extends Controller
         $avgComprehension = round($assessments->avg('comprehension'), 1);
         $avgCorrectReading = round($assessments->avg('correct_reading'), 1);
 
-        // Calculate reading level distribution using the service
-        $readingLevelService = new ReadingLevelService();
-        $readingLevels = $assessments->groupBy(function ($assessment) use ($readingLevelService) {
-            return $readingLevelService->calculateReadingLevel(
-                $assessment->correct_reading,
-                $assessment->comprehension
-            );
+        // Calculate reading level distribution using Word Reading only for teacher view consistency
+        $readingLevels = $assessments->groupBy(function ($assessment) {
+            return $this->calculateWordReadingLevel($assessment->correct_reading);
         });
 
         $levelDistribution = [
@@ -170,7 +166,7 @@ class ReportsController extends Controller
             ];
         })->values();
 
-        // Get grade distribution for chart
+        // Get grade distribution for chart (using Word Reading only for teacher view consistency)
         $gradeDistribution = [];
         for ($g = 7; $g <= 10; $g++) {
             $gradeAssessments = ReadingAssessment::where('grade', $g)
@@ -182,11 +178,8 @@ class ReportsController extends Controller
                     return $studentAssessments->first();
                 });
 
-            $gradeLevels = $gradeAssessments->groupBy(function ($assessment) use ($readingLevelService) {
-                return $readingLevelService->calculateReadingLevel(
-                    $assessment->correct_reading,
-                    $assessment->comprehension
-                );
+            $gradeLevels = $gradeAssessments->groupBy(function ($assessment) {
+                return $this->calculateWordReadingLevel($assessment->correct_reading);
             });
 
             $gradeDistribution["Grade $g"] = [
@@ -238,11 +231,8 @@ class ReportsController extends Controller
 
         $accuracy = (($totalWords - $miscues) / $totalWords) * 100;
 
-        if ($accuracy >= 98)
-            return 'Independent';
-        if ($accuracy >= 95)
-            return 'Instructional';
-        return 'Frustration';
+        // Use standardized Word Reading thresholds for consistency
+        return $this->calculateWordReadingLevel($accuracy);
     }
 
     public function saveReadingAssessment(Request $request)
@@ -374,14 +364,9 @@ class ReportsController extends Controller
             $avgComprehension = $assessments->avg('comprehension');
             $avgCorrectReading = $assessments->avg('correct_reading');
 
-            // Group by reading levels
+            // Group by reading levels using the standardized method
             $readingLevels = $assessments->groupBy(function ($assessment) {
-                $accuracy = $assessment->correct_reading;
-                if ($accuracy >= 97)
-                    return 'Independent';
-                if ($accuracy >= 90)
-                    return 'Instructional';
-                return 'Frustration';
+                return $this->calculateWordReadingLevel($assessment->correct_reading);
             });
 
             // Calculate reading level distribution
@@ -845,35 +830,186 @@ class ReportsController extends Controller
     }
 
     /**
+     * Get comprehension level distribution filtered by grade and section for teachers
+     */
+    public function getTeacherComprehensionLevelDistribution(Request $request)
+    {
+        try {
+            $grade = $request->input('grade');
+            $section = $request->input('section');
+            $language = $request->input('language', 'english');
+
+            $distribution = $this->calculateTeacherComprehensionLevelDistribution($language, $grade, $section);
+
+            return response()->json([
+                'success' => true,
+                'data' => $distribution
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error fetching teacher comprehension level distribution:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching comprehension distribution: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Calculate comprehension level distribution for teachers with section filtering
+     */
+    private function calculateTeacherComprehensionLevelDistribution($language, $grade = null, $section = null)
+    {
+        // Get comprehension test results from the appropriate table based on language
+        if ($language === 'english') {
+            $comprehensionResults = \App\Models\StudentAnswerEnglish::orderBy('created_at', 'desc')
+                ->get()
+                ->groupBy('student_id')
+                ->map(function ($studentResults) {
+                    return $studentResults->first(); // Get latest result per student
+                });
+        } else {
+            $comprehensionResults = \App\Models\StudentAnswerTagalog::orderBy('created_at', 'desc')
+                ->get()
+                ->groupBy('student_id')
+                ->map(function ($studentResults) {
+                    return $studentResults->first(); // Get latest result per student
+                });
+        }
+
+        // Get student information to map student_id to grade and section
+        $studentsQuery = \App\Models\Student::query();
+
+        if ($grade) {
+            $studentsQuery->where('grade_level', $grade);
+        }
+
+        if ($section && $section !== 'all') {
+            $studentsQuery->where('section', $section);
+        }
+
+        $students = $studentsQuery->get()->keyBy('student_number');
+
+        $totalStudents = 0;
+        $distribution = [];
+
+        // Initialize distribution for the specific grade or all grades
+        if ($grade) {
+            $distribution["Grade $grade"] = [
+                'Independent' => 0,
+                'Instructional' => 0,
+                'Frustration' => 0
+            ];
+        } else {
+            for ($g = 7; $g <= 10; $g++) {
+                $distribution["Grade $g"] = [
+                    'Independent' => 0,
+                    'Instructional' => 0,
+                    'Frustration' => 0
+                ];
+            }
+        }
+
+        // Calculate distribution by grade
+        foreach ($comprehensionResults as $studentId => $result) {
+            $student = $students->get($studentId);
+
+            if (!$student) {
+                continue; // Skip if student not found or doesn't match filters
+            }
+
+            $studentGrade = $student->grade_level;
+
+            // Skip if grade is not in our range
+            if ($studentGrade < 7 || $studentGrade > 10) {
+                continue;
+            }
+
+            // Calculate comprehension percentage
+            $totalQuestions = count($result->answers ?? []);
+            $comprehensionPercentage = $totalQuestions > 0 ? round(($result->score / $totalQuestions) * 100) : 0;
+
+            // Determine comprehension level
+            $level = $this->calculateComprehensionLevel($comprehensionPercentage);
+
+            // Add to distribution
+            $distribution["Grade $studentGrade"][$level]++;
+            $totalStudents++;
+        }
+
+        return [
+            'total_students' => $totalStudents,
+            'distribution' => $distribution
+        ];
+    }
+
+    /**
      * Calculate comprehension level distribution based solely on comprehension scores
+     * Uses student comprehension test results from StudentAnswerEnglish/StudentAnswerTagalog tables
      */
     private function calculateComprehensionLevelDistribution($language)
     {
-        // Get latest assessment per student for the specified language
-        $assessments = ReadingAssessment::where('language', $language)
-            ->orderBy('assessment_date', 'desc')
-            ->get()
-            ->groupBy('student_name')
-            ->map(function ($studentAssessments) {
-                return $studentAssessments->first();
-            });
+        // Get comprehension test results from the appropriate table based on language
+        if ($language === 'english') {
+            $comprehensionResults = \App\Models\StudentAnswerEnglish::orderBy('created_at', 'desc')
+                ->get()
+                ->groupBy('student_id')
+                ->map(function ($studentResults) {
+                    return $studentResults->first(); // Get latest result per student
+                });
+        } else {
+            $comprehensionResults = \App\Models\StudentAnswerTagalog::orderBy('created_at', 'desc')
+                ->get()
+                ->groupBy('student_id')
+                ->map(function ($studentResults) {
+                    return $studentResults->first(); // Get latest result per student
+                });
+        }
 
-        $totalStudents = $assessments->count();
+        // Get student information to map student_id to grade
+        $students = \App\Models\Student::all()->keyBy('student_number');
+
+        $totalStudents = 0;
         $distribution = [];
 
-        // Calculate distribution by grade
+        // Initialize distribution for all grades
         for ($grade = 7; $grade <= 10; $grade++) {
-            $gradeAssessments = $assessments->where('grade', $grade);
-
-            $gradeLevels = $gradeAssessments->groupBy(function ($assessment) {
-                return $this->calculateComprehensionLevel($assessment->comprehension);
-            });
-
             $distribution["Grade $grade"] = [
-                'Independent' => $gradeLevels->get('Independent', collect())->count(),
-                'Instructional' => $gradeLevels->get('Instructional', collect())->count(),
-                'Frustration' => $gradeLevels->get('Frustration', collect())->count()
+                'Independent' => 0,
+                'Instructional' => 0,
+                'Frustration' => 0
             ];
+        }
+
+        // Calculate distribution by grade
+        foreach ($comprehensionResults as $studentId => $result) {
+            $student = $students->get($studentId);
+
+            if (!$student) {
+                continue; // Skip if student not found
+            }
+
+            $grade = $student->grade_level;
+
+            // Skip if grade is not in our range
+            if ($grade < 7 || $grade > 10) {
+                continue;
+            }
+
+            // Calculate comprehension percentage
+            $totalQuestions = count($result->answers ?? []);
+            $comprehensionPercentage = $totalQuestions > 0 ? round(($result->score / $totalQuestions) * 100) : 0;
+
+            // Determine comprehension level
+            $level = $this->calculateComprehensionLevel($comprehensionPercentage);
+
+            // Add to distribution
+            $distribution["Grade $grade"][$level]++;
+            $totalStudents++;
         }
 
         return [
