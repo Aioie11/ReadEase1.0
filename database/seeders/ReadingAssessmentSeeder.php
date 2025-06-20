@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\ReadingAssessment;
+use App\Models\Student;
 use Carbon\Carbon;
 
 class ReadingAssessmentSeeder extends Seeder
@@ -14,70 +15,54 @@ class ReadingAssessmentSeeder extends Seeder
      */
     public function run(): void
     {
-        $students = [
-            'Maria Garcia',
-            'Juan Santos',
-            'Ana Reyes',
-            'Carlos Mendoza',
-            'Sofia Cruz',
-            'Miguel Torres',
-            'Elena Rodriguez',
-            'Diego Morales',
-            'Carmen Flores',
-            'Luis Herrera',
-            'Isabella Jimenez',
-            'Fernando Castro',
-            'Lucia Vargas',
-            'Roberto Silva',
-            'Valentina Ruiz',
-            'Alejandro Gutierrez',
-            'Camila Ortega',
-            'Sebastian Ramos',
-            'Natalia Delgado',
-            'Mateo Vega'
-        ];
+        // Get all students from the database
+        $students = Student::all();
 
-        $sections = ['narra', 'lawaan', 'dao', 'mahugani'];
+        if ($students->isEmpty()) {
+            $this->command->info('No students found in database. Please run StudentSeeder first.');
+            return;
+        }
+
         $languages = ['english', 'filipino'];
-        $grades = ['7', '8', '9', '10'];
 
-        foreach ($grades as $grade) {
-            foreach ($sections as $section) {
-                foreach ($languages as $language) {
-                    // Create 5-6 students per section per language per grade
-                    $studentsInSection = array_slice($students, 0, rand(5, 6));
+        foreach ($students as $student) {
+            foreach ($languages as $language) {
+                // Create 1-2 assessments per student per language
+                $assessmentCount = rand(1, 2);
 
-                    foreach ($studentsInSection as $student) {
-                        // Generate realistic assessment data
-                        $totalWords = rand(120, 200);
-                        $miscues = rand(0, 15);
-                        $correctReading = round(((($totalWords - $miscues) / $totalWords) * 100), 0);
+                for ($i = 0; $i < $assessmentCount; $i++) {
+                    // Generate realistic assessment data
+                    $totalWords = rand(120, 200);
+                    $miscues = rand(0, 15);
+                    $correctReading = round(((($totalWords - $miscues) / $totalWords) * 100), 0);
 
-                        $totalQuestions = rand(8, 12);
-                        $correctAnswers = rand(floor($totalQuestions * 0.4), $totalQuestions);
-                        $comprehension = round(($correctAnswers / $totalQuestions) * 100, 0);
+                    $totalQuestions = rand(8, 12);
+                    $correctAnswers = rand(floor($totalQuestions * 0.4), $totalQuestions);
+                    $comprehension = round(($correctAnswers / $totalQuestions) * 100, 0);
 
-                        $readingTimeSeconds = rand(60, 300); // 1-5 minutes
-                        $readingSpeed = round(($totalWords / ($readingTimeSeconds / 60)), 0);
+                    $readingTimeSeconds = rand(60, 300); // 1-5 minutes
+                    $readingSpeed = round(($totalWords / ($readingTimeSeconds / 60)), 0);
 
-                        ReadingAssessment::create([
-                            'student_name' => $student,
-                            'reading_time' => $readingTimeSeconds,
-                            'miscues' => $miscues,
-                            'total_words' => $totalWords,
-                            'correct_answers' => $correctAnswers,
-                            'total_questions' => $totalQuestions,
-                            'comprehension' => $comprehension,
-                            'correct_reading' => $correctReading,
-                            'reading_speed' => $readingSpeed,
-                            'section' => $section,
-                            'language' => $language,
-                            'grade' => $grade,
-                            'assessment_date' => Carbon::now()->subDays(rand(1, 30))
-                        ]);
-                    }
+                    ReadingAssessment::create([
+                        'student_id' => $student->student_number, // Link to actual student
+                        'student_name' => $student->first_name . ' ' . $student->last_name,
+                        'reading_time' => $readingTimeSeconds,
+                        'miscues' => $miscues,
+                        'total_words' => $totalWords,
+                        'correct_answers' => $correctAnswers,
+                        'total_questions' => $totalQuestions,
+                        'comprehension' => $comprehension,
+                        'correct_reading' => $correctReading,
+                        'reading_speed' => $readingSpeed,
+                        'section' => $student->section,
+                        'language' => $language,
+                        'grade' => (string) $student->grade_level,
+                        'assessment_date' => Carbon::now()->subDays(rand(1, 30))
+                    ]);
                 }
             }
         }
+
+        $this->command->info('Created reading assessments for ' . $students->count() . ' students.');
     }
 }

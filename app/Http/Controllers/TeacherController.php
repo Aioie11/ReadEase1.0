@@ -39,7 +39,24 @@ class TeacherController extends Controller
 
     public function view(Request $request)
     {
-        $student = Student::where('student_number', $request->student)->firstOrFail();
+        // Handle both 'student_id' and 'student' parameters for compatibility
+        $studentIdentifier = $request->get('student_id') ?? $request->get('student');
+
+        if (!$studentIdentifier) {
+            return view('teacher.view');
+        }
+
+        $student = Student::with('readingAssessments')->where('student_number', $studentIdentifier)->first();
+
+        if (!$student) {
+            // Try finding by ID if student_number doesn't work
+            $student = Student::with('readingAssessments')->find($studentIdentifier);
+        }
+
+        if (!$student) {
+            return view('teacher.view');
+        }
+
         return view('teacher.view', compact('student'));
     }
 
@@ -89,6 +106,57 @@ class TeacherController extends Controller
                     ? round(($student->readingAssessments()->avg('comprehension') + $student->readingAssessments()->avg('correct_reading')) / 2, 1)
                     : 0;
 
+                // Check for complete English and Filipino assessments
+                // A complete assessment must have reading data (reading_speed, correct_reading)
+                // and comprehension data (comprehension > 0, correct_answers > 0)
+                $completeEnglishAssessment = $student->readingAssessments()
+                    ->where('language', 'english')
+                    ->where('reading_speed', '>', 0)
+                    ->where('correct_reading', '>', 0)
+                    ->where('comprehension', '>', 0)
+                    ->where('correct_answers', '>', 0)
+                    ->exists();
+
+                $completeFilipinoAssessment = $student->readingAssessments()
+                    ->where('language', 'filipino')
+                    ->where('reading_speed', '>', 0)
+                    ->where('correct_reading', '>', 0)
+                    ->where('comprehension', '>', 0)
+                    ->where('correct_answers', '>', 0)
+                    ->exists();
+
+                // Check for incomplete assessments (has some data but not complete)
+                $incompleteEnglishAssessment = $student->readingAssessments()
+                    ->where('language', 'english')
+                    ->where(function ($query) {
+                    $query->where('reading_speed', '>', 0)
+                        ->orWhere('correct_reading', '>', 0)
+                        ->orWhere('comprehension', '>', 0)
+                        ->orWhere('correct_answers', '>', 0);
+                })
+                    ->exists();
+
+                $incompleteFilipinoAssessment = $student->readingAssessments()
+                    ->where('language', 'filipino')
+                    ->where(function ($query) {
+                        $query->where('reading_speed', '>', 0)
+                            ->orWhere('correct_reading', '>', 0)
+                            ->orWhere('comprehension', '>', 0)
+                            ->orWhere('correct_answers', '>', 0);
+                    })
+                    ->exists();
+
+                // Determine status based on assessment completion
+                $status = 'No Assessment';
+                if ($completeEnglishAssessment && $completeFilipinoAssessment) {
+                    $status = 'Complete';
+                } elseif (
+                    $completeEnglishAssessment || $completeFilipinoAssessment ||
+                    $incompleteEnglishAssessment || $incompleteFilipinoAssessment
+                ) {
+                    $status = 'Incomplete';
+                }
+
                 return [
                     'id' => $student->id,
                     'student_number' => $student->student_number,
@@ -99,7 +167,7 @@ class TeacherController extends Controller
                     'total_assessments' => $student->readingAssessments()->count(),
                     'latest_score' => $avgScore,
                     'latest_assessment_date' => $latestAssessment ? $latestAssessment->assessment_date : null,
-                    'status' => $avgScore >= 90 ? 'Excellent' : ($avgScore >= 80 ? 'Good' : ($avgScore >= 70 ? 'Average' : ($avgScore > 0 ? 'Needs Improvement' : 'No Assessment')))
+                    'status' => $status
                 ];
             });
 
@@ -148,6 +216,14 @@ class TeacherController extends Controller
                 ->latest('created_at')
                 ->first();
 
+            \Log::info('Searching for student answers', [
+                'student_id' => $studentId,
+                'language' => $language,
+                'answer_model' => $answerModel,
+                'found_answer' => $latestAnswer ? 'Yes' : 'No',
+                'answer_data' => $latestAnswer ? $latestAnswer->toArray() : null
+            ]);
+
             if (!$latestAnswer) {
                 return response()->json([
                     'success' => false,
@@ -168,13 +244,18 @@ class TeacherController extends Controller
                 ], 404);
             }
 
-            $questions = $readingMaterial->questions()->orderBy('id')->get();
+            $questions = $readingMaterial->comprehensionQuestions()->orderBy('order')->get();
 
             // Process answers and compare with correct answers
             $answerDetails = [];
+            $studentAnswers = $latestAnswer->answers ?? []; // Get the JSON answers array
+
             foreach ($questions as $index => $question) {
                 $questionNumber = $index + 1;
-                $studentAnswer = $latestAnswer->{'c' . $questionNumber} ?? '';
+                $questionKey = 'c' . $questionNumber;
+
+                // Get student answer from the JSON answers array
+                $studentAnswer = $studentAnswers[$questionKey] ?? '';
                 $correctAnswer = $question->correct_answer;
                 $isCorrect = trim(strtolower($studentAnswer)) === trim(strtolower($correctAnswer));
 
@@ -212,6 +293,13 @@ class TeacherController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            \Log::error('Error in getStudentComprehensionDetails', [
+                'student_id' => $studentId,
+                'language' => $language,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Error retrieving comprehension details: ' . $e->getMessage()

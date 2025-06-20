@@ -606,8 +606,10 @@ class ReportsController extends Controller
             $readingLevel = 'Frustration';
             if ($assessment->correct_reading >= 97 && $assessment->comprehension >= 80) {
                 $readingLevel = 'Independent';
-            } elseif ($assessment->correct_reading >= 90 && $assessment->correct_reading <= 96 && 
-                     $assessment->comprehension >= 59 && $assessment->comprehension <= 79) {
+            } elseif (
+                $assessment->correct_reading >= 90 && $assessment->correct_reading <= 96 &&
+                $assessment->comprehension >= 59 && $assessment->comprehension <= 79
+            ) {
                 $readingLevel = 'Instructional';
             }
 
@@ -640,10 +642,10 @@ class ReportsController extends Controller
     private function calculateReadingLevelDistribution($assessments)
     {
         $distribution = [];
-        
+
         // Group assessments by grade
         $assessmentsByGrade = $assessments->groupBy('grade');
-        
+
         // Calculate distribution for each grade
         foreach ($assessmentsByGrade as $grade => $gradeAssessments) {
             $gradeLevels = $gradeAssessments->groupBy(function ($assessment) {

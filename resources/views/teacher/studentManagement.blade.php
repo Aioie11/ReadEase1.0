@@ -167,24 +167,19 @@
       display: inline-block;
     }
 
-    .badge-excellent {
+    .badge-complete {
       background: #d1fae5;
       color: #065f46;
     }
 
-    .badge-good {
+    .badge-incomplete {
       background: #fef3c7;
       color: #92400e;
     }
 
-    .badge-average {
-      background: #fed7aa;
-      color: #c2410c;
-    }
-
-    .badge-needs {
-      background: #fecaca;
-      color: #991b1b;
+    .badge-no-assessment {
+      background: #f3f4f6;
+      color: #6b7280;
     }
 
     .action-buttons {
@@ -403,7 +398,6 @@
         <th>Student</th>
         <th>Grade & Section</th>
         <th>Academic Status</th>
-        <th>Latest Score</th>
         <th>Actions</th>
       </tr>
       </thead>
@@ -425,21 +419,14 @@
         <td>Grade {{ $student['grade_level'] }} - Section {{ $student['section'] }}</td>
         <td>
         <span class="badge
-      @if($student['status'] == 'Excellent') badge-excellent
-      @elseif($student['status'] == 'Good') badge-good
-      @elseif($student['status'] == 'Average') badge-average
-      @elseif($student['status'] == 'Needs Improvement') badge-needs
-      @else badge-needs @endif">
+      @if($student['status'] == 'Complete') badge-complete
+      @elseif($student['status'] == 'Incomplete') badge-incomplete
+      @elseif($student['status'] == 'No Assessment') badge-no-assessment
+      @else badge-no-assessment @endif">
         {{ $student['status'] }}
         </span>
         </td>
-        <td>
-        @if($student['latest_score'] > 0)
-      {{ $student['latest_score'] }}/100
-      @else
-      No Assessment
-      @endif
-        </td>
+
         <td>
         <div class="action-buttons">
         <a href="{{ route('teacher.view', ['student_id' => $student['id']]) }}"
@@ -458,7 +445,7 @@
       @endforeach
     @else
       <tr>
-      <td colspan="6" class="text-center" style="padding: 40px;">
+      <td colspan="5" class="text-center" style="padding: 40px;">
       <div style="color: #718096;">
         <i class="fas fa-users" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
         <h3 style="margin: 0 0 8px 0; font-size: 18px;">No Students Found</h3>
@@ -524,6 +511,66 @@
     const tableBody = document.getElementById('studentsTableBody');
     const rows = tableBody.querySelectorAll('tr[data-grade]');
 
+    // Store all available sections for each grade
+    const gradeSections = {};
+
+    // Build grade-section mapping from existing student data
+    rows.forEach(row => {
+      const grade = row.getAttribute('data-grade');
+      const section = row.getAttribute('data-section');
+
+      if (!gradeSections[grade]) {
+      gradeSections[grade] = new Set();
+      }
+      gradeSections[grade].add(section);
+    });
+
+    // Function to update section dropdown based on selected grade
+    function updateSectionOptions() {
+      const selectedGrade = gradeFilter.value;
+      const currentSection = sectionFilter.value;
+
+      // Clear current options except "All Sections"
+      sectionFilter.innerHTML = '<option>All Sections</option>';
+
+      if (selectedGrade === 'All Grades') {
+      // Show all sections from all grades
+      const allSections = new Set();
+      Object.values(gradeSections).forEach(sections => {
+        sections.forEach(section => allSections.add(section));
+      });
+
+      Array.from(allSections).sort().forEach(section => {
+        const option = document.createElement('option');
+        option.value = `Section ${section}`;
+        option.textContent = `Section ${section}`;
+        sectionFilter.appendChild(option);
+      });
+      } else {
+      // Show only sections for the selected grade
+      const gradeNumber = selectedGrade.replace('Grade ', '');
+      const sectionsForGrade = gradeSections[gradeNumber];
+
+      if (sectionsForGrade) {
+        Array.from(sectionsForGrade).sort().forEach(section => {
+        const option = document.createElement('option');
+        option.value = `Section ${section}`;
+        option.textContent = `Section ${section}`;
+        sectionFilter.appendChild(option);
+        });
+      }
+      }
+
+      // Try to restore previous selection if it's still available
+      const options = Array.from(sectionFilter.options);
+      const matchingOption = options.find(option => option.value === currentSection);
+      if (matchingOption) {
+      sectionFilter.value = currentSection;
+      } else {
+      sectionFilter.value = 'All Sections';
+      }
+    }
+
     function filterTable() {
       const searchTerm = searchInput.value.toLowerCase();
       const selectedGrade = gradeFilter.value;
@@ -553,14 +600,14 @@
       if (!noResultsRow) {
         const noResults = document.createElement('tr');
         noResults.innerHTML = `
-          <td colspan="6" class="text-center" style="padding: 40px;">
-          <div style="color: #718096;">
-            <i class="fas fa-search" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
-            <h3 style="margin: 0 0 8px 0; font-size: 18px;">No Students Found</h3>
-            <p style="margin: 0; font-size: 14px;">Try adjusting your search criteria.</p>
-          </div>
-          </td>
-        `;
+      <td colspan="5" class="text-center" style="padding: 40px;">
+      <div style="color: #718096;">
+      <i class="fas fa-search" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
+      <h3 style="margin: 0 0 8px 0; font-size: 18px;">No Students Found</h3>
+      <p style="margin: 0; font-size: 14px;">Try adjusting your search criteria.</p>
+      </div>
+      </td>
+      `;
         noResults.id = 'noResultsRow';
         tableBody.appendChild(noResults);
       }
@@ -571,8 +618,16 @@
 
     // Event listeners
     if (searchInput) searchInput.addEventListener('input', filterTable);
-    if (gradeFilter) gradeFilter.addEventListener('change', filterTable);
+    if (gradeFilter) {
+      gradeFilter.addEventListener('change', function () {
+      updateSectionOptions(); // Update sections first
+      filterTable(); // Then filter the table
+      });
+    }
     if (sectionFilter) sectionFilter.addEventListener('change', filterTable);
+
+    // Initialize section options on page load
+    updateSectionOptions();
 
     // Auto-refresh data every 30 seconds to show updated assessment info
     setInterval(function () {

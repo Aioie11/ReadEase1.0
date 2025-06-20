@@ -928,26 +928,26 @@
             </div>
 
             <!-- <div class="feedback-history">
-                <h4>Previous Feedback</h4>
-                <div class="feedback-item">
-                    <div class="feedback-meta">
-                        <span>Date: 12/15/2024</span>
-                        <span>Reading Level: Grade 7</span>
-                    </div>
-                    <div class="feedback-content">
-                        <p><strong>Strengths:</strong> Good pronunciation and clear voice projection</p>
-                        <p><strong>Areas for Improvement:</strong> Reading speed and comprehension</p>
-                        <p><strong>Recommendations:</strong> Practice with shorter passages first</p>
-                    </div>
+                                        <h4>Previous Feedback</h4>
+                                        <div class="feedback-item">
+                                            <div class="feedback-meta">
+                                                <span>Date: 12/15/2024</span>
+                                                <span>Reading Level: Grade 7</span>
+                                            </div>
+                                            <div class="feedback-content">
+                                                <p><strong>Strengths:</strong> Good pronunciation and clear voice projection</p>
+                                                <p><strong>Areas for Improvement:</strong> Reading speed and comprehension</p>
+                                                <p><strong>Recommendations:</strong> Practice with shorter passages first</p>
+                                            </div>
 
-                    <div class="feedback-actions-history">
-                        <button class="btn-send" onclick="sendFeedbackToStudent(this, 'sample-feedback-1')">
-                            <i class="fas fa-paper-plane"></i> Send to Student
-                        </button>
-                        <span class="send-status sent">✓ Sent</span>
-                    </div>
-                </div>
-            </div> -->
+                                            <div class="feedback-actions-history">
+                                                <button class="btn-send" onclick="sendFeedbackToStudent(this, 'sample-feedback-1')">
+                                                    <i class="fas fa-paper-plane"></i> Send to Student
+                                                </button>
+                                                <span class="send-status sent">✓ Sent</span>
+                                            </div>
+                                        </div>
+                                    </div> -->
         </div>
     </div>
 
@@ -1214,26 +1214,26 @@
             const feedbackDate = new Date(feedback.created_at).toLocaleDateString();
 
             feedbackItem.innerHTML = `
-                <div class="feedback-meta">
-                    <span>Date: ${feedbackDate}</span>
-                    <span>Reading Level: Grade ${feedback.grade_level}</span>
-                    <span>Language: ${feedback.language.charAt(0).toUpperCase() + feedback.language.slice(1)}</span>
-                </div>
-                <div class="feedback-content">
-                    <p><strong>Strengths:</strong> ${feedback.strengths || 'Not specified'}</p>
-                    <p><strong>Areas for Improvement:</strong> ${feedback.areas_for_improvement || 'Not specified'}</p>
-                    <p><strong>Recommendations:</strong> ${feedback.recommendations || 'Not specified'}</p>
-                </div>
+                                        <div class="feedback-meta">
+                                            <span>Date: ${feedbackDate}</span>
+                                            <span>Reading Level: Grade ${feedback.grade_level}</span>
+                                            <span>Language: ${feedback.language.charAt(0).toUpperCase() + feedback.language.slice(1)}</span>
+                                        </div>
+                                        <div class="feedback-content">
+                                            <p><strong>Strengths:</strong> ${feedback.strengths || 'Not specified'}</p>
+                                            <p><strong>Areas for Improvement:</strong> ${feedback.areas_for_improvement || 'Not specified'}</p>
+                                            <p><strong>Recommendations:</strong> ${feedback.recommendations || 'Not specified'}</p>
+                                        </div>
 
-                <div class="feedback-actions-history">
-                    <button class="btn-send" onclick="sendFeedbackToStudent(this, ${feedbackId})">
-                        <i class="fas fa-paper-plane"></i> Send to Student
-                    </button>
-                    <span class="send-status ${feedback.is_sent ? 'sent' : 'not-sent'}">
-                        ${feedback.is_sent ? '✓ Sent' : 'Not Sent'}
-                    </span>
-                </div>
-            `;
+                                        <div class="feedback-actions-history">
+                                            <button class="btn-send" onclick="sendFeedbackToStudent(this, ${feedbackId})">
+                                                <i class="fas fa-paper-plane"></i> Send to Student
+                                            </button>
+                                            <span class="send-status ${feedback.is_sent ? 'sent' : 'not-sent'}">
+                                                ${feedback.is_sent ? '✓ Sent' : 'Not Sent'}
+                                            </span>
+                                        </div>
+                                    `;
 
             // Store feedback data for sending
             feedbackItem.dataset.feedbackData = JSON.stringify(feedback);
@@ -1369,6 +1369,13 @@
                 return;
             }
 
+            // Show confirmation dialog
+            const confirmMessage = `Save assessment for ${studentName}?\n\nReading Speed: ${readingSpeed} wpm\nCorrect Reading: ${correctReading}%\nTime: ${timeText}`;
+
+            if (!confirm(confirmMessage)) {
+                return; // User cancelled
+            }
+
             // Allow 0 seconds minimum - no minimum time validation needed
 
             // Prepare assessment data
@@ -1459,36 +1466,13 @@
                 return;
             }
 
-            console.log('Refreshing charts for student ID:', studentId);
+            console.log('Assessment saved for student ID:', studentId);
 
-            // Open student view in new tab/window with updated data
-            const studentViewUrl = `/teacher/view?student_id=${studentId}`;
+            // Just log the success - don't open any new windows or redirect
+            console.log('Assessment data has been saved to the student record');
 
-            // Check if student view is already open
-            if (window.studentViewWindow && !window.studentViewWindow.closed) {
-                // Refresh existing window with new data
-                window.studentViewWindow.location.href = studentViewUrl;
-                window.studentViewWindow.focus();
-
-                // Try to call the refresh function if it exists
-                setTimeout(() => {
-                    try {
-                        if (window.studentViewWindow.refreshChartsWithNewData) {
-                            window.studentViewWindow.refreshChartsWithNewData(studentId);
-                        }
-                    } catch (e) {
-                        console.log('Chart refresh function not available, page will reload with new data');
-                    }
-                }, 1000);
-            } else {
-                // Open new window
-                window.studentViewWindow = window.open(studentViewUrl, 'studentView', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-            }
-
-            // Show success message
-            setTimeout(() => {
-                console.log('Charts will be updated with the latest assessment data!');
-            }, 500);
+            // No page redirection or new window opening
+            // Charts will be updated when user manually navigates to student view
         }
     </script>
 @endsection
