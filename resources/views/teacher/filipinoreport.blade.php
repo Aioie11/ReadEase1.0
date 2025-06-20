@@ -28,46 +28,212 @@
                         <div class="filter-group">
                             <div class="filter-label">View by</div>
                             <div class="filter-options">
-                                <select class="custom-select">
-                                    <option>All Sections</option>
-                                    <option>Narra</option>
-                                    <option>Lawaan</option>
-                                    <option>Dao</option>
-                                    <option>Mahugani</option>
+                                <select class="custom-select" id="gradeFilter" onchange="updateSectionOptions()">
+                                    <option value="7" {{ (string)($grade ?? '7') == '7' ? 'selected' : '' }}>Grade 7</option>
+                                    <option value="8" {{ (string)($grade ?? '7') == '8' ? 'selected' : '' }}>Grade 8</option>
+                                    <option value="9" {{ (string)($grade ?? '7') == '9' ? 'selected' : '' }}>Grade 9</option>
+                                    <option value="10" {{ (string)($grade ?? '7') == '10' ? 'selected' : '' }}>Grade 10</option>
                                 </select>
-                                <select class="custom-select">
-                                    <option>All Grades</option>
-                                    <option>Grade 7</option>
-                                    <option>Grade 8</option>
-                                    <option>Grade 9</option>
-                                    <option>Grade 10</option>
+                                <select class="custom-select" id="sectionFilter" onchange="updateFilipinoGradeData()">
+                                    <option value="all" {{ (string)($section ?? 'all') == 'all' ? 'selected' : '' }}>All Sections</option>
+                                    <!-- Dynamic options will be populated by JavaScript -->
                                 </select>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Filipino Reading Sessions Progress -->
-                    <div class="chart-panel">
-                        <div class="chart-panel-header">
-                            <h3>Filipino Reading Sessions Progress (By Grade Level)</h3>
-                            <div class="time-selector">
-                                <button class="time-btn active">6 Weeks</button>
-                            </div>
-                        </div>
-                        <div class="chart-panel-body">
-                            <canvas id="filipinoProgressChart"></canvas>
+                <!-- Filipino Reading Sessions Progress -->
+                <div class="chart-panel">
+                    <div class="chart-panel-header">
+                        <h3 id="filipinoChartTitle">📊 Pag-unlad sa Pagbasa ng Filipino - Baitang {{ (string)($grade ?? '7') }}</h3>
+                        <div class="time-selector">
+                            <button class="time-btn active">Napiling Baitang</button>
                         </div>
                     </div>
+                    <div class="chart-panel-body">
+                        <canvas id="filipinoProgressChart"></canvas>
 
-                    
-                                        </div>
-                                    </div>
+                        <!-- Reading Level Legend -->
+                        <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #00B8A9;">
+                            <h4 style="margin: 0 0 10px 0; color: #2D3748; font-size: 14px; font-weight: 600;">📖
+                                Mga Antas ng Pagganap sa Pagbasa:</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 15px; font-size: 12px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 16px; height: 16px; background: #00B8A9; border-radius: 4px;"></div>
+                                    <span><strong>Independiyente (90-100%):</strong> Makakabasa nang maayos nang walang tulong</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 16px; height: 16px; background: #F6AD55; border-radius: 4px;"></div>
+                                    <span><strong>Pagtuturo (70-89%):</strong> Makakabasa sa tulong ng guro</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 16px; height: 16px; background: #E53E3E; border-radius: 4px;"></div>
+                                    <span><strong>Pagkabalisa (Below 70%):</strong> Nahihirapan sa materyal na binabasa</span>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
+                <!-- Filipino Section Performance Summary -->
+                <div class="student-table-panel">
+                    <div class="panel-header">
+                        <h3>Buod ng Pagganap ng mga Seksyon</h3>
+                        <div class="summary-stats" id="summaryStats">
+                            <div class="stat-item">
+                                <span class="stat-label">Kabuuang Mag-aaral:</span>
+                                <span class="stat-value" id="totalStudents">{{ $total_students ?? 0 }}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Avg Reading Speed:</span>
+                                <span class="stat-value"
+                                    id="avgReadingSpeed">{{ $statistics['avg_reading_speed'] ?? 0 }} WPM</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Avg Pag-unawa:</span>
+                                <span class="stat-value"
+                                    id="avgComprehension">{{ $statistics['avg_comprehension'] ?? 0 }}%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="student-table">
+                            <thead>
+                                <tr>
+                                    <th>Seksyon</th>
+                                    <th>Mga Mag-aaral</th>
+                                    <th>Avg Reading Speed</th>
+                                    <th>Avg Pag-unawa</th>
+                                    <th>Avg Tamang Pagbasa</th>
+                                    <th>Pagganap</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sectionTableBody">
+                                @if(isset($section_data) && count($section_data) > 0)
+                                    @foreach($section_data as $section)
+                                        @php
+                                            $sectionIcon = strtoupper(substr($section['section'], 0, 1));
+                                            $performanceClass = 'green';
+                                            if ($section['avg_comprehension'] < 80)
+                                                $performanceClass = 'yellow';
+                                            if ($section['avg_comprehension'] < 70)
+                                                $performanceClass = 'red';
+                                        @endphp
+                                        <tr>
+                                            <td>
+                                                <div class="student-info">
+                                                    <div class="student-avatar">{{ $sectionIcon }}</div>
+                                                    <div>{{ $section['section'] }}</div>
+                                                </div>
+                                            </td>
+                                            <td>{{ $section['student_count'] }} mag-aaral</td>
+                                            <td>{{ $section['avg_reading_speed'] }} WPM</td>
+                                            <td>{{ $section['avg_comprehension'] }}%</td>
+                                            <td>{{ $section['avg_correct_reading'] }}%</td>
+                                            <td>
+                                                <div class="progress-bar">
+                                                    <div class="progress {{ $performanceClass }}"
+                                                        style="width: {{ $section['avg_comprehension'] }}%"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="6"
+                                            style="text-align: center; padding: 2rem; color: var(--text-light);">
+                                            Walang data na available para sa mga napiling filter
+                                        </td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Right Column -->
+            <div class="dashboard-column side-column">
+                <div class="metric-cards">
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 3h18v18H3V3zm16 16V5H5v14h14zM7 7h10v2H7V7zm0 4h10v2H7v-2zm0 4h7v2H7v-2z" />
+                            </svg>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-label">Antas ng Pagbasa</div>
+                            <div class="metric-value">{{ $metric_cards['reading_level'] ?? 'Walang Data' }}</div>
+                            <div class="metric-details"
+                                style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem;">
+                                Kabuuang antas ng pagganap ng klase
+                            </div>
+                            <div class="metric-trend">
+                                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 12px; height: 12px;">
+                                    <path d="M7 14l5-5 5 5z" />
+                                </svg> {{ $total_students ?? 0 }} mag-aaral
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                            </svg>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-label">Bilis ng Pagbasa</div>
+                            <div class="metric-value">{{ $metric_cards['avg_reading_speed'] ?? 0 }} <span>WPM</span>
+                            </div>
+                            <div class="metric-trend">
+                                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 12px; height: 12px;">
+                                    <path d="M7 14l5-5 5 5z" />
+                                </svg> Karaniwang
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                            </svg>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-label">Pag-unawa</div>
+                            <div class="metric-value">{{ $metric_cards['avg_comprehension'] ?? 0 }}<span>%</span></div>
+                            <div class="metric-trend">
+                                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 12px; height: 12px;">
+                                    <path d="M7 14l5-5 5 5z" />
+                                </svg> Karaniwang
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
+                            </svg>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-label">Kabuuang Mag-aaral</div>
+                            <div class="metric-value">{{ $total_students ?? 0 }} <span>Mag-aaral</span></div>
+                            <div class="metric-details"
+                                style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem;">
+                                Aktibong mag-aaral na may assessment
+                            </div>
+                            <div class="metric-trend">
+                                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 12px; height: 12px;">
+                                    <path d="M7 14l5-5 5 5z" />
+                                </svg> Kasalukuyang baitang
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Filipino Reading Level Guide -->
@@ -99,7 +265,7 @@
             </div>
         </div>
     </div>
-    </div>
+</div>
 
     <style>
         :root {
@@ -246,7 +412,9 @@
             background-color: var(--card-bg);
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: var(--shadow-sm)
+            box-shadow: var(--shadow-sm);
+            height: 400px;
+
         }
 
         .chart-panel-header {
@@ -287,6 +455,7 @@
 
         .chart-panel-body {
             padding: 1rem;
+            height: 300px
         }
 
         /* Progress Chart Specific Styling */
@@ -364,6 +533,31 @@
             margin: 0;
         }
 
+        .summary-stats {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
         .search-wrapper {
             position: relative;
         }
@@ -414,8 +608,17 @@
 
         .student-table td {
             padding: 0.75rem 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text);
             border-bottom: 1px solid var(--neutral-light);
-            font-size: 0.85rem;
+        }
+
+        .student-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .student-table tr:hover td {
+            background-color: rgba(0, 184, 169, 0.05);
         }
 
         .student-info {
@@ -427,64 +630,64 @@
         .student-avatar {
             width: 32px;
             height: 32px;
-            border-radius: 50%;
-            background: var(--primary);
+            background-color: var(--primary);
             color: white;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
             font-weight: 600;
+            font-size: 0.8rem;
         }
 
         .badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 600;
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .badge.independent {
-            background: #E8F5E8;
-            color: #2E7D32;
+            background-color: var(--success);
+            color: white;
         }
 
         .badge.instructional {
-            background: #FFF3E0;
-            color: #F57C00;
+            background-color: var(--warning);
+            color: var(--text-dark);
         }
 
         .badge.frustration {
-            background: #FFEBEE;
-            color: #D32F2F;
+            background-color: var(--danger);
+            color: white;
         }
 
         .progress-bar {
-            width: 60px;
-            height: 6px;
-            background: var(--neutral-light);
-            border-radius: 3px;
+            width: 100px;
+            height: 8px;
+            background-color: #e2e8f0;
+            border-radius: 50px;
             overflow: hidden;
         }
 
         .progress {
             height: 100%;
-            border-radius: 3px;
-            transition: width 0.3s ease;
+            border-radius: 50px;
         }
 
         .progress.green {
-            background: var(--success);
+            background: var(--secondary-gradient);
         }
 
         .progress.yellow {
-            background: var(--warning);
+            background: var(--accent-gradient);
         }
 
         .progress.red {
-            background: var(--danger);
+            background: var(--danger-gradient);
         }
 
         /* Metric Cards */
@@ -495,25 +698,42 @@
         }
 
         .metric-card {
-            background: var(--card-bg);
+            background-color: var(--card-bg);
             border-radius: 10px;
             padding: 1rem;
-            box-shadow: var(--shadow-sm);
             display: flex;
             align-items: center;
             gap: 1rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        .metric-card:hover {
+            box-shadow: var(--shadow-md);
         }
 
         .metric-icon {
             width: 48px;
             height: 48px;
             border-radius: 8px;
-            background: var(--primary);
-            color: white;
+            background-color: var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
+            color: white;
             font-size: 1.2rem;
+        }
+
+        .metric-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .metric-trend svg {
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 4px;
         }
 
         .metric-content {
@@ -524,6 +744,8 @@
             font-size: 0.8rem;
             color: var(--text-light);
             margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .metric-value {
@@ -535,13 +757,13 @@
 
         .metric-value span {
             font-size: 0.9rem;
-            font-weight: 400;
+            font-weight: 500;
             color: var(--text-light);
         }
 
         .metric-trend {
-            font-size: 0.75rem;
-            font-weight: 600;
+            font-size: 0.8rem;
+            font-weight: 500;
             display: flex;
             align-items: center;
             gap: 0.25rem;
@@ -551,13 +773,9 @@
             color: var(--success);
         }
 
-        .metric-trend.negative {
-            color: var(--danger);
-        }
-
         /* Reading Level Guide */
         .reading-level-guide {
-            background: var(--card-bg);
+            background-color: var(--card-bg);
             border-radius: 10px;
             padding: 1rem;
             box-shadow: var(--shadow-sm);
@@ -574,7 +792,14 @@
             display: flex;
             align-items: flex-start;
             gap: 0.75rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+
+        .level-item:hover {
+            background-color: rgba(0, 184, 169, 0.05);
         }
 
         .level-item:last-child {
@@ -587,13 +812,15 @@
 
         .level-range {
             font-size: 0.75rem;
-            color: var(--text-light);
+            color: var(--text);
+            font-weight: 500;
             margin-bottom: 0.25rem;
         }
 
         .level-description {
-            font-size: 0.8rem;
-            color: var(--text);
+            font-size: 0.7rem;
+            color: var(--text-light);
+            line-height: 1.3;
         }
 
         /* Grade Level Analysis Styles */
@@ -777,13 +1004,33 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        @media (max-width: 768px) {
+            .dashboard-wrapper {
+                padding: 1rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .filter-controls {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .filter-group {
+                justify-content: space-between;
+            }
+        }
     </style>
 
     <!-- Chart.js Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Filipino Reading Sessions Progress Chart (By Grade Level)
-        const progressCtx = document.getElementById('filipinoProgressChart').getContext('2d');
+        const filipinoCtx = document.getElementById('filipinoProgressChart').getContext('2d');
 
         // Reading level data for Filipino
         const readingLevels = {
@@ -792,65 +1039,78 @@
             3: { name: 'Independiyente', wordReading: '97-100%', comprehension: '80-100%', description: 'Makakabasa nang maayos nang walang tulong' }
         };
 
-        new Chart(progressCtx, {
-            type: 'bar',
+        // Get chart data from backend
+        const gradeDistribution = @json($grade_distribution ?? []);
+        const currentGrade = '{{ (string)($grade ?? "7") }}';
+
+        // Function to get chart data for specific grade
+        function getFilipinoChartDataForGrade(selectedGrade) {
+            const gradeKey = `Grade ${selectedGrade}`;
+            const gradeData = gradeDistribution[gradeKey] || { Independent: 0, Instructional: 0, Frustration: 0 };
+
+            return {
+                labels: [gradeKey],
+                independentData: [gradeData.Independent || 0],
+                instructionalData: [gradeData.Instructional || 0],
+                frustrationData: [gradeData.Frustration || 0]
+            };
+        }
+
+        // Get initial chart data for current grade
+        const initialFilipinoChartData = getFilipinoChartDataForGrade(currentGrade);
+
+        window.filipinoProgressChart = new Chart(filipinoCtx, {
+            type: 'pie',
             data: {
-                labels: ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'],
-                datasets: [
-                    {
-                        label: 'Independiyente (90-100%)',
-                        data: [18, 20, 24, 22], // Number of students at Independent level
-                        backgroundColor: '#00B8A9',
-                        borderColor: '#00B8A9',
-                        borderWidth: 2,
-                        borderRadius: 8,
-                        borderSkipped: false,
-                    },
-                    {
-                        label: 'Pagtuturo (70-89%)',
-                        data: [7, 9, 5, 3], // Number of students at Instructional level
-                        backgroundColor: '#F6AD55',
-                        borderColor: '#F6AD55',
-                        borderWidth: 2,
-                        borderRadius: 8,
-                        borderSkipped: false,
-                    },
-                    {
-                        label: 'Pagkabalisa (Below 70%)',
-                        data: [3, 3, 1, 0], // Number of students at Frustration level
-                        backgroundColor: '#E53E3E',
-                        borderColor: '#E53E3E',
-                        borderWidth: 2,
-                        borderRadius: 8,
-                        borderSkipped: false,
-                    }
-                ]
+                labels: ['Independiyente (90-100%)', 'Pagtuturo (70-89%)', 'Pagkabalisa (Below 70%)'],
+                datasets: [{
+                    data: [
+                        initialFilipinoChartData.independentData[0],
+                        initialFilipinoChartData.instructionalData[0],
+                        initialFilipinoChartData.frustrationData[0]
+                    ],
+                    backgroundColor: ['#00B8A9', '#F6AD55', '#E53E3E'],
+                    borderColor: '#FFFFFF',
+                    borderWidth: 2,
+                }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
                 plugins: {
-                    title: {
-                        display: true,
-                        text: '📊 Pag-unlad sa Pagbasa ng Filipino (Ayon sa Baitang)',
-                        font: { size: 16, weight: 'bold' },
-                        color: '#00B8A9',
-                        padding: 20
-                    },
                     legend: {
                         display: true,
-                        position: 'top',
+                        position: 'right',
                         align: 'center',
                         labels: {
                             usePointStyle: true,
-                            pointStyle: 'rect',
+                            pointStyle: 'circle',
                             padding: 20,
-                            font: { size: 12, weight: '600' },
-                            color: '#2D3748'
+                            font: {
+                                size: 12,
+                                weight: '600'
+                            },
+                            color: '#2D3748',
+                            generateLabels: function(chart) {
+                                const data = chart.data;
+                                if (data.labels.length && data.datasets.length) {
+                                    return data.labels.map(function(label, i) {
+                                        const value = data.datasets[0].data[i];
+                                        const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        
+                                        return {
+                                            text: `${label}: ${value} mag-aaral (${percentage}%)`,
+                                            fillStyle: data.datasets[0].backgroundColor[i],
+                                            strokeStyle: data.datasets[0].backgroundColor[i],
+                                            lineWidth: 2,
+                                            hidden: isNaN(data.datasets[0].data[i]),
+                                            index: i
+                                        };
+                                    });
+                                }
+                                return [];
+                            }
                         }
                     },
                     tooltip: {
@@ -862,381 +1122,157 @@
                         cornerRadius: 12,
                         displayColors: true,
                         padding: 16,
-                        titleFont: { size: 14, weight: 'bold' },
-                        bodyFont: { size: 13 },
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
                         callbacks: {
-                            title: function (context) {
-                                return `${context[0].label} Pagganap sa Filipino`;
-                            },
-                            label: function (context) {
-                                const datasetLabel = context.dataset.label;
-                                const value = context.parsed.y;
-                                const total = context.chart.data.datasets.reduce((sum, dataset) => {
-                                    return sum + dataset.data[context.dataIndex];
-                                }, 0);
+                            title: function(context) {
+                                const label = context[0].label;
+                                const value = context[0].raw;
+                                const total = context[0].dataset.data.reduce((a, b) => a + b, 0);
                                 const percentage = ((value / total) * 100).toFixed(1);
-
-                                return `${datasetLabel}: ${value} mag-aaral (${percentage}%)`;
+                                return `${label}\n${value} mag-aaral (${percentage}%)`;
                             },
-                            afterBody: function (context) {
-                                const dataIndex = context[0].dataIndex;
-                                const total = context[0].chart.data.datasets.reduce((sum, dataset) => {
-                                    return sum + dataset.data[dataIndex];
-                                }, 0);
-                                return `Kabuuang Mag-aaral: ${total}`;
+                            label: function(context) {
+                                const label = context.label;
+                                const value = context.raw;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                
+                                let description = '';
+                                if (label.includes('Independiyente')) {
+                                    description = 'Mga mag-aaral na makakabasa nang maayos nang walang tulong';
+                                } else if (label.includes('Pagtuturo')) {
+                                    description = 'Mga mag-aaral na makakabasa sa tulong ng guro';
+                                } else if (label.includes('Pagkabalisa')) {
+                                    description = 'Mga mag-aaral na nahihirapan sa materyal na binabasa';
+                                }
+                                
+                                return [
+                                    `Kabuuang Mag-aaral: ${total}`,
+                                    `Antas ng Pagbasa: ${label.split(' ')[0]}`,
+                                    `Paglalarawan: ${description}`
+                                ];
                             }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        stacked: false,
-                        grid: {
-                            color: 'rgba(0, 184, 169, 0.1)',
-                            drawBorder: false,
-                            lineWidth: 1
-                        },
-                        ticks: {
-                            padding: 15,
-                            font: { size: 12, weight: '500' },
-                            color: '#4A5568',
-                            callback: function (value) {
-                                return value + ' mag-aaral';
-                            }
-                        },
-                        title: {
-                            display: true,
-                            text: 'Bilang ng Mag-aaral',
-                            font: { size: 14, weight: 'bold' },
-                            color: '#2D3748',
-                            padding: 20
-                        }
-                    },
-                    x: {
-                        grid: { display: false, drawBorder: false },
-                        ticks: {
-                            padding: 15,
-                            font: { size: 13, weight: '600' },
-                            color: '#2D3748'
-                        },
-                        title: {
-                            display: true,
-                            text: 'Mga Baitang',
-                            font: { size: 14, weight: 'bold' },
-                            color: '#2D3748',
-                            padding: 15
                         }
                     }
                 }
             }
         });
 
-        // Define clean chart options for Filipino charts
-        const cleanChartOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.1)'
-                    }
-                },
-                x: {
-                    grid: {
-                        display: false
-                    }
-                }
-            }
+        // Function to update chart for selected grade
+        function updateFilipinoChartForGrade(selectedGrade) {
+            const chartData = getFilipinoChartDataForGrade(selectedGrade);
+
+            // Update chart data
+            window.filipinoProgressChart.data.datasets[0].data = [
+                chartData.independentData[0],
+                chartData.instructionalData[0],
+                chartData.frustrationData[0]
+            ];
+
+            // Update chart title
+            document.getElementById('filipinoChartTitle').textContent = `📊 Pag-unlad sa Pagbasa ng Filipino - Baitang ${selectedGrade}`;
+
+            // Update chart
+            window.filipinoProgressChart.update('active');
+        }
+
+        // Grade to Section mapping
+        const gradeSectionMapping = {
+            '7': ['narra', 'lawaan', 'dao', 'mahugani'],
+            '8': ['avocado', 'duhat', 'mango', 'guava'],
+            '9': ['gold', 'zinc', 'silver'],
+            '10': ['galileo', 'newton', 'edison']
         };
 
-        // Filipino Reading Speed Chart
-        const ctx1 = document.getElementById('filipinoChart1').getContext('2d');
-        new Chart(ctx1, {
-            type: 'bar',
-            data: {
-                labels: ['Reading Time', 'Total Words'],
-                datasets: [{
-                    data: [120, 250],
-                    backgroundColor: [
-                        '#4fc3f7',
-                        '#f56565'
-                    ],
-                    borderWidth: 0,
-                    borderRadius: 4
-                }]
-            },
-            options: cleanChartOptions
-        });
+        // Function to update section options based on selected grade
+        function updateSectionOptions() {
+            const gradeSelect = document.getElementById('gradeFilter');
+            const sectionSelect = document.getElementById('sectionFilter');
+            const selectedGrade = gradeSelect.value;
 
-        // Filipino Reading Comprehension Chart
-        const ctx2 = document.getElementById('filipinoChart2').getContext('2d');
-        new Chart(ctx2, {
-            type: 'bar',
-            data: {
-                labels: ['Correct Answers', 'Total Questions'],
-                datasets: [{
-                    data: [7, 10],
-                    backgroundColor: [
-                        '#38b2ac',
-                        '#ed8936'
-                    ],
-                    borderWidth: 0,
-                    borderRadius: 4
-                }]
-            },
-            options: cleanChartOptions
-        });
+            // Clear current section options except "All Sections"
+            sectionSelect.innerHTML = '<option value="all">All Sections</option>';
 
-        // Filipino Word Reading Chart
-        const ctx3 = document.getElementById('filipinoChart3').getContext('2d');
-        new Chart(ctx3, {
-            type: 'bar',
-            data: {
-                labels: ['Reading Miscues', 'Correct Reading', 'Total Words'],
-                datasets: [{
-                    data: [15, 235, 250],
-                    backgroundColor: [
-                        '#f56565',
-                        '#38b2ac',
-                        '#ed8936'
-                    ],
-                    borderWidth: 0,
-                    borderRadius: 4
-                }]
-            },
-            options: cleanChartOptions
-        });
-
-        // Filipino Reading Speed Progression Chart
-        const speedCtx = document.getElementById('filipinoSpeedChart').getContext('2d');
-        new Chart(speedCtx, {
-            type: 'line',
-            data: {
-                labels: ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'],
-                datasets: [{
-                    label: 'Average Reading Speed (WPM)',
-                    data: [95, 108, 118, 125],
-                    borderColor: '#00B8A9',
-                    backgroundColor: 'rgba(0, 184, 169, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#ffffff',
-                    pointBorderColor: '#00B8A9',
-                    pointBorderWidth: 3,
-                    pointRadius: 6,
-                    pointHoverRadius: 8
-                }]
-            },
-            options: {
-                ...cleanChartOptions,
-                plugins: {
-                    ...cleanChartOptions.plugins,
-                    tooltip: {
-                        backgroundColor: 'rgba(255, 255, 255, 0.98)',
-                        titleColor: '#1A202C',
-                        bodyColor: '#2D3748',
-                        borderColor: '#00B8A9',
-                        borderWidth: 2,
-                        cornerRadius: 8,
-                        displayColors: true,
-                        padding: 12,
-                        titleFont: { size: 13, weight: 'bold' },
-                        bodyFont: { size: 12 },
-                        callbacks: {
-                            label: function (context) {
-                                return `Reading Speed: ${context.parsed.y} WPM`;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 184, 169, 0.1)',
-                            drawBorder: false,
-                            lineWidth: 1
-                        },
-                        ticks: {
-                            padding: 10,
-                            font: { size: 11, weight: '500' },
-                            color: '#4A5568',
-                            callback: function (value) {
-                                return value + ' WPM';
-                            }
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks: {
-                            padding: 10,
-                            font: { size: 11, weight: '500' },
-                            color: '#2D3748'
-                        }
-                    }
-                }
+            // Add sections for the selected grade
+            if (gradeSectionMapping[selectedGrade]) {
+                gradeSectionMapping[selectedGrade].forEach(section => {
+                    const option = document.createElement('option');
+                    option.value = section.toLowerCase();
+                    option.textContent = section.charAt(0).toUpperCase() + section.slice(1);
+                    sectionSelect.appendChild(option);
+                });
             }
-        });
 
-        // Filipino Comprehension Levels Chart
-        const comprehensionCtx = document.getElementById('filipinoComprehensionChart').getContext('2d');
-        new Chart(comprehensionCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'],
-                datasets: [{
-                    label: 'Average Comprehension (%)',
-                    data: [78, 82, 86, 89],
-                    backgroundColor: '#F6AD55',
-                    borderColor: '#F6AD55',
-                    borderWidth: 2,
-                    borderRadius: 8,
-                    borderSkipped: false
-                }]
-            },
-            options: {
-                ...cleanChartOptions,
-                plugins: {
-                    ...cleanChartOptions.plugins,
-                    tooltip: {
-                        backgroundColor: 'rgba(255, 255, 255, 0.98)',
-                        titleColor: '#1A202C',
-                        bodyColor: '#2D3748',
-                        borderColor: '#00B8A9',
-                        borderWidth: 2,
-                        cornerRadius: 8,
-                        displayColors: true,
-                        padding: 12,
-                        titleFont: { size: 13, weight: 'bold' },
-                        bodyFont: { size: 12 },
-                        callbacks: {
-                            label: function (context) {
-                                return `Comprehension: ${context.parsed.y}%`;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        grid: {
-                            color: 'rgba(0, 184, 169, 0.1)',
-                            drawBorder: false,
-                            lineWidth: 1
-                        },
-                        ticks: {
-                            padding: 10,
-                            font: { size: 11, weight: '500' },
-                            color: '#4A5568',
-                            callback: function (value) {
-                                return value + '%';
-                            }
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks: {
-                            padding: 10,
-                            font: { size: 11, weight: '500' },
-                            color: '#2D3748'
-                        }
-                    }
-                }
-            }
-        });
+            // Reset section to "All Sections" when grade changes
+            sectionSelect.value = 'all';
 
-        // Filipino Reading Accuracy Chart
-        const accuracyCtx = document.getElementById('filipinoAccuracyChart').getContext('2d');
-        new Chart(accuracyCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Grade 7', 'Grade 8', 'Grade 9', 'Grade 10'],
-                datasets: [{
-                    label: 'Average Reading Accuracy (%)',
-                    data: [85, 89, 92, 94],
-                    backgroundColor: '#4FC3F7',
-                    borderColor: '#4FC3F7',
-                    borderWidth: 2,
-                    borderRadius: 8,
-                    borderSkipped: false
-                }]
-            },
-            options: {
-                ...cleanChartOptions,
-                plugins: {
-                    ...cleanChartOptions.plugins,
-                    tooltip: {
-                        backgroundColor: 'rgba(255, 255, 255, 0.98)',
-                        titleColor: '#1A202C',
-                        bodyColor: '#2D3748',
-                        borderColor: '#00B8A9',
-                        borderWidth: 2,
-                        cornerRadius: 8,
-                        displayColors: true,
-                        padding: 12,
-                        titleFont: { size: 13, weight: 'bold' },
-                        bodyFont: { size: 12 },
-                        callbacks: {
-                            label: function (context) {
-                                return `Reading Accuracy: ${context.parsed.y}%`;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        grid: {
-                            color: 'rgba(0, 184, 169, 0.1)',
-                            drawBorder: false,
-                            lineWidth: 1
-                        },
-                        ticks: {
-                            padding: 10,
-                            font: { size: 11, weight: '500' },
-                            color: '#4A5568',
-                            callback: function (value) {
-                                return value + '%';
-                            }
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks: {
-                            padding: 10,
-                            font: { size: 11, weight: '500' },
-                            color: '#2D3748'
-                        }
-                    }
-                }
-            }
-        });
+            // Update the chart immediately for the selected grade
+            updateFilipinoChartForGrade(selectedGrade);
 
-        // Grade Analysis Update Function
-        function updateGradeAnalysis() {
-            const selectedGrade = document.getElementById('gradeSelector').value;
-            // This function can be expanded to filter data based on selected grade
-            console.log('Selected grade:', selectedGrade);
-            // Future implementation: Update charts and summary cards based on selected grade
+            // Update the data with new grade and reset section
+            updateFilipinoGradeData();
         }
+
+        // Function to update Filipino grade level data
+        function updateFilipinoGradeData() {
+            const selectedGrade = document.getElementById('gradeFilter') ? document.getElementById('gradeFilter').value : '7';
+            const selectedSection = document.getElementById('sectionFilter') ? document.getElementById('sectionFilter').value : 'all';
+
+            console.log('Selected grade:', selectedGrade);
+            console.log('Selected section:', selectedSection);
+
+            // Show loading state if elements exist
+            const totalStudentsEl = document.getElementById('totalStudents');
+            const avgReadingSpeedEl = document.getElementById('avgReadingSpeed');
+            const avgComprehensionEl = document.getElementById('avgComprehension');
+
+            if (totalStudentsEl) totalStudentsEl.textContent = 'Loading...';
+            if (avgReadingSpeedEl) avgReadingSpeedEl.textContent = 'Loading...';
+            if (avgComprehensionEl) avgComprehensionEl.textContent = 'Loading...';
+
+            // Reload page with new parameters for Filipino
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('grade', selectedGrade);
+            currentUrl.searchParams.set('section', selectedSection);
+            currentUrl.searchParams.set('language', 'filipino');
+
+            window.location.href = currentUrl.toString();
+        }
+
+        // Initialize page with current data
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('Filipino Reports page loaded');
+
+            // Initialize section options based on current grade
+            const currentGrade = document.getElementById('gradeFilter').value;
+            const currentSection = '{{ is_string($section ?? "all") ? ($section ?? "all") : "all" }}';
+
+            // Update section options for the current grade
+            const sectionSelect = document.getElementById('sectionFilter');
+            sectionSelect.innerHTML = '<option value="all">All Sections</option>';
+
+            if (gradeSectionMapping[currentGrade]) {
+                gradeSectionMapping[currentGrade].forEach(section => {
+                    const option = document.createElement('option');
+                    option.value = section.toLowerCase();
+                    option.textContent = section.charAt(0).toUpperCase() + section.slice(1);
+                    if (section.toLowerCase() === currentSection.toLowerCase()) {
+                        option.selected = true;
+                    }
+                    sectionSelect.appendChild(option);
+                });
+            }
+
+            // Set the current section if it exists
+            if (currentSection !== 'all') {
+                sectionSelect.value = currentSection.toLowerCase();
+            }
+        });
     </script>
 @endsection

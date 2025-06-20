@@ -16,6 +16,7 @@
             --primary: #00B8A9;
             --primary-light: #4DD0E1;
             --primary-dark: #009688;
+            --primary-slight:rgb(3, 204, 187);
 
             /* Secondary - Navigation and Secondary UI */
             --secondary: #F6AD55;
@@ -74,9 +75,13 @@
             position: fixed;
             width: 100%;
             top: 0;
-            z-index: 1000;
+            left: 0;
+            z-index: 1002;
             box-shadow: var(--shadow-md);
+            margin-left: 0;
         }
+
+
 
         .header-container {
             display: flex;
@@ -87,18 +92,22 @@
             width: 100%;
         }
 
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            margin-left: auto;
-        }
-
         .logo {
             font-size: 1.8rem;
             font-weight: 700;
             color: var(--neutral-light);
             text-decoration: none;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
         }
 
         .user-info {
@@ -149,7 +158,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: var(--primary-dark);
+            background: var(--primary-slight);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -212,6 +221,8 @@
             display: block !important;
             background: white !important;
             border: 2px solid #0E61BA !important;
+            z-index: 9999 !important;
+            position: absolute !important;
         }
 
         /* Alternative hover-based dropdown for testing */
@@ -250,6 +261,11 @@
 
         .logout-item {
             color: var(--text);
+        }
+
+        .logout-item:hover {
+            background: var(--text);
+            color: #dc3545;
         }
 
         /* Dashboard Content */
@@ -326,7 +342,7 @@
         }
 
         .section-item:hover {
-            background: var(--primary-dark);
+            background: var(--secondary);
             color: var(--neutral-light);
         }
 
@@ -443,13 +459,26 @@
             position: fixed;
             left: 0;
             top: 0;
-            height: 100vh;
+            margin-top: 70px; /* Push below header */
+            height: calc(100vh - 70px); /* Full height minus header */
             width: 280px;
             background: var(--primary);
             padding: 1.5rem;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             z-index: 1001;
             box-shadow: var(--shadow-lg);
+        }
+
+        /* Mobile sidebar - hidden by default */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -280px; /* Hidden by default on mobile */
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.active {
+                left: 0; /* Show sidebar when burger menu is clicked */
+            }
         }
 
         .sidebar-header {
@@ -519,9 +548,27 @@
 
         .nav-link:hover,
         .nav-link.active {
-            background: var(--primary-dark);
+            background: var(--primary-slight);
             color: var(--neutral-light);
             transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(246, 173, 85, 0.3);
+        }
+
+        .nav-link.active {
+            background: var(--primary-slight);
+            position: relative;
+        }
+
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: -1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 100%;
+            background: var(--neutral-light);
+            border-radius: 2px;
         }
 
         .nav-link i {
@@ -548,29 +595,29 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .student-profile {
+        .admin-profile {
             display: flex;
             align-items: center;
             gap: 1rem;
             color: var(--neutral-light);
         }
 
-        .student-avatar {
+        .admin-avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: var(--accent);
+            background: var(--primary-slight);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
         }
 
-        .student-info {
+        .admin-info {
             flex: 1;
         }
 
-        .student-name {
+        .admin-name {
             font-weight: 600;
             margin-bottom: 0.2rem;
             font-size: 1rem;
@@ -581,7 +628,7 @@
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
-        .student-role {
+        .admin-role {
             font-size: 0.85rem;
             opacity: 0.9;
             color: #e0e0e0;
@@ -590,15 +637,9 @@
 
         /* Adjust main content for sidebar */
         .main-content {
-            margin-left: 250px;
-            padding-top: 5rem;
+            margin-left: 280px; /* Same as sidebar width */
+            padding-top: 70px;  /* Same as header height */
             transition: var(--transition);
-        }
-
-        /* Adjust header for sidebar */
-        header {
-            margin-left: 250px;
-            width: calc(100% - 250px);
         }
 
         /* Responsive Design */
@@ -625,172 +666,154 @@
             }
         }
 
-        /* Menu Toggle Button */
+        /* Menu Toggle Button - Hidden by default, only shows on mobile */
         .menu-toggle {
             display: none;
-            background: none;
-            border: none;
-            color: var(--neutral-light);
-            font-size: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1.3rem;
             cursor: pointer;
-            padding: 0.5rem;
-            z-index: 1002;
-            margin-right: 1rem;
+            padding: 0.6rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
 
-        /* Responsive Design */
+        .menu-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Mobile Responsive Styles */
         @media (max-width: 768px) {
-            .header-container {
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
-            
-            .header-left {
-                display: flex;
-                align-items: center;
-            }
-
             .menu-toggle {
-                display: block;
-                margin-left: 1rem;
-            }
-
-            .user-info {
-                display: flex;
+                display: flex; /* Show burger menu only on mobile */
                 align-items: center;
-                gap: 0.5rem;
-            }
-
-            .user-dropdown {
-                padding: 0.3rem;
+                justify-content: center;
+                margin-left: 1rem;
+                order: 2; /* Place burger menu after user dropdown */
             }
 
             .user-details {
-                display: none;
+                display: none; /* Hide user details on mobile */
+            }
+
+            .user-dropdown {
+                padding: 0.5rem;
+                gap: 0.5rem;
             }
 
             .user-avatar {
-                width: 35px;
-                height: 35px;
+                width: 36px;
+                height: 36px;
                 font-size: 0.9rem;
             }
 
-            .dropdown-arrow {
-                display: none;
-            }
-
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
+            /* Sidebar overlay for mobile */
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
                 width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1000;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
             }
 
-            header {
-                margin-left: 0;
-                width: 100%;
+            .sidebar-overlay.active {
+                opacity: 1;
+                visibility: visible;
             }
         }
 
-        /* Add these styles to your existing CSS */
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logout-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--neutral-light);
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            transition: var(--transition);
-        }
-
-        .logout-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        
-
-        @media (max-width: 768px) {
-            .header-container {
-                flex-wrap: wrap;
-                gap: 1rem;
+        @media (max-width: 480px) {
+            .menu-toggle {
+                padding: 0.5rem;
+                margin-left: 0.5rem;
             }
 
-            .header-actions {
-                order: 3;
-                width: 100%;
-                justify-content: flex-end;
+            .user-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 0.8rem;
+            }
+
+            .user-info {
+                gap: 0.5rem;
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <a class="sidebar-logo">
-                <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo">
-                <span>ReadEase</span>
-            </a>
+            <!-- Removed sidebar logo and title -->
         </div>
         <nav>
             <ul class="nav-menu">
                 <div class="nav-section">
                     <li class="nav-item">
-                        <a href="{{ route('student.dashboard') }}" class="nav-link">
+                        <a href="{{ route('student.dashboard') }}" class="nav-link {{ Route::currentRouteName() == 'student.dashboard' ? 'active' : '' }}">
                             <i class="fas fa-home"></i>
                             Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url('/stud-eng') }}" class="nav-link">
+                        <a href="{{ url('/stud-eng') }}" class="nav-link {{ Route::currentRouteName() == 'student.students-eng' ? 'active' : '' }}">
                             <i class="fas fa-question"></i>
                             English Questions
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url('/stud-fil') }}" class="nav-link">
+                        <a href="{{ url('/stud-fil') }}" class="nav-link {{ Route::currentRouteName() == 'student.students-fil' ? 'active' : '' }}">
                             <i class="fas fa-question"></i>
                             Filipino Questions
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url('/stud-reports') }}" class="nav-link">
+                        <a href="{{ url('/stud-reports') }}" class="nav-link {{ Route::currentRouteName() == 'student.reports' ? 'active' : '' }}">
                             <i class="fas fa-chart-line"></i>
                             Reports
                         </a>
                     </li>
+                   
 
                 </div>
             </ul>
         </nav>
+
+
+        <div class="sidebar-footer">
+            <div class="admin-profile">
+                <div class="admin-avatar">{{ Auth::user() ? strtoupper(substr(Auth::user()->name, 0, 1)) : '' }}</div>
+                <div class="admin-info">
+                    <div class="admin-name">{{ Auth::user() ? Auth::user()->name : '' }}</div>
+                    <div class="admin-role">Grade {{ $user->grade }}: Section {{ $user->section }}</div>
+                </div>
+            </div>
+        </div>
     </aside>
 
-    <!-- Header -->
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <header>
         <div class="header-container">
+            <div class="header-left">
+                <a class="logo" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo" style="height: 60px; width: 60px; object-fit: contain;">
+                    <span>ReadEase</span>
+                </a>
+            </div>
             <div class="header-right">
                 <div class="user-info">
-                    <button class="menu-toggle" id="menuToggle">
-                        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;">
-                            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
-                        </svg>
-                    </button>
                     <div class="user-dropdown" id="userDropdownToggle">
                         <div class="user-avatar">
                             {{ Auth::user() ? strtoupper(substr(Auth::user()->name, 0, 1)) : '' }}
@@ -799,27 +822,9 @@
                             <div class="user-name">{{ Auth::user() ? Auth::user()->name : '' }}</div>
                             <div class="user-role">{{ Auth::user() ? Auth::user()->role : '' }}</div>
                         </div>
-                        <svg viewBox="0 0 24 24" fill="currentColor" class="dropdown-arrow"
-                            style="width: 16px; height: 16px;">
-                            <path d="M7 10l5 5 5-5z" />
-                        </svg>
 
                         <!-- Dropdown Menu -->
                         <div class="dropdown-menu" id="userDropdownMenu">
-                            <a href="#" class="dropdown-item">
-                                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
-                                    <path
-                                        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                                </svg>
-                                <span>Profile</span>
-                            </a>
-                            <a href="#" class="dropdown-item">
-                                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
-                                    <path
-                                        d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.82,11.69,4.82,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z" />
-                                </svg>
-                                <span>Settings</span>
-                            </a>
                             <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
                                 @csrf
                                 <button type="submit" class="dropdown-item logout-item"
@@ -833,6 +838,11 @@
                             </form>
                         </div>
                     </div>
+                    <button class="menu-toggle" id="menuToggle">
+                        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;">
+                            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -872,58 +882,118 @@
             });
         });
 
-        // Menu toggle functionality
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebar = document.querySelector('.sidebar');
-        const mainContent = document.querySelector('.main-content');
-        const header = document.querySelector('header');
-
-        if (menuToggle) {
-            menuToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('active');
-                if (window.innerWidth <= 768) {
-                    document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
-                }
-            });
-        }
-
-        // Close sidebar when clicking outside on mobile
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth <= 768) {
-                if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
-                    sidebar.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
-            }
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768) {
-                sidebar.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        });
-
         // User dropdown functionality
-        const userDropdown = document.querySelector('.user-dropdown');
-        const dropdownMenu = document.getElementById('userDropdownMenu');
+        function toggleUserDropdown() {
+            const dropdown = document.querySelector('.user-dropdown');
+            const dropdownMenu = document.getElementById('userDropdownMenu');
 
-        if (userDropdown) {
-            userDropdown.addEventListener('click', (e) => {
-                e.stopPropagation();
-                userDropdown.classList.toggle('active');
-                dropdownMenu.classList.toggle('show');
-            });
+            if (!dropdown || !dropdownMenu) {
+                console.error('Dropdown elements not found');
+                return;
+            }
+
+            dropdown.classList.toggle('active');
+            dropdownMenu.classList.toggle('show');
+
+            // Force show the dropdown if it's not showing
+            if (dropdownMenu.classList.contains('show')) {
+                dropdownMenu.style.display = 'block';
+                dropdownMenu.style.opacity = '1';
+                dropdownMenu.style.visibility = 'visible';
+                dropdownMenu.style.transform = 'translateY(0)';
+                dropdownMenu.style.background = 'white';
+                dropdownMenu.style.border = '2px solid #0E61BA';
+            } else {
+                dropdownMenu.style.display = '';
+                dropdownMenu.style.opacity = '';
+                dropdownMenu.style.visibility = '';
+                dropdownMenu.style.transform = '';
+                dropdownMenu.style.background = '';
+                dropdownMenu.style.border = '';
+            }
         }
+
+        // Initialize dropdown functionality when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            const userDropdownToggle = document.getElementById('userDropdownToggle');
+
+            if (userDropdownToggle) {
+                userDropdownToggle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleUserDropdown();
+                });
+
+                userDropdownToggle.style.cursor = 'pointer';
+            } else {
+                console.error('User dropdown toggle element not found!');
+            }
+        });
 
         // Close dropdown when clicking outside
         document.addEventListener('click', function (event) {
-            if (!userDropdown.contains(event.target)) {
+            const userDropdown = document.querySelector('.user-dropdown');
+            const dropdownMenu = document.getElementById('userDropdownMenu');
+
+            if (userDropdown && dropdownMenu && !userDropdown.contains(event.target)) {
                 userDropdown.classList.remove('active');
                 dropdownMenu.classList.remove('show');
+                dropdownMenu.style.display = '';
+                dropdownMenu.style.opacity = '';
+                dropdownMenu.style.visibility = '';
+                dropdownMenu.style.transform = '';
+                dropdownMenu.style.background = '';
+                dropdownMenu.style.border = '';
             }
         });
+
+        // Add sidebar toggle functionality
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const mainContent = document.querySelector('.main-content');
+        const header = document.querySelector('header');
+
+        if (menuToggle && sidebar && sidebarOverlay) {
+            // Toggle sidebar when burger menu is clicked
+            menuToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sidebar.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            });
+
+            // Close sidebar when clicking overlay
+            sidebarOverlay.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+
+            // Close sidebar when clicking anywhere outside (on mobile)
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
+                    // Don't close if clicking on sidebar itself or burger menu
+                    if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                        sidebar.classList.remove('active');
+                        sidebarOverlay.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                }
+            });
+
+            // Close sidebar on window resize if desktop
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('active');
+                    sidebarOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+
+        // Active state is now handled by Laravel route detection
+        // No need for manual JavaScript active state management
     </script>
 </body>
 

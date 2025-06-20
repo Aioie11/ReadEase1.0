@@ -167,24 +167,19 @@
       display: inline-block;
     }
 
-    .badge-excellent {
+    .badge-complete {
       background: #d1fae5;
       color: #065f46;
     }
 
-    .badge-good {
+    .badge-incomplete {
       background: #fef3c7;
       color: #92400e;
     }
 
-    .badge-average {
-      background: #fed7aa;
-      color: #c2410c;
-    }
-
-    .badge-needs {
-      background: #fecaca;
-      color: #991b1b;
+    .badge-no-assessment {
+      background: #f3f4f6;
+      color: #6b7280;
     }
 
     .action-buttons {
@@ -403,7 +398,6 @@
         <th>Student</th>
         <th>Grade & Section</th>
         <th>Academic Status</th>
-        <th>Latest Score</th>
         <th>Actions</th>
       </tr>
       </thead>
@@ -425,21 +419,14 @@
         <td>Grade {{ $student['grade_level'] }} - Section {{ $student['section'] }}</td>
         <td>
         <span class="badge
-      @if($student['status'] == 'Excellent') badge-excellent
-      @elseif($student['status'] == 'Good') badge-good
-      @elseif($student['status'] == 'Average') badge-average
-      @elseif($student['status'] == 'Needs Improvement') badge-needs
-      @else badge-needs @endif">
+      @if($student['status'] == 'Complete') badge-complete
+      @elseif($student['status'] == 'Incomplete') badge-incomplete
+      @elseif($student['status'] == 'No Assessment') badge-no-assessment
+      @else badge-no-assessment @endif">
         {{ $student['status'] }}
         </span>
         </td>
-        <td>
-        @if($student['latest_score'] > 0)
-      {{ $student['latest_score'] }}/100
-      @else
-      No Assessment
-      @endif
-        </td>
+
         <td>
         <div class="action-buttons">
         <a href="{{ route('teacher.view', ['student_id' => $student['id']]) }}"
@@ -458,7 +445,7 @@
       @endforeach
     @else
       <tr>
-      <td colspan="6" class="text-center" style="padding: 40px;">
+      <td colspan="5" class="text-center" style="padding: 40px;">
       <div style="color: #718096;">
         <i class="fas fa-users" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
         <h3 style="margin: 0 0 8px 0; font-size: 18px;">No Students Found</h3>
@@ -613,7 +600,7 @@
       if (!noResultsRow) {
         const noResults = document.createElement('tr');
         noResults.innerHTML = `
-      <td colspan="6" class="text-center" style="padding: 40px;">
+      <td colspan="5" class="text-center" style="padding: 40px;">
       <div style="color: #718096;">
       <i class="fas fa-search" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
       <h3 style="margin: 0 0 8px 0; font-size: 18px;">No Students Found</h3>

@@ -53,46 +53,9 @@ Route::middleware(['web', 'auth', 'password.change'])->group(function () {
             return view('teacher.students');
         })->name('teacher.students');
 
-        Route::get('/student-management', function () {
-            $students = \App\Models\Student::with('readingAssessments')
-                ->orderBy('last_name')
-                ->orderBy('first_name')
-                ->orderBy('grade_level')
-                ->orderBy('section')
-                ->get()
-                ->map(function ($student) {
-                    $latestAssessment = $student->readingAssessments()->latest('assessment_date')->first();
-                    $avgScore = $student->readingAssessments()->count() > 0
-                        ? round(($student->readingAssessments()->avg('comprehension') + $student->readingAssessments()->avg('correct_reading')) / 2, 1)
-                        : 0;
+        Route::get('/student-management', [TeacherController::class, 'studentManagement'])->name('teacher.student-management');
 
-                    return [
-                        'id' => $student->id,
-                        'student_number' => $student->student_number,
-                        'name' => $student->last_name . ', ' . $student->first_name . ' ' . ($student->middle_name ? $student->middle_name : ''),
-                        'initials' => strtoupper(substr($student->first_name, 0, 1) . substr($student->last_name, 0, 1)),
-                        'grade_level' => $student->grade_level,
-                        'section' => $student->section,
-                        'total_assessments' => $student->readingAssessments()->count(),
-                        'latest_score' => $avgScore,
-                        'latest_assessment_date' => $latestAssessment ? $latestAssessment->assessment_date : null,
-                        'status' => $avgScore >= 90 ? 'Excellent' : ($avgScore >= 80 ? 'Good' : ($avgScore >= 70 ? 'Average' : ($avgScore > 0 ? 'Needs Improvement' : 'No Assessment')))
-                    ];
-                });
-
-            return view('teacher.studentManagement', compact('students'));
-        })->name('teacher.student-management');
-
-        Route::get('/view', function (Request $request) {
-            $studentId = $request->get('student_id');
-            if ($studentId) {
-                $student = \App\Models\Student::with('readingAssessments')->find($studentId);
-                if ($student) {
-                    return view('teacher.view', compact('student'));
-                }
-            }
-            return view('teacher.view');
-        })->name('teacher.view');
+        Route::get('/view', [TeacherController::class, 'view'])->name('teacher.view');
 
         Route::get('/about', function () {
             return view('teacher.about');
@@ -244,9 +207,7 @@ Route::post('/student/add/english', [StudentAnswerEnglishController::class, 'sto
 
 Route::post('/student/add/filipino', [StudentAnswerTagalogController::class, 'store'])->name('student.add.filipino');
 
-Route::get('/teacher/studentManagement', function () {
-    return view('teacher.studentManagement');
-});
+
 
 // Student Assessment Routes
 Route::post('/api/compute-student-assessment', [ReportsController::class, 'computeStudentAssessment']);

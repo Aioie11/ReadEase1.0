@@ -15,6 +15,7 @@ class StudentAnswerTagalog extends Model
         'answers',
         'score',
         'reading_time',
+        'reading_speed',
         'start_time',
         'end_time'
     ];
@@ -23,6 +24,8 @@ class StudentAnswerTagalog extends Model
         'answers' => 'array',
         'reading_time' => 'integer',
         'reading_speed' => 'integer',
+        'start_time' => 'datetime',
+        'end_time' => 'datetime'
     ];
 
     public function student()

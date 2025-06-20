@@ -13,9 +13,17 @@ class ReportsController extends Controller
     public function index(Request $request)
     {
         try {
-            $grade = $request->input('grade', '7');
-            $section = $request->input('section', 'all');
-            $language = $request->input('language', 'english');
+            $grade = (string) $request->input('grade', '7');
+            $section = (string) $request->input('section', 'all');
+            $language = (string) $request->input('language', 'english');
+
+            // Debug logging
+            Log::info('ViewReports request received:', [
+                'grade' => $grade,
+                'section' => $section,
+                'language' => $language,
+                'all_params' => $request->all()
+            ]);
 
             // Get comprehensive dashboard data
             $dashboardData = $this->getDashboardData($grade, $section, $language);
@@ -58,6 +66,57 @@ class ReportsController extends Controller
                 'section' => $section ?? 'all',
                 'language' => $language ?? 'english'
             ])->with('error', 'Error loading reading reports: ' . $e->getMessage());
+        }
+    }
+
+    public function filipinoReport(Request $request)
+    {
+        try {
+            $grade = (string) $request->input('grade', '7');
+            $section = (string) $request->input('section', 'all');
+            $language = 'filipino'; // Force Filipino language
+
+            // Get comprehensive dashboard data for Filipino
+            $dashboardData = $this->getDashboardData($grade, $section, $language);
+
+            Log::info('Fetched Filipino reading reports dashboard:', [
+                'grade' => $grade,
+                'section' => $section,
+                'language' => $language,
+                'total_students' => $dashboardData['total_students']
+            ]);
+
+            return view('teacher.filipinoreport', $dashboardData);
+        } catch (\Exception $e) {
+            Log::error('Error fetching Filipino reading reports:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return view('teacher.filipinoreport', [
+                'total_students' => 0,
+                'statistics' => [
+                    'avg_reading_speed' => 0,
+                    'avg_comprehension' => 0,
+                    'avg_correct_reading' => 0
+                ],
+                'reading_level_distribution' => [
+                    'Independent' => 0,
+                    'Instructional' => 0,
+                    'Frustration' => 0
+                ],
+                'section_data' => [],
+                'grade_distribution' => [],
+                'metric_cards' => [
+                    'reading_level' => 'No Data',
+                    'avg_reading_speed' => 0,
+                    'avg_comprehension' => 0,
+                    'total_sessions' => 0
+                ],
+                'grade' => $grade ?? '7',
+                'section' => $section ?? 'all',
+                'language' => 'filipino'
+            ])->with('error', 'Error loading Filipino reading reports: ' . $e->getMessage());
         }
     }
 
@@ -562,8 +621,10 @@ class ReportsController extends Controller
             $readingLevel = 'Frustration';
             if ($assessment->correct_reading >= 97 && $assessment->comprehension >= 80) {
                 $readingLevel = 'Independent';
-            } elseif ($assessment->correct_reading >= 90 && $assessment->correct_reading <= 96 && 
-                     $assessment->comprehension >= 59 && $assessment->comprehension <= 79) {
+            } elseif (
+                $assessment->correct_reading >= 90 && $assessment->correct_reading <= 96 &&
+                $assessment->comprehension >= 59 && $assessment->comprehension <= 79
+            ) {
                 $readingLevel = 'Instructional';
             }
 
@@ -596,10 +657,10 @@ class ReportsController extends Controller
     private function calculateReadingLevelDistribution($assessments)
     {
         $distribution = [];
-        
+
         // Group assessments by grade
         $assessmentsByGrade = $assessments->groupBy('grade');
-        
+
         // Calculate distribution for each grade
         foreach ($assessmentsByGrade as $grade => $gradeAssessments) {
             $gradeLevels = $gradeAssessments->groupBy(function ($assessment) {
@@ -630,32 +691,12 @@ class ReportsController extends Controller
     public function getEnglishReadingLevelDistribution()
     {
         try {
-            $readingLevelService = new ReadingLevelService();
-
-            // Get distribution using the service
-            $distribution = $readingLevelService->getReadingLevelDistribution('english');
-
-            // Count total students
-            $assessments = ReadingAssessment::where('language', 'english')
-                ->orderBy('assessment_date', 'desc')
-                ->get()
-                ->groupBy('student_name')
-                ->map(function ($studentAssessments) {
-                    return $studentAssessments->first();
-                });
-
-            // Log the distribution for debugging
-            Log::info('English reading level distribution:', [
-                'total_students' => $assessments->count(),
-                'distribution' => $distribution
-            ]);
+            // Get distribution based on Word Reading only
+            $distribution = $this->calculateWordReadingLevelDistribution('english');
 
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'total_students' => $assessments->count(),
-                    'distribution' => $distribution
-                ]
+                'data' => $distribution
             ]);
 
         } catch (\Exception $e) {
@@ -674,32 +715,12 @@ class ReportsController extends Controller
     public function getFilipinoReadingLevelDistribution()
     {
         try {
-            $readingLevelService = new ReadingLevelService();
-
-            // Get distribution using the service
-            $distribution = $readingLevelService->getReadingLevelDistribution('filipino');
-
-            // Count total students
-            $assessments = ReadingAssessment::where('language', 'filipino')
-                ->orderBy('assessment_date', 'desc')
-                ->get()
-                ->groupBy('student_name')
-                ->map(function ($studentAssessments) {
-                    return $studentAssessments->first();
-                });
-
-            // Log the distribution for debugging
-            Log::info('Filipino reading level distribution:', [
-                'total_students' => $assessments->count(),
-                'distribution' => $distribution
-            ]);
+            // Get distribution based on Word Reading only
+            $distribution = $this->calculateWordReadingLevelDistribution('filipino');
 
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'total_students' => $assessments->count(),
-                    'distribution' => $distribution
-                ]
+                'data' => $distribution
             ]);
 
         } catch (\Exception $e) {
@@ -768,6 +789,172 @@ class ReportsController extends Controller
                 'error' => $e->getMessage()
             ]);
             return null;
+        }
+    }
+
+    /**
+     * Get English comprehension level distribution by grade
+     */
+    public function getEnglishComprehensionLevelDistribution()
+    {
+        try {
+            $distribution = $this->calculateComprehensionLevelDistribution('english');
+
+            return response()->json([
+                'success' => true,
+                'data' => $distribution
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error fetching English comprehension level distribution:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching comprehension distribution: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get Filipino comprehension level distribution by grade
+     */
+    public function getFilipinoComprehensionLevelDistribution()
+    {
+        try {
+            $distribution = $this->calculateComprehensionLevelDistribution('filipino');
+
+            return response()->json([
+                'success' => true,
+                'data' => $distribution
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error fetching Filipino comprehension level distribution:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching comprehension distribution: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Calculate comprehension level distribution based solely on comprehension scores
+     */
+    private function calculateComprehensionLevelDistribution($language)
+    {
+        // Get latest assessment per student for the specified language
+        $assessments = ReadingAssessment::where('language', $language)
+            ->orderBy('assessment_date', 'desc')
+            ->get()
+            ->groupBy('student_name')
+            ->map(function ($studentAssessments) {
+                return $studentAssessments->first();
+            });
+
+        $totalStudents = $assessments->count();
+        $distribution = [];
+
+        // Calculate distribution by grade
+        for ($grade = 7; $grade <= 10; $grade++) {
+            $gradeAssessments = $assessments->where('grade', $grade);
+
+            $gradeLevels = $gradeAssessments->groupBy(function ($assessment) {
+                return $this->calculateComprehensionLevel($assessment->comprehension);
+            });
+
+            $distribution["Grade $grade"] = [
+                'Independent' => $gradeLevels->get('Independent', collect())->count(),
+                'Instructional' => $gradeLevels->get('Instructional', collect())->count(),
+                'Frustration' => $gradeLevels->get('Frustration', collect())->count()
+            ];
+        }
+
+        return [
+            'total_students' => $totalStudents,
+            'distribution' => $distribution
+        ];
+    }
+
+    /**
+     * Calculate comprehension level based solely on comprehension score
+     *
+     * Comprehension Level Criteria:
+     * - Independent: 80-100%
+     * - Instructional: 59-79%
+     * - Frustration: Below 59%
+     */
+    private function calculateComprehensionLevel($comprehension)
+    {
+        if ($comprehension >= 80) {
+            return 'Independent';
+        } elseif ($comprehension >= 59) {
+            return 'Instructional';
+        } else {
+            return 'Frustration';
+        }
+    }
+
+    /**
+     * Calculate word reading level distribution based solely on word reading scores
+     */
+    private function calculateWordReadingLevelDistribution($language)
+    {
+        // Get latest assessment per student for the specified language
+        $assessments = ReadingAssessment::where('language', $language)
+            ->orderBy('assessment_date', 'desc')
+            ->get()
+            ->groupBy('student_name')
+            ->map(function ($studentAssessments) {
+                return $studentAssessments->first();
+            });
+
+        $totalStudents = $assessments->count();
+        $distribution = [];
+
+        // Calculate distribution by grade
+        for ($grade = 7; $grade <= 10; $grade++) {
+            $gradeAssessments = $assessments->where('grade', $grade);
+
+            $gradeLevels = $gradeAssessments->groupBy(function ($assessment) {
+                return $this->calculateWordReadingLevel($assessment->correct_reading);
+            });
+
+            $distribution["Grade $grade"] = [
+                'Independent' => $gradeLevels->get('Independent', collect())->count(),
+                'Instructional' => $gradeLevels->get('Instructional', collect())->count(),
+                'Frustration' => $gradeLevels->get('Frustration', collect())->count()
+            ];
+        }
+
+        return [
+            'total_students' => $totalStudents,
+            'distribution' => $distribution
+        ];
+    }
+
+    /**
+     * Calculate word reading level based solely on word reading score
+     *
+     * Word Reading Level Criteria:
+     * - Independent: 97-100%
+     * - Instructional: 90-96%
+     * - Frustration: Below 90%
+     */
+    private function calculateWordReadingLevel($wordReading)
+    {
+        if ($wordReading >= 97) {
+            return 'Independent';
+        } elseif ($wordReading >= 90) {
+            return 'Instructional';
+        } else {
+            return 'Frustration';
         }
     }
 }

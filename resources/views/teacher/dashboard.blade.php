@@ -189,20 +189,7 @@
 
 
 
-        <!-- Performance Overview -->
-        <div class="stats-overview">
 
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-exclamation-triangle"></i>
-                </div>
-                <div class="stat-content">
-                    <h3>{{ $students->where('reading_level', '<', 2)->count() }}</h3>
-                    <p>Need Support</p>
-                </div>
-            </div>
-
-        </div>
 
 
 

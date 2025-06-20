@@ -408,33 +408,32 @@
             letter-spacing: 0.025em;
         }
 
-        .grade-filter-buttons {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .grade-filter-btn {
-            padding: 0.5rem 1rem;
+        .grade-filter-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
             border: 1px solid var(--clean-gray-300);
             background-color: var(--clean-white);
-            color: var(--clean-gray-600);
-            border-radius: 4px;
-            cursor: pointer;
+            color: var(--clean-gray-700);
+            border-radius: 6px;
             font-size: 0.875rem;
             font-weight: 500;
+            cursor: pointer;
             transition: all 0.2s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23555' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
         }
 
-        .grade-filter-btn:hover {
-            background-color: var(--clean-gray-50);
+        .grade-filter-select:hover {
             border-color: var(--clean-gray-400);
         }
 
-        .grade-filter-btn.active {
-            background-color: var(--clean-blue-600);
-            color: var(--clean-white);
-            border-color: var(--clean-blue-600);
+        .grade-filter-select:focus {
+            outline: none;
+            border-color: var(--clean-blue-500);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
         /* Tab Content */
@@ -568,11 +567,13 @@
             <div class="grade-filters" id="gradeFilters">
                 <div class="grade-filters-label">Filter by Grade Level:</div>
                 <div class="grade-filter-buttons">
-                    <button class="grade-filter-btn active" onclick="filterByGrade('all')">All Grades</button>
-                    <button class="grade-filter-btn" onclick="filterByGrade('7')">Grade 7</button>
-                    <button class="grade-filter-btn" onclick="filterByGrade('8')">Grade 8</button>
-                    <button class="grade-filter-btn" onclick="filterByGrade('9')">Grade 9</button>
-                    <button class="grade-filter-btn" onclick="filterByGrade('10')">Grade 10</button>
+                    <select id="gradeFilterSelect" class="grade-filter-select" onchange="filterByGrade(this.value)">
+                        <option value="all">All Grades</option>
+                        <option value="7">Grade 7</option>
+                        <option value="8">Grade 8</option>
+                        <option value="9">Grade 9</option>
+                        <option value="10">Grade 10</option>
+                    </select>
                 </div>
             </div>
 
@@ -965,9 +966,6 @@
 
     // Grade filtering for students
     function filterByGrade(grade) {
-        document.querySelectorAll('.grade-filter-btn').forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
-
         currentGradeFilter = grade;
         renderUsersByType();
     }
