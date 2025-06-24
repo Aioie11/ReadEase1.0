@@ -11,112 +11,115 @@
         color: var(--neutral-light);
     }
 
-    /* Main Content */
+    /* Main Content - Clean Stud-Dash Style */
     .main-content {
-        margin-top: 50px;
-        margin-left: 280px;
-        padding: 6rem 5% 2rem;
-        transition: var(--transition);
-        background: var(--neutral);
+        margin-top: 60px;
+        padding: 50px;
+        background-color: #f8f9fa;
+        min-height: 100vh;
     }
 
-    /* Dashboard Header */
+    /* Dashboard Container - Clean Organization */
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-top: 1rem;
+    }
+
+    /* Dashboard Header - Clean Stud-Dash Style */
     .dashboard-header {
+        text-align: center;
+        background: white;
+        padding: 2.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         margin-bottom: 2rem;
-        padding: 1.5rem 0;
     }
 
     .dashboard-header h1 {
-        color: var(--primary);
-        font-size: 2.5rem;
+        text-align: center;
+        color: #00B8A9;
+        font-size: 1.75rem;
         font-weight: 700;
         margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
     }
+
 
     .dashboard-header p {
-        color: var(--text-light);
+        color: #7f8c8d;
         font-size: 1.1rem;
-        margin-left: 3.5rem;
+        margin: 0;
+        line-height: 0. 9rem;
+
     }
 
-    /* Dashboard Grid Layout */
-    .dashboard-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        grid-template-rows: auto auto auto;
-        gap: 2rem;
-        margin-bottom: 2rem;
-    }
-
-    /* Dashboard Metrics */
+    /* Dashboard Metrics - Clean Stud-Dash Style */
     .dashboard-metrics {
-        grid-column: 1 / -1;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 1.5rem;
         margin-bottom: 2rem;
     }
 
     .metric-card {
-        background: linear-gradient(135deg, var(--neutral-light) 0%, #ffffff 100%);
+        background: white;
         padding: 2rem;
-        border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-        border: 1px solid rgba(0, 184, 169, 0.1);
     }
 
     .metric-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 30px rgba(0, 184, 169, 0.15);
-    }
-
-    .metric-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: var(--gradient-primary);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
     }
 
     .metric-header {
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 1rem;
+        align-items: center;
+        margin-bottom: 1.5rem;
     }
 
     .metric-icon {
         width: 50px;
         height: 50px;
         border-radius: 12px;
-        background: var(--gradient-primary);
+        background: #00B8A9;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
-        font-size: 1.5rem;
+        color: white !important;
+        font-size: 1.3rem;
+    }
+
+    .metric-icon.tests {
+        background: #3498db;
+    }
+
+    .metric-icon.students {
+        background: #00B8A9;
+    }
+
+    .metric-icon.active {
+        background: #f39c12;
+    }
+
+    .metric-icon i {
+        color: white !important;
+        font-size: 1.3rem;
+        display: block;
     }
 
     .metric-card h2 {
-        color: var(--text-light);
-        font-size: 0.95rem;
+        color: #2c3e50;
+        font-size: 1.1rem;
         margin-bottom: 0.5rem;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        font-weight: 600;
     }
 
     .metric-value {
-        color: var(--primary);
-        font-size: 2.8rem;
+        color: #00B8A9;
+        font-size: 2.5rem;
         font-weight: 700;
         margin: 0;
         line-height: 1;
@@ -126,108 +129,84 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        margin-top: 0.5rem;
-        font-size: 0.85rem;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: #7f8c8d;
     }
 
     .trend-up {
-        color: #10b981;
+        color: #27ae60;
     }
 
     .trend-down {
-        color: #ef4444;
+        color: #e74c3c;
     }
 
-    /* Quick Actions Section */
+    /* Quick Actions Section - Clean Stud-Dash Style */
     .quick-actions {
-        grid-column: 1 / -1;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 1.5rem;
         margin-bottom: 2rem;
     }
 
     .action-card {
-        background: var(--neutral-light);
-        padding: 1.5rem;
+        background: white;
+        padding: 2rem;
         border-radius: 12px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         transition: all 0.3s ease;
         cursor: pointer;
         text-align: center;
         text-decoration: none;
-        color: var(--text);
-        border: 1px solid rgba(0, 184, 169, 0.1);
+        color: #2c3e50;
     }
 
     .action-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 25px rgba(0, 184, 169, 0.15);
-        background: var(--primary);
-        color: white;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
         text-decoration: none;
+        color: #2c3e50;
     }
 
     .action-icon {
         width: 60px;
         height: 60px;
-        border-radius: 50%;
-        background: var(--gradient-primary);
+        border-radius: 12px;
+        background: #00B8A9;
         display: flex;
         align-items: center;
         justify-content: center;
         margin: 0 auto 1rem;
-        color: white;
-        font-size: 1.8rem;
-        transition: all 0.3s ease;
+        color: white !important;
+        font-size: 1.5rem;
     }
 
-    .action-card:hover .action-icon {
-        background: white;
-        color: var(--primary);
-        transform: scale(1.1);
+    .action-icon i {
+        color: white !important;
+        font-size: 1.5rem;
+        display: block;
     }
 
     .action-title {
         font-weight: 600;
         margin-bottom: 0.5rem;
-        font-size: 1rem;
+        font-size: 1.1rem;
+        color: #2c3e50;
     }
 
     .action-description {
-        font-size: 0.85rem;
-        opacity: 0.8;
+        font-size: 0.9rem;
+        color: #7f8c8d;
         line-height: 1.4;
     }
 
-    /* Chart Section */
-    .chart-section {
-        background: linear-gradient(135deg, var(--neutral-light) 0%, #ffffff 100%);
-        padding: 2rem;
-        border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        margin-bottom: 2rem;
-        border: 1px solid rgba(0, 184, 169, 0.1);
-    }
-
-    .chart-section h2 {
-        color: var(--primary);
-        font-size: 1.4rem;
-        margin-bottom: 1.5rem;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    /* Recent Tests Table */
+    /* Recent Tests Table - Clean Stud-Dash Style */
     .recent-tests {
-        grid-column: 1 / -1;
-        background: linear-gradient(135deg, var(--neutral-light) 0%, #ffffff 100%);
+        background: white;
         padding: 2rem;
-        border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(0, 184, 169, 0.1);
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
     }
 
     .recent-tests-header {
@@ -236,17 +215,20 @@
         align-items: center;
         margin-bottom: 1.5rem;
         padding-bottom: 1rem;
-        border-bottom: 2px solid var(--neutral);
     }
 
     .recent-tests h2 {
-        color: var(--primary);
-        font-size: 1.4rem;
+        color: #2c3e50;
+        font-size: 1.3rem;
         margin: 0;
         font-weight: 600;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.75rem;
+    }
+
+    .recent-tests h2 i {
+        color: #00B8A9;
     }
 
     .search-container {
@@ -256,161 +238,135 @@
     }
 
     .search-input {
-        padding: 0.75rem 1rem;
-        border-radius: 8px;
-        border: 2px solid var(--neutral);
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: 1px solid #e9ecef;
         width: 280px;
-        font-size: 0.9rem;
+        font-size: 1rem;
         transition: all 0.3s ease;
         background: white;
     }
 
     .search-input:focus {
         outline: none;
-        border-color: var(--primary);
+        border-color: #00B8A9;
         box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.1);
     }
 
-    /* Table Styles */
+    /* Table Styles - Beautiful Student Management Style */
     .table-container {
         overflow-x: auto;
         border-radius: 12px;
         background: white;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     table {
         width: 100%;
         border-collapse: collapse;
-        background: white;
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
     }
 
     th,
     td {
-        padding: 1.2rem 1rem;
+        padding: 16px 20px;
         text-align: left;
-        border-bottom: 1px solid #f1f5f9;
     }
 
     th {
-        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-        color: var(--text);
+        background: #f8f9fa;
         font-weight: 600;
+        color: #4A5568;
         font-size: 0.9rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        border-bottom: 2px solid var(--primary);
     }
 
-    /* Adjust column widths for better display */
-    th:nth-child(1), td:nth-child(1) { /* Student */
-        width: 20%;
-    }
-    th:nth-child(2), td:nth-child(2) { /* Test Type */
-        width: 25%;
-        word-wrap: break-word;
-    }
-    th:nth-child(3), td:nth-child(3) { /* Score */
-        width: 10%;
-        text-align: center;
-    }
-    th:nth-child(4), td:nth-child(4) { /* Date */
-        width: 15%;
-    }
-    th:nth-child(5), td:nth-child(5) { /* Status */
-        width: 15%;
-    }
-    th:nth-child(6), td:nth-child(6) { /* Action */
-        width: 15%;
-        text-align: center;
-    }
-
-    tbody tr {
-        transition: all 0.3s ease;
+    /* Table Row Styling - Beautiful Student Management Style */
+    tbody tr:not(:last-child) {
+        border-bottom: 1px solid #e9ecef;
     }
 
     tbody tr:hover {
-        background: linear-gradient(135deg, #f0fdfa 0%, #f7fafc 100%);
-        transform: scale(1.01);
+        background-color: rgba(0, 184, 169, 0.05);
     }
 
     .delete-btn {
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        background: #e74c3c;
         color: white;
         border: none;
-        padding: 0.6rem 1.2rem;
+        padding: 8px 16px;
         border-radius: 8px;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
         font-weight: 500;
         font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
     .delete-btn:hover {
-        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        background: #c0392b;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
     }
 
-    /* Test type badges */
+    /* Test type badges - Beautiful Student Management Style */
     .test-type-badge {
-        display: inline-block;
-        padding: 0.4rem 0.8rem;
+        padding: 4px 12px;
         border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
+        font-size: 0.85rem;
+        font-weight: 500;
+        display: inline-block;
         text-transform: uppercase;
         letter-spacing: 0.3px;
     }
 
     .test-type-english {
-        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        background: #dbeafe;
         color: #1e40af;
-        border: 1px solid #3b82f6;
     }
 
     .test-type-filipino {
-        background: linear-gradient(135deg, #fce7f3 0%, #f9a8d4 100%);
+        background: #fce7f3;
         color: #be185d;
-        border: 1px solid #ec4899;
     }
 
     .test-type-reading {
-        background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+        background: #dcfce7;
         color: #166534;
-        border: 1px solid #22c55e;
     }
 
-    /* Status badges */
+    /* Status badges - Beautiful Student Management Style */
     .status-badge {
-        display: inline-block;
-        padding: 0.4rem 0.8rem;
+        padding: 4px 12px;
         border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
+        font-size: 0.85rem;
+        font-weight: 500;
+        display: inline-block;
         text-transform: uppercase;
         letter-spacing: 0.3px;
     }
 
     .status-completed {
-        background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+        background: #dcfce7;
         color: #166534;
-        border: 1px solid #22c55e;
     }
 
     .status-reading-only {
-        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        background: #fef3c7;
         color: #92400e;
-        border: 1px solid #f59e0b;
     }
 
     .status-fully-complete {
-        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        background: #d1fae5;
         color: #065f46;
-        border: 1px solid #10b981;
     }
 
-    /* Pagination Styles */
+    /* Pagination Styles - Clean Stud-Dash Style */
     .pagination-container {
         margin-top: 2rem;
         display: flex;
@@ -420,123 +376,93 @@
 
     .pagination-btn {
         padding: 0.75rem 1rem;
-        border: 2px solid var(--neutral);
+        border: 1px solid #e9ecef;
         background: white;
-        color: var(--text);
-        border-radius: 8px;
+        color: #2c3e50;
+        border-radius: 6px;
         cursor: pointer;
         transition: all 0.3s ease;
         font-weight: 500;
     }
 
     .pagination-btn:hover {
-        background: var(--primary);
-        color: white;
-        border-color: var(--primary);
-        transform: translateY(-2px);
+        background: #f8f9fa;
+        border-color: #2c3e50;
     }
 
     .pagination-btn.active {
-        background: var(--primary);
+        background: #2c3e50;
         color: white;
-        border-color: var(--primary);
+        border-color: #2c3e50;
     }
 
-    /* System Status Section */
-    .system-status {
-        background: linear-gradient(135deg, var(--neutral-light) 0%, #ffffff 100%);
-        padding: 2rem;
-        border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(0, 184, 169, 0.1);
-    }
-
-    .status-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem 0;
-        border-bottom: 1px solid var(--neutral);
-    }
-
-    .status-item:last-child {
-        border-bottom: none;
-    }
-
-    .status-indicator {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        margin-right: 0.5rem;
-    }
-
-    .status-online {
-        background: #10b981;
-    }
-
-    .status-warning {
-        background: #f59e0b;
-    }
-
-    .status-offline {
-        background: #ef4444;
-    }
-
-    /* Responsive Design */
+    /* Responsive Design - Clean Stud-Dash Style */
     @media (max-width: 1200px) {
-        .dashboard-grid {
-            grid-template-columns: 1fr 1fr;
-        }
-    }
-
-    @media (max-width: 900px) {
-        .dashboard-grid {
-            grid-template-columns: 1fr;
-        }
-
         .dashboard-metrics {
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(2, 1fr);
         }
 
         .quick-actions {
             grid-template-columns: repeat(2, 1fr);
         }
-
-        .main-content {
-            margin-left: 0;
-            padding: 6rem 3% 2rem;
-        }
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
+        .main-content {
+            padding: 15px;
+        }
+
+        .dashboard-container {
+            padding-top: 0;
+        }
+
+        .dashboard-header {
+            padding: 1.5rem;
+        }
+
+        .dashboard-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .dashboard-metrics {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
         .quick-actions {
             grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .metric-card,
+        .action-card {
+            padding: 1.5rem;
         }
 
         .search-input {
             width: 200px;
+        }
+
+        .recent-tests {
+            padding: 1.5rem;
         }
     }
 </style>
 
     <!-- Main Content -->
     <main class="main-content">
-        <!-- Dashboard Header -->
-        <div class="dashboard-header">
-            <h1>
-                <i class="fas fa-tachometer-alt"></i>
-                Admin Dashboard
-            </h1>
-            <p>Welcome back! Here's what's happening with ReadEase today.</p>
-        </div>
+        <div class="dashboard-container">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <h1>Admin Dashboard</h1>
+                    <p>Select a grade level below to view sections and manage your students' reading assessments. Track progress, view reports, and support your students' reading journey.</p>
+            </div>
 
-        <!-- Dashboard Grid -->
-        <div class="dashboard-grid">
             <!-- Dashboard Metrics -->
             <div class="dashboard-metrics">
                 <div class="metric-card">
                     <div class="metric-header">
-                        <div class="metric-icon">
+                        <div class="metric-icon tests">
                             <i class="fas fa-clipboard-list"></i>
                         </div>
                     </div>
@@ -550,7 +476,7 @@
 
                 <div class="metric-card">
                     <div class="metric-header">
-                        <div class="metric-icon">
+                        <div class="metric-icon students">
                             <i class="fas fa-users"></i>
                         </div>
                     </div>
@@ -564,7 +490,7 @@
 
                 <div class="metric-card">
                     <div class="metric-header">
-                        <div class="metric-icon">
+                        <div class="metric-icon active">
                             <i class="fas fa-star"></i>
                         </div>
                     </div>
@@ -576,41 +502,7 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Quick Actions -->
-            <div class="quick-actions">
-                <a href="{{ route('admin.student-records') }}" class="action-card">
-                    <div class="action-icon">
-                        <i class="fas fa-user-plus"></i>
-                    </div>
-                    <div class="action-title">Manage Students</div>
-                    <div class="action-description">Add, edit, or view student records</div>
-                </a>
-
-                <a href="{{ route('admin.test-management') }}" class="action-card">
-                    <div class="action-icon">
-                        <i class="fas fa-tasks"></i>
-                    </div>
-                    <div class="action-title">Test Management</div>
-                    <div class="action-description">Create and manage assessments</div>
-                </a>
-
-                <a href="{{ route('admin.reports') }}" class="action-card">
-                    <div class="action-icon">
-                        <i class="fas fa-chart-bar"></i>
-                    </div>
-                    <div class="action-title">View Reports</div>
-                    <div class="action-description">Analyze performance data</div>
-                </a>
-
-                <a href="{{ route('admin.user-management') }}" class="action-card">
-                    <div class="action-icon">
-                        <i class="fas fa-users-cog"></i>
-                    </div>
-                    <div class="action-title">User Management</div>
-                    <div class="action-description">Manage system users</div>
-                </a>
-            </div>
+            
 
             <!-- Recent Tests -->
             <div class="recent-tests">

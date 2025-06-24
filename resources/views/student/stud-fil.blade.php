@@ -203,7 +203,7 @@
         }
 
         .dashboard-header h1 {
-            color: #2c3e50;
+            color: #00B8A9;
             font-size: 1.8em;
             margin-bottom: 10px;
             font-weight: 700;
@@ -229,7 +229,7 @@
             font-size: 1.5em;
             margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #3498db;
+            border-bottom: 2px solid #666666;
             font-weight: 700;
         }
 
@@ -246,7 +246,7 @@
             color: #2c3e50;
             margin-bottom: 15px;
             font-weight: 600;
-            border-bottom: 2px solid #3498db;
+            border-bottom: 2px solid #666666;
             padding-bottom: 10px;
         }
 
@@ -264,7 +264,7 @@
             color: #2c3e50;
             margin-bottom: 20px;
             font-weight: 600;
-            border-bottom: 2px solid #3498db;
+            border-bottom: 2px solid #666666;
             padding-bottom: 10px;
         }
 
@@ -284,7 +284,7 @@
         }
 
         .question {
-            color: #2c3e50;
+            color: #00B8A9;
             font-size: 1.1em;
             margin-bottom: 15px;
             font-weight: 600;
@@ -309,12 +309,12 @@
         }
 
         .choice:hover {
-            background-color: #e3f2fd;
-            border-color: #3498db;
+            background-color:rgb(221, 255, 252) ;
+            border-color: #00B8A9;
         }
 
         .choice input[type="radio"]:checked + span {
-            color: #3498db;
+            color: #00B8A9;
             font-weight: 600;
         }
 
@@ -335,7 +335,7 @@
         }
 
         .submit-btn {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            background: linear-gradient(135deg, #00B8A9 0%, #009688 100%);
             color: white;
             padding: 15px 40px;
             border: none;

@@ -60,6 +60,7 @@ class ReportsController extends Controller
                     'reading_level' => 'No Data',
                     'avg_reading_speed' => 0,
                     'avg_comprehension' => 0,
+                    'comprehension_level' => 'No Data',
                     'total_sessions' => 0
                 ],
                 'grade' => $grade ?? '7',
@@ -111,6 +112,7 @@ class ReportsController extends Controller
                     'reading_level' => 'No Data',
                     'avg_reading_speed' => 0,
                     'avg_comprehension' => 0,
+                    'comprehension_level' => 'No Data',
                     'total_sessions' => 0
                 ],
                 'grade' => $grade ?? '7',
@@ -197,6 +199,14 @@ class ReportsController extends Controller
             $overallReadingLevel = 'Frustration';
         }
 
+        // Determine comprehension level based on average comprehension score
+        $comprehensionLevel = 'Instructional';
+        if ($avgComprehension >= 80) {
+            $comprehensionLevel = 'Independent';
+        } elseif ($avgComprehension < 59) {
+            $comprehensionLevel = 'Frustration';
+        }
+
         // Count total sessions
         $totalSessions = ReadingAssessment::where('grade', $grade)
             ->where('language', $language)
@@ -216,6 +226,7 @@ class ReportsController extends Controller
                 'reading_level' => $overallReadingLevel,
                 'avg_reading_speed' => $avgReadingSpeed,
                 'avg_comprehension' => $avgComprehension,
+                'comprehension_level' => $comprehensionLevel,
                 'total_sessions' => $totalSessions
             ],
             'grade' => $grade,

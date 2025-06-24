@@ -147,19 +147,22 @@
     </div>
 
     <style>
+        /* Main Content Layout - Enhanced Teacher Dashboard Style */
         .main-content {
             padding: 20px;
             background-color: #f8f9fa;
             min-height: 100vh;
         }
 
+        /* Dashboard Container - Clean Organization */
         .dashboard {
             max-width: 1200px;
             margin: 0 auto;
         }
 
+        /* Profile Section - Enhanced Teacher Dashboard Style */
         .profile-section {
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         .profile-card {
@@ -202,6 +205,7 @@
             color: #7f8c8d;
         }
 
+        /* Stats Overview - Enhanced Teacher Dashboard Style */
         .stats-overview {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -219,29 +223,11 @@
             gap: 15px;
             transition: all 0.2s ease;
             border: 1px solid #e9ecef;
-            border-left: 4px solid #3498db;
         }
 
         .stat-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-            border-left-color: #2980b9;
-        }
-
-        .stat-card:nth-child(1) {
-            border-left-color: #3498db;
-        }
-
-        .stat-card:nth-child(2) {
-            border-left-color: #27ae60;
-        }
-
-        .stat-card:nth-child(3) {
-            border-left-color: #e67e22;
-        }
-
-        .stat-card:nth-child(4) {
-            border-left-color: #9b59b6;
         }
 
         .stat-icon {
@@ -291,6 +277,7 @@
             color: #7f8c8d;
         }
 
+        /* Results Section - Enhanced Teacher Dashboard Style */
         .results-section {
             background: white;
             padding: 25px;
@@ -311,7 +298,7 @@
             font-size: 1.8em;
             margin-bottom: 25px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #3498db;
+            border-bottom: 1px solid #e9ecef;
             font-weight: 700;
         }
 
@@ -321,6 +308,7 @@
             gap: 20px;
         }
 
+        /* Activity Items - Enhanced Teacher Dashboard Style */
         .activity-item {
             display: flex;
             align-items: center;
@@ -329,7 +317,8 @@
             background: #f8f9fa;
             border-radius: 12px;
             transition: all 0.2s ease;
-            border-left: 4px solid #3498db;
+            border: 1px solid #e9ecef;
+            cursor: pointer;
         }
 
         .activity-item:hover {
@@ -451,6 +440,7 @@
             }
         }
 
+        /* Responsive Design - Enhanced Teacher Dashboard Style */
         @media (max-width: 768px) {
             .main-content {
                 padding: 15px;
@@ -459,6 +449,7 @@
             .profile-header {
                 flex-direction: column;
                 text-align: center;
+                gap: 15px;
             }
 
             .profile-card {
@@ -467,10 +458,18 @@
 
             .stats-overview {
                 grid-template-columns: 1fr;
+                gap: 15px;
             }
 
             .results-section {
                 padding: 20px;
+            }
+
+            .activity-item {
+                padding: 12px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
             }
 
             .notification-indicator {
@@ -501,7 +500,7 @@
                 });
         }
 
-        // Add click handler to notification
+        // Enhanced interactions - matching teacher dashboard style
         document.addEventListener('DOMContentLoaded', function() {
             const notificationIndicator = document.getElementById('feedbackNotification');
 
@@ -511,6 +510,34 @@
                     window.location.href = '/stud-reports';
                 });
             }
+
+            // Enhanced hover effects for cards
+            document.querySelectorAll('.profile-card, .stat-card, .results-section').forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-2px)';
+                    card.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.12)';
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0)';
+                    card.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.08)';
+                });
+            });
+
+            // Enhanced activity item interactions
+            document.querySelectorAll('.activity-item').forEach(item => {
+                item.addEventListener('mouseenter', () => {
+                    item.style.transform = 'translateX(5px)';
+                    item.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.08)';
+                    item.style.background = 'white';
+                });
+
+                item.addEventListener('mouseleave', () => {
+                    item.style.transform = 'translateX(0)';
+                    item.style.boxShadow = 'none';
+                    item.style.background = '#f8f9fa';
+                });
+            });
 
             // Check for unread feedback on page load
             checkUnreadFeedback();

@@ -12,168 +12,222 @@
             color: var(--neutral-light);
         }
 
-        /* Main Content */
+        /* Main Content - AdminDashboard Style */
         .main-content {
-            margin-top: 50px;
-            margin-left: 280px;
-            padding: 6rem 5% 2rem;
-            transition: var(--transition);
+            margin-top: 60px;
+            padding: 50px;
+            background-color: #f8f9fa;
+            min-height: 100vh;
         }
 
-        /* Existing Settings Styles */
-        .settings-content { 
-            flex: 1; 
-            padding: 30px;
-            background-color: var(--neutral);
+        /* Dashboard Container - Clean Organization */
+        .settings-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 1rem;
         }
 
-        .settings-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--neutral-dark);
-        }
+        /* Dashboard Header - Clean AdminDashboard Style */
+        
 
-        .settings-header h2 { 
-            color: var(--text);
-            font-size: 28px;
-            font-weight: 600;
-        }
-
-        .add-profile-button { 
-            background: var(--gradient-secondary);
-            color: white; 
-            padding: 12px 25px; 
-            border: none; 
-            border-radius: 8px; 
+        .add-profile-button {
+            background: linear-gradient(135deg, #00B8A9, #009688);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 500;
-            transition: var(--transition);
-            box-shadow: var(--shadow-md);
-        }
-
-        .add-profile-button:hover { 
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        /* Search Bar Styles */
-        .search-bar { 
-            display: flex; 
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            display: flex;
             align-items: center;
-            margin-bottom: 25px;
-            background: var(--neutral-light);
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: var(--shadow-sm);
+            gap: 0.5rem;
         }
 
-        .search-bar input[type="text"] { 
+        .add-profile-button:hover {
+            background: linear-gradient(135deg, #009688, #00796b);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 184, 169, 0.3);
+        }
+
+        .page-header {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            color: #00B8A9;;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .page-header p {
+            color: #7f8c8d;
+            margin: 0.5rem 0 0 0;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+
+        /* Search Bar - AdminDashboard Style */
+        .search-bar {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-bar input[type="text"] {
             flex: 1;
-            padding: 12px 20px;
-            border: 1px solid var(--neutral-dark);
-            border-radius: 8px;
-            font-size: 14px;
-            transition: var(--transition);
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            width: 280px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
         }
 
         .search-bar input[type="text"]:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(14, 97, 186, 0.1);
+            border-color: #00B8A9;
+            box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.1);
         }
 
-        .search-bar button { 
-            background: var(--gradient-primary);
-            color: white; 
-            padding: 12px 25px; 
-            border: none; 
-            border-radius: 8px; 
+        .search-bar button {
+            background: linear-gradient(135deg, #00B8A9, #009688);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
-            margin-left: 10px;
             font-weight: 500;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
 
-        .search-bar button:hover { 
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
+        .search-bar button:hover {
+            background: linear-gradient(135deg, #009688, #00796b);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 184, 169, 0.3);
         }
 
-        /* Table Styles */
-        .profile-table { 
-            width: 100%; 
-            border-collapse: separate;
-            border-spacing: 0;
-            background: var(--neutral-light);
-            border-radius: 10px;
+        /* Table Styles - Exact AdminDashboard Style */
+        .profile-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .profile-table th, 
-        .profile-table td { 
-            padding: 15px 20px; 
+        .profile-table th,
+        .profile-table td {
+            padding: 16px 20px;
             text-align: left;
         }
 
-        .profile-table th { 
-            background: var(--neutral);
+        .profile-table th {
+            background: #f8f9fa;
             font-weight: 600;
-            color: var(--text);
-            border-bottom: 2px solid var(--neutral-dark);
+            color: #4A5568;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .profile-table tbody tr { 
-            transition: var(--transition);
+        .profile-table tbody tr:not(:last-child) {
+            border-bottom: 1px solid #e9ecef;
         }
 
-        .profile-table tbody tr:hover { 
-            background-color: var(--neutral);
+        .profile-table tbody tr:hover {
+            background-color: rgba(0, 184, 169, 0.05);
         }
 
-        .profile-table .action-buttons { 
+        .profile-table .action-buttons {
             display: flex;
             gap: 8px;
             justify-content: center;
             align-items: center;
         }
 
-        .profile-table .action-buttons button { 
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 13px;
+        .profile-table .action-buttons button {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
             font-weight: 500;
-            transition: var(--transition);
-            border: 1px solid transparent;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .profile-table .action-buttons button.access { 
-            background-color: #e8f5e9;
-            color: #2e7d32;
-            border-color: #c8e6c9;
+        .profile-table .action-buttons button.edit {
+            background: #00B8A9;
+            color: white;
         }
 
-        .profile-table .action-buttons button.edit { 
-            background-color: #e3f2fd;
-            color: #1565c0;
-            border-color: #bbdefb;
-        }
-
-        .profile-table .action-buttons button.delete { 
-            background-color: #ffebee;
-            color: #c62828;
-            border-color: #ffcdd2;
+        .profile-table .action-buttons button.delete {
+            background: #e74c3c;
+            color: white;
         }
 
         .profile-table .action-buttons button:hover {
             transform: translateY(-1px);
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
-        /* Modal Styles */
+        .profile-table .action-buttons button.edit:hover {
+            background: #009688;
+        }
+
+        .profile-table .action-buttons button.delete:hover {
+            background: #c0392b;
+        }
+
+        /* Table Section - AdminDashboard Style */
+        .table-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* User ID Styling - AdminDashboard Style */
+        .user-id {
+            font-weight: 600;
+            color: #00B8A9;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Icon Styling */
+        .user-type-title i {
+            color: #00B8A9;
+        }
+
+        /* Modal Styles - Modern Design */
         .modal {
             display: none;
             position: fixed;
@@ -181,9 +235,27 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
             z-index: 2000;
             overflow-y: auto;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
         }
 
         .modal-content {
@@ -191,69 +263,83 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: var(--neutral-light);
+            background: white;
             margin: 0;
-            padding: 35px;
-            border-radius: 12px;
-            box-shadow: var(--shadow-lg);
-            max-width: 600px;
+            padding: 0;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 650px;
             width: 90vw;
             z-index: 2100;
             max-height: 90vh;
-            overflow-y: auto;
+            overflow: hidden;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        /* Modal Header */
+        .modal-header {
+            background: linear-gradient(135deg, #00B8A9, #009688);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
         }
 
         .modal-content h2 {
-            color: var(--text);
-            margin-bottom: 30px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: 600;
-            position: relative;
-            padding-bottom: 15px;
+            color: white;
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
         }
 
-        .modal-content h2:after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: var(--gradient-secondary);
-            border-radius: 2px;
+        .modal-content h2::before {
+            content: '👤';
+            font-size: 1.3rem;
+        }
+
+        /* Modal Body */
+        .modal-body {
+            padding: 2rem;
+            max-height: 60vh;
+            overflow-y: auto;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
-            color: var(--text-light);
-            font-weight: 500;
-            font-size: 14px;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--neutral-dark);
-            border-radius: 8px;
-            font-size: 14px;
-            transition: var(--transition);
-            background-color: var(--neutral);
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            color: #2c3e50;
+            box-sizing: border-box;
         }
 
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(14, 97, 186, 0.1);
-            background-color: var(--neutral-light);
+            border-color: #00B8A9;
+            box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.1);
+            transform: translateY(-1px);
         }
 
         .form-group select {
@@ -266,65 +352,81 @@
 
         .button-group {
             display: flex;
-            gap: 15px;
+            gap: 1rem;
             justify-content: flex-end;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid var(--neutral-dark);
+            padding: 2rem;
+            background: #f8f9fa;
+            margin: 0 -2rem -2rem -2rem;
+            border-radius: 0 0 20px 20px;
         }
 
         .button-group button {
-            padding: 12px 25px;
+            padding: 12px 30px;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            font-weight: 500;
-            transition: var(--transition);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 14px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .save-btn {
-            background: var(--gradient-secondary);
+            background: linear-gradient(135deg, #27ae60, #229954);
             color: white;
         }
 
+        .save-btn::before {
+            content: '✓';
+            font-size: 0.9rem;
+        }
+
         .save-btn:hover {
+            background: linear-gradient(135deg, #229954, #1e8449);
             transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
         }
 
         .cancel-btn {
-            background: var(--neutral);
-            color: var(--text);
+            background: #6c757d;
+            color: white;
+        }
+
+        .cancel-btn::before {
+            content: '✕';
+            font-size: 0.9rem;
         }
 
         .cancel-btn:hover {
-            background: var(--neutral-dark);
+            background: #5a6268;
             transform: translateY(-2px);
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
         }
 
         .close {
             position: absolute;
-            right: 25px;
-            top: 20px;
-            font-size: 28px;
+            right: 1.5rem;
+            top: 1.5rem;
+            font-size: 1.5rem;
             cursor: pointer;
-            color: var(--text-light);
-            transition: var(--transition);
-            width: 32px;
-            height: 32px;
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         .close:hover {
-            color: var(--text);
-            background-color: var(--neutral);
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
         }
 
         /* User ID Styling */
@@ -334,65 +436,66 @@
             font-family: 'Courier New', monospace;
         }
 
-        /* User Type Tabs */
+        /* User Type Tabs - AdminDashboard Style */
         .user-type-tabs {
-            display: flex;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             margin-bottom: 2rem;
-            border-bottom: 1px solid var(--clean-gray-200);
-            background-color: var(--clean-white);
-            border-radius: 6px 6px 0 0;
-            overflow: hidden;
+            display: flex;
+            gap: 1rem;
         }
 
         .tab-button {
             flex: 1;
             padding: 1rem 1.5rem;
-            border: none;
-            background-color: var(--clean-gray-50);
-            color: var(--clean-gray-600);
+            border: 1px solid #e9ecef;
+            background: white;
+            color: #2c3e50;
             font-weight: 500;
             cursor: pointer;
-            border-bottom: 3px solid transparent;
-            transition: all 0.2s ease;
-            font-size: 0.875rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
             text-transform: uppercase;
-            letter-spacing: 0.025em;
+            letter-spacing: 0.5px;
         }
 
         .tab-button:hover {
-            background-color: var(--clean-gray-100);
-            color: var(--clean-gray-700);
+            background: #f8f9fa;
+            border-color: #2c3e50;
         }
 
         .tab-button.active {
-            background-color: var(--clean-white);
-            color: var(--clean-blue-600);
-            border-bottom-color: var(--clean-blue-600);
+            background: #00B8A9;
+            color: white;
+            border-color: #00B8A9;
         }
 
         .tab-button .count {
             margin-left: 0.5rem;
-            background-color: var(--clean-gray-300);
-            color: var(--clean-gray-700);
-            padding: 0.125rem 0.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: inherit;
+            padding: 0.25rem 0.75rem;
             border-radius: 12px;
             font-size: 0.75rem;
             font-weight: 600;
         }
 
         .tab-button.active .count {
-            background-color: var(--clean-blue-100);
-            color: var(--clean-blue-700);
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
         }
 
-        /* Grade Level Filters for Students */
+        /* Grade Level Filters - AdminDashboard Style */
         .grade-filters {
             display: none;
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            background-color: var(--clean-gray-50);
-            border-radius: 6px;
-            border: 1px solid var(--clean-gray-200);
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
         }
 
         .grade-filters.show {
@@ -401,24 +504,24 @@
 
         .grade-filters-label {
             font-weight: 600;
-            color: var(--clean-gray-700);
-            margin-bottom: 0.75rem;
-            font-size: 0.875rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1rem;
             text-transform: uppercase;
-            letter-spacing: 0.025em;
+            letter-spacing: 0.5px;
         }
 
         .grade-filter-select {
             width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--clean-gray-300);
-            background-color: var(--clean-white);
-            color: var(--clean-gray-700);
-            border-radius: 6px;
-            font-size: 0.875rem;
+            padding: 12px 16px;
+            border: 1px solid #e9ecef;
+            background: white;
+            color: #2c3e50;
+            border-radius: 8px;
+            font-size: 1rem;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23555' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
@@ -427,13 +530,13 @@
         }
 
         .grade-filter-select:hover {
-            border-color: var(--clean-gray-400);
+            border-color: #2c3e50;
         }
 
         .grade-filter-select:focus {
             outline: none;
-            border-color: var(--clean-blue-500);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            border-color: #00B8A9;
+            box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.1);
         }
 
         /* Tab Content */
@@ -445,32 +548,35 @@
             display: block;
         }
 
-        /* User Type Headers */
+        /* User Type Headers - AdminDashboard Style */
         .user-type-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
-            padding: 1rem;
-            background-color: var(--clean-gray-50);
-            border-radius: 6px;
-            border: 1px solid var(--clean-gray-200);
+            padding-bottom: 1rem;
         }
 
         .user-type-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: var(--clean-gray-800);
+            color: #2c3e50;
+            font-size: 1.3rem;
             margin: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
 
         .user-count {
-            background-color: var(--clean-blue-100);
-            color: var(--clean-blue-700);
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.875rem;
-            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            background: #dbeafe;
+            color: #1e40af;
         }
 
         /* Empty State */
@@ -536,9 +642,9 @@
     <!-- Main Content -->
     <main class="main-content">
         <div class="settings-content">
-            <div class="settings-header">
-                <h2>User Management</h2>
-                <button class="add-profile-button" onclick="openAddProfileModal()">+ Add New User</button>
+            <div class="page-header">
+                <h1>User Management</h1>
+                <p>Manage system users including administrators, teachers, and students. Create, edit, and organize user accounts with role-based access control.</p>
             </div>
 
             <!-- User Type Tabs -->
@@ -560,7 +666,14 @@
             <!-- Search Bar -->
             <div class="search-bar">
                 <input type="text" id="searchInput" placeholder="Search by User ID or Name...">
-                <button onclick="searchUsers()">Search</button>
+                <button onclick="searchUsers()">
+                    <i class="fas fa-search"></i>
+                    Search
+                </button>
+                <button class="add-profile-button" onclick="openAddProfileModal()">
+                    <i class="fas fa-user-plus"></i>
+                    Add New User
+                </button>
             </div>
 
             <!-- Grade Level Filters (for Students only) -->
@@ -579,11 +692,16 @@
 
             <!-- Admin Tab Content -->
             <div class="tab-content active" id="adminContent">
-                <div class="user-type-header">
-                    <h3 class="user-type-title">System Administrators</h3>
-                    <span class="user-count" id="adminDisplayCount">0 users</span>
-                </div>
-                <table class="profile-table">
+                <div class="table-section">
+                    <div class="user-type-header">
+                        <h3 class="user-type-title">
+                            <i class="fas fa-user-shield"></i>
+                            System Administrators
+                        </h3>
+                        <span class="user-count" id="adminDisplayCount">0 users</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="profile-table">
                     <thead>
                         <tr>
                             <th>User ID</th>
@@ -593,19 +711,26 @@
                             <th style="text-align: center;">Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="adminTableBody">
-                        <!-- Admin profiles will be loaded here -->
-                    </tbody>
-                </table>
+                            <tbody id="adminTableBody">
+                                <!-- Admin profiles will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <!-- Teacher Tab Content -->
             <div class="tab-content" id="teacherContent">
-                <div class="user-type-header">
-                    <h3 class="user-type-title">Teachers</h3>
-                    <span class="user-count" id="teacherDisplayCount">0 users</span>
-                </div>
-                <table class="profile-table">
+                <div class="table-section">
+                    <div class="user-type-header">
+                        <h3 class="user-type-title">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            Teachers
+                        </h3>
+                        <span class="user-count" id="teacherDisplayCount">0 users</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="profile-table">
                     <thead>
                         <tr>
                             <th>User ID</th>
@@ -616,19 +741,26 @@
                             <th style="text-align: center;">Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="teacherTableBody">
-                        <!-- Teacher profiles will be loaded here -->
-                    </tbody>
-                </table>
+                            <tbody id="teacherTableBody">
+                                <!-- Teacher profiles will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <!-- Student Tab Content -->
             <div class="tab-content" id="studentContent">
-                <div class="user-type-header">
-                    <h3 class="user-type-title">Students</h3>
-                    <span class="user-count" id="studentDisplayCount">0 users</span>
-                </div>
-                <table class="profile-table">
+                <div class="table-section">
+                    <div class="user-type-header">
+                        <h3 class="user-type-title">
+                            <i class="fas fa-user-graduate"></i>
+                            Students
+                        </h3>
+                        <span class="user-count" id="studentDisplayCount">0 users</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="profile-table">
                     <thead>
                         <tr>
                             <th>User ID</th>
@@ -640,10 +772,12 @@
                             <th style="text-align: center;">Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="studentTableBody">
-                        <!-- Student profiles will be loaded here -->
-                    </tbody>
-                </table>
+                            <tbody id="studentTableBody">
+                                <!-- Student profiles will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -651,9 +785,12 @@
     <!-- Add Profile Modal -->
     <div id="addProfileModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeProfileModal()">&times;</span>
-            <h2>Add New User</h2>
-            <form id="addProfileForm">
+            <div class="modal-header">
+                <span class="close" onclick="closeProfileModal()">&times;</span>
+                <h2>Add New User</h2>
+            </div>
+            <div class="modal-body">
+                <form id="addProfileForm">
                 <div class="form-group">
                     <label for="profileLastName">Last Name</label>
                     <input type="text" id="profileLastName" name="lastName" required placeholder="Enter last name">
@@ -725,20 +862,24 @@
                     <label for="profileUserId">User ID</label>
                     <input type="text" id="profileUserId" name="userId" required placeholder="Enter Admin ID, Teacher ID, or Student ID">
                 </div>
-                <div class="button-group">
-                    <button type="button" class="cancel-btn" onclick="closeProfileModal()">Cancel</button>
-                    <button type="submit" class="save-btn">Create Profile</button>
-                </div>
-            </form>
+                    <div class="button-group">
+                        <button type="button" class="cancel-btn" onclick="closeProfileModal()">Cancel</button>
+                        <button type="submit" class="save-btn">Create Profile</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
     <!-- Edit Profile Modal -->
     <div id="editProfileModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeEditProfileModal()">&times;</span>
-            <h2>Edit User</h2>
-            <form id="editProfileForm">
+            <div class="modal-header">
+                <span class="close" onclick="closeEditProfileModal()">&times;</span>
+                <h2>Edit User</h2>
+            </div>
+            <div class="modal-body">
+                <form id="editProfileForm">
                 <input type="hidden" id="editProfileId" name="user_id">
                 <div class="form-group">
                     <label for="editProfileName">Full Name</label>
@@ -803,11 +944,12 @@
                     <label for="editProfileUserId">User ID</label>
                     <input type="text" id="editProfileUserId" name="userId" required placeholder="Enter Admin ID, Teacher ID, or Student ID">
                 </div>
-                <div class="button-group">
-                    <button type="button" class="cancel-btn" onclick="closeEditProfileModal()">Cancel</button>
-                    <button type="submit" class="save-btn">Update Profile</button>
-                </div>
-            </form>
+                    <div class="button-group">
+                        <button type="button" class="cancel-btn" onclick="closeEditProfileModal()">Cancel</button>
+                        <button type="submit" class="save-btn">Update Profile</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -1098,9 +1240,14 @@
                 <td>${new Date(user.created_at).toLocaleDateString()}</td>
                 <td>
                     <div class="action-buttons">
-                        <button class="access" title="View Profile">View</button>
-                        <button class="edit" title="Edit Profile" onclick="openEditProfileModal(${user.id}, '${user.name.replace(/'/g, '\\\'').replace(/"/g, '&quot;')}', '${user.userId}', '${user.role}', '', '', '', '${user.email || ''}', '')">Edit</button>
-                        <button class="delete" title="Delete Profile" onclick="deleteProfile(${user.id})">Delete</button>
+                        <button class="edit" title="Edit Profile" onclick="openEditProfileModal(${user.id}, '${user.name.replace(/'/g, '\\\'').replace(/"/g, '&quot;')}', '${user.userId}', '${user.role}', '', '', '', '${user.email || ''}', '')">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="delete" title="Delete Profile" onclick="deleteProfile(${user.id})">
+                            <i class="fas fa-trash"></i>
+                            Delete
+                        </button>
                     </div>
                 </td>
             `;
@@ -1138,9 +1285,14 @@
                 <td>${new Date(user.created_at).toLocaleDateString()}</td>
                 <td>
                     <div class="action-buttons">
-                        <button class="access" title="View Profile">View</button>
-                        <button class="edit" title="Edit Profile" onclick="openEditProfileModal(${user.id}, '${user.name.replace(/'/g, '\\\'').replace(/"/g, '&quot;')}', '${user.userId}', '${user.role}', '', '', '', '${user.email || ''}', '${user.teacherGrade || ''}')">Edit</button>
-                        <button class="delete" title="Delete Profile" onclick="deleteProfile(${user.id})">Delete</button>
+                        <button class="edit" title="Edit Profile" onclick="openEditProfileModal(${user.id}, '${user.name.replace(/'/g, '\\\'').replace(/"/g, '&quot;')}', '${user.userId}', '${user.role}', '', '', '', '${user.email || ''}', '${user.teacherGrade || ''}')">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="delete" title="Delete Profile" onclick="deleteProfile(${user.id})">
+                            <i class="fas fa-trash"></i>
+                            Delete
+                        </button>
                     </div>
                 </td>
             `;
@@ -1183,9 +1335,14 @@
                 <td>${new Date(user.created_at).toLocaleDateString()}</td>
                 <td>
                     <div class="action-buttons">
-                        <button class="access" title="View Profile">View</button>
-                        <button class="edit" title="Edit Profile" onclick="openEditProfileModal(${user.id}, '${user.name.replace(/'/g, '\\\'').replace(/"/g, '&quot;')}', '${user.userId}', '${user.role}', '${user.grade || ''}', '${user.section || ''}', '${user.gender || ''}', '${user.email || ''}', '')">Edit</button>
-                        <button class="delete" title="Delete Profile" onclick="deleteProfile(${user.id})">Delete</button>
+                        <button class="edit" title="Edit Profile" onclick="openEditProfileModal(${user.id}, '${user.name.replace(/'/g, '\\\'').replace(/"/g, '&quot;')}', '${user.userId}', '${user.role}', '${user.grade || ''}', '${user.section || ''}', '${user.gender || ''}', '${user.email || ''}', '')">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="delete" title="Delete Profile" onclick="deleteProfile(${user.id})">
+                            <i class="fas fa-trash"></i>
+                            Delete
+                        </button>
                     </div>
                 </td>
             `;
