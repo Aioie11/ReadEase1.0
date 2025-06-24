@@ -11,20 +11,27 @@
             color: var(--neutral-light);
         }
 
-        /* Main Content */
+        /* Main Content - AdminDashboard Style */
         .main-content {
-            margin-top: 50px;
-            margin-left: 280px;
-            padding: 6rem 5% 2rem;
-            transition: var(--transition);
+            margin-top: 60px;
+            padding: 50px;
+            background-color: #f8f9fa;
+            min-height: 100vh;
         }
 
-        /* Search Section */
+        /* Dashboard Container - AdminDashboard Style */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 1rem;
+        }
+
+        /* Search Section - AdminDashboard Style */
         .search-section {
-            background: var(--neutral-light);
-            padding: 1.5rem;
+            background: white;
+            padding: 2rem;
             border-radius: 12px;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             margin-bottom: 2rem;
             display: flex;
             justify-content: space-between;
@@ -39,18 +46,19 @@
 
         .search-box input {
             width: 100%;
-            padding: 0.8rem 1rem;
+            padding: 12px 16px;
             padding-right: 3rem;
-            border: 1px solid var(--neutral-dark);
-            border-radius: 8px;
-            font-size: 0.95rem;
-            transition: var(--transition);
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
         }
 
         .search-box input:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(14, 97, 186, 0.1);
+            border-color: #00B8A9;
+            box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.1);
         }
 
         .search-box button {
@@ -66,74 +74,85 @@
         }
 
         .search-box button:hover {
-            color: var(--primary);
+            color: #00B8A9;
         }
 
         .add-student-btn {
-            padding: 0.8rem 1.5rem;
-            background: var(--primary);
-            color: var(--neutral-light);
+            padding: 12px 24px;
+            background: #00B8A9;
+            color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: var(--transition);
-            font-weight: 500;
+            transition: all 0.3s ease;
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            font-size: 1rem;
         }
 
         .add-student-btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
+            background: #009688;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
         }
 
-        /* Masterlist Section */
+        /* Masterlist Section - Exact AdminDashboard Style */
         .masterlist-section {
-            background: var(--neutral-light);
-            padding: 1.5rem;
+            background: white;
+            padding: 2rem;
             border-radius: 12px;
-            box-shadow: var(--shadow-md);
-        }
-
-        .masterlist-header {
-            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             margin-bottom: 2rem;
         }
 
-        .masterlist-header h2 {
-            color: var(--primary);
-            font-size: 1.8rem;
-            font-weight: 600;
+        .masterlist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
         }
 
-        /* Grade Section */
+        .masterlist-header h2 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .masterlist-header h2 i {
+            color: #00B8A9;
+        }
+
+        /* Grade Section - Beautiful Design */
         .grade-section {
-            margin-bottom: 1.5rem;
-            background: var(--neutral-light);
-            border-radius: 12px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
             overflow: hidden;
-            box-shadow: var(--shadow-md);
-            transition: var(--transition);
-            border: 2px solid transparent;
+            transition: all 0.3s ease;
         }
 
         .grade-section:hover {
-            border-color: var(--primary);
             transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
         }
 
         .grade-header {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: var(--neutral-light);
+            background: linear-gradient(135deg, #00B8A9, #009688);
+            color: white;
             padding: 1.5rem 2rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
+            transition: all 0.3s ease;
+            border: none;
         }
 
         .grade-header::before {
@@ -152,7 +171,35 @@
         }
 
         .grade-header:hover {
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            background: linear-gradient(135deg, #009688, #00796b);
+        }
+
+        .grade-title {
+            color: white;
+            font-size: 1.3rem;
+            margin: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .grade-title i {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .student-count {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
         }
 
         .grade-header span {
@@ -193,35 +240,66 @@
             display: block;
         }
 
+        .grade-content {
+            padding: 2rem;
+            background: #f8f9fa;
+        }
+
         .section-group {
-            margin-bottom: 1rem;
-            background: var(--neutral);
-            border-radius: 10px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 1.5rem;
             overflow: hidden;
-            border-left: 4px solid var(--primary-light);
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
 
         .section-group:hover {
-            border-left-color: var(--primary);
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+            transform: translateY(-1px);
         }
 
         .section-header {
-            background: linear-gradient(135deg, var(--primary-light), #4a90e2);
-            color: var(--neutral-light);
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
             padding: 1.2rem 1.5rem;
-            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: var(--transition);
-            position: relative;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #e9ecef;
         }
 
         .section-header:hover {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: linear-gradient(135deg, #e9ecef, #dee2e6);
+        }
+
+        .section-title {
+            color: #00B8A9;
+            font-size: 1.3rem;
+            margin: 0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .section-title i {
+            color: #00B8A9;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Section Name Styling - Green and Bold */
+        .section-name {
+            color: #00B8A9 !important;
+            font-size: 1.3rem !important;
+            font-weight: 700 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .section-header span {
@@ -250,56 +328,59 @@
             background: rgba(255, 255, 255, 0.2);
             padding: 0.2rem 0.6rem;
             border-radius: 12px;
-            font-size: 0.8rem;
+            font-size: 1rem;
         }
 
         .section-content {
             display: none;
-            padding: 1rem;
-            background: var(--neutral-light);
+            padding: 1.5rem;
+            background: white;
         }
 
         .section-content.active {
             display: block;
         }
 
-        /* Student Table */
+        /* Student Table - AdminDashboard Style */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
         .student-table {
             width: 100%;
             border-collapse: collapse;
-            background: var(--neutral-light);
-            border-radius: 8px;
+            background: #fff;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: var(--shadow-sm);
         }
 
         .student-table th {
-            background: linear-gradient(135deg, var(--neutral), var(--neutral-dark));
-            color: var(--text);
+            background: #f8f9fa;
             font-weight: 600;
-            padding: 1.2rem 1rem;
-            text-align: left;
-            border-bottom: 2px solid var(--primary);
+            color: #4A5568;
             font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            padding: 16px 20px;
+            text-align: left;
         }
 
         .student-table td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--neutral-dark);
-            color: var(--text);
+            padding: 16px 20px;
+            text-align: left;
+            color: #2c3e50;
             vertical-align: middle;
         }
 
-        .student-table tr:hover {
-            background: var(--neutral);
-            transform: scale(1.01);
-            transition: var(--transition);
+        .student-table tbody tr:not(:last-child) {
+            border-bottom: 1px solid #e9ecef;
         }
 
-        .student-table tr:nth-child(even) {
-            background: rgba(0, 0, 0, 0.02);
+        .student-table tbody tr:hover {
+            background-color: rgba(0, 184, 169, 0.05);
         }
 
         .student-name-cell {
@@ -314,93 +395,158 @@
         }
 
         .gender-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.4rem 0.8rem;
+            padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 500;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .gender-badge.male {
-            background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
-            color: #1976D2;
-            border: 1px solid #90CAF9;
+            background: #dbeafe;
+            color: #1e40af;
         }
 
         .gender-badge.female {
-            background: linear-gradient(135deg, #FCE4EC, #F8BBD9);
-            color: #C2185B;
-            border: 1px solid #F48FB1;
+            background: #fce7f3;
+            color: #be185d;
         }
 
-        /* Summary Statistics */
+        /* Summary Statistics - AdminDashboard Style */
         .summary-section {
             margin-bottom: 2rem;
         }
 
         .summary-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
         .stat-card {
-            background: linear-gradient(135deg, var(--neutral-light), #f8fafc);
-            border-radius: 12px;
+            background: white;
+            border: none;
+            border-radius: 16px;
             padding: 1.5rem;
             display: flex;
             align-items: center;
             gap: 1rem;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--neutral-dark);
-            transition: var(--transition);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
 
         .stat-card:hover {
             transform: translateY(-4px);
-            box-shadow: var(--shadow-md);
-            border-color: var(--primary);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
         }
 
         .stat-icon {
             width: 50px;
             height: 50px;
-            border-radius: 50%;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            font-size: 1.5rem;
+            background: #00B8A9;
+            color: white !important;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .stat-icon i {
+            color: white !important;
+            font-size: 1.3rem;
+            display: block;
+            line-height: 1;
+        }
+
+        .stat-icon.total {
+            background: #00B8A9;
         }
 
         .stat-icon.male {
-            background: linear-gradient(135deg, #4FC3F7, #2196F3);
+            background: #3498db;
         }
 
         .stat-icon.female {
-            background: linear-gradient(135deg, #F48FB1, #E91E63);
+            background: #e74c3c;
+        }
+
+        .stat-icon.sections {
+            background: #9b59b6;
+        }
+
+        /* Additional Icon Stability */
+        .search-box button i {
+            color: #7f8c8d !important;
+            font-size: 1rem;
+            display: block;
+            line-height: 1;
+        }
+
+        .add-student-btn i {
+            color: white !important;
+            font-size: 1rem;
+            display: block;
+            line-height: 1;
+        }
+
+        .edit-btn i, .delete-btn i {
+            font-size: 0.9rem;
+            display: block;
+            line-height: 1;
+        }
+
+        .expand-all-btn i, .collapse-all-btn i {
+            font-size: 0.9rem;
+            display: block;
+            line-height: 1;
         }
 
         .stat-content {
             flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .stat-number {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 700;
-            color: var(--primary);
+            color: #2c3e50;
             line-height: 1;
+            margin: 0;
+            margin-bottom: 0.25rem;
         }
 
         .stat-label {
-            font-size: 0.9rem;
-            color: var(--text-light);
-            margin-top: 0.3rem;
+            font-size: 0.95rem;
+            color: #6c757d;
+            margin: 0;
             font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        /* Specific colors for each stat type */
+        .stat-card.total .stat-number {
+            color: #00B8A9;
+        }
+
+        .stat-card.male .stat-number {
+            color: #3498db;
+        }
+
+        .stat-card.female .stat-number {
+            color: #e74c3c;
+        }
+
+        .stat-card.sections .stat-number {
+            color: #00B8A9;
         }
 
         /* Masterlist Controls */
@@ -419,39 +565,42 @@
         }
 
         .expand-all-btn, .collapse-all-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.6rem 1.2rem;
-            border: none;
-            border-radius: 8px;
             font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
+            margin-right: 0.5rem;
         }
 
         .expand-all-btn {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
+            background: linear-gradient(135deg, #27ae60, #229954);
             color: white;
         }
 
         .expand-all-btn:hover {
-            background: linear-gradient(135deg, #45a049, #3d8b40);
-            transform: translateY(-2px);
+            background: linear-gradient(135deg, #229954, #1e8449);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
         }
 
         .collapse-all-btn {
-            background: linear-gradient(135deg, #ff9800, #f57c00);
+            background: linear-gradient(135deg, #e67e22, #d35400);
             color: white;
         }
 
         .collapse-all-btn:hover {
-            background: linear-gradient(135deg, #f57c00, #ef6c00);
-            transform: translateY(-2px);
+            background: linear-gradient(135deg, #d35400, #ba4a00);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
         }
 
-        /* Modal Styles */
+        /* Modal Styles - Modern Design */
         .modal {
             display: none;
             position: fixed;
@@ -459,22 +608,41 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
             z-index: 1002;
             overflow-y: auto;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .modal-content {
             position: relative;
-            background: var(--neutral-light);
+            background: white;
             margin: 2rem auto;
-            padding: 2rem;
+            padding: 0;
             width: 90%;
-            max-width: 600px;
-            border-radius: 12px;
-            box-shadow: var(--shadow-lg);
+            max-width: 700px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             max-height: 90vh;
-            overflow-y: auto;
+            overflow: hidden;
+            animation: slideIn 0.4s ease-out;
         }
 
         .modal-content::-webkit-scrollbar {
@@ -497,46 +665,61 @@
 
         .close, .close-modal {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
+            top: 1.5rem;
+            right: 1.5rem;
             width: 40px;
             height: 40px;
-            background: var(--neutral);
-            border: 2px solid var(--neutral-dark);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: none;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
             cursor: pointer;
-            color: var(--text-light);
-            transition: var(--transition);
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
             z-index: 10;
             font-weight: bold;
         }
 
         .close:hover, .close-modal:hover {
-            background: #dc2626;
+            background: rgba(255, 255, 255, 0.2);
             color: white;
-            border-color: #dc2626;
-            transform: scale(1.1);
+            transform: rotate(90deg);
         }
 
-        /* Modal Header */
+        /* Modal Header - Gradient Design */
         .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--primary);
+            background: linear-gradient(135deg, #00B8A9, #009688);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            border-radius: 20px 20px 0 0;
         }
 
         .modal-header h2 {
             margin: 0;
-            color: var(--primary);
-            font-size: 1.5rem;
-            font-weight: 600;
+            color: white;
+            font-size: 1.6rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .modal-header h2::before {
+            content: '🎓';
+            font-size: 1.4rem;
+        }
+
+        /* Modal Body */
+        .modal-body {
+            padding: 2rem;
+            max-height: 60vh;
+            overflow-y: auto;
         }
 
         .form-row {
@@ -547,79 +730,109 @@
 
         .form-group {
             flex: 1;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
-            color: var(--text);
-            font-weight: 500;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 0.8rem;
-            border: 1px solid var(--neutral-dark);
-            border-radius: 6px;
-            font-size: 0.95rem;
-            transition: var(--transition);
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            color: #2c3e50;
+            box-sizing: border-box;
         }
 
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(14, 97, 186, 0.1);
+            border-color: #00B8A9;
+            box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.1);
+            transform: translateY(-1px);
         }
 
         .button-group {
             display: flex;
             gap: 1rem;
             justify-content: flex-end;
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--neutral-dark);
+            padding: 2rem;
+            background: #f8f9fa;
+            margin: 0 -2rem -2rem -2rem;
+            border-radius: 0 0 20px 20px;
         }
 
         .button-group button {
-            padding: 0.8rem 1.5rem;
+            padding: 12px 30px;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
-            font-weight: 500;
-            transition: var(--transition);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .save-btn {
-            background: var(--primary);
-            color: var(--neutral-light);
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
+
+        .save-btn::before {
+            content: '✓';
+            font-size: 0.9rem;
         }
 
         .save-btn:hover {
-            background: var(--primary-dark);
+            background: linear-gradient(135deg, #229954, #1e8449);
             transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
         }
 
         .clear-btn {
-            background: #dc2626;
-            color: var(--neutral-light);
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .clear-btn::before {
+            content: '🗑';
+            font-size: 0.9rem;
         }
 
         .clear-btn:hover {
-            background: #b91c1c;
+            background: linear-gradient(135deg, #e67e22, #d35400);
             transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
         }
 
         .cancel-btn {
-            background: var(--neutral);
-            color: var(--text);
+            background: #6c757d;
+            color: white;
+        }
+
+        .cancel-btn::before {
+            content: '✕';
+            font-size: 0.9rem;
         }
 
         .cancel-btn:hover {
-            background: var(--neutral-dark);
+            background: #5a6268;
             transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
         }
 
         /* Menu Toggle Button */
@@ -633,36 +846,56 @@
             padding: 0.5rem;
         }
 
-        /* Responsive Design */
+        /* Responsive Design - AdminDashboard Style */
+        @media (max-width: 1200px) {
+            .summary-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .summary-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+        }
+
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
             .main-content {
-                margin-left: 0;
+                padding: 15px;
             }
 
-            header {
-                margin-left: 0;
-                width: 100%;
-            }
-
-            .menu-toggle {
-                display: block;
+            .dashboard-container {
+                padding-top: 0;
             }
 
             .search-section {
                 flex-direction: column;
+                padding: 1.5rem;
+            }
+
+            .summary-stats {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .stat-card {
+                padding: 1.5rem;
+            }
+
+            .masterlist-section {
+                padding: 1.5rem;
             }
 
             .form-row {
                 flex-direction: column;
                 gap: 0;
+            }
+
+            .student-table th,
+            .student-table td {
+                padding: 12px 8px;
+                font-size: 0.85rem;
             }
         }
 
@@ -673,35 +906,56 @@
             justify-content: flex-start;
         }
 
-        .edit-btn, .delete-btn {
-            padding: 0.5rem;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: var(--transition);
+        .action-buttons {
             display: flex;
+            gap: 0.5rem;
             align-items: center;
-            justify-content: center;
         }
 
         .edit-btn {
-            background: var(--primary);
-            color: var(--neutral-light);
+            background: linear-gradient(135deg, #00B8A9, #009688);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
         }
 
         .edit-btn:hover {
-            background: var(--primary-dark);
+            background: linear-gradient(135deg, #009688, #00796b);
             transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 184, 169, 0.3);
         }
 
         .delete-btn {
-            background: #dc2626;
-            color: var(--neutral-light);
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
         }
 
         .delete-btn:hover {
-            background: #b91c1c;
+            background: linear-gradient(135deg, #c0392b, #a93226);
             transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
         }
 
         /* Confirmation Modal Styles */
@@ -765,15 +1019,15 @@
             transform: translateY(-2px);
         }
 
-        /* Add these styles to your existing CSS */
+        /* Status Badges - Exact AdminDashboard Style */
         .status-badge {
-            padding: 0.4rem 0.8rem;
+            padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .status-completed {
@@ -805,7 +1059,8 @@
 <body>
     <!-- Main Content -->
     <main class="main-content">
-        <!-- Search and Add Student Section -->
+        <div class="dashboard-container">
+            <!-- Search and Add Student Section -->
         <section class="search-section">
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Find Student">
@@ -831,8 +1086,8 @@
             @endphp
 
             <div class="summary-stats">
-                <div class="stat-card">
-                    <div class="stat-icon">
+                <div class="stat-card total">
+                    <div class="stat-icon total">
                         <i class="fas fa-users"></i>
                     </div>
                     <div class="stat-content">
@@ -841,9 +1096,9 @@
                     </div>
                 </div>
 
-                <div class="stat-card">
+                <div class="stat-card male">
                     <div class="stat-icon male">
-                        <i class="fas fa-mars"></i>
+                        <i class="fas fa-male"></i>
                     </div>
                     <div class="stat-content">
                         <div class="stat-number">{{ $totalMale }}</div>
@@ -851,9 +1106,9 @@
                     </div>
                 </div>
 
-                <div class="stat-card">
+                <div class="stat-card female">
                     <div class="stat-icon female">
-                        <i class="fas fa-venus"></i>
+                        <i class="fas fa-female"></i>
                     </div>
                     <div class="stat-content">
                         <div class="stat-number">{{ $totalFemale }}</div>
@@ -861,8 +1116,8 @@
                     </div>
                 </div>
 
-                <div class="stat-card">
-                    <div class="stat-icon">
+                <div class="stat-card sections">
+                    <div class="stat-icon sections">
                         <i class="fas fa-layer-group"></i>
                     </div>
                     <div class="stat-content">
@@ -876,7 +1131,10 @@
         <!-- Students Masterlist Section -->
         <section class="masterlist-section">
             <div class="masterlist-header">
-                <h2>STUDENTS MASTERLIST</h2>
+                <h2>
+                    <i class="fas fa-users"></i>
+                    STUDENTS MASTERLIST
+                </h2>
                 <div class="masterlist-controls">
                     <button class="expand-all-btn" onclick="expandAll()">
                         <i class="fas fa-expand-arrows-alt"></i>
@@ -897,11 +1155,9 @@
                         @if(isset($students[$grade]))
                             <div class="grade-stats">
                                 <div class="stat-item">
-                                    <i class="fas fa-users"></i>
                                     <span>{{ $students[$grade]->count() }} Students</span>
                                 </div>
                                 <div class="stat-item">
-                                    <i class="fas fa-layer-group"></i>
                                     <span>{{ $students[$grade]->groupBy('section')->count() }} Sections</span>
                                 </div>
                             </div>
@@ -937,10 +1193,10 @@
                             <div class="section-group">
                                 <div class="section-header collapsed" onclick="toggleSection('section-{{ $grade }}-{{ $section }}')">
                                     <div>
-                                        <span>{{ $section }}</span>
+                                        <span class="section-name">{{ $section }}</span>
                                         <div class="section-stats">
                                             <div class="stat-badge">
-                                                <i class="fas fa-user-friends"></i>
+                                               
                                                 {{ $sectionCount }} {{ $sectionCount == 1 ? 'Student' : 'Students' }}
                                             </div>
                                             @if($sectionCount > 0)
@@ -949,8 +1205,8 @@
                                                     $femaleCount = $sectionStudents->where('gender', 'Female')->count();
                                                 @endphp
                                                 <div class="stat-badge">
-                                                    <i class="fas fa-mars" style="color: #4FC3F7;"></i> {{ $maleCount }}
-                                                    <i class="fas fa-venus" style="color: #F48FB1; margin-left: 0.3rem;"></i> {{ $femaleCount }}
+                                                    <span style="color: #4FC3F7;">Male</span> {{ $maleCount }}
+                                                    <span style="color: #F48FB1; margin-left: 0.3rem;">Female</span> {{ $femaleCount }}
                                                 </div>
                                             @endif
                                         </div>
@@ -1042,10 +1298,11 @@
         <div id="addStudentModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>Add New Student</h2>
                     <span class="close" onclick="closeModal('addStudentModal')">&times;</span>
+                    <h2>Add New Student</h2>
                 </div>
-                <form id="addStudentForm">
+                <div class="modal-body">
+                    <form id="addStudentForm">
                     @csrf
                     <div class="form-row">
                         <div class="form-group">
@@ -1099,12 +1356,13 @@
                             </select>
                         </div>
                     </div>
-                    <div class="button-group">
-                        <button type="button" class="clear-btn" onclick="clearForm()">Clear Form</button>
-                        <button type="button" class="cancel-btn" onclick="closeModal('addStudentModal')">Cancel</button>
-                        <button type="submit" class="save-btn">Save Student</button>
-                    </div>
-                </form>
+                        <div class="button-group">
+                            <button type="button" class="clear-btn" onclick="clearForm()">Clear Form</button>
+                            <button type="button" class="cancel-btn" onclick="closeModal('addStudentModal')">Cancel</button>
+                            <button type="submit" class="save-btn">Save Student</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -1112,10 +1370,11 @@
         <div id="editModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>Edit Student Record</h2>
                     <span class="close-modal" onclick="closeModal('editModal')">&times;</span>
+                    <h2>Edit Student Record</h2>
                 </div>
-                <form id="editStudentForm" method="POST">
+                <div class="modal-body">
+                    <form id="editStudentForm" method="POST">
                     @csrf
                     @method('PUT')
                     <input type="hidden" id="edit-student-id" name="student_id">
@@ -1169,11 +1428,12 @@
                             </select>
                         </div>
                     </div>
-                    <div class="button-group">
-                        <button type="button" class="cancel-btn" onclick="closeModal('editModal')">Cancel</button>
-                        <button type="submit" class="save-btn">Update Student</button>
-                    </div>
-                </form>
+                        <div class="button-group">
+                            <button type="button" class="cancel-btn" onclick="closeModal('editModal')">Cancel</button>
+                            <button type="submit" class="save-btn">Update Student</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -1188,6 +1448,7 @@
                     <button class="confirm-delete" onclick="deleteStudent()">Delete</button>
                 </div>
             </div>
+        </div>
         </div>
     </main>
 

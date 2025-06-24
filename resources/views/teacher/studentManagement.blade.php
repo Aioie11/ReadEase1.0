@@ -8,13 +8,46 @@
     <style>
     /* Student Management Page Styles */
     .page {
-      padding: 32px;
-      padding-top: 2rem;
+      padding: 60px;
       background: #f7f9fb;
     }
 
+    .welcome-message {
+                background: white;
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                margin-bottom: 30px;
+                border: 1px solid #e9ecef;
+                text-align: center;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            .welcome-message:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            }
+
+            .welcome-content h2 {
+               text-align: left;
+                color: #00B8A9;
+                font-size: 1.8em;
+                font-weight: 700;
+            }
+
+            .welcome-content p {
+                text-align: left;
+                color: #7f8c8d;
+                font-size: 1rem;
+                margin: 0;
+                max-width: 600px;
+              }
+   
     .dashboard-header {
-      margin-bottom: 2rem;
+      padding: 25px;
+      border-radius: 12px;
+      border: 1px solid #e9ecef;
+      margin-bottom: 30px;
     }
 
     .header-content h1 {
@@ -29,17 +62,20 @@
     }
 
     .controls {
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #e9ecef;
+      margin-bottom: 30px;
       display: flex;
       align-items: center;
       gap: 16px;
-      margin-bottom: 24px;
       flex-wrap: wrap;
     }
 
     .search-input {
       padding: 12px 16px;
-      border: 1px solid #d0d7de;
-      border-radius: 8px;
+      border: 1px solid #e9ecef;
+      border-radius: 12px;
       font-size: 1rem;
       width: 280px;
       transition: border-color 0.2s;
@@ -57,8 +93,8 @@
 
     .dropdowns select {
       padding: 12px 16px;
-      border-radius: 8px;
-      border: 1px solid #d0d7de;
+      border-radius: 12px;
+      border: 1px solid #e9ecef;
       font-size: 1rem;
       background: white;
       cursor: pointer;
@@ -68,7 +104,7 @@
       background: #00B8A9;
       color: #fff;
       border: none;
-      border-radius: 8px;
+      border-radius: 12px;
       padding: 12px 20px;
       font-size: 1rem;
       cursor: pointer;
@@ -91,7 +127,7 @@
 
     th,
     td {
-      padding: 16px 12px;
+      padding: 16px 20px;
       text-align: left;
     }
 
@@ -105,7 +141,7 @@
     }
 
     tbody tr:not(:last-child) {
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid #e9ecef;
     }
 
     tbody tr:hover {
@@ -188,9 +224,9 @@
     }
 
     .action-btn {
-      padding: 6px 12px;
-      border: none;
-      border-radius: 6px;
+      padding: 8px 16px;
+      border: 1px solid transparent;
+      border-radius: 12px;
       font-size: 0.85rem;
       cursor: pointer;
       transition: all 0.2s;
@@ -244,7 +280,8 @@
       background-color: white;
       margin: 5% auto;
       padding: 0;
-      border-radius: 8px;
+      border-radius: 12px;
+      border: 1px solid #e9ecef;
       width: 90%;
       max-width: 500px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -294,9 +331,9 @@
     .form-group select,
     .form-group textarea {
       width: 100%;
-      padding: 8px 12px;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
+      padding: 12px 16px;
+      border: 1px solid #e9ecef;
+      border-radius: 12px;
       font-size: 14px;
       box-sizing: border-box;
     }
@@ -315,9 +352,9 @@
     }
 
     .btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
+      padding: 12px 24px;
+      border: 1px solid transparent;
+      border-radius: 12px;
       cursor: pointer;
       font-size: 14px;
       font-weight: 600;
@@ -364,11 +401,11 @@
 
     <!-- Student Management Content -->
     <div class="page">
-    <div class="dashboard-header">
-      <div class="header-content">
-      <h1>Student Management</h1>
-      <p>View and manage all student information</p>
-      </div>
+    <div class="welcome-message">
+        <div class="welcome-content">
+            <h2>Student Management</h2>
+            <p>View and manage all student information</p>
+        </div>
     </div>
 
     <div class="controls">

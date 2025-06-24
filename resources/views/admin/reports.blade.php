@@ -21,37 +21,31 @@
         max-width: calc(100% - 280px);
     }
 
-    /* Reports Header */
-    .reports-header {
-        background: white;
-        border-radius: 12px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
 
-    .header-content h1 {
-        color: #2c3e50;
-        font-size: 1.8rem;
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
+    .page-header {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
 
-    .header-content h1 i {
-        color: #6c757d;
-        font-size: 1.8rem;
-    }
+        .page-header h1 {
+            color: #00B8A9;;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
 
-    .header-content p {
-        color: #6c757d;
-        margin: 0;
-        font-size: 1rem;
-    }
+        .page-header p {
+            color: #7f8c8d;
+            margin: 0.5rem 0 0 0;
+            font-size: 1rem;
+            line-height: 0.9;
+        }
 
 
 
@@ -199,15 +193,9 @@
 
 <!-- Main Content -->
 <main class="main-content">
-    <!-- Reports Header -->
-    <div class="reports-header">
-        <div class="header-content">
-            <h1>
-                <i class="fas fa-chart-line"></i>
-                Reading and Comprehension Assessment Distribution Reports
-            </h1>
-            <p>Analysis of student word reading and comprehension performance by grade and language</p>
-        </div>
+    <div class="page-header">
+                <h1>Reading and Comprehension Assessment Distribution Reports</h1>
+                <p>Analysis of student word reading and comprehension performance by grade and language</p>
     </div>
 
     <!-- Charts Section -->

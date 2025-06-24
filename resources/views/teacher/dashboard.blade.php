@@ -6,194 +6,270 @@
     <!-- Main Content -->
     <div class="main-content">
         <style>
-            /* Dashboard Header */
+            /* Main Content Layout - Exact Stud-Dash Styling */
+            .main-content {
+                padding: 20px;
+                background-color: #f8f9fa;
+                min-height: 100vh;
+            }
+
+            /* Dashboard Header - Clean Stud-Dash Style */
             .dashboard-header {
+                background: white;
+                padding: 25px;
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                border: 1px solid #e9ecef;
+                margin-bottom: 30px;
                 text-align: center;
-                margin-bottom: 3rem;
-                padding: 2rem;
-                background: linear-gradient(135deg, #00B8A9 0%, #009688 100%);
-                color: white;
-                border-radius: 15px;
-                box-shadow: 0 8px 32px rgba(0, 184, 169, 0.3);
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            .dashboard-header:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
             }
 
             .dashboard-header h1 {
-                font-size: 2.5rem;
+                color: #2c3e50;
+                font-size: 2.2rem;
                 margin-bottom: 0.5rem;
                 font-weight: 700;
             }
 
             .dashboard-header p {
-                font-size: 1.2rem;
-                opacity: 0.9;
+                color: #7f8c8d;
+                font-size: 1.1rem;
                 margin: 0;
             }
 
-            /* Performance Overview */
-            .stats-overview {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 1.5rem;
-                margin-bottom: 3rem;
-                max-width: 900px;
-                margin-left: auto;
-                margin-right: auto;
-            }
-
-            .stat-card {
-                background: white;
-                padding: 2rem;
-                border-radius: 15px;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-                display: flex;
-                align-items: center;
-                gap: 1.5rem;
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                border-left: 4px solid var(--primary);
-            }
-
-            .stat-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-            }
-
-            .stat-icon {
-                width: 60px;
-                height: 60px;
-                background: linear-gradient(135deg, #00B8A9 0%, #009688 100%);
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: white;
-                font-size: 1.5rem;
-            }
-
-            .stat-content h3 {
-                font-size: 2rem;
-                font-weight: 700;
-                color: var(--primary);
-                margin: 0 0 0.5rem 0;
-            }
-
-            .stat-content p {
-                color: #6b7280;
-                margin: 0;
-                font-weight: 500;
-            }
-
-
-
-            /* Welcome Message */
+            /* Welcome Message - Clean Stud-Dash Style */
             .welcome-message {
-                margin-bottom: 3rem;
+                background: white;
+                padding: 25px;
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                margin-bottom: 30px;
+                border: 1px solid #e9ecef;
                 text-align: center;
-                background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-                padding: 3rem 2rem;
-                border-radius: 20px;
-                border: 1px solid #e2e8f0;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            .welcome-message:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
             }
 
             .welcome-content h2 {
-                color: var(--primary);
+                color: #2c3e50;
                 margin-bottom: 1rem;
-                font-size: 2rem;
+                font-size: 1.8em;
                 font-weight: 700;
             }
 
             .welcome-content p {
-                color: #64748b;
-                font-size: 1.1rem;
+                color: #7f8c8d;
+                font-size: 1rem;
                 margin: 0;
                 max-width: 600px;
                 margin-left: auto;
                 margin-right: auto;
             }
 
-            /* Grade Levels Grid */
+            /* Container - Clean Organization */
+            .dashboard-container {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+
+
+            /* Welcome Message - Enhanced Visibility */
+            .welcome-message {
+                margin-bottom: 3rem;
+                margin-top: 90px;
+                text-align: center;
+                background: white;
+                padding: 3rem 2rem;
+                border-radius: 15px;
+                border: 1px solid #e2e8f0;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                position: relative;
+                z-index: 1;
+            }
+
+            .welcome-content h2 {
+                color: #00B8A9;
+                margin-bottom: 1rem;
+                font-size: 2rem;
+                font-weight: 700;
+                text-shadow: none;
+            }
+
+            .welcome-content p {
+                color: #2c3e50;
+                font-size: 1.1rem;
+                margin: 0;
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+                line-height: 1.6;
+            }
+
+            /* Grade Levels Grid - Clean Stud-Dash Style */
             .grade-levels {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 2rem;
-                margin-bottom: 3rem;
+                gap: 20px;
+                margin-bottom: 30px;
             }
 
             .grade-card {
-                background: var(--neutral-light);
-                border-radius: 15px;
-                padding: 1.5rem;
-                box-shadow: var(--shadow-md);
-                transition: var(--transition);
+                background: white;
+                border-radius: 12px;
+                padding: 25px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                border: 1px solid #e9ecef;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
                 cursor: pointer;
                 position: relative;
                 overflow: hidden;
             }
 
             .grade-card:hover {
-                transform: translateY(-5px);
-                box-shadow: var(--shadow-lg);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                background: white;
             }
 
             .grade-card h2 {
-                color: var(--primary);
-                margin-bottom: 1rem;
+                color: #2c3e50;
+                margin-bottom: 15px;
                 display: flex;
                 align-items: center;
-                gap: 0.5rem;
+                gap: 10px;
+                font-size: 1.3em;
+                font-weight: 700;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #e9ecef;
             }
 
             .grade-card h2 i {
-                color: var(--accent);
+                color: #3498db;
+                width: 20px;
             }
 
             .sections-list {
                 list-style: none;
-                margin-top: 1rem;
+                margin: 0;
+                padding: 0;
             }
 
             .section-item {
-                padding: 0.8rem;
-                border-radius: 8px;
-                margin-bottom: 0.5rem;
-                background: var(--neutral);
-                transition: var(--transition);
+                padding: 15px;
+                border-radius: 12px;
+                margin-bottom: 10px;
+                background: #f8f9fa;
+                transition: all 0.2s ease;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                border: 1px solid #e9ecef;
+                cursor: pointer;
             }
 
             .section-item:hover {
-                background: var(--secondary);
-                color: var(--neutral-light);
+                transform: translateX(5px);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                background: white;
+            }
+
+            .section-item:last-child {
+                margin-bottom: 0;
             }
 
             .section-info {
                 display: flex;
                 align-items: center;
-                gap: 0.5rem;
+                gap: 10px;
+            }
+
+            .section-info i {
+                color: #3498db;
+                width: 16px;
+            }
+
+            .section-info span {
+                color: #2c3e50;
+                font-weight: 600;
             }
 
             .section-stats {
                 display: flex;
-                gap: 1rem;
+                gap: 15px;
                 font-size: 0.9rem;
             }
 
             .stat-item {
                 display: flex;
                 align-items: center;
-                gap: 0.3rem;
+                gap: 5px;
+                color: #7f8c8d;
+            }
+
+            .stat-item i {
+                color: #27ae60;
+            }
+
+            /* Dashboard Container - Clean Organization with proper top spacing */
+            .dashboard-container {
+                max-width: 1100px;
+                margin: 0 auto;
+                padding-top: 2rem;
+                position: relative;
+            }
+
+            /* Responsive Design - Matching Student Dashboard */
+            @media (max-width: 768px) {
+                .main-content {
+                    padding: 15px;
+                }
+
+                .dashboard-header {
+                    margin-bottom: 2rem;
+                    padding: 1.5rem;
+                }
+
+                .stats-overview {
+                    grid-template-columns: 1fr;
+                    gap: 1.5rem;
+                    margin-bottom: 2rem;
+                }
+
+                .grade-levels {
+                    grid-template-columns: 1fr;
+                    gap: 1.5rem;
+                }
+
+                .grade-card {
+                    padding: 1.5rem;
+                }
+
+                .welcome-message {
+                    margin-bottom: 2rem;
+                    padding: 2rem 1.5rem;
+                }
             }
         </style>
-
-
-
-
-
-
-
-
-
+        <!-- Dashboard Container - Clean Organization -->
+        <div class="dashboard-container">
+            <!-- Welcome Message -->
+            <div class="welcome-message">
+                <div class="welcome-content">
+                    <h2>Teacher Dashboard</h2>
+                    <p>Select a grade level below to view sections and manage your students' reading assessments. Track progress, view reports, and support your students' reading journey.</p>
+                </div>
+            </div>
 
         <!-- Grade Levels -->
         <div class="grade-levels">
@@ -406,9 +482,9 @@
                     </li>
                 </ul>
             </div>
-        </div>
-    </div>
-    </div>
+        </div> <!-- Close grade-levels -->
+        </div> <!-- Close dashboard-container -->
+    </div> <!-- Close main-content -->
 
     <script>
         // Add hover effect for grade cards
@@ -449,6 +525,39 @@
                 navLinks.forEach(l => l.classList.remove('active'));
                 link.classList.add('active');
             });
+        });
+
+        // Enhanced hover effects - matching stud-dash style
+        document.addEventListener('DOMContentLoaded', function() {
+            // Enhanced hover effects for dashboard header and welcome message
+            document.querySelectorAll('.dashboard-header, .welcome-message').forEach(element => {
+                element.addEventListener('mouseenter', () => {
+                    element.style.transform = 'translateY(-2px)';
+                    element.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.12)';
+                });
+
+                element.addEventListener('mouseleave', () => {
+                    element.style.transform = 'translateY(0)';
+                    element.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.08)';
+                });
+            });
+
+            // Enhanced section item interactions
+            document.querySelectorAll('.section-item').forEach(section => {
+                section.addEventListener('mouseenter', () => {
+                    section.style.transform = 'translateX(5px)';
+                    section.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.08)';
+                    section.style.background = 'white';
+                });
+
+                section.addEventListener('mouseleave', () => {
+                    section.style.transform = 'translateX(0)';
+                    section.style.boxShadow = 'none';
+                    section.style.background = '#f8f9fa';
+                });
+            });
+
+            console.log('Teacher dashboard with clean stud-dash styling loaded successfully');
         });
     </script>
 @endsection

@@ -16,6 +16,7 @@
             --primary: #00B8A9;
             --primary-light: #4DD0E1;
             --primary-dark: #009688;
+            --primary-slight:rgb(3, 204, 187);
 
             /* Secondary - Navigation and Secondary UI */
             --secondary: #F6AD55;
@@ -157,7 +158,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: var(--accent);
+            background: var(--primary-slight);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -463,9 +464,21 @@
             width: 280px;
             background: var(--primary);
             padding: 1.5rem;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             z-index: 1001;
             box-shadow: var(--shadow-lg);
+        }
+
+        /* Mobile sidebar - hidden by default */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -280px; /* Hidden by default on mobile */
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.active {
+                left: 0; /* Show sidebar when burger menu is clicked */
+            }
         }
 
         .sidebar-header {
@@ -535,14 +548,14 @@
 
         .nav-link:hover,
         .nav-link.active {
-            background: var(--secondary);
+            background: var(--primary-slight);
             color: var(--neutral-light);
             transform: translateX(5px);
             box-shadow: 0 2px 8px rgba(246, 173, 85, 0.3);
         }
 
         .nav-link.active {
-            background: var(--secondary);
+            background: var(--primary-slight);
             position: relative;
         }
 
@@ -593,7 +606,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: var(--accent);
+            background: var(--primary-slight);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -653,15 +666,87 @@
             }
         }
 
-        /* Menu Toggle Button */
+        /* Menu Toggle Button - Hidden by default, only shows on mobile */
         .menu-toggle {
             display: none;
-            background: none;
-            border: none;
-            color: var(--neutral-light);
-            font-size: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1.3rem;
             cursor: pointer;
-            padding: 0.5rem;
+            padding: 0.6rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .menu-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex; /* Show burger menu only on mobile */
+                align-items: center;
+                justify-content: center;
+                margin-left: 1rem;
+                order: 2; /* Place burger menu after user dropdown */
+            }
+
+            .user-details {
+                display: none; /* Hide user details on mobile */
+            }
+
+            .user-dropdown {
+                padding: 0.5rem;
+                gap: 0.5rem;
+            }
+
+            .user-avatar {
+                width: 36px;
+                height: 36px;
+                font-size: 0.9rem;
+            }
+
+            /* Sidebar overlay for mobile */
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1000;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+
+            .sidebar-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .menu-toggle {
+                padding: 0.5rem;
+                margin-left: 0.5rem;
+            }
+
+            .user-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 0.8rem;
+            }
+
+            .user-info {
+                gap: 0.5rem;
+            }
         }
     </style>
 </head>
@@ -692,12 +777,7 @@
                             Student Records
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="{{ route('admin.reports') }}" class="nav-link {{ Route::currentRouteName() == 'admin.reports' ? 'active' : '' }}">
-                            <i class="fas fa-chart-line"></i>
-                            Reports
-                        </a>
-                    </li>
+                    
                     <li class="nav-item">
                         <a href="{{ route('admin.user-management') }}" class="nav-link {{ Route::currentRouteName() == 'admin.user-management' ? 'active' : '' }}">
                             <i class="fas fa-users-cog"></i>
@@ -705,6 +785,12 @@
                         </a>
                     </li>
 
+                    <li class="nav-item">
+                        <a href="{{ route('admin.reports') }}" class="nav-link {{ Route::currentRouteName() == 'admin.reports' ? 'active' : '' }}">
+                            <i class="fas fa-chart-line"></i>
+                            Reports
+                        </a>
+                    </li>
                 </div>
             </ul>
         </nav>
@@ -712,25 +798,23 @@
 
         <div class="sidebar-footer">
             <div class="admin-profile">
-                <div class="admin-avatar">{{ Auth::user() ? strtoupper(substr(Auth::user()->name, 0, 1)) : '' }}</div>
+                <div class="admin-avatar">{{ Auth::user() ? strtoupper(substr(Auth::user()->name, 0, 1)) : 'A' }}</div>
                 <div class="admin-info">
-                    <div class="admin-name">{{ Auth::user() ? Auth::user()->name : '' }}</div>
-                    <div class="admin-role">{{ Auth::user() ? Auth::user()->role : '' }}</div>
+                    <div class="admin-name">{{ Auth::user() ? Auth::user()->name : 'Admin' }}</div>
+                    <div class="admin-role">Admin</div>
                 </div>
             </div>
         </div>
     </aside>
 
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <header>
         <div class="header-container">
             <div class="header-left">
-                <button class="menu-toggle">
-                    <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;">
-                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
-                    </svg>
-                </button>
-                <a class="logo" style="display: flex; align-items: center; gap: 0.5rem; margin-left: 1rem;">
-                    <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo" style="height: 32px; width: 32px; object-fit: contain;">
+                <a class="logo" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo" style="height: 60px; width: 60px; object-fit: contain;">
                     <span>ReadEase</span>
                 </a>
             </div>
@@ -744,10 +828,6 @@
                             <div class="user-name">{{ Auth::user() ? Auth::user()->name : '' }}</div>
                             <div class="user-role">{{ Auth::user() ? Auth::user()->role : '' }}</div>
                         </div>
-                        <svg viewBox="0 0 24 24" fill="currentColor" class="dropdown-arrow"
-                            style="width: 16px; height: 16px;">
-                            <path d="M7 10l5 5 5-5z" />
-                        </svg>
 
                         <!-- Dropdown Menu -->
                         <div class="dropdown-menu" id="userDropdownMenu">
@@ -764,6 +844,11 @@
                             </form>
                         </div>
                     </div>
+                    <button class="menu-toggle" id="menuToggle">
+                        <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;">
+                            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -871,12 +956,45 @@
         // Add sidebar toggle functionality
         const menuToggle = document.querySelector('.menu-toggle');
         const sidebar = document.querySelector('.sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
         const mainContent = document.querySelector('.main-content');
         const header = document.querySelector('header');
 
-        if (menuToggle) {
-            menuToggle.addEventListener('click', () => {
+        if (menuToggle && sidebar && sidebarOverlay) {
+            // Toggle sidebar when burger menu is clicked
+            menuToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
                 sidebar.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            });
+
+            // Close sidebar when clicking overlay
+            sidebarOverlay.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+
+            // Close sidebar when clicking anywhere outside (on mobile)
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
+                    // Don't close if clicking on sidebar itself or burger menu
+                    if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                        sidebar.classList.remove('active');
+                        sidebarOverlay.classList.remove('active');
+                        document.body.style.overflow = '';
+                    }
+                }
+            });
+
+            // Close sidebar on window resize if desktop
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('active');
+                    sidebarOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
             });
         }
 

@@ -584,7 +584,7 @@
         }
 
         .results-header h2 {
-            color: #2c3e50;
+            color: #00B8A9;
             font-size: 1.8em;
             margin-bottom: 25px;
             padding-bottom: 15px;
@@ -744,19 +744,18 @@
 
         .feedback-section {
             margin-top: 25px;
-            background: #fafbfc;
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid #e1e5e9;
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .feedback-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e1e5e9;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
         }
 
         .feedback-header h3 {
@@ -765,19 +764,20 @@
             margin: 0;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 0.75rem;
+            font-weight: 600;
         }
 
         .feedback-header h3 i {
-            color: #6c757d;
+            color: #00B8A9;
             font-size: 1.1rem;
         }
 
         .feedback-count {
-            background: #e9ecef;
-            color: #495057;
-            padding: 5px 12px;
-            border-radius: 20px;
+            background: #00B8A9;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 16px;
             font-size: 0.85rem;
             font-weight: 500;
         }
@@ -794,30 +794,31 @@
 
         .feedback-card {
             background: white;
-            border-radius: 10px;
-            border: 1px solid #dee2e6;
+            border-radius: 8px;
             overflow: hidden;
             transition: all 0.3s ease;
         }
 
         .feedback-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .feedback-card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
+            padding: 1rem 1.25rem;
             background: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
             cursor: pointer;
+        }
+
+        .feedback-card-header:hover {
+            background: #e9ecef;
         }
 
         .feedback-info {
             display: flex;
-            gap: 20px;
+            gap: 1.5rem;
             align-items: center;
         }
 
@@ -825,24 +826,23 @@
         .feedback-teacher {
             display: flex;
             align-items: center;
-            gap: 6px;
-            color: #6c757d;
+            gap: 0.5rem;
+            color: #495057;
             font-size: 0.9rem;
         }
 
         .feedback-date i,
         .feedback-teacher i {
-            color: #adb5bd;
+            color: #00B8A9;
             font-size: 0.8rem;
         }
 
         .feedback-toggle {
             background: none;
-            border: none;
             color: #6c757d;
             cursor: pointer;
-            padding: 5px;
-            border-radius: 50%;
+            padding: 0.25rem;
+            border-radius: 4px;
             transition: all 0.3s ease;
         }
 
@@ -853,6 +853,7 @@
 
         .feedback-toggle i {
             transition: transform 0.3s ease;
+            font-size: 0.9rem;
         }
 
         .feedback-toggle.active i {
@@ -872,73 +873,99 @@
         }
 
         .feedback-section-item {
-            margin-bottom: 15px;
-            padding: 15px;
+            margin-bottom: 1rem;
             border-radius: 8px;
-            border-left: 4px solid #dee2e6;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-section-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .feedback-section-item.strengths {
-            background: #f8f9fa;
-            border-left-color: #28a745;
+            background: #E6FFFA;
         }
 
         .feedback-section-item.improvements {
-            background: #fff3cd;
-            border-left-color: #ffc107;
+            background: #FFFBEB;
         }
 
         .feedback-section-item.recommendations {
-            background: #d1ecf1;
-            border-left-color: #17a2b8;
+            background: #E6F3FF;
         }
 
         .feedback-label {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-            color: #495057;
+            gap: 0.75rem;
+            padding: 1rem 1.25rem 0.5rem;
+            margin: 0;
+            font-weight: 600;
+            font-size: 1rem;
         }
 
         .feedback-label i {
-            font-size: 0.9rem;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .feedback-section-item.strengths .feedback-label {
+            color: #00695C;
         }
 
         .feedback-section-item.strengths .feedback-label i {
-            color: #28a745;
+            background: #00B8A9;
+        }
+
+        .feedback-section-item.improvements .feedback-label {
+            color: #C05621;
         }
 
         .feedback-section-item.improvements .feedback-label i {
-            color: #ffc107;
+            background: #F6AD55;
+        }
+
+        .feedback-section-item.recommendations .feedback-label {
+            color: #0277BD;
         }
 
         .feedback-section-item.recommendations .feedback-label i {
-            color: #17a2b8;
+            background: #4FC3F7;
         }
 
         .feedback-section-item p {
             margin: 0;
-            color: #495057;
-            line-height: 1.5;
+            padding: 0 1.25rem 1.25rem;
+            color: #2c3e50;
+            line-height: 1.6;
+            font-size: 0.95rem;
         }
 
         .no-feedback {
             text-align: center;
-            padding: 40px 20px;
-            color: #6c757d;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 8px;
         }
 
         .no-feedback-icon {
             font-size: 3rem;
-            margin-bottom: 15px;
-            opacity: 0.5;
+            margin-bottom: 1rem;
+            color: #6c757d;
+            opacity: 0.6;
         }
 
         .no-feedback p {
             font-size: 1.1rem;
-            margin-bottom: 5px;
+            margin-bottom: 0.5rem;
             color: #495057;
+            font-weight: 500;
         }
 
         .no-feedback small {

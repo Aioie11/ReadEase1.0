@@ -6,72 +6,101 @@
     <!-- Main Content -->
     <div class="main-content">
         <style>
-            /* Page-specific styles */
+            :root {
+                --primary: #00B8A9;
+                --primary-dark: #00B8A9;
+                --primary-light: #00B8A9;
+                --accent: #00B8A9;
+                --neutral-dark: #2D3748;
+                --neutral: #4A5568;
+                --neutral-light: #E2E8F0;
+                --background: #F7FAFC;
+                --card-bg: #FFFFFF;
+                --success: #00B8A9;
+                --warning: #00B8A9;
+                --danger: #E53E3E;
+                --text-dark: #1A202C;
+                --text: #4A5568;
+                --text-light: #718096;
+                --secondary: #00B8A9;
+                --shadow-sm: 0 1px 3px rgba(0, 184, 169, 0.12), 0 1px 2px rgba(0, 184, 169, 0.08);
+                --shadow-md: 0 4px 6px rgba(0, 184, 169, 0.1), 0 2px 4px rgba(0, 184, 169, 0.06);
+                --transition: all 0.3s ease;
+                --radius: 12px;
+            }
+
+            .dashboard-wrapper {
+                padding: 60px;
+                background-color: var(--background);
+                min-height: calc(100vh - 60px);
+            }
+
             .main {
-                max-width: 1100px;
-                margin: 2.5rem auto;
-                padding: 0 1rem;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0;
             }
 
-            .search-bar {
-                display: flex;
-                align-items: center;
-                background: var(--neutral-light);
-                border-radius: 50px;
-                box-shadow: var(--shadow-md);
-                padding: 0.5rem 1rem;
-                margin-bottom: 2rem;
-                max-width: 400px;
+            .dashboard-header {
+                background: white;
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                margin-bottom: 30px;
+                border: 1px solid #e9ecef;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
             }
 
-            .search-bar input {
-                border: none;
-                outline: none;
-                background: transparent;
-                flex: 1;
+            .dashboard-header:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            }
+
+            .header-content h1 {
+                color: #00B8A9;
+                font-size: 1.8rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+            }
+
+            .header-content p {
+                color: #718096;
+                margin: 0;
                 font-size: 1rem;
-                padding: 0.5rem;
-            }
-
-            .search-bar button {
-                background: var(--primary);
-                color: #fff;
-                border: none;
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 1.2rem;
-                cursor: pointer;
-                transition: var(--transition);
-            }
-
-            .search-bar button:hover {
-                background: var(--primary-light);
             }
 
             .card {
-                background: var(--neutral-light);
-                border-radius: var(--radius);
-                box-shadow: var(--shadow-md);
-                padding: 2rem;
-                margin-bottom: 2rem;
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                padding: 30px;
+                margin-bottom: 30px;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            .card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
             }
 
             .section-title {
-                color: var(--primary);
+                color: #00B8A9;
                 font-size: 1.5rem;
                 font-weight: 700;
                 margin-bottom: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
             }
 
             .passage {
-                color: var(--text-light);
+                color: #4A5568;
                 font-size: 1.1rem;
                 margin-bottom: 1rem;
-                line-height: 1.6;
+                line-height: 1.7;
+                background: #F7FAFC;
+                padding: 25px;
+                border-radius: 8px;
             }
 
             .word-count-display {
@@ -79,51 +108,59 @@
                 align-items: center;
                 gap: 0.5rem;
                 margin-bottom: 1.5rem;
-                padding: 0.5rem 1rem;
-                background: var(--neutral);
+                padding: 12px 16px;
+                background: #00B8A9;
+                color: white;
                 border-radius: 8px;
-                border-left: 4px solid var(--primary);
+                font-weight: 600;
+                box-shadow: 0 2px 8px rgba(0, 184, 169, 0.2);
             }
 
             .word-count-label {
-                color: var(--text);
-                font-weight: 600;
                 font-size: 0.95rem;
             }
 
             .word-count-number {
-                color: var(--primary);
                 font-weight: 700;
                 font-size: 1.1rem;
-                background: var(--neutral-light);
-                padding: 0.2rem 0.6rem;
+                background: rgba(255, 255, 255, 0.2);
+                padding: 4px 12px;
                 border-radius: 4px;
                 min-width: 40px;
                 text-align: center;
             }
 
             .student-card {
-                background: var(--neutral-light);
-                border-radius: var(--radius);
-                box-shadow: var(--shadow-md);
-                padding: 1.5rem;
-                margin-bottom: 1rem;
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                padding: 30px;
+                margin-bottom: 30px;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            .student-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
             }
 
             .student-header {
-                font-weight: 600;
-                font-size: 1.1rem;
-                color: var(--primary);
-                margin-bottom: 0.2rem;
+                font-weight: 700;
+                font-size: 1.3rem;
+                color: #00B8A9;
+                margin-bottom: 0.5rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
             }
 
             .student-meta {
-                color: var(--text-light);
-                font-size: 0.95rem;
-                margin-bottom: 0.5rem;
+                color: #718096;
+                font-size: 1rem;
+                margin-bottom: 1rem;
+                padding: 12px 16px;
+                background: #F7FAFC;
+                border-radius: 8px;
             }
 
             .assessment-group {
@@ -133,24 +170,34 @@
             .assessment-group label {
                 display: block;
                 font-weight: 600;
-                color: var(--text);
-                margin-bottom: 0.5rem;
+                color: #2D3748;
+                margin-bottom: 0.8rem;
+                font-size: 1rem;
             }
 
             .assessment-select {
                 width: 100%;
-                padding: 0.8rem;
-                border: 1px solid #ddd;
+                padding: 12px 16px;
+                border: none;
                 border-radius: 8px;
                 font-size: 1rem;
-                background: white;
+                background: #F7FAFC;
                 cursor: pointer;
+                transition: all 0.3s ease;
+                font-family: inherit;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             }
 
             .assessment-select:focus {
                 outline: none;
-                border-color: var(--primary);
-                box-shadow: 0 0 0 2px rgba(14, 97, 186, 0.1);
+                background: white;
+                box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.1);
+                transform: translateY(-1px);
+            }
+
+            .assessment-select:hover {
+                background: white;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             }
 
             .assessment-layout {
@@ -214,29 +261,39 @@
 
             .timer-controls {
                 display: flex;
-                align-items: flex-end;
+                align-items: center;
                 gap: 1rem;
-                padding: 1rem;
-                background: var(--neutral-light);
-                border-radius: 8px;
-                border: 1px solid #e0e0e0;
+                padding: 25px;
+                background: white;
+                border-radius: 12px;
                 flex-wrap: wrap;
                 justify-content: space-between;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                margin-bottom: 20px;
             }
 
             .timer-controls .control-group {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                margin-right: 1rem;
+                margin-right: 0;
+                gap: 0.3rem;
             }
 
             .timer-controls .control-group label {
-                font-size: 0.8rem;
+                font-size: 0.85rem;
                 font-weight: 600;
-                color: var(--text);
-                margin-bottom: 0.2rem;
+                color: #2D3748;
+                margin-bottom: 0;
                 white-space: nowrap;
+                text-align: center;
+            }
+
+            .timer-buttons-section {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                flex-wrap: wrap;
             }
 
             .timer-buttons {
@@ -281,21 +338,25 @@
             }
 
             .timer-controls .clear-assessment {
-                background: var(--neutral);
-                color: var(--text);
-                border: 1px solid #ddd;
+                background: #F56565 !important;
+                color: white !important;
+                border: none !important;
                 padding: 0.7rem 1.5rem;
                 border-radius: 8px;
                 font-weight: 600;
                 cursor: pointer;
-                transition: var(--transition);
+                transition: all 0.3s ease;
                 height: 42px;
                 font-size: 0.9rem;
                 min-width: 90px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             }
 
             .timer-controls .clear-assessment:hover {
-                background: #e5e5e5;
+                background: #E53E3E !important;
+                color: white !important;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(245, 101, 101, 0.3);
             }
 
             /* Legacy save-assessment styles for other contexts */
@@ -343,89 +404,107 @@
 
             .timer {
                 font-family: 'Poppins', monospace;
-                font-size: 1.1rem;
-                margin: 0 1rem;
-                font-weight: 600;
-                color: var(--primary);
-                height: 40px;
+                font-size: 1.4rem;
+                margin: 0;
+                font-weight: 700;
+                color: #00B8A9;
+                height: 50px;
                 display: flex;
                 align-items: center;
-                padding: 0 0.5rem;
-                background: var(--neutral);
+                padding: 0 20px;
+                background: #F7FAFC;
                 border-radius: 8px;
-                border: 1px solid #ddd;
-                min-width: 100px;
+                min-width: 130px;
                 justify-content: center;
+                letter-spacing: 1px;
             }
 
             .btn {
                 border: none;
                 outline: none;
-                padding: 0.5rem 1.2rem;
+                padding: 12px 24px;
                 border-radius: 8px;
                 font-size: 1rem;
-                font-weight: 500;
+                font-weight: 600;
                 cursor: pointer;
-                transition: var(--transition);
+                transition: all 0.3s ease;
                 margin-right: 0.5rem;
-            }
-
-            /* Timer button specific styles */
-            .timer-controls .btn {
-                padding: 0.6rem;
-                width: 40px;
-                height: 40px;
-                display: flex;
+                display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                margin-right: 0.3rem;
-                font-size: 1rem;
+                gap: 0.5rem;
+                text-decoration: none;
+                min-height: 44px;
+            }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+
+            .btn:active {
+                transform: translateY(0);
             }
 
             .btn.start {
-                background: var(--secondary);
-                color: #fff;
+                background: #00B8A9;
+                color: white;
             }
 
             .btn.start:hover {
-                background: #4fa13a;
+                background: #009688;
             }
 
             .btn.stop {
-                background: var(--primary);
-                color: #fff;
+                background: #E53E3E;
+                color: white;
             }
 
             .btn.stop:hover {
-                background: var(--primary-light);
+                background: #C62828;
             }
 
             .btn.reset {
-                background: var(--danger);
-                color: #fff;
+                background: #718096;
+                color: white;
             }
 
             .btn.reset:hover {
-                background: #a50c36;
+                background: #4A5568;
             }
 
             .header-controls {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 1.5rem;
+                margin-bottom: 30px;
                 gap: 1rem;
+                padding: 25px;
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             }
 
             .back-btn {
-                background: var(--neutral);
-                color: var(--primary);
-                border: 1px solid var(--primary);
+                background: #F7FAFC;
+                color: #00B8A9;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-weight: 600;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             }
 
             .back-btn:hover {
-                background: var(--primary);
-                color: #fff;
+                background: #00B8A9;
+                color: white;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 184, 169, 0.3);
             }
 
             .card-header-row {
@@ -440,36 +519,41 @@
             }
 
             .dropdown>a {
-                font-weight: 500;
-                color: var(--primary);
-                background: var(--neutral);
+                font-weight: 600;
+                color: #00B8A9;
+                background: #F7FAFC;
                 border-radius: 8px;
-                padding: 0.5rem 1.2rem;
+                padding: 12px 24px;
                 text-decoration: none;
-                transition: var(--transition);
-                border: 1px solid var(--primary);
+                transition: all 0.3s ease;
+                border: none;
                 display: flex;
                 align-items: center;
                 gap: 0.5rem;
+                min-height: 44px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             }
 
             .dropdown>a:hover {
-                background: var(--primary);
-                color: #fff;
+                background: #00B8A9;
+                color: white;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 184, 169, 0.3);
             }
 
             .dropdown-content {
                 display: none;
                 position: absolute;
-                background: var(--neutral-light);
-                color: var(--text);
-                min-width: 160px;
-                box-shadow: var(--shadow-md);
+                background: white;
+                color: #4A5568;
+                min-width: 180px;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
                 border-radius: 8px;
-                top: 2.5rem;
+                top: 3rem;
                 right: 0;
                 left: auto;
                 z-index: 10;
+                overflow: hidden;
             }
 
             .dropdown:hover .dropdown-content {
@@ -477,20 +561,27 @@
             }
 
             .dropdown-content a {
-                color: var(--text);
-                padding: 0.7rem 1rem;
+                color: #4A5568;
+                padding: 12px 16px;
                 display: block;
-                border-radius: 8px;
                 text-decoration: none;
+                transition: all 0.3s ease;
+                border-bottom: 1px solid #f1f1f1;
+            }
+
+            .dropdown-content a:last-child {
+                border-bottom: none;
             }
 
             .dropdown-content a:hover {
-                background: var(--neutral);
+                background: #F7FAFC;
+                color: #00B8A9;
+                padding-left: 20px;
             }
 
             .dropdown-content a.selected {
-                background: var(--primary-light);
-                color: #fff;
+                background: #00B8A9;
+                color: white;
             }
 
             /* Passage Header and Word Count Styles */
@@ -540,26 +631,36 @@
 
             /* Feedback Section Styles */
             .feedback-section {
-                background: var(--neutral-light);
-                border-radius: var(--radius);
-                box-shadow: var(--shadow-md);
-                padding: 1.5rem;
-                margin-top: 2rem;
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                padding: 30px;
+                margin-top: 30px;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            .feedback-section:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
             }
 
             .feedback-header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 1.5rem;
+                margin-bottom: 2rem;
                 padding-bottom: 1rem;
-                border-bottom: 1px solid var(--neutral);
+                border-bottom: 2px solid #F7FAFC;
             }
 
             .feedback-header h3 {
-                color: var(--primary);
-                font-size: 1.2rem;
+                color: #00B8A9;
+                font-size: 1.4rem;
+                font-weight: 700;
                 margin: 0;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
             }
 
             .feedback-form {
@@ -579,20 +680,53 @@
 
             .feedback-input {
                 width: 100%;
-                padding: 0.8rem;
-                border: 1px solid var(--neutral);
+                padding: 16px;
+                border: none;
                 border-radius: 8px;
                 font-family: inherit;
                 font-size: 1rem;
-                transition: var(--transition);
+                transition: all 0.3s ease;
                 resize: vertical;
-                min-height: 100px;
+                min-height: 120px;
+                background: #F7FAFC;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             }
 
             .feedback-input:focus {
                 outline: none;
-                border-color: var(--primary);
-                box-shadow: 0 0 0 2px rgba(14, 97, 186, 0.1);
+                background: white;
+                box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.1);
+                transform: translateY(-1px);
+            }
+
+            .feedback-input:hover {
+                background: white;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .miscues-input, .assessment-input {
+                padding: 12px 16px;
+                border: none;
+                border-radius: 8px;
+                font-size: 1rem;
+                transition: all 0.3s ease;
+                background: #F7FAFC;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                text-align: center;
+                font-weight: 600;
+                color: #2D3748;
+            }
+
+            .miscues-input:focus, .assessment-input:focus {
+                outline: none;
+                background: white;
+                box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.1);
+                transform: translateY(-1px);
+            }
+
+            .miscues-input:hover, .assessment-input:hover {
+                background: white;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             }
 
 
@@ -604,35 +738,77 @@
                 margin-top: 1rem;
             }
 
-            .btn-save {
-                background: var(--primary);
-                color: var(--neutral-light);
+            .btn-save, .save-assessment {
+                background: #00B8A9;
+                color: white;
                 border: none;
-                padding: 0.8rem 1.5rem;
+                padding: 12px 24px;
                 border-radius: 8px;
-                font-weight: 500;
+                font-weight: 600;
                 cursor: pointer;
-                transition: var(--transition);
+                transition: all 0.3s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                min-height: 44px;
             }
 
-            .btn-save:hover {
-                background: var(--primary-light);
+            .btn-save:hover, .save-assessment:hover {
+                background: #009688;
                 transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 184, 169, 0.3);
             }
 
-            .btn-cancel {
-                background: var(--neutral);
-                color: var(--text);
-                border: 1px solid #ddd;
-                padding: 0.8rem 1.5rem;
+            .btn-cancel, .clear-assessment {
+                background: #F7FAFC;
+                color: #718096;
+                border: none;
+                padding: 12px 24px;
                 border-radius: 8px;
-                font-weight: 500;
+                font-weight: 600;
                 cursor: pointer;
-                transition: var(--transition);
+                transition: all 0.3s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                min-height: 44px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                text-decoration: none;
+                font-size: 0.95rem;
             }
 
-            .btn-cancel:hover {
-                background: #e5e5e5;
+            .btn-cancel:hover, .clear-assessment:hover {
+                background: #E2E8F0;
+                color: #4A5568;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                text-decoration: none;
+            }
+
+            .clear-btn {
+                background: #F56565;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                min-height: 44px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                text-decoration: none;
+                font-size: 0.95rem;
+            }
+
+            .clear-btn:hover {
+                background: #E53E3E;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(245, 101, 101, 0.3);
+                text-decoration: none;
+                color: white;
             }
 
             .feedback-history {
@@ -640,32 +816,58 @@
             }
 
             .feedback-history h4 {
-                color: var(--text);
-                margin-bottom: 1rem;
+                color: #2D3748;
+                margin-bottom: 1.5rem;
+                font-size: 1.2rem;
+                font-weight: 600;
             }
 
             .feedback-item {
-                background: var(--neutral);
-                border-radius: 8px;
-                padding: 1rem;
-                margin-bottom: 1rem;
+                background: white;
+                border-radius: 12px;
+                padding: 25px;
+                margin-bottom: 20px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            .feedback-item:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
             }
 
             .feedback-meta {
                 display: flex;
                 justify-content: space-between;
-                color: var(--text-light);
+                align-items: center;
+                color: #718096;
                 font-size: 0.9rem;
-                margin-bottom: 0.5rem;
+                margin-bottom: 15px;
+                padding: 12px 16px;
+                background: #F7FAFC;
+                border-radius: 8px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .feedback-meta span {
+                font-weight: 500;
             }
 
             .feedback-content {
-                color: var(--text);
-                line-height: 1.5;
+                color: #4A5568;
+                line-height: 1.6;
+                margin-bottom: 20px;
             }
 
             .feedback-content p {
-                margin-bottom: 0.5rem;
+                margin-bottom: 12px;
+                padding: 8px 0;
+            }
+
+            .feedback-content strong {
+                color: #2D3748;
+                font-weight: 600;
             }
 
             .feedback-rating {
@@ -688,95 +890,156 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-top: 1rem;
-                padding-top: 1rem;
-                border-top: 1px solid #e5e5e5;
+                margin-top: 20px;
+                padding-top: 20px;
+                border-top: 1px solid #E2E8F0;
             }
 
             .btn-send {
-                background: var(--secondary);
+                background: #00B8A9;
                 color: white;
                 border: none;
-                padding: 0.5rem 1rem;
-                border-radius: 6px;
+                padding: 12px 20px;
+                border-radius: 8px;
                 font-size: 0.9rem;
+                font-weight: 600;
                 cursor: pointer;
-                transition: var(--transition);
+                transition: all 0.3s ease;
                 display: flex;
                 align-items: center;
                 gap: 0.5rem;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             }
 
             .btn-send:hover {
-                background: #4fa13a;
-                transform: translateY(-1px);
+                background: #009688;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 184, 169, 0.3);
             }
 
             .btn-send:disabled {
-                background: #ccc;
-                cursor: not-allowed;
-                transform: none;
+                background: #CBD5E0 !important;
+                color: #718096 !important;
+                cursor: not-allowed !important;
+                transform: none !important;
+                box-shadow: none !important;
+            }
+
+            .btn-send.sent {
+                background: #CBD5E0 !important;
+                color: #718096 !important;
+                cursor: not-allowed !important;
+                transform: none !important;
+                box-shadow: none !important;
             }
 
             .send-status {
-                font-size: 0.9rem;
-                padding: 0.3rem 0.8rem;
-                border-radius: 4px;
-                font-weight: 500;
+                font-size: 0.85rem;
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
             }
 
             .send-status.sent {
-                background: #e8f5e8;
-                color: #388e3c;
+                background: #D4EDDA;
+                color: #155724;
             }
 
             .send-status.pending {
-                background: #fff3e0;
-                color: #f57c00;
+                background: #FFF3CD;
+                color: #856404;
             }
 
             .send-status.not-sent {
-                background: #ffebee;
-                color: #d32f2f;
+                background: #F8D7DA;
+                color: #721C24;
             }
 
-            @media (max-width: 700px) {
+            .empty-state {
+                text-align: center;
+                padding: 40px 20px;
+                color: #718096;
+                background: #F7FAFC;
+                border-radius: 12px;
+                margin-top: 20px;
+            }
+
+            .empty-state i {
+                font-size: 3rem;
+                margin-bottom: 15px;
+                color: #CBD5E0;
+            }
+
+            .empty-state p {
+                font-size: 1rem;
+                margin: 0;
+                font-weight: 500;
+            }
+
+            @media (max-width: 768px) {
+                .dashboard-wrapper {
+                    padding: 20px;
+                }
+
                 .main {
                     padding: 0;
                 }
 
                 .header-controls {
                     flex-direction: column;
-                    align-items: flex-start;
+                    align-items: stretch;
                     gap: 1rem;
+                    padding: 15px;
                 }
 
                 .card,
-                .student-card {
-                    padding: 1rem;
+                .student-card,
+                .feedback-section {
+                    padding: 20px;
+                    margin-bottom: 20px;
                 }
 
-                .assessment-layout {
+                .dashboard-header {
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .timer-controls {
                     flex-direction: column;
+                    align-items: stretch;
                     gap: 1rem;
+                    padding: 15px;
                 }
 
-                .right-controls {
-                    gap: 0.8rem;
+                .timer-controls .control-group {
+                    align-items: stretch;
+                    text-align: center;
                 }
 
-                .timer-buttons {
-                    justify-content: center;
+                .timer {
+                    margin: 0;
+                    width: 100%;
                 }
 
-                .save-controls {
-                    justify-content: flex-end;
+                .btn {
+                    width: 100%;
+                    margin-right: 0;
+                    margin-bottom: 0.5rem;
                 }
 
-                .assessment-controls {
+                .assessment-buttons {
                     flex-direction: column;
-                    align-items: flex-start;
-                    gap: 0.7rem;
+                    gap: 0.5rem;
+                }
+
+                .dropdown-content {
+                    position: fixed;
+                    top: auto;
+                    right: 10px;
+                    left: 10px;
+                    width: auto;
                 }
             }
 
@@ -809,7 +1072,16 @@
             }
         </style>
 
+    <div class="dashboard-wrapper">
         <div class="main">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <div class="header-content">
+                    <h1>Reading Assessment</h1>
+                    <p>Conduct comprehensive reading assessments with timer controls and feedback system</p>
+                </div>
+            </div>
+
             <div class="header-controls">
                 <button class="btn back-btn" onclick="window.history.back()">
                     <i class="fas fa-arrow-left"></i> Back
@@ -855,9 +1127,11 @@
                         <input type="number" id="totalWords" class="miscues-input" readonly style="text-align: center; background-color: var(--neutral-light); cursor: not-allowed;">
                     </div>
                     <span class="timer" id="timer">00:00:00</span>
-                    <button class="btn start" onclick="startTimer()"><i class="fas fa-play"></i></button>
-                    <button class="btn stop" onclick="stopTimer()"><i class="fas fa-stop"></i></button>
-                    <button class="btn reset" onclick="resetTimer()"><i class="fas fa-redo"></i></button>
+                    <div class="timer-buttons-section">
+                        <button class="btn start" onclick="startTimer()">Start Time</button>
+                        <button class="btn stop" onclick="stopTimer()">Stop Time</button>
+                        <button class="btn reset" onclick="resetTimer()">Reset Time</button>
+                    </div>
                     <!-- Save Assessment Buttons -->
                     <div class="assessment-buttons">
                         <button class="btn save-assessment" onclick="saveAssessment()">Save</button>
@@ -868,7 +1142,10 @@
 
             <!-- Student Reading Assessment positioned below the reading passage box -->
             <div class="student-card">
-                <div class="student-header">Student Reading Assessment</div>
+                <div class="student-header">
+                    <i class="fas fa-user-graduate"></i>
+                    Student Reading Assessment
+                </div>
                 <div class="student-meta">Section: {{ ucfirst($section ?? 'Narra') }} &nbsp; | &nbsp; Grade Level:
                     {{ str_replace('grade', '', $grade ?? 'grade7') }}
                 </div>
@@ -892,7 +1169,10 @@
         <!-- Feedback Section -->
         <div class="feedback-section">
             <div class="feedback-header">
-                <h3>Student Reading Assessment Feedback</h3>
+                <h3>
+                    <i class="fas fa-comments"></i>
+                    Student Reading Assessment Feedback
+                </h3>
             </div>
             <form class="feedback-form" id="feedbackForm">
                 <div class="feedback-group">
@@ -949,6 +1229,7 @@
                                         </div>
                                     </div> -->
         </div>
+    </div>
     </div>
 
     <script>
@@ -1226,8 +1507,11 @@
                                         </div>
 
                                         <div class="feedback-actions-history">
-                                            <button class="btn-send" onclick="sendFeedbackToStudent(this, ${feedbackId})">
-                                                <i class="fas fa-paper-plane"></i> Send to Student
+                                            <button class="btn-send ${feedback.is_sent ? 'sent' : ''}"
+                                                    onclick="sendFeedbackToStudent(this, ${feedbackId})"
+                                                    ${feedback.is_sent ? 'disabled' : ''}>
+                                                <i class="fas fa-${feedback.is_sent ? 'check' : 'paper-plane'}"></i>
+                                                ${feedback.is_sent ? 'Sent' : 'Send to Student'}
                                             </button>
                                             <span class="send-status ${feedback.is_sent ? 'sent' : 'not-sent'}">
                                                 ${feedback.is_sent ? '✓ Sent' : 'Not Sent'}
@@ -1286,17 +1570,17 @@
                     if (data.success) {
                         // Update UI to show sent status
                         button.innerHTML = '<i class="fas fa-check"></i> Sent';
-                        button.style.background = '#388e3c';
+                        button.disabled = true;
+                        button.style.background = '#CBD5E0';
+                        button.style.color = '#718096';
+                        button.style.cursor = 'not-allowed';
+                        button.style.transform = 'none';
+                        button.style.boxShadow = 'none';
                         statusSpan.className = 'send-status sent';
                         statusSpan.textContent = '✓ Sent';
 
                         // Show success message
                         alert(data.message);
-
-                        // Disable button after successful send
-                        setTimeout(() => {
-                            button.disabled = true;
-                        }, 1000);
                     } else {
                         // Reset button on error
                         button.disabled = false;

@@ -119,16 +119,16 @@
         }
 
         .login-title {
-            font-size: 1.8rem;
+            font-size: 2rem;
             color: #00B8A9;
             margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
+            font-weight: 1600;
+        }   
 
         .login-subtitle {
             color: #64748b;
-            font-size: 0.9rem;
-            line-height: 1.5;
+            font-size: 0.98rem;
+            line-height: 0.5;
         }
 
         .form-group {
@@ -327,7 +327,7 @@
                 @csrf
 
                 <div class="login-header">
-                    <h2 class="login-title">Welcome Back to ReadEase!</h2>
+                    <h2 class="login-title">Welcome!</h2>
                     <p class="login-subtitle">Let's continue empowering smarter readers.</p>
                 </div>
 
@@ -370,13 +370,234 @@
                 </button>
 
                 <div class="forgot-password">
-                    <a href="#" onclick="alert('Please contact your administrator for password assistance.')">
+                    <a href="#" onclick="showForgotPasswordModal()">
                         Forgot your password?
                     </a>
                 </div>
             </form>
         </div>
     </div>
+
+    <!-- Custom Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3 class="modal-title">Password Assistance</h3>
+                <button class="modal-close" onclick="closeForgotPasswordModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-message">
+                    <p>Please contact your administrator for password assistance.</p>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-user-tie"></i>
+                            <span>Contact your system administrator</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>Or reach out via your institution's support channel</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-primary" onclick="closeForgotPasswordModal()">
+                    <i class="fas fa-check"></i>
+                    <span>Understood</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            max-width: 450px;
+            width: 90%;
+            max-height: 90vh;
+            overflow: hidden;
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #00B8A9 0%, #4DD0E1 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-message p {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        .contact-item i {
+            color: #00B8A9;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .contact-item span {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            background: #f8fafc;
+            text-align: center;
+        }
+
+        .modal-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn-primary {
+            background: #00B8A9;
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            background: #009688;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 184, 169, 0.3);
+        }
+
+        @media (max-width: 480px) {
+            .modal-container {
+                width: 95%;
+                margin: 1rem;
+            }
+
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding: 1.25rem;
+            }
+
+            .modal-title {
+                font-size: 1.2rem;
+            }
+
+            .modal-message p {
+                font-size: 1rem;
+            }
+
+            .contact-item {
+                padding: 0.75rem;
+            }
+        }
+    </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -412,6 +633,33 @@
                     button.disabled = false;
                     span.textContent = 'Sign In';
                 }, 5000);
+            });
+
+            // Modal functionality
+            window.showForgotPasswordModal = function() {
+                const modal = document.getElementById('forgotPasswordModal');
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            };
+
+            window.closeForgotPasswordModal = function() {
+                const modal = document.getElementById('forgotPasswordModal');
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            };
+
+            // Close modal when clicking outside
+            document.getElementById('forgotPasswordModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeForgotPasswordModal();
+                }
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeForgotPasswordModal();
+                }
             });
         });
     </script>

@@ -5,72 +5,54 @@
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <style>
-        /* Color Variables for Better Readability */
-        :root {
-            --primary-color: #2563eb;
-            --primary-dark: #1d4ed8;
-            --text-primary: #1f2937;
-            --text-secondary: #6b7280;
-            --text-light: #9ca3af;
-            --border-color: #e5e7eb;
-            --border-light: #f3f4f6;
-            --success-color: #059669;
-            --danger-color: #dc2626;
-            --warning-color: #d97706;
-            --background-white: #ffffff;
-            --background-gray: #f9fafb;
-            --shadow-light: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            --shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        /* Main Content */
+        /* Main Content - Clean Stud-Dash Style */
         .main-content {
-            margin-top: 50px;
-            margin-left: 280px;
-            padding: 6rem 5% 2rem;
-            transition: all 0.3s ease;
-            background: var(--background-white);
+            margin-top: 60px;
+            padding: 50px;
+            background-color: #f8f9fa;
             min-height: 100vh;
         }
 
-        /* Page Header */
+        /* Dashboard Container - Clean Organization */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 1rem;
+        }
+
+        /* Page Header - Clean Stud-Dash Style */
         .page-header {
-            background: var(--background-white);
-            padding: 2rem;
+            background: white;
+            padding: 2.5rem;
             border-radius: 12px;
-            box-shadow: var(--shadow-light);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             margin-bottom: 2rem;
-            border-left: 4px solid var(--primary-color);
         }
 
         .page-header h1 {
-            color: var(--text-primary);
+            color: #00B8A9;;
             font-size: 1.75rem;
-            font-weight: 600;
+            font-weight: 700;
             margin: 0;
             display: flex;
             align-items: center;
             gap: 0.75rem;
         }
 
-        .page-header h1 i {
-            color: var(--primary-color);
-        }
-
         .page-header p {
-            color: var(--text-secondary);
+            color: #7f8c8d;
             margin: 0.5rem 0 0 0;
-            font-size: 0.95rem;
-            line-height: 1.5;
+            font-size: 1rem;
+            line-height: 0.9;
         }
 
-        /* Control Panel */
+        /* Control Panel - Clean Stud-Dash Style */
         .control-panel {
-            background: var(--background-white);
+            background: white;
             padding: 1.5rem;
             border-radius: 12px;
-            box-shadow: var(--shadow-light);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             margin-bottom: 2rem;
-            border: 1px solid var(--border-light);
         }
 
         .control-section {
@@ -84,7 +66,7 @@
         .control-label {
             display: block;
             font-weight: 600;
-            color: var(--text-primary);
+            color: #2c3e50;
             margin-bottom: 0.75rem;
             font-size: 0.875rem;
             text-transform: uppercase;
@@ -100,10 +82,10 @@
 
         .action-btn {
             padding: 0.875rem 1.25rem;
-            border: 1px solid var(--border-color);
+            border: 1px solid #e9ecef;
             border-radius: 8px;
-            background: var(--background-white);
-            color: var(--text-primary);
+            background: white;
+            color: #2c3e50;
             cursor: pointer;
             transition: all 0.2s ease;
             font-weight: 500;
@@ -116,34 +98,28 @@
         }
 
         .action-btn:hover {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-light);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .action-btn.primary {
-            background: var(--primary-color);
-            color: var(--background-white);
-            border-color: var(--primary-color);
+            background: #00B8A9;
+            color: white;
+            border-color: #00B8A9;
         }
 
         .action-btn.primary:hover {
-            background: var(--primary-dark);
-            color: var(--background-white);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-medium);
+            background: #009688;
+            color: white;
         }
 
         .action-btn.danger {
-            border-color: var(--danger-color);
-            color: var(--danger-color);
+            border-color: #e74c3c;
+            color: #e74c3c;
         }
 
         .action-btn.danger:hover {
-            background: var(--danger-color);
-            color: var(--background-white);
-            transform: translateY(-1px);
+            background: #e74c3c;
+            color: white;
         }
 
         /* Filter Controls */
@@ -160,18 +136,18 @@
 
         .filter-select {
             padding: 0.75rem 1rem;
-            border: 1px solid var(--border-color);
+            border: 1px solid #e9ecef;
             border-radius: 8px;
-            background: var(--background-white);
-            color: var(--text-primary);
+            background: white;
+            color: #2c3e50;
             font-size: 0.95rem;
             transition: all 0.2s ease;
         }
 
         .filter-select:focus {
             outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            border-color: #00B8A9;
+            box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.1);
         }
 
         /* Subject Tabs */
@@ -182,10 +158,10 @@
 
         .subject-tab {
             padding: 0.75rem 1.5rem;
-            border: 1px solid var(--border-color);
+            border: 1px solid #e9ecef;
             border-radius: 8px;
-            background: var(--background-white);
-            color: var(--text-primary);
+            background: white;
+            color: #2c3e50;
             cursor: pointer;
             transition: all 0.2s ease;
             font-weight: 500;
@@ -196,16 +172,13 @@
         }
 
         .subject-tab:hover {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .subject-tab.active {
-            background: var(--primary-color);
-            color: var(--background-white);
-            border-color: var(--primary-color);
-            box-shadow: var(--shadow-light);
+            background: #00B8A9;
+            color: white;
+            border-color: #00B8A9;
         }
 
         /* Content Display */
@@ -215,21 +188,19 @@
         }
 
         .content-card {
-            background: var(--background-white);
+            background: white;
             border-radius: 12px;
-            box-shadow: var(--shadow-light);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             overflow: hidden;
-            border: 1px solid var(--border-light);
         }
 
         .content-card-header {
             padding: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            background: var(--background-gray);
+            background: #f8f9fa;
         }
 
         .content-card-header h3 {
-            color: var(--text-primary);
+            color: #2c3e50;
             font-size: 1.1rem;
             font-weight: 600;
             margin: 0;
@@ -239,7 +210,7 @@
         }
 
         .content-card-header h3 i {
-            color: var(--primary-color);
+            color: #00B8A9;
         }
 
         .content-card-body {
@@ -249,12 +220,12 @@
         /* Reading Passage Styles */
         .reading-content {
             line-height: 1.7;
-            color: var(--text-primary);
+            color: #2c3e50;
             font-size: 0.95rem;
         }
 
         .reading-title {
-            color: var(--text-primary);
+            color: #2c3e50;
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 1rem;
@@ -262,12 +233,11 @@
 
         /* Questions Display */
         .question-item {
-            background: var(--background-white);
+            background: white;
             padding: 1.25rem;
             border-radius: 8px;
             margin-bottom: 1rem;
-            border-left: 3px solid var(--primary-color);
-            border: 1px solid var(--border-light);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .question-item:last-child {
@@ -275,7 +245,7 @@
         }
 
         .question-text {
-            color: var(--text-primary);
+            color: #2c3e50;
             font-weight: 600;
             margin-bottom: 0.75rem;
             font-size: 0.95rem;
@@ -288,26 +258,24 @@
 
         .option-item {
             padding: 0.75rem;
-            background: var(--background-white);
-            border: 1px solid var(--border-color);
+            background: #f8f9fa;
             border-radius: 6px;
-            color: var(--text-primary);
+            color: #2c3e50;
             font-size: 0.9rem;
+            margin-bottom: 0.5rem;
         }
 
         .correct-answer {
-            background: rgba(5, 150, 105, 0.1);
-            border-color: var(--success-color);
-            color: var(--success-color);
+            background: rgba(39, 174, 96, 0.1);
+            color: #27ae60;
             font-weight: 600;
         }
 
         .text-answer {
             padding: 0.75rem;
-            background: rgba(5, 150, 105, 0.1);
-            border: 1px solid var(--success-color);
+            background: rgba(39, 174, 96, 0.1);
             border-radius: 6px;
-            color: var(--success-color);
+            color: #27ae60;
             font-weight: 600;
             font-size: 0.9rem;
         }
@@ -384,66 +352,71 @@
             color: var(--text-secondary);
         }
 
-        /* Modal Styles */
+        /* Modal Styles - Clean Modern Design */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 2000;
             justify-content: center;
             align-items: center;
             overflow-y: auto;
-            backdrop-filter: blur(2px);
+            backdrop-filter: blur(4px);
         }
 
         .modal.active {
             display: flex;
-            animation: fadeIn 0.3s ease;
+            animation: modalFadeIn 0.3s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .modal-content {
-            background: var(--background-white);
-            border-radius: 16px;
-            box-shadow: var(--shadow-medium);
-            padding: 2rem;
-            max-width: 750px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            padding: 0;
+            max-width: 800px;
             width: 95vw;
             max-height: 90vh;
-            overflow-y: auto;
+            overflow: hidden;
             position: relative;
             margin: 2rem 0;
-            border: 1px solid var(--border-light);
         }
 
         .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--border-color);
+            background: linear-gradient(135deg, #00B8A9 0%, #009688 100%);
+            color: white;
+            padding: 2rem;
+            margin: 0;
+            border-radius: 20px 20px 0 0;
+            position: relative;
         }
 
         .modal-title {
-            color: var(--text-primary);
+            color: white;
             font-size: 1.5rem;
-            font-weight: 700;
+            font-weight: 600;
             margin: 0;
             display: flex;
             align-items: center;
             gap: 0.75rem;
         }
 
-        .modal-title::before {
-            content: "📝";
+        .modal-title i {
             font-size: 1.25rem;
+            opacity: 0.9;
         }
 
         .close-modal {
@@ -452,22 +425,36 @@
             right: 1rem;
             width: 2.5rem;
             height: 2.5rem;
-            border: none;
-            background: var(--background-gray);
+            border: 2px solid rgba(255, 255, 255, 0.8);
             border-radius: 50%;
-            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.9);
+            color: #2c3e50;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.2s ease;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            z-index: 10;
         }
 
         .close-modal:hover {
-            background: var(--danger-color);
-            color: var(--background-white);
+            background: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
             transform: scale(1.1);
+        }
+
+        .close-modal i {
+            font-size: 1rem;
+        }
+
+        /* Modal Body */
+        .modal-body {
+            padding: 2rem;
+            max-height: calc(90vh - 120px);
+            overflow-y: auto;
         }
 
         /* Enhanced Form Styles */
@@ -490,12 +477,12 @@
         .form-select {
             width: 100%;
             padding: 1rem;
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
             font-size: 1rem;
             transition: all 0.3s ease;
-            background: var(--background-white);
-            color: var(--text-primary);
+            background: white;
+            color: #2c3e50;
             font-weight: 500;
         }
 
@@ -503,9 +490,8 @@
         .form-textarea:focus,
         .form-select:focus {
             outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
-            transform: translateY(-1px);
+            border-color: #00B8A9;
+            box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.1);
         }
 
         .form-input::placeholder,
@@ -515,35 +501,25 @@
         }
 
         .question-container {
-            background: var(--background-gray);
+            background: #f8f9fa;
             padding: 2rem;
             border-radius: 12px;
             margin: 1.5rem 0;
-            border: 2px solid var(--border-color);
+            border: 1px solid #e9ecef;
             position: relative;
-        }
-
-        .question-container::before {
-            content: "❓";
-            position: absolute;
-            top: -10px;
-            left: 20px;
-            background: var(--background-white);
-            padding: 0 10px;
-            font-size: 1.2rem;
         }
 
         /* Form Section Styling */
         .form-section {
-            background: var(--background-gray);
+            background: #f8f9fa;
             padding: 1.5rem;
             border-radius: 12px;
             margin-bottom: 2rem;
-            border: 1px solid var(--border-light);
+            border: 1px solid #e9ecef;
         }
 
         .form-section-title {
-            color: var(--text-primary);
+            color: #2c3e50;
             font-size: 1.1rem;
             font-weight: 700;
             margin-bottom: 1rem;
@@ -554,25 +530,28 @@
             letter-spacing: 0.5px;
         }
 
+        .form-section-title i {
+            color: #00B8A9;
+        }
+
         /* Enhanced Button Styling for Forms */
         .form-submit-btn {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            color: var(--background-white);
+            background: #00B8A9;
+            color: white;
             border: none;
             padding: 1rem 2rem;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 1rem;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            box-shadow: var(--shadow-light);
         }
 
         .form-submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-medium);
+            background: #009688;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .form-submit-btn:disabled {
@@ -616,11 +595,22 @@
             background: #b91c1c;
             transform: translateY(-1px);
         }
-        /* Responsive Design */
+        /* Responsive Design - Clean Stud-Dash Style */
         @media (max-width: 768px) {
             .main-content {
-                margin-left: 0;
-                padding: 6rem 3% 2rem;
+                padding: 15px;
+            }
+
+            .dashboard-container {
+                padding-top: 0;
+            }
+
+            .page-header {
+                padding: 1.5rem;
+            }
+
+            .page-header h1 {
+                font-size: 1.5rem;
             }
 
             .filter-controls {
@@ -639,24 +629,37 @@
             .modal-content {
                 width: 98vw;
                 margin: 1rem 0;
+                max-height: 95vh;
+            }
+
+            .modal-body {
+                padding: 1rem;
+                max-height: calc(95vh - 100px);
+            }
+
+            .modal-header {
                 padding: 1.5rem;
+            }
+
+            .control-panel {
+                padding: 1rem;
             }
         }
     </style>
 
     <!-- Main Content -->
     <main class="main-content">
-        <!-- Page Header -->
-        <div class="page-header">
-            <h1><i class="fas fa-clipboard-list"></i> Test Management</h1>
-            <p>Create, edit, and manage reading comprehension tests for students</p>
-        </div>
+        <div class="dashboard-container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>Test Management</h1>
+                <p>Create, edit, and manage reading comprehension tests for students</p>
+            </div>
 
         <!-- Control Panel -->
         <div class="control-panel">
             <!-- Action Buttons -->
             <div class="control-section">
-                <label class="control-label">Actions</label>
                 <div class="action-buttons">
                     <button class="action-btn primary" onclick="openCreateModal()">
                         <i class="fas fa-plus"></i>
@@ -679,7 +682,6 @@
 
             <!-- Filter Controls -->
             <div class="control-section">
-                <label class="control-label">Filters</label>
                 <div class="filter-controls">
                     <div class="filter-group">
                         <label class="form-label">Grade Level</label>
@@ -754,16 +756,20 @@
                 <i class="fas fa-times"></i>
             </button>
             <div class="modal-header">
-                <h2 class="modal-title">Create New Reading Material</h2>
+                <h2 class="modal-title">
+                    <i class="fas fa-plus-circle"></i>
+                    Create New Reading Material
+                </h2>
             </div>
-            <form id="createForm">
+            <div class="modal-body">
+                <form id="createForm">
                 <div class="form-section">
                     <div class="form-section-title">
                         <i class="fas fa-cog"></i>
                         Basic Information
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="grade">📚 Grade Level</label>
+                        <label class="form-label" for="grade"> Grade Level</label>
                         <select class="form-select" id="grade" required>
                             <option value="">Select Grade Level</option>
                             <option value="7">Grade 7</option>
@@ -773,7 +779,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="subject">🌐 Subject</label>
+                        <label class="form-label" for="subject"> Subject</label>
                         <select class="form-select" id="subject" required>
                             <option value="">Select Subject</option>
                             <option value="english">English</option>
@@ -788,11 +794,11 @@
                         Reading Material
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="title">📖 Reading Title</label>
+                        <label class="form-label" for="title"> Reading Title</label>
                         <input class="form-input" type="text" id="title" required placeholder="Enter an engaging title for the reading material">
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="content">📝 Reading Content</label>
+                        <label class="form-label" for="content"> Reading Content</label>
                         <textarea class="form-textarea" id="content" rows="8" required placeholder="Enter the complete reading passage content here..."></textarea>
                     </div>
                 </div>
@@ -811,13 +817,14 @@
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--border-color); text-align: center;">
+                <div class="form-group" style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #e9ecef; text-align: center;">
                     <button type="submit" class="form-submit-btn" style="width: 100%;">
                         <i class="fas fa-save"></i>
                         Save Reading Material
                     </button>
                 </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -828,16 +835,20 @@
                 <i class="fas fa-times"></i>
             </button>
             <div class="modal-header">
-                <h2 class="modal-title">Edit Reading Material</h2>
+                <h2 class="modal-title">
+                    <i class="fas fa-edit"></i>
+                    Edit Reading Material
+                </h2>
             </div>
-            <form id="editForm">
+            <div class="modal-body">
+                <form id="editForm">
                 <div class="form-section">
                     <div class="form-section-title">
                         <i class="fas fa-cog"></i>
                         Basic Information
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="edit-grade">📚 Grade Level</label>
+                        <label class="form-label" for="edit-grade"> Grade Level</label>
                         <select class="form-select" id="edit-grade" required>
                             <option value="7">Grade 7</option>
                             <option value="8">Grade 8</option>
@@ -846,7 +857,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="edit-subject">🌐 Subject</label>
+                        <label class="form-label" for="edit-subject"> Subject</label>
                         <select class="form-select" id="edit-subject" required>
                             <option value="english">English</option>
                             <option value="filipino">Filipino</option>
@@ -860,11 +871,11 @@
                         Reading Material
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="edit-title">📖 Reading Title</label>
+                        <label class="form-label" for="edit-title"> Reading Title</label>
                         <input class="form-input" type="text" id="edit-title" required placeholder="Enter an engaging title for the reading material">
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="edit-content">📝 Reading Content</label>
+                        <label class="form-label" for="edit-content"> Reading Content</label>
                         <textarea class="form-textarea" id="edit-content" rows="8" required placeholder="Enter the complete reading passage content here..."></textarea>
                     </div>
                 </div>
@@ -883,13 +894,14 @@
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid var(--border-color); text-align: center;">
+                <div class="form-group" style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #e9ecef; text-align: center;">
                     <button type="submit" class="form-submit-btn" style="width: 100%;">
                         <i class="fas fa-save"></i>
                         Save Changes
                     </button>
                 </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 
