@@ -671,7 +671,7 @@
                                         <td class="py-4 px-4">
                                             <span
                                                 class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        {{ $assessment->language == 'english' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        {{ $assessment->language == 'english' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
                                                 {{ ucfirst($assessment->language) }}
                                             </span>
                                         </td>
@@ -711,10 +711,10 @@
                                             @endphp
                                             <span
                                                 class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @if($overallScore >= 90) bg-green-100 text-green-800
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @elseif($overallScore >= 80) bg-blue-100 text-blue-800
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @elseif($overallScore >= 70) bg-yellow-100 text-yellow-800
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @else bg-red-100 text-red-800 @endif">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @if($overallScore >= 90) bg-green-100 text-green-800
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @elseif($overallScore >= 80) bg-blue-100 text-blue-800
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @elseif($overallScore >= 70) bg-yellow-100 text-yellow-800
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @else bg-red-100 text-red-800 @endif">
                                                 @if($overallScore >= 90) Excellent
                                                 @elseif($overallScore >= 80) Good
                                                 @elseif($overallScore >= 70) Fair
@@ -1151,77 +1151,119 @@
                 padding: 2rem;
             }
 
-            .student-info-section {
-                margin-bottom: 2rem;
-            }
-
-            .student-card {
-                display: flex;
-                align-items: center;
-                background: linear-gradient(135deg, #F8FAFC, #E2E8F0);
-                padding: 1.5rem;
+            /* Professional Student Information Card */
+            .student-info-card {
+                background: #ffffff;
+                border: 1px solid #E5E7EB;
                 border-radius: 12px;
-                border: 1px solid #E2E8F0;
+                margin-bottom: 2rem;
+                overflow: hidden;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             }
 
-            .student-avatar-large {
-                width: 80px;
-                height: 80px;
-                border-radius: 50%;
-                background: linear-gradient(135deg, #1E3A8A, #3B82F6);
+            .info-header {
+                background: linear-gradient(135deg, #F8FAFC, #F1F5F9);
+                padding: 1.5rem;
+                border-bottom: 1px solid #E5E7EB;
                 display: flex;
                 align-items: center;
-                justify-content: center;
-                color: white;
-                font-size: 2rem;
-                margin-right: 1.5rem;
-            }
-
-            .student-details h3 {
-                margin: 0 0 0.5rem 0;
-                color: #1E3A8A;
-                font-size: 1.5rem;
-                font-weight: 600;
-            }
-
-            .student-details p {
-                margin: 0 0 1rem 0;
-                color: #64748B;
-                font-size: 1rem;
-            }
-
-            .assessment-summary {
-                display: flex;
                 gap: 1rem;
             }
 
-            .score-badge,
-            .percentage-badge,
-            .date-badge {
-                background: white;
-                padding: 0.75rem 1rem;
-                border-radius: 8px;
-                text-align: center;
-                border: 1px solid #E2E8F0;
-                min-width: 80px;
+            .student-avatar {
+                width: 60px;
+                height: 60px;
+                background: linear-gradient(135deg, #00B8A9, #009688);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 4px 12px rgba(0, 184, 169, 0.2);
+                flex-shrink: 0;
             }
 
-            .score-badge span,
-            .percentage-badge span,
-            .date-badge span {
-                display: block;
-                font-size: 1.25rem;
+            .student-avatar i {
+                font-size: 1.5rem;
+                color: white;
+            }
+
+            .student-basic-info {
+                flex: 1;
+            }
+
+            .student-name {
+                margin: 0 0 0.25rem 0;
+                font-size: 1.375rem;
                 font-weight: 600;
-                color: #00B8A9;
+                color: #111827;
+                line-height: 1.2;
             }
 
-            .score-badge small,
-            .percentage-badge small,
-            .date-badge small {
-                color: #64748B;
-                font-size: 0.75rem;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
+            .student-meta {
+                margin: 0;
+            }
+
+            .grade-section {
+                color: #6B7280;
+                font-size: 0.875rem;
+                font-weight: 500;
+            }
+
+            /* Assessment Details Table */
+            .assessment-details-table {
+                padding: 0;
+            }
+
+            .detail-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1rem 1.5rem;
+                border-bottom: 1px solid #F3F4F6;
+                transition: background-color 0.2s ease;
+            }
+
+            .detail-row:last-child {
+                border-bottom: none;
+            }
+
+            .detail-row:hover {
+                background-color: #F9FAFB;
+            }
+
+            .detail-label {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                font-weight: 500;
+                color: #374151;
+                font-size: 0.875rem;
+            }
+
+            .detail-label i {
+                width: 16px;
+                color: #6B7280;
+                font-size: 0.875rem;
+            }
+
+            .detail-value {
+                font-weight: 600;
+                font-size: 0.875rem;
+                text-align: right;
+            }
+
+            .score-value {
+                color: #059669;
+                font-size: 1rem;
+            }
+
+            .accuracy-value {
+                font-size: 1rem;
+                font-weight: 700;
+            }
+
+            .date-value {
+                color: #374151;
             }
 
             .reading-material-section,
@@ -1477,18 +1519,26 @@
                     margin: 5% auto;
                 }
 
-                .student-card {
+                .info-header {
                     flex-direction: column;
                     text-align: center;
+                    gap: 1rem;
                 }
 
-                .student-avatar-large {
-                    margin-right: 0;
-                    margin-bottom: 1rem;
+                .student-avatar {
+                    margin: 0 auto;
                 }
 
-                .assessment-summary {
-                    justify-content: center;
+                .detail-row {
+                    padding: 0.75rem 1rem;
+                }
+
+                .detail-label {
+                    font-size: 0.8rem;
+                }
+
+                .detail-value {
+                    font-size: 0.8rem;
                 }
 
                 .answer-comparison {
@@ -1839,7 +1889,21 @@
                 // Populate assessment summary
                 document.getElementById('modalScore').textContent = data.assessment.score;
                 document.getElementById('modalTotalQuestions').textContent = data.assessment.total_questions;
-                document.getElementById('modalPercentage').textContent = data.assessment.percentage + '%';
+
+                // Set percentage with dynamic color
+                const percentageElement = document.getElementById('modalPercentage');
+                percentageElement.textContent = data.assessment.percentage + '%';
+
+                // Apply color based on percentage
+                const percentage = data.assessment.percentage;
+                if (percentage >= 80) {
+                    percentageElement.style.color = '#059669'; // Green for excellent
+                } else if (percentage >= 60) {
+                    percentageElement.style.color = '#D97706'; // Orange for good
+                } else {
+                    percentageElement.style.color = '#DC2626'; // Red for needs improvement
+                }
+
                 document.getElementById('modalAssessmentDate').textContent = new Date(data.assessment.assessment_date).toLocaleDateString();
 
                 // Populate reading material
@@ -1934,33 +1998,54 @@
         <div id="comprehensionModal" class="modal" style="display: none;">
             <div class="modal-content comprehension-modal">
                 <div class="modal-header">
-                    <h2>📚 Comprehension Assessment Details</h2>
+                    <h2><i class="fas fa-book-reader"></i> Comprehension Assessment Details</h2>
                     <span class="close" onclick="closeComprehensionModal()">&times;</span>
                 </div>
 
                 <div class="modal-body">
-                    <!-- Student Info Section -->
-                    <div class="student-info-section">
-                        <div class="student-card">
-                            <div class="student-avatar-large">
+                    <!-- Professional Student Information Card -->
+                    <div class="student-info-card">
+                        <div class="info-header">
+                            <div class="student-avatar">
                                 <i class="fas fa-user-graduate"></i>
                             </div>
-                            <div class="student-details">
-                                <h3 id="modalStudentName">Student Name</h3>
-                                <p id="modalStudentInfo">Grade • Section</p>
-                                <div class="assessment-summary">
-                                    <div class="score-badge">
-                                        <span id="modalScore">0</span>/<span id="modalTotalQuestions">0</span>
-                                        <small>Score</small>
-                                    </div>
-                                    <div class="percentage-badge">
-                                        <span id="modalPercentage">0%</span>
-                                        <small>Accuracy</small>
-                                    </div>
-                                    <div class="date-badge">
-                                        <span id="modalAssessmentDate">Date</span>
-                                        <small>Assessment Date</small>
-                                    </div>
+                            <div class="student-basic-info">
+                                <h3 id="modalStudentName" class="student-name">Student Name</h3>
+                                <div class="student-meta">
+                                    <span class="grade-section" id="modalStudentInfo">Grade • Section</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Assessment Details Table -->
+                        <div class="assessment-details-table">
+                            <div class="detail-row">
+                                <div class="detail-label">
+                                    <i class="fas fa-trophy"></i>
+                                    <span>Score</span>
+                                </div>
+                                <div class="detail-value score-value">
+                                    <span id="modalScore">0</span>/<span id="modalTotalQuestions">0</span>
+                                </div>
+                            </div>
+
+                            <div class="detail-row">
+                                <div class="detail-label">
+                                    <i class="fas fa-percentage"></i>
+                                    <span>Accuracy</span>
+                                </div>
+                                <div class="detail-value accuracy-value">
+                                    <span id="modalPercentage">0%</span>
+                                </div>
+                            </div>
+
+                            <div class="detail-row">
+                                <div class="detail-label">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>Assessment Date</span>
+                                </div>
+                                <div class="detail-value date-value">
+                                    <span id="modalAssessmentDate">Date</span>
                                 </div>
                             </div>
                         </div>

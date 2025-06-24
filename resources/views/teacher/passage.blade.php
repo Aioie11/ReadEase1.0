@@ -786,22 +786,25 @@
                 bottom: 0;
                 z-index: 100;
                 background: var(--neutral-light);
-                box-shadow: 0 -2px 8px rgba(0,0,0,0.07);
+                box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.07);
                 border-radius: var(--radius);
                 margin-top: 1.5rem;
                 transition: box-shadow 0.2s;
             }
+
             .reading-sticky-container {
                 max-height: 500px;
                 overflow-y: auto;
                 position: relative;
                 margin-bottom: 2rem;
             }
+
             @media (max-width: 700px) {
                 .floating-controls {
                     position: static;
                     box-shadow: none;
                 }
+
                 .reading-sticky-container {
                     max-height: none;
                     overflow-y: visible;
@@ -824,7 +827,8 @@
             </div>
 
             <!-- Sticky Reading Container -->
-            <div class="reading-sticky-container" style="max-height: 500px; overflow-y: auto; position: relative; margin-bottom: 2rem;">
+            <div class="reading-sticky-container"
+                style="max-height: 500px; overflow-y: auto; position: relative; margin-bottom: 2rem;">
                 <div class="card">
                     <div class="passage-header">
                         <div class="section-title" id="passage-title">READING PASSAGE</div>
@@ -847,12 +851,14 @@
                     <!-- Reading Miscues -->
                     <div class="control-group">
                         <label for="miscues">Miscues</label>
-                        <input type="number" id="miscues" class="miscues-input" min="0" value="0" style="text-align: center;">
+                        <input type="number" id="miscues" class="miscues-input" min="0" value="0"
+                            style="text-align: center;">
                     </div>
                     <!-- Total Words -->
                     <div class="control-group">
                         <label for="totalWords">Total Words</label>
-                        <input type="number" id="totalWords" class="miscues-input" readonly style="text-align: center; background-color: var(--neutral-light); cursor: not-allowed;">
+                        <input type="number" id="totalWords" class="miscues-input" readonly
+                            style="text-align: center; background-color: var(--neutral-light); cursor: not-allowed;">
                     </div>
                     <span class="timer" id="timer">00:00:00</span>
                     <button class="btn start" onclick="startTimer()"><i class="fas fa-play"></i></button>
@@ -927,27 +933,6 @@
                 </div>
             </div>
 
-            <!-- <div class="feedback-history">
-                                        <h4>Previous Feedback</h4>
-                                        <div class="feedback-item">
-                                            <div class="feedback-meta">
-                                                <span>Date: 12/15/2024</span>
-                                                <span>Reading Level: Grade 7</span>
-                                            </div>
-                                            <div class="feedback-content">
-                                                <p><strong>Strengths:</strong> Good pronunciation and clear voice projection</p>
-                                                <p><strong>Areas for Improvement:</strong> Reading speed and comprehension</p>
-                                                <p><strong>Recommendations:</strong> Practice with shorter passages first</p>
-                                            </div>
-
-                                            <div class="feedback-actions-history">
-                                                <button class="btn-send" onclick="sendFeedbackToStudent(this, 'sample-feedback-1')">
-                                                    <i class="fas fa-paper-plane"></i> Send to Student
-                                                </button>
-                                                <span class="send-status sent">✓ Sent</span>
-                                            </div>
-                                        </div>
-                                    </div> -->
         </div>
     </div>
 
@@ -1011,17 +996,7 @@
             }
         }
 
-        // Language switching functionality
-        const passages = {
-            english: {
-                title: 'READING PASSAGE',
-                text: 'Here is a story about a young girl named Maria. In a small town by the mountains, she lives with her grandmother and grandfather. Every morning, she happily helps her grandparents with household chores, such as washing dishes and taking care of the animals. Maria feels great joy when she sees her grandparents happy. She also loves reading books, especially stories about nature. She dreams of becoming a teacher one day to help children like her learn and have a bright future.'
-            },
-            filipino: {
-                title: 'TALATA SA PAGBASA',
-                text: 'Narito ang isang kwento tungkol sa isang batang babae na nagngangalang Maria. Sa isang maliit na bayan sa tabi ng bundok, nakatira siya sa kanyang lola at lolo. Bawat umaga, masaya niyang tinutulungan ang kanyang mga lolo at lola sa mga gawain sa bahay, tulad ng paghuhugas ng pinggan at pag-aalaga sa mga hayop. Laking tuwa ni Maria kapag nakikita niyang maligaya ang kanyang mga lolo at lola. Mahilig din siya sa pagbabasa ng mga aklat, lalo na ng mga kwento tungkol sa kalikasan. Pinapangarap niyang maging isang guro balang araw upang matulungan ang mga batang katulad niya na nais matuto at magkaroon ng magandang kinabukasan.'
-            }
-        };
+        // Language switching functionality - passages will be loaded from database
 
         // Language switching event listeners
         document.addEventListener('DOMContentLoaded', function () {
@@ -1214,26 +1189,26 @@
             const feedbackDate = new Date(feedback.created_at).toLocaleDateString();
 
             feedbackItem.innerHTML = `
-                                        <div class="feedback-meta">
-                                            <span>Date: ${feedbackDate}</span>
-                                            <span>Reading Level: Grade ${feedback.grade_level}</span>
-                                            <span>Language: ${feedback.language.charAt(0).toUpperCase() + feedback.language.slice(1)}</span>
-                                        </div>
-                                        <div class="feedback-content">
-                                            <p><strong>Strengths:</strong> ${feedback.strengths || 'Not specified'}</p>
-                                            <p><strong>Areas for Improvement:</strong> ${feedback.areas_for_improvement || 'Not specified'}</p>
-                                            <p><strong>Recommendations:</strong> ${feedback.recommendations || 'Not specified'}</p>
-                                        </div>
+                                            <div class="feedback-meta">
+                                                <span>Date: ${feedbackDate}</span>
+                                                <span>Reading Level: Grade ${feedback.grade_level}</span>
+                                                <span>Language: ${feedback.language.charAt(0).toUpperCase() + feedback.language.slice(1)}</span>
+                                            </div>
+                                            <div class="feedback-content">
+                                                <p><strong>Strengths:</strong> ${feedback.strengths || 'Not specified'}</p>
+                                                <p><strong>Areas for Improvement:</strong> ${feedback.areas_for_improvement || 'Not specified'}</p>
+                                                <p><strong>Recommendations:</strong> ${feedback.recommendations || 'Not specified'}</p>
+                                            </div>
 
-                                        <div class="feedback-actions-history">
-                                            <button class="btn-send" onclick="sendFeedbackToStudent(this, ${feedbackId})">
-                                                <i class="fas fa-paper-plane"></i> Send to Student
-                                            </button>
-                                            <span class="send-status ${feedback.is_sent ? 'sent' : 'not-sent'}">
-                                                ${feedback.is_sent ? '✓ Sent' : 'Not Sent'}
-                                            </span>
-                                        </div>
-                                    `;
+                                            <div class="feedback-actions-history">
+                                                <button class="btn-send" onclick="sendFeedbackToStudent(this, ${feedbackId})">
+                                                    <i class="fas fa-paper-plane"></i> Send to Student
+                                                </button>
+                                                <span class="send-status ${feedback.is_sent ? 'sent' : 'not-sent'}">
+                                                    ${feedback.is_sent ? '✓ Sent' : 'Not Sent'}
+                                                </span>
+                                            </div>
+                                        `;
 
             // Store feedback data for sending
             feedbackItem.dataset.feedbackData = JSON.stringify(feedback);
@@ -1376,8 +1351,6 @@
                 return; // User cancelled
             }
 
-            // Allow 0 seconds minimum - no minimum time validation needed
-
             // Prepare assessment data
             const assessmentData = {
                 student_id: studentId,
@@ -1471,8 +1444,7 @@
             // Just log the success - don't open any new windows or redirect
             console.log('Assessment data has been saved to the student record');
 
-            // No page redirection or new window opening
-            // Charts will be updated when user manually navigates to student view
+        
         }
     </script>
 @endsection

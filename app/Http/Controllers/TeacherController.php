@@ -231,6 +231,12 @@ class TeacherController extends Controller
                 ], 404);
             }
 
+            // Get the corresponding ReadingAssessment record for accurate score information
+            $readingAssessment = \App\Models\ReadingAssessment::where('student_id', $studentId)
+                ->where('language', $language)
+                ->latest('created_at')
+                ->first();
+
             // Get the reading material and questions
             $readingMaterial = \App\Models\ReadingMaterial::where('subject', $language)
                 ->where('is_published', true)
@@ -238,17 +244,35 @@ class TeacherController extends Controller
                 ->first();
 
             if (!$readingMaterial) {
+                \Log::warning('No reading material found', [
+                    'language' => $language,
+                    'student_id' => $studentId
+                ]);
                 return response()->json([
                     'success' => false,
-                    'message' => 'No reading material found'
+                    'message' => 'No reading material found for ' . $language
                 ], 404);
             }
 
-            $questions = $readingMaterial->comprehensionQuestions()->orderBy('order')->get();
+            // Use the same questions relationship that students use when answering
+            $questions = $readingMaterial->questions()->orderBy('id')->get();
+
+            \Log::info('Found reading material and questions', [
+                'reading_material_id' => $readingMaterial->id,
+                'reading_material_title' => $readingMaterial->title,
+                'questions_count' => $questions->count(),
+                'language' => $language,
+                'questions_table' => 'reading_questions'
+            ]);
 
             // Process answers and compare with correct answers
             $answerDetails = [];
             $studentAnswers = $latestAnswer->answers ?? []; // Get the JSON answers array
+
+            \Log::info('Processing student answers', [
+                'student_answers' => $studentAnswers,
+                'questions_count' => $questions->count()
+            ]);
 
             foreach ($questions as $index => $question) {
                 $questionNumber = $index + 1;
@@ -257,7 +281,10 @@ class TeacherController extends Controller
                 // Get student answer from the JSON answers array
                 $studentAnswer = $studentAnswers[$questionKey] ?? '';
                 $correctAnswer = $question->correct_answer;
-                $isCorrect = trim(strtolower($studentAnswer)) === trim(strtolower($correctAnswer));
+
+                // Use the same comparison logic as student submission for consistency
+                // This matches the logic in StudentAnswerEnglishController
+                $isCorrect = $studentAnswer == $correctAnswer;
 
                 $answerDetails[] = [
                     'question_number' => $questionNumber,
@@ -267,6 +294,14 @@ class TeacherController extends Controller
                     'is_correct' => $isCorrect,
                     'options' => $question->options ?? []
                 ];
+
+                \Log::debug('Question processed', [
+                    'question_number' => $questionNumber,
+                    'question_key' => $questionKey,
+                    'student_answer' => $studentAnswer,
+                    'correct_answer' => $correctAnswer,
+                    'is_correct' => $isCorrect
+                ]);
             }
 
             return response()->json([
@@ -279,9 +314,11 @@ class TeacherController extends Controller
                         'section' => $student->section
                     ],
                     'assessment' => [
-                        'score' => $latestAnswer->score,
-                        'total_questions' => $latestAnswer->total_questions ?? count($questions),
-                        'percentage' => round(($latestAnswer->score / count($questions)) * 100, 1),
+                        'score' => $readingAssessment ? $readingAssessment->correct_answers : $latestAnswer->score,
+                        'total_questions' => $readingAssessment ? $readingAssessment->total_questions : count($questions),
+                        'percentage' => $readingAssessment ?
+                            round(($readingAssessment->correct_answers / $readingAssessment->total_questions) * 100, 1) :
+                            round(($latestAnswer->score / count($questions)) * 100, 1),
                         'assessment_date' => $latestAnswer->created_at->format('Y-m-d H:i:s')
                     ],
                     'reading_material' => [
