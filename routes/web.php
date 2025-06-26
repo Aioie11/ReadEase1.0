@@ -89,9 +89,7 @@ Route::middleware(['web', 'auth', 'password.change'])->group(function () {
 
         Route::get('/viewreports', [ReportsController::class, 'index'])->name('teacher.viewreports');
 
-        Route::get('/filipinoreport', function () {
-            return view('teacher.filipinoreport');
-        })->name('teacher.filipinoreport');
+        Route::get('/filipinoreport', [ReportsController::class, 'filipinoReport'])->name('teacher.filipinoreport');
 
         // Reading Assessment Routes
         Route::post('/save-reading-assessment', [ReportsController::class, 'saveReadingAssessment'])->name('teacher.save-reading-assessment');

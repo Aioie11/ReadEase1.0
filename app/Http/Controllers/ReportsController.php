@@ -212,6 +212,9 @@ class ReportsController extends Controller
             ->where('language', $language)
             ->count();
 
+        // Get comprehension level distribution for the second chart
+        $comprehensionDistribution = $this->calculateTeacherComprehensionLevelDistribution($language, null, null);
+
         return [
             'total_students' => $totalStudents,
             'statistics' => [
@@ -220,6 +223,7 @@ class ReportsController extends Controller
                 'avg_correct_reading' => $avgCorrectReading
             ],
             'reading_level_distribution' => $levelDistribution,
+            'comprehension_level_distribution' => $comprehensionDistribution['distribution'],
             'section_data' => $sectionData,
             'grade_distribution' => $gradeDistribution,
             'metric_cards' => [

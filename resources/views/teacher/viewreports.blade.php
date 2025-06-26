@@ -48,7 +48,7 @@
                 <!-- Word Reading Chart -->
                 <div class="chart-panel">
                     <div class="chart-panel-header">
-                        <h3 id="chartTitle">📊 Word Reading Level Distribution - Grade {{ (string)($grade ?? '7') }} (All Sections)</h3>
+                        <h3 id="chartTitle">📊 Reading Performance Distribution - Grade {{ (string)($grade ?? '7') }} (All Sections)</h3>
                         <div class="time-selector">
                             <button class="time-btn active">Selected Grade</button>
                         </div>
@@ -1039,12 +1039,14 @@
         // Get chart data from backend
         const gradeDistribution = @json($grade_distribution ?? []);
         const readingLevelDistribution = @json($reading_level_distribution ?? []);
+        const comprehensionLevelDistribution = @json($comprehension_level_distribution ?? []);
         const currentGrade = '{{ (string)($grade ?? "7") }}';
         const currentSection = '{{ (string)($section ?? "all") }}';
 
         console.log('Initial data from backend:', {
             gradeDistribution,
             readingLevelDistribution,
+            comprehensionLevelDistribution,
             currentGrade,
             currentSection
         });
@@ -1135,7 +1137,7 @@
 
         // Initialize performance cards with initial data
         const initialReadingData = gradeDistribution[`Grade ${currentGrade}`] || { Independent: 0, Instructional: 0, Frustration: 0 };
-        const initialComprehensionData = readingLevelDistribution[`Grade ${currentGrade}`] || { Independent: 0, Instructional: 0, Frustration: 0 };
+        const initialComprehensionData = comprehensionLevelDistribution[`Grade ${currentGrade}`] || { Independent: 0, Instructional: 0, Frustration: 0 };
         updatePerformanceCards(initialReadingData, initialComprehensionData);
 
         // Initialize with placeholder data if no data available
@@ -1151,7 +1153,7 @@
         window.mainChart = new Chart(mainCtx, {
             type: 'pie',
             data: {
-                labels: ['Independent Level (97-100%)', 'Instructional Level (90-96%)', 'Frustration Level (Below 90%)'],
+                labels: ['Independent (Word Reading: 97-100%)', 'Instructional (Word Reading: 90-96%)', 'Frustration (Word Reading: Below 90%)'],
                 datasets: [{
                     data: displayData,
                     backgroundColor: ['#00B8A9', '#F6AD55', '#E53E3E'], // Always show colors
@@ -1255,8 +1257,8 @@
         // Function to get English comprehension chart data for specific grade
         function getEnglishComprehensionChartDataForGrade(selectedGrade) {
             const gradeKey = `Grade ${selectedGrade}`;
-            // We'll calculate comprehension levels based on comprehension scores only
-            const gradeData = gradeDistribution[gradeKey] || { Independent: 0, Instructional: 0, Frustration: 0 };
+            // Use comprehensionLevelDistribution for comprehension data (this will be updated by AJAX)
+            const gradeData = comprehensionLevelDistribution[gradeKey] || { Independent: 0, Instructional: 0, Frustration: 0 };
 
             return {
                 labels: [gradeKey],
@@ -1266,7 +1268,7 @@
             };
         }
 
-        // Get initial comprehension chart data for current grade
+        // Get initial comprehension chart data for current grade (using readingLevelDistribution)
         const initialEnglishComprehensionChartData = getEnglishComprehensionChartDataForGrade(currentGrade);
 
         // Initialize comprehension chart with placeholder data if no data available
@@ -1282,7 +1284,7 @@
         window.englishComprehensionChart = new Chart(englishComprehensionCtx, {
             type: 'pie',
             data: {
-                labels: ['Independent Level (80-100%)', 'Instructional Level (59-79%)', 'Frustration Level (Below 59%)'],
+                labels: ['Independent (Comprehension: 80-100%)', 'Instructional (Comprehension: 59-79%)', 'Frustration (Comprehension: Below 59%)'],
                 datasets: [{
                     data: displayComprehensionData,
                     backgroundColor: ['#00B8A9', '#F6AD55', '#E53E3E'], // Always show colors
@@ -1681,7 +1683,7 @@
         // Also update performance cards with any initial data
         setTimeout(() => {
             const initialReadingData = gradeDistribution[`Grade ${currentGrade}`] || { Independent: 0, Instructional: 0, Frustration: 0 };
-            const initialComprehensionData = readingLevelDistribution[`Grade ${currentGrade}`] || { Independent: 0, Instructional: 0, Frustration: 0 };
+            const initialComprehensionData = comprehensionLevelDistribution[`Grade ${currentGrade}`] || { Independent: 0, Instructional: 0, Frustration: 0 };
             updatePerformanceCards(initialReadingData, initialComprehensionData);
         }, 500);
     });
