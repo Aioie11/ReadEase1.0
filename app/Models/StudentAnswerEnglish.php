@@ -12,6 +12,7 @@ class StudentAnswerEnglish extends Model
     protected $table = 'student_answer_english';
     protected $fillable = [
         'student_id',
+        'reading_material_id',
         'answers',
         'score',
         'reading_time',
@@ -31,5 +32,10 @@ class StudentAnswerEnglish extends Model
     public function student()
     {
         return $this->belongsTo(User::class, 'student_id', 'userId');
+    }
+
+    public function readingMaterial()
+    {
+        return $this->belongsTo(\App\Models\ReadingMaterial::class, 'reading_material_id');
     }
 }
