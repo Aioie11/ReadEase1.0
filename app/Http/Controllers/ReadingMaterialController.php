@@ -177,8 +177,10 @@ class ReadingMaterialController extends Controller
     public function publish($id)
     {
         try {
+            DB::beginTransaction();
+
             $readingMaterial = ReadingMaterial::findOrFail($id);
-            
+
             // Validate that the material has both grade level and subject
             if (!$readingMaterial->grade_level || !$readingMaterial->subject) {
                 return response()->json([
@@ -186,16 +188,28 @@ class ReadingMaterialController extends Controller
                 ], 422);
             }
 
-            // Publish the selected material without unpublishing others
+            // First, unpublish all other materials for the same grade level and subject
+            ReadingMaterial::where('grade_level', $readingMaterial->grade_level)
+                ->where('subject', $readingMaterial->subject)
+                ->where('id', '!=', $id)
+                ->update([
+                    'is_published' => false,
+                    'published_at' => null
+                ]);
+
+            // Then publish the selected material
             $readingMaterial->is_published = true;
             $readingMaterial->published_at = now();
             $readingMaterial->save();
 
+            DB::commit();
+
             return response()->json([
                 'success' => true,
-                'message' => 'Reading material published successfully'
+                'message' => 'Reading material published successfully. Previous materials for this grade and subject have been unpublished.'
             ]);
         } catch (\Exception $e) {
+            DB::rollBack();
             \Log::error('Failed to publish reading material: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
