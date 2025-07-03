@@ -1091,6 +1091,155 @@ class ReportsController extends Controller
     }
 
     /**
+     * Calculate word reading level distribution by section for each grade
+     */
+    private function calculateWordReadingLevelDistributionBySection($language)
+    {
+        // Get latest assessment per student for the specified language
+        $assessments = ReadingAssessment::where('language', $language)
+            ->orderBy('assessment_date', 'desc')
+            ->get()
+            ->groupBy('student_name')
+            ->map(function ($studentAssessments) {
+                return $studentAssessments->first(); // Get latest assessment per student
+            });
+
+        $totalStudents = $assessments->count();
+        $distribution = [];
+
+        // Get actual sections from the database for each grade
+        $actualSections = ReadingAssessment::where('language', $language)
+            ->select('grade', 'section')
+            ->distinct()
+            ->get()
+            ->groupBy('grade');
+
+        // Calculate distribution by grade and section using actual data
+        foreach ($actualSections as $grade => $gradeSections) {
+            $gradeAssessments = $assessments->where('grade', $grade);
+
+            foreach ($gradeSections as $sectionData) {
+                $section = $sectionData->section;
+
+                // Use case-insensitive comparison for section matching
+                $sectionAssessments = $gradeAssessments->filter(function ($assessment) use ($section) {
+                    return strtolower($assessment->section) === strtolower($section);
+                });
+
+                $sectionLevels = $sectionAssessments->groupBy(function ($assessment) {
+                    return $this->calculateWordReadingLevel($assessment->correct_reading);
+                });
+
+                // Only include sections that have data
+                if ($sectionAssessments->count() > 0) {
+                    $distribution["Grade $grade - $section"] = [
+                        'Independent' => $sectionLevels->get('Independent', collect())->count(),
+                        'Instructional' => $sectionLevels->get('Instructional', collect())->count(),
+                        'Frustration' => $sectionLevels->get('Frustration', collect())->count()
+                    ];
+                }
+            }
+        }
+
+        return [
+            'total_students' => $totalStudents,
+            'distribution' => $distribution
+        ];
+    }
+
+    /**
+     * Calculate comprehension level distribution by section for each grade
+     */
+    private function calculateComprehensionLevelDistributionBySection($language)
+    {
+        // Get comprehension results based on language
+        if ($language === 'english') {
+            $comprehensionResults = \App\Models\StudentAnswerEnglish::orderBy('created_at', 'desc')
+                ->get()
+                ->groupBy('student_id')
+                ->map(function ($studentResults) {
+                    return $studentResults->first(); // Get latest result per student
+                });
+        } else {
+            $comprehensionResults = \App\Models\StudentAnswerTagalog::orderBy('created_at', 'desc')
+                ->get()
+                ->groupBy('student_id')
+                ->map(function ($studentResults) {
+                    return $studentResults->first(); // Get latest result per student
+                });
+        }
+
+        // Get student information to map student_id to grade and section
+        $students = \App\Models\Student::all()->keyBy('student_number');
+
+        $totalStudents = 0;
+        $distribution = [];
+
+        // Get actual grade-section combinations from students who have comprehension data
+        $studentsWithData = [];
+        foreach ($comprehensionResults as $studentId => $result) {
+            $student = $students->get($studentId);
+            if ($student && $student->grade_level >= 7 && $student->grade_level <= 10) {
+                $studentsWithData[] = $student;
+            }
+        }
+
+        // Group students by grade and section to get actual combinations
+        $actualGradeSections = collect($studentsWithData)
+            ->groupBy('grade_level')
+            ->map(function ($gradeStudents) {
+                return $gradeStudents->pluck('section')->unique()->values();
+            });
+
+        // Initialize distribution for actual grade-section combinations
+        foreach ($actualGradeSections as $grade => $sections) {
+            foreach ($sections as $section) {
+                $distribution["Grade $grade - $section"] = [
+                    'Independent' => 0,
+                    'Instructional' => 0,
+                    'Frustration' => 0
+                ];
+            }
+        }
+
+        // Calculate distribution by grade and section
+        foreach ($comprehensionResults as $studentId => $result) {
+            $student = $students->get($studentId);
+
+            if (!$student) {
+                continue; // Skip if student not found
+            }
+
+            $grade = $student->grade_level;
+            $section = $student->section;
+
+            // Skip if grade is not in our range
+            if ($grade < 7 || $grade > 10) {
+                continue;
+            }
+
+            // Calculate comprehension percentage
+            $totalQuestions = count($result->answers ?? []);
+            $comprehensionPercentage = $totalQuestions > 0 ? round(($result->score / $totalQuestions) * 100) : 0;
+
+            // Determine comprehension level
+            $level = $this->calculateComprehensionLevel($comprehensionPercentage);
+
+            // Add to distribution
+            $sectionKey = "Grade $grade - $section";
+            if (isset($distribution[$sectionKey])) {
+                $distribution[$sectionKey][$level]++;
+                $totalStudents++;
+            }
+        }
+
+        return [
+            'total_students' => $totalStudents,
+            'distribution' => $distribution
+        ];
+    }
+
+    /**
      * Calculate word reading level based solely on word reading score
      *
      * Word Reading Level Criteria:
@@ -1106,6 +1255,110 @@ class ReportsController extends Controller
             return 'Instructional';
         } else {
             return 'Frustration';
+        }
+    }
+
+    /**
+     * Get English reading level distribution by section
+     */
+    public function getEnglishReadingLevelDistributionBySection()
+    {
+        try {
+            $distribution = $this->calculateWordReadingLevelDistributionBySection('english');
+
+            return response()->json([
+                'success' => true,
+                'data' => $distribution
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error calculating English reading level distribution by section:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error calculating distribution: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get Filipino reading level distribution by section
+     */
+    public function getFilipinoReadingLevelDistributionBySection()
+    {
+        try {
+            $distribution = $this->calculateWordReadingLevelDistributionBySection('filipino');
+
+            return response()->json([
+                'success' => true,
+                'data' => $distribution
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error calculating Filipino reading level distribution by section:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error calculating distribution: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get English comprehension level distribution by section
+     */
+    public function getEnglishComprehensionLevelDistributionBySection()
+    {
+        try {
+            $distribution = $this->calculateComprehensionLevelDistributionBySection('english');
+
+            return response()->json([
+                'success' => true,
+                'data' => $distribution
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error calculating English comprehension level distribution by section:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error calculating distribution: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get Filipino comprehension level distribution by section
+     */
+    public function getFilipinoComprehensionLevelDistributionBySection()
+    {
+        try {
+            $distribution = $this->calculateComprehensionLevelDistributionBySection('filipino');
+
+            return response()->json([
+                'success' => true,
+                'data' => $distribution
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error calculating Filipino comprehension level distribution by section:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error calculating distribution: ' . $e->getMessage()
+            ], 500);
         }
     }
 }
