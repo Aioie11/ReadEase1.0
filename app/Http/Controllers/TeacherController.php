@@ -225,9 +225,10 @@ class TeacherController extends Controller
             ]);
 
             if (!$latestAnswer) {
+                $languageDisplay = $language === 'english' ? 'English' : 'Filipino';
                 return response()->json([
                     'success' => false,
-                    'message' => 'No comprehension assessment found for this student'
+                    'message' => "This student has not completed the {$languageDisplay} comprehension assessment yet. Please ensure the student has answered the questionnaire before viewing details."
                 ], 404);
             }
 
@@ -237,20 +238,39 @@ class TeacherController extends Controller
                 ->latest('created_at')
                 ->first();
 
-            // Get the reading material and questions
-            $readingMaterial = \App\Models\ReadingMaterial::where('subject', $language)
-                ->where('is_published', true)
-                ->latest('published_at')
-                ->first();
+            // Get the reading material that the student actually answered
+            // First try to get it from the student answer record (if reading_material_id is set)
+            $readingMaterial = null;
+            if ($latestAnswer->reading_material_id) {
+                $readingMaterial = \App\Models\ReadingMaterial::find($latestAnswer->reading_material_id);
+                \Log::info('Using reading material from student answer record', [
+                    'reading_material_id' => $latestAnswer->reading_material_id,
+                    'material_title' => $readingMaterial ? $readingMaterial->title : 'NOT FOUND'
+                ]);
+            }
+
+            // Fallback to latest published material if not found
+            if (!$readingMaterial) {
+                $readingMaterial = \App\Models\ReadingMaterial::where('subject', $language)
+                    ->where('is_published', true)
+                    ->latest('published_at')
+                    ->first();
+                \Log::warning('Fallback to latest published material', [
+                    'language' => $language,
+                    'student_id' => $studentId,
+                    'material_title' => $readingMaterial ? $readingMaterial->title : 'NOT FOUND'
+                ]);
+            }
 
             if (!$readingMaterial) {
                 \Log::warning('No reading material found', [
                     'language' => $language,
                     'student_id' => $studentId
                 ]);
+                $languageDisplay = $language === 'english' ? 'English' : 'Filipino';
                 return response()->json([
                     'success' => false,
-                    'message' => 'No reading material found for ' . $language
+                    'message' => "No {$languageDisplay} reading material has been published by the admin yet. Please contact the administrator to add reading materials and questions."
                 ], 404);
             }
 
@@ -271,7 +291,11 @@ class TeacherController extends Controller
 
             \Log::info('Processing student answers', [
                 'student_answers' => $studentAnswers,
-                'questions_count' => $questions->count()
+                'questions_count' => $questions->count(),
+                'student_id' => $studentId,
+                'language' => $language,
+                'reading_material_id' => $readingMaterial->id,
+                'reading_material_title' => $readingMaterial->title
             ]);
 
             foreach ($questions as $index => $question) {
@@ -283,8 +307,13 @@ class TeacherController extends Controller
                 $correctAnswer = $question->correct_answer;
 
                 // Use the same comparison logic as student submission for consistency
-                // This matches the logic in StudentAnswerEnglishController
-                $isCorrect = $studentAnswer == $correctAnswer;
+                // For English, use simple equality comparison
+                // For Filipino/Tagalog, use case-insensitive trimmed comparison
+                if ($language === 'english') {
+                    $isCorrect = $studentAnswer == $correctAnswer;
+                } else {
+                    $isCorrect = strtolower(trim($studentAnswer)) == strtolower(trim($correctAnswer));
+                }
 
                 $answerDetails[] = [
                     'question_number' => $questionNumber,
@@ -292,16 +321,20 @@ class TeacherController extends Controller
                     'student_answer' => $studentAnswer,
                     'correct_answer' => $correctAnswer,
                     'is_correct' => $isCorrect,
-                    'options' => $question->options ?? []
+                    'options' => $question->options ?? [],
+                    'question_id' => $question->id // Add question ID for debugging
                 ];
 
-                \Log::debug('Question processed', [
-                    'question_number' => $questionNumber,
-                    'question_key' => $questionKey,
-                    'student_answer' => $studentAnswer,
-                    'correct_answer' => $correctAnswer,
-                    'is_correct' => $isCorrect
-                ]);
+                // Log only incorrect answers for debugging
+                if (!$isCorrect) {
+                    \Log::debug('Incorrect answer found', [
+                        'question_id' => $question->id,
+                        'question_number' => $questionNumber,
+                        'student_answer' => $studentAnswer,
+                        'correct_answer' => $correctAnswer,
+                        'comparison_method' => $language === 'english' ? 'exact' : 'case_insensitive_trimmed'
+                    ]);
+                }
             }
 
             return response()->json([
@@ -317,8 +350,8 @@ class TeacherController extends Controller
                         'score' => $readingAssessment ? $readingAssessment->correct_answers : $latestAnswer->score,
                         'total_questions' => $readingAssessment ? $readingAssessment->total_questions : count($questions),
                         'percentage' => $readingAssessment ?
-                            round(($readingAssessment->correct_answers / $readingAssessment->total_questions) * 100, 1) :
-                            round(($latestAnswer->score / count($questions)) * 100, 1),
+                            ($readingAssessment->total_questions > 0 ? round(($readingAssessment->correct_answers / $readingAssessment->total_questions) * 100, 1) : 0) :
+                            (count($questions) > 0 ? round(($latestAnswer->score / count($questions)) * 100, 1) : 0),
                         'assessment_date' => $latestAnswer->created_at->format('Y-m-d H:i:s')
                     ],
                     'reading_material' => [

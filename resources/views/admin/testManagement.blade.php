@@ -187,6 +187,149 @@
             gap: 2rem;
         }
 
+        /* Reading Materials List */
+        .materials-list-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .materials-list-header {
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .materials-list-header h3 {
+            color: #2c3e50;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .materials-list-header h3 i {
+            color: #00B8A9;
+        }
+
+        .materials-list-body {
+            padding: 1.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .material-item {
+            padding: 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .material-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .material-item:hover {
+            border-color: #00B8A9;
+            box-shadow: 0 2px 8px rgba(0, 184, 169, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .material-item.selected {
+            border-color: #00B8A9;
+            background: rgba(0, 184, 169, 0.05);
+            box-shadow: 0 2px 8px rgba(0, 184, 169, 0.15);
+        }
+
+        .material-title {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .material-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+
+        .material-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .material-status.published {
+            background: rgba(39, 174, 96, 0.1);
+            color: #27ae60;
+        }
+
+        .material-status.draft {
+            background: rgba(149, 165, 166, 0.1);
+            color: #95a5a6;
+        }
+
+        /* Radio Button Styling */
+        .material-radio {
+            margin-top: 0.25rem;
+            flex-shrink: 0;
+        }
+
+        .material-radio input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #00B8A9;
+            cursor: pointer;
+        }
+
+        .material-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .material-item.published {
+            border-color: #00B8A9;
+            background: rgba(0, 184, 169, 0.02);
+        }
+
+        .material-item.published .material-title {
+            color: #00B8A9;
+            font-weight: 700;
+        }
+
+        .published-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            background: #00B8A9;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .published-badge i {
+            font-size: 0.6rem;
+        }
+
         .content-card {
             background: white;
             border-radius: 12px;
@@ -673,9 +816,9 @@
                         <i class="fas fa-trash"></i>
                         Delete Selected
                     </button>
-                    <button class="action-btn" onclick="publishMaterial()">
+                    <button class="action-btn" onclick="publishSelectedMaterial()">
                         <i class="fas fa-paper-plane"></i>
-                        Publish Material
+                        Publish Selected
                     </button>
                 </div>
             </div>
@@ -711,6 +854,28 @@
 
         <!-- Content Display -->
         <div class="content-display">
+            <!-- Reading Materials List Card -->
+            <div class="materials-list-card">
+                <div class="materials-list-header">
+                    <h3><i class="fas fa-list"></i> Available Reading Materials</h3>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 0.85rem; color: #7f8c8d; font-style: italic;">
+                        <i class="fas fa-info-circle" style="color: #00B8A9;"></i>
+                        Select a radio button to choose which material to publish, then click "Publish Selected" button. Only one material can be active per language.
+                    </p>
+                </div>
+                <div class="materials-list-body" id="materialsListContent">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <div class="empty-state-title">No Reading Materials</div>
+                        <div class="empty-state-text">
+                            Select a grade and subject to view available reading materials, or create new content using the "Add New Material" button above. Once created, select a material with the radio button and click "Publish Selected" to make it available to students and teachers.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Reading Passage Card -->
             <div class="content-card">
                 <div class="content-card-header">
@@ -721,9 +886,9 @@
                         <div class="empty-state-icon">
                             <i class="fas fa-book"></i>
                         </div>
-                        <div class="empty-state-title">No Reading Passage</div>
+                        <div class="empty-state-title">No Reading Passage Selected</div>
                         <div class="empty-state-text">
-                            Select a grade and subject to view reading materials, or create new content using the "Add New Material" button above.
+                            Click on a reading material title from the list above to view its content.
                         </div>
                     </div>
                 </div>
@@ -906,44 +1071,34 @@
     </div>
 
     <script>
+        // Global variable to store current materials
+        let currentMaterials = [];
+        let selectedMaterialId = null;
+
         // Function to fetch and display reading materials
         function fetchAndDisplayReadingMaterials() {
             const selectedGrade = document.querySelector('#gradeFilter').value;
             const selectedSubjectButton = document.querySelector('.subject-tab.active');
             const selectedSubject = selectedSubjectButton ? selectedSubjectButton.dataset.subject : null;
 
+            const materialsListContent = document.getElementById('materialsListContent');
             const readingContent = document.getElementById('readingPassageContent');
             const questionsContent = document.getElementById('questionsContent');
 
             if (!selectedGrade || !selectedSubject) {
                 console.log('Grade or subject not selected.');
-                // Show empty state
-                readingContent.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <div class="empty-state-title">No Reading Passage</div>
-                        <div class="empty-state-text">
-                            Select a grade and subject to view reading materials, or create new content using the "Add New Material" button above.
-                        </div>
-                    </div>
-                `;
-                questionsContent.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">
-                            <i class="fas fa-question-circle"></i>
-                        </div>
-                        <div class="empty-state-title">No Questions Available</div>
-                        <div class="empty-state-text">
-                            Questions will appear here when you select a reading material that contains comprehension questions.
-                        </div>
-                    </div>
-                `;
+                // Show empty state for all sections
+                showEmptyStates();
                 return;
             }
 
-            // Show loading state
+            // Show loading state for all sections
+            materialsListContent.innerHTML = `
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>Loading reading materials...</p>
+                </div>
+            `;
             readingContent.innerHTML = `
                 <div class="loading-state">
                     <div class="loading-spinner"></div>
@@ -978,62 +1133,21 @@
             })
             .then(data => {
                 console.log('Fetched data:', data);
-                if (data && data.length > 0) {
-                    // Display Reading Passage
-                    const material = data[0];
-                    readingContent.innerHTML = `
-                        <div class="reading-title">${material.title}</div>
-                        <div class="reading-content">${material.content}</div>
-                        <div class="status-indicator status-published" style="margin-top: 1rem;">
-                            <i class="fas fa-check-circle"></i>
-                            Published
-                        </div>
-                    `;
+                currentMaterials = data || [];
 
-                    // Display Questions
-                    let questionsHtml = '';
-                    if (material.questions && material.questions.length > 0) {
-                        material.questions.forEach((question, index) => {
-                            questionsHtml += `
-                                <div class="question-item">
-                                    <div class="question-text">Question ${index + 1}: ${question.question}</div>
-                            `;
-                            if (question.type === 'multiple' && question.options) {
-                                questionsHtml += '<div class="question-options">';
-                                question.options.forEach(option => {
-                                    const isCorrect = option === question.correct_answer;
-                                    questionsHtml += `<div class="option-item ${isCorrect ? 'correct-answer' : ''}">${option}${isCorrect ? ' ✓' : ''}</div>`;
-                                });
-                                questionsHtml += '</div>';
-                            } else if (question.type === 'text') {
-                                questionsHtml += `<div class="text-answer">Correct Answer: ${question.correct_answer}</div>`;
-                            }
-                            questionsHtml += `</div>`;
-                        });
-                    } else {
-                        questionsHtml = `
-                            <div class="empty-state">
-                                <div class="empty-state-icon">
-                                    <i class="fas fa-question-circle"></i>
-                                </div>
-                                <div class="empty-state-title">No Questions Available</div>
-                                <div class="empty-state-text">
-                                    No questions available for this reading material.
-                                </div>
-                            </div>
-                        `;
-                    }
-                    questionsContent.innerHTML = questionsHtml;
-                } else {
-                    // Display empty state if no data
+                if (data && data.length > 0) {
+                    // Display materials list
+                    displayMaterialsList(data);
+
+                    // Clear reading passage and questions content
                     readingContent.innerHTML = `
                         <div class="empty-state">
                             <div class="empty-state-icon">
                                 <i class="fas fa-book"></i>
                             </div>
-                            <div class="empty-state-title">No Reading Passage</div>
+                            <div class="empty-state-title">No Reading Passage Selected</div>
                             <div class="empty-state-text">
-                                No reading passage added yet. Click "Add New Material" to create content.
+                                Click on a reading material title from the list above to view its content.
                             </div>
                         </div>
                     `;
@@ -1044,37 +1158,276 @@
                             </div>
                             <div class="empty-state-title">No Questions Available</div>
                             <div class="empty-state-text">
-                                No questions added yet. Click "Add New Material" to create questions.
+                                Select a reading material to view its comprehension questions.
                             </div>
                         </div>
                     `;
+                } else {
+                    // Display empty state if no data
+                    showEmptyStates();
                 }
             })
             .catch(error => {
                 console.error('Error fetching reading materials:', error);
-                // Display error state
-                readingContent.innerHTML = `
+                // Display error state for all sections
+                showErrorStates(error.message);
+            });
+        }
+
+        // Helper function to show empty states
+        function showEmptyStates() {
+            const materialsListContent = document.getElementById('materialsListContent');
+            const readingContent = document.getElementById('readingPassageContent');
+            const questionsContent = document.getElementById('questionsContent');
+
+            materialsListContent.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <div class="empty-state-title">No Reading Materials</div>
+                    <div class="empty-state-text">
+                        Select a grade and subject to view available reading materials, or create new content using the "Add New Material" button above.
+                    </div>
+                </div>
+            `;
+            readingContent.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="empty-state-title">No Reading Passage Selected</div>
+                    <div class="empty-state-text">
+                        Click on a reading material title from the list above to view its content.
+                    </div>
+                </div>
+            `;
+            questionsContent.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <div class="empty-state-title">No Questions Available</div>
+                    <div class="empty-state-text">
+                        Select a reading material to view its comprehension questions.
+                    </div>
+                </div>
+            `;
+        }
+
+        // Helper function to show error states
+        function showErrorStates(errorMessage) {
+            const materialsListContent = document.getElementById('materialsListContent');
+            const readingContent = document.getElementById('readingPassageContent');
+            const questionsContent = document.getElementById('questionsContent');
+
+            const errorHtml = `
+                <div class="empty-state">
+                    <div class="empty-state-icon" style="color: #e74c3c;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="empty-state-title" style="color: #e74c3c;">Error Loading Content</div>
+                    <div class="empty-state-text" style="color: #e74c3c;">
+                        Error: ${errorMessage}
+                    </div>
+                </div>
+            `;
+
+            materialsListContent.innerHTML = errorHtml;
+            readingContent.innerHTML = errorHtml;
+            questionsContent.innerHTML = errorHtml;
+        }
+
+        // Function to display materials list
+        function displayMaterialsList(materials) {
+            const materialsListContent = document.getElementById('materialsListContent');
+
+            if (!materials || materials.length === 0) {
+                materialsListContent.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon" style="color: var(--danger);">
-                            <i class="fas fa-exclamation-triangle"></i>
+                        <div class="empty-state-icon">
+                            <i class="fas fa-list"></i>
                         </div>
-                        <div class="empty-state-title" style="color: var(--danger);">Error Loading Content</div>
-                        <div class="empty-state-text" style="color: var(--danger);">
-                            Error loading reading materials: ${error.message}
+                        <div class="empty-state-title">No Reading Materials</div>
+                        <div class="empty-state-text">
+                            No reading materials found for this grade and subject. Click "Add New Material" to create content.
                         </div>
                     </div>
                 `;
-                questionsContent.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon" style="color: var(--danger);">
-                            <i class="fas fa-exclamation-triangle"></i>
+                return;
+            }
+
+            let materialsHtml = '';
+            materials.forEach(material => {
+                const statusClass = material.is_published ? 'published' : 'draft';
+                const statusText = material.is_published ? 'Published' : 'Draft';
+                const statusIcon = material.is_published ? 'fas fa-check-circle' : 'fas fa-edit';
+                const itemClass = material.is_published ? 'material-item published' : 'material-item';
+                const checkedAttribute = material.is_published ? 'checked' : '';
+
+                materialsHtml += `
+                    <div class="${itemClass}" data-material-id="${material.id}">
+                        <div class="material-radio">
+                            <input type="radio"
+                                   name="materialToPublish"
+                                   value="${material.id}"
+                                   ${material.is_published ? 'checked' : ''}
+                                   title="Select this material for publishing">
                         </div>
-                        <div class="empty-state-title" style="color: var(--danger);">Error Loading Questions</div>
-                        <div class="empty-state-text" style="color: var(--danger);">
-                            Error loading questions: ${error.message}
+                        <div class="material-content" onclick="selectMaterial(${material.id})">
+                            <div class="material-title">
+                                ${material.title}
+                                ${material.is_published ? '<span class="published-badge"><i class="fas fa-star"></i> ACTIVE</span>' : ''}
+                            </div>
+                            <div class="material-meta">
+                                <span>Grade ${material.grade_level} • ${material.subject.charAt(0).toUpperCase() + material.subject.slice(1)}</span>
+                                <span class="material-status ${statusClass}">
+                                    <i class="${statusIcon}"></i>
+                                    ${statusText}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 `;
+            });
+
+            materialsListContent.innerHTML = materialsHtml;
+        }
+
+        // Function to select and display a specific material
+        function selectMaterial(materialId) {
+            selectedMaterialId = materialId;
+            const material = currentMaterials.find(m => m.id === materialId);
+
+            if (!material) {
+                console.error('Material not found:', materialId);
+                return;
+            }
+
+            // Update visual selection in the list
+            document.querySelectorAll('.material-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            document.querySelector(`[data-material-id="${materialId}"]`).classList.add('selected');
+
+            // Display the selected material
+            displaySelectedMaterial(material);
+        }
+
+        // Function to display selected material content and questions
+        function displaySelectedMaterial(material) {
+            const readingContent = document.getElementById('readingPassageContent');
+            const questionsContent = document.getElementById('questionsContent');
+
+            // Display Reading Passage
+            const statusClass = material.is_published ? 'status-published' : 'status-draft';
+            const statusText = material.is_published ? 'Published' : 'Draft';
+            const statusIcon = material.is_published ? 'fas fa-check-circle' : 'fas fa-edit';
+
+            readingContent.innerHTML = `
+                <div class="reading-title">${material.title}</div>
+                <div class="reading-content">${material.content}</div>
+                <div class="status-indicator ${statusClass}" style="margin-top: 1rem;">
+                    <i class="${statusIcon}"></i>
+                    ${statusText}
+                </div>
+            `;
+
+            // Display Questions
+            let questionsHtml = '';
+            if (material.questions && material.questions.length > 0) {
+                material.questions.forEach((question, index) => {
+                    questionsHtml += `
+                        <div class="question-item">
+                            <div class="question-text">Question ${index + 1}: ${question.question}</div>
+                    `;
+                    if (question.type === 'multiple' && question.options) {
+                        questionsHtml += '<div class="question-options">';
+                        question.options.forEach(option => {
+                            const isCorrect = option === question.correct_answer;
+                            questionsHtml += `<div class="option-item ${isCorrect ? 'correct-answer' : ''}">${option}${isCorrect ? ' ✓' : ''}</div>`;
+                        });
+                        questionsHtml += '</div>';
+                    } else if (question.type === 'text') {
+                        questionsHtml += `<div class="text-answer">Correct Answer: ${question.correct_answer}</div>`;
+                    }
+                    questionsHtml += `</div>`;
+                });
+            } else {
+                questionsHtml = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <div class="empty-state-title">No Questions Available</div>
+                        <div class="empty-state-text">
+                            No questions available for this reading material.
+                        </div>
+                    </div>
+                `;
+            }
+            questionsContent.innerHTML = questionsHtml;
+        }
+
+
+
+        // Updated publish function that works with radio button selection
+        function publishMaterialById(materialId) {
+            const material = currentMaterials.find(m => m.id === materialId);
+            if (!material) {
+                alert('Selected reading material not found');
+                return;
+            }
+
+            // Get CSRF token
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            // Show loading state
+            const radioButton = document.querySelector(`input[name="materialToPublish"][value="${materialId}"]`);
+            const originalDisabled = radioButton.disabled;
+            radioButton.disabled = true;
+
+            // Publish the selected material
+            fetch(`/api/reading-materials/${materialId}/publish`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({}),
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to publish reading material');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert(`Reading material "${material.title}" published successfully!\n\nGrade: ${material.grade_level}\nSubject: ${material.subject.charAt(0).toUpperCase() + material.subject.slice(1)}\n\nThis material is now visible to students and teachers.`);
+                    // Refresh the display to show updated status
+                    fetchAndDisplayReadingMaterials();
+                } else {
+                    throw new Error(data.message || 'Failed to publish reading material');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error: ' + (error.message || 'Failed to publish reading material'));
+
+                // Revert radio button selection on error
+                const currentPublished = currentMaterials.find(m => m.is_published);
+                if (currentPublished) {
+                    document.querySelector(`input[name="materialToPublish"][value="${currentPublished.id}"]`).checked = true;
+                } else {
+                    document.querySelector(`input[name="materialToPublish"][value="${materialId}"]`).checked = false;
+                }
+            })
+            .finally(() => {
+                // Reset radio button state
+                radioButton.disabled = originalDisabled;
             });
         }
 
@@ -1202,6 +1555,15 @@
                     closeModal('createModal');
                     // Clear the form
                     this.reset();
+                    // Clear questions container
+                    document.getElementById('questionsContainer').innerHTML = `
+                        <div class="form-group">
+                            <button type="button" class="action-btn primary" onclick="addQuestion()">
+                                <i class="fas fa-plus"></i>
+                                Add New Question
+                            </button>
+                        </div>
+                    `;
                     // Refresh the display
                     fetchAndDisplayReadingMaterials();
                 } else {
@@ -1219,77 +1581,37 @@
             });
         });
 
-        // Publish material function
-        function publishMaterial() {
-            const selectedGrade = document.querySelector('#gradeFilter').value;
-            const selectedSubjectButton = document.querySelector('.subject-tab.active');
-            const selectedSubject = selectedSubjectButton ? selectedSubjectButton.dataset.subject : null;
+        // Publish selected material function (works with radio button selection)
+        function publishSelectedMaterial() {
+            // Get the selected radio button
+            const selectedRadio = document.querySelector('input[name="materialToPublish"]:checked');
 
-            if (!selectedGrade || !selectedSubject) {
-                alert('Please select a grade and subject first');
+            if (!selectedRadio) {
+                alert('Please select a reading material to publish by clicking the radio button next to it.');
                 return;
             }
 
-            if (!confirm('Are you sure you want to publish the reading material for Grade ' + selectedGrade + ' ' + selectedSubject + '? This will make it available to students.')) {
+            const materialId = parseInt(selectedRadio.value);
+            const material = currentMaterials.find(m => m.id === materialId);
+
+            if (!material) {
+                alert('Selected reading material not found');
                 return;
             }
 
-            // Get CSRF token
-            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            // Check if it's already published
+            if (material.is_published) {
+                alert(`"${material.title}" is already published and active for students and teachers.`);
+                return;
+            }
 
-            // First, get the material ID using the admin endpoint
-            fetch(`/api/reading-materials/admin/${selectedGrade}/${selectedSubject}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': token
-                },
-                credentials: 'same-origin'
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data && data.length > 0) {
-                    const materialId = data[0].id;
-                    // Now publish the material
-                    return fetch(`/api/reading-materials/${materialId}/publish`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': token,
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({}),
-                        credentials: 'same-origin'
-                    });
-                } else {
-                    throw new Error('No reading material found to publish');
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to publish reading material');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    alert(`Reading material published successfully!\n\nGrade: ${selectedGrade}\nSubject: ${selectedSubject.charAt(0).toUpperCase() + selectedSubject.slice(1)}\n\nThis material is now visible to Grade ${selectedGrade} students in the ${selectedSubject.charAt(0).toUpperCase() + selectedSubject.slice(1)} section.`);
-                    // Refresh the display
-                    fetchAndDisplayReadingMaterials();
-                } else {
-                    throw new Error(data.message || 'Failed to publish reading material');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error: ' + (error.message || 'Failed to publish reading material'));
-            });
+            // Show confirmation dialog before publishing
+            if (!confirm(`Are you sure you want to publish "${material.title}"?\n\nThis will:\n• Make this material available to students and teachers\n• Unpublish any other materials for Grade ${material.grade_level} ${material.subject.charAt(0).toUpperCase() + material.subject.slice(1)}\n\nContinue?`)) {
+                return;
+            }
+
+            // Proceed with publishing
+            publishMaterialById(materialId);
         }
 
         // CRUD Operations
@@ -1298,48 +1620,30 @@
         }
 
         function openEditModal() {
-            const selectedGrade = document.querySelector('#gradeFilter').value;
-            const selectedSubjectButton = document.querySelector('.subject-tab.active');
-            const selectedSubject = selectedSubjectButton ? selectedSubjectButton.dataset.subject : null;
-
-            if (!selectedGrade || !selectedSubject) {
-                alert('Please select a grade and subject first');
+            if (!selectedMaterialId) {
+                alert('Please select a reading material from the list first');
                 return;
             }
 
-            // Get CSRF token
-            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const material = currentMaterials.find(m => m.id === selectedMaterialId);
+            if (!material) {
+                alert('Selected reading material not found');
+                return;
+            }
 
-            // Fetch the current reading material using the admin endpoint
-            fetch(`/api/reading-materials/admin/${selectedGrade}/${selectedSubject}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': token
-                },
-                credentials: 'same-origin'
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data && data.length > 0) {
-                    const material = data[0];
-                    document.getElementById('edit-grade').value = material.grade_level;
-                    document.getElementById('edit-subject').value = material.subject;
-                    document.getElementById('edit-title').value = material.title;
-                    document.getElementById('edit-content').value = material.content;
-                    const questionsContainer = document.getElementById('editQuestionsContainer');
-                    questionsContainer.innerHTML = `
-                        <div class="form-group">
-                            <label class="form-label">Questions</label>
-                        </div>
-                    `;
-                    material.questions.forEach(question => {
+            // Use the selected material directly
+            try {
+                document.getElementById('edit-grade').value = material.grade_level;
+                document.getElementById('edit-subject').value = material.subject;
+                document.getElementById('edit-title').value = material.title;
+                document.getElementById('edit-content').value = material.content;
+                const questionsContainer = document.getElementById('editQuestionsContainer');
+                questionsContainer.innerHTML = `
+                    <div class="form-group">
+                        <label class="form-label">Questions</label>
+                    </div>
+                `;
+                material.questions.forEach(question => {
                         const questionDiv = document.createElement('div');
                         questionDiv.className = 'question-container';
                         if (question.type === 'multiple') {
@@ -1420,21 +1724,17 @@
                         }
                         questionsContainer.appendChild(questionDiv);
                     });
-                    const addButton = document.createElement('button');
-                    addButton.type = 'button';
-                    addButton.className = 'action-btn';
-                    addButton.innerHTML = '<i class="fas fa-plus"></i> Add Question';
-                    addButton.onclick = addEditQuestion;
-                    questionsContainer.appendChild(addButton);
-                    document.getElementById('editModal').classList.add('active');
-                } else {
-                    alert('No reading material found for the selected grade and subject');
-                }
-            })
-            .catch(error => {
+                const addButton = document.createElement('button');
+                addButton.type = 'button';
+                addButton.className = 'action-btn';
+                addButton.innerHTML = '<i class="fas fa-plus"></i> Add Question';
+                addButton.onclick = addEditQuestion;
+                questionsContainer.appendChild(addButton);
+                document.getElementById('editModal').classList.add('active');
+            } catch (error) {
                 console.error('Error:', error);
                 alert('Error loading reading material: ' + error.message);
-            });
+            }
         }
 
         function closeModal(modalId) {
@@ -1502,54 +1802,33 @@
         }
 
         function deleteSelected() {
-            const selectedGrade = document.querySelector('#gradeFilter').value;
-            const selectedSubjectButton = document.querySelector('.subject-tab.active');
-            const selectedSubject = selectedSubjectButton ? selectedSubjectButton.dataset.subject : null;
-
-            if (!selectedGrade || !selectedSubject) {
-                alert('Please select a grade and subject first');
+            if (!selectedMaterialId) {
+                alert('Please select a reading material from the list first');
                 return;
             }
 
-            if (!confirm('Are you sure you want to delete the reading material for Grade ' + selectedGrade + ' ' + selectedSubject + '? This action cannot be undone.')) {
+            const material = currentMaterials.find(m => m.id === selectedMaterialId);
+            if (!material) {
+                alert('Selected reading material not found');
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to delete "${material.title}"? This action cannot be undone.`)) {
                 return;
             }
 
             // Get CSRF token
             const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-            // First, get the material ID using the admin endpoint
-            fetch(`/api/reading-materials/admin/${selectedGrade}/${selectedSubject}`, {
-                method: 'GET',
+            // Delete the selected material directly
+            fetch(`/api/reading-materials/${selectedMaterialId}`, {
+                method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': token
                 },
                 credentials: 'same-origin'
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data && data.length > 0) {
-                    const materialId = data[0].id;
-                    // Now delete the material
-                    return fetch(`/api/reading-materials/${materialId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'X-CSRF-TOKEN': token
-                        },
-                        credentials: 'same-origin'
-                    });
-                } else {
-                    throw new Error('No reading material found to delete');
-                }
             })
             .then(response => {
                 if (!response.ok) {
@@ -1772,39 +2051,17 @@
             submitButton.disabled = true;
             submitButton.textContent = 'Saving...';
 
-            // Get the material ID from the current selection
-            const selectedGrade = document.querySelector('#gradeFilter').value;
-            const selectedSubjectButton = document.querySelector('.subject-tab.active');
-            const selectedSubject = selectedSubjectButton ? selectedSubjectButton.dataset.subject : null;
-
-            // Send to server
+            // Use the selected material ID directly
             const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            fetch(`/api/reading-materials/admin/${selectedGrade}/${selectedSubject}`, {
-                method: 'GET',
+            fetch(`/api/reading-materials/${selectedMaterialId}`, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': token
+                    'X-CSRF-TOKEN': token,
+                    'Accept': 'application/json'
                 },
+                body: JSON.stringify(formData),
                 credentials: 'same-origin'
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data && data.length > 0) {
-                    const materialId = data[0].id;
-                    return fetch(`/api/reading-materials/${materialId}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': token,
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify(formData),
-                        credentials: 'same-origin'
-                    });
-                } else {
-                    throw new Error('No reading material found to update');
-                }
             })
             .then(response => {
                 if (!response.ok) {
