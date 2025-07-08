@@ -468,7 +468,7 @@
         <div class="action-buttons">
         <a href="{{ route('teacher.view', ['student_id' => $student['id']]) }}"
         class="action-btn btn-view">View</a>
-        <a href="{{ route('teacher.passage', ['grade' => 'grade' . $student['grade_level'], 'section' => strtolower($student['section'])]) }}"
+        <a href="{{ route('teacher.passage', ['grade' => 'grade' . $student['grade_level'], 'section' => strtolower($student['section']), 'student_number' => $student['student_number']]) }}"
         class="action-btn btn-assess">
         @if($student['total_assessments'] > 0)
         {{ $student['total_assessments'] }} Assessment{{ $student['total_assessments'] > 1 ? 's' : '' }}
