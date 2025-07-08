@@ -7,7 +7,7 @@
     <title>Student Profile - {{ isset($student) ? $student->first_name . ' ' . $student->last_name : 'Student' }}
     </title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script>tailwind.config = { theme: { extend: { colors: { primary: '#0369a1', secondary: '#6b7280' }, borderRadius: { 'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px' } } } }</script>
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#0369a1', secondary: '#6b7280' }, borderRadius: { 'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px' } } }</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
@@ -301,48 +301,30 @@
                 padding: 1rem;
             }
         }
+
+        .back-btn {
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,184,169,0.08);
+        }
+        .back-btn:hover {
+            background: var(--primary-teal);
+            color: #fff !important;
+            box-shadow: 0 4px 16px rgba(0,184,169,0.15);
+            transform: translateY(-2px) scale(1.03);
+        }
     </style>
 </head>
 
 <body class="bg-gray-50 text-gray-800 min-h-screen">
     <!-- Header with Logout -->
-    <header class="bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-lg fixed top-0 left-0 right-0 z-50">
-        <div class="container mx-auto px-4 py-3">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('teacher.dashboard') }}" class="flex items-center space-x-2 hover:text-teal-200 transition-colors">
-                        <i class="ri-arrow-left-line text-xl"></i>
-                        <span class="font-semibold">Back to Dashboard</span>
-                    </a>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <div class="flex items-center space-x-2">
-                        <div class="w-8 h-8 bg-teal-400 rounded-full flex items-center justify-center text-white font-semibold">
-                            {{ Auth::user() ? strtoupper(substr(Auth::user()->name, 0, 1)) : 'T' }}
-                        </div>
-                        <span class="font-medium">{{ Auth::user() ? Auth::user()->name : 'Teacher' }}</span>
-                    </div>
-                    <form method="POST" action="{{ route('logout') }}" class="inline">
-                        @csrf
-                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center space-x-2" onclick="this.innerHTML='<i class=\'fas fa-spinner fa-spin\'></i> Logging out...'; this.disabled=true;">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span>Logout</span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </header>
-
+    
     <!-- Main Content with top margin for fixed header -->
     <div class="container mx-auto p-4 max-w-7xl" style="margin-top: 80px;">
         <!-- Back Navigation -->
         <div class="mb-6">
             <a href="{{ route('teacher.student-management') }}"
-                class="flex items-center text-gray-600 hover:text-primary transition-colors">
-                <div class="w-5 h-5 flex items-center justify-center mr-1">
-                    <i class="ri-arrow-left-line"></i>
-                </div>
+               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white shadow-md border border-gray-200 text-primary font-semibold text-base transition-all duration-200 hover:bg-primary hover:text-white hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 back-btn">
+                <i class="ri-arrow-left-line text-lg"></i>
                 <span>Back</span>
             </a>
         </div>
