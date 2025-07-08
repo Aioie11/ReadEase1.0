@@ -1107,37 +1107,47 @@ class ReportsController extends Controller
         $totalStudents = $assessments->count();
         $distribution = [];
 
-        // Get actual sections from the database for each grade
-        $actualSections = ReadingAssessment::where('language', $language)
-            ->select('grade', 'section')
-            ->distinct()
-            ->get()
-            ->groupBy('grade');
+        // Define predefined sections for each grade
+        $predefinedSections = [
+            7 => ['Narra', 'Dao', 'Mahugani', 'Lawaan'],
+            8 => ['Avocado', 'Guava', 'Duhat', 'Mango'],
+            9 => ['Gold', 'Silver', 'Zinc'],
+            10 => ['Galileo', 'Edison', 'Newton']
+        ];
+
+        // Initialize distribution for all predefined sections
+        foreach ($predefinedSections as $grade => $sections) {
+            foreach ($sections as $section) {
+                $distribution["Grade $grade - $section"] = [
+                    'Independent' => 0,
+                    'Instructional' => 0,
+                    'Frustration' => 0
+                ];
+            }
+        }
 
         // Calculate distribution by grade and section using actual data
-        foreach ($actualSections as $grade => $gradeSections) {
+        foreach ($predefinedSections as $grade => $sections) {
             $gradeAssessments = $assessments->where('grade', $grade);
 
-            foreach ($gradeSections as $sectionData) {
-                $section = $sectionData->section;
-
+            foreach ($sections as $section) {
                 // Use case-insensitive comparison for section matching
                 $sectionAssessments = $gradeAssessments->filter(function ($assessment) use ($section) {
                     return strtolower($assessment->section) === strtolower($section);
                 });
 
-                $sectionLevels = $sectionAssessments->groupBy(function ($assessment) {
-                    return $this->calculateWordReadingLevel($assessment->correct_reading);
-                });
-
-                // Only include sections that have data
                 if ($sectionAssessments->count() > 0) {
+                    $sectionLevels = $sectionAssessments->groupBy(function ($assessment) {
+                        return $this->calculateWordReadingLevel($assessment->correct_reading);
+                    });
+
                     $distribution["Grade $grade - $section"] = [
                         'Independent' => $sectionLevels->get('Independent', collect())->count(),
                         'Instructional' => $sectionLevels->get('Instructional', collect())->count(),
                         'Frustration' => $sectionLevels->get('Frustration', collect())->count()
                     ];
                 }
+                // If no data, the section will keep its initialized zero values
             }
         }
 
@@ -1175,24 +1185,16 @@ class ReportsController extends Controller
         $totalStudents = 0;
         $distribution = [];
 
-        // Get actual grade-section combinations from students who have comprehension data
-        $studentsWithData = [];
-        foreach ($comprehensionResults as $studentId => $result) {
-            $student = $students->get($studentId);
-            if ($student && $student->grade_level >= 7 && $student->grade_level <= 10) {
-                $studentsWithData[] = $student;
-            }
-        }
+        // Define predefined sections for each grade
+        $predefinedSections = [
+            7 => ['Narra', 'Dao', 'Mahugani', 'Lawaan'],
+            8 => ['Avocado', 'Guava', 'Duhat', 'Mango'],
+            9 => ['Gold', 'Silver', 'Zinc'],
+            10 => ['Galileo', 'Edison', 'Newton']
+        ];
 
-        // Group students by grade and section to get actual combinations
-        $actualGradeSections = collect($studentsWithData)
-            ->groupBy('grade_level')
-            ->map(function ($gradeStudents) {
-                return $gradeStudents->pluck('section')->unique()->values();
-            });
-
-        // Initialize distribution for actual grade-section combinations
-        foreach ($actualGradeSections as $grade => $sections) {
+        // Initialize distribution for all predefined sections
+        foreach ($predefinedSections as $grade => $sections) {
             foreach ($sections as $section) {
                 $distribution["Grade $grade - $section"] = [
                     'Independent' => 0,
@@ -1225,11 +1227,16 @@ class ReportsController extends Controller
             // Determine comprehension level
             $level = $this->calculateComprehensionLevel($comprehensionPercentage);
 
-            // Add to distribution
-            $sectionKey = "Grade $grade - $section";
-            if (isset($distribution[$sectionKey])) {
-                $distribution[$sectionKey][$level]++;
-                $totalStudents++;
+            // Add to distribution using case-insensitive section matching
+            foreach ($predefinedSections[$grade] as $predefinedSection) {
+                if (strtolower($section) === strtolower($predefinedSection)) {
+                    $sectionKey = "Grade $grade - $predefinedSection";
+                    if (isset($distribution[$sectionKey])) {
+                        $distribution[$sectionKey][$level]++;
+                        $totalStudents++;
+                    }
+                    break; // Found matching section, no need to continue
+                }
             }
         }
 

@@ -12,6 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :where([class^="ri-"])::before {
@@ -304,7 +305,37 @@
 </head>
 
 <body class="bg-gray-50 text-gray-800 min-h-screen">
-    <div class="container mx-auto p-4 max-w-7xl">
+    <!-- Header with Logout -->
+    <header class="bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-lg fixed top-0 left-0 right-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <a href="{{ route('teacher.dashboard') }}" class="flex items-center space-x-2 hover:text-teal-200 transition-colors">
+                        <i class="ri-arrow-left-line text-xl"></i>
+                        <span class="font-semibold">Back to Dashboard</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-teal-400 rounded-full flex items-center justify-center text-white font-semibold">
+                            {{ Auth::user() ? strtoupper(substr(Auth::user()->name, 0, 1)) : 'T' }}
+                        </div>
+                        <span class="font-medium">{{ Auth::user() ? Auth::user()->name : 'Teacher' }}</span>
+                    </div>
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                        @csrf
+                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center space-x-2" onclick="this.innerHTML='<i class=\'fas fa-spinner fa-spin\'></i> Logging out...'; this.disabled=true;">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content with top margin for fixed header -->
+    <div class="container mx-auto p-4 max-w-7xl" style="margin-top: 80px;">
         <!-- Back Navigation -->
         <div class="mb-6">
             <a href="{{ route('teacher.student-management') }}"
@@ -2106,6 +2137,7 @@
                 </div>
             </div>
         </div>
+    </div> <!-- Close the main container div -->
 </body>
 
 </html>

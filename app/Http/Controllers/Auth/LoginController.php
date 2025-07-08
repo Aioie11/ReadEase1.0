@@ -64,10 +64,19 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
+        // Log the logout attempt
+        \Log::info('User logout attempt', [
+            'user_id' => Auth::id(),
+            'user_role' => Auth::user() ? Auth::user()->role : 'unknown',
+            'session_id' => session()->getId()
+        ]);
+        
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+        
+        // Redirect to login page with success message
+        return redirect()->route('login')->with('success', 'You have been successfully logged out.');
     }
 
     public function showChangePasswordForm()

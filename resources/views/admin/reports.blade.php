@@ -1152,7 +1152,8 @@
     // Helper function to update individual grade charts
     function updateGradeChart(chartId, gradeData) {
         const chart = Chart.getChart(chartId);
-        if (chart && Object.keys(gradeData).length > 0) {
+        if (chart) {
+            // Always update the chart, even if there's no data
             const sectionLabels = Object.keys(gradeData);
             chart.data.labels = sectionLabels;
             chart.data.datasets[0].data = sectionLabels.map(s => gradeData[s]?.['Independent'] || 0);
