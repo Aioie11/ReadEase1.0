@@ -7,11 +7,12 @@
     <title>Student Profile - {{ isset($student) ? $student->first_name . ' ' . $student->last_name : 'Student' }}
     </title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script>tailwind.config = { theme: { extend: { colors: { primary: '#0369a1', secondary: '#6b7280' }, borderRadius: { 'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px' } } } }</script>
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#0369a1', secondary: '#6b7280' }, borderRadius: { 'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px' } } }</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :where([class^="ri-"])::before {
@@ -300,18 +301,30 @@
                 padding: 1rem;
             }
         }
+
+        .back-btn {
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,184,169,0.08);
+        }
+        .back-btn:hover {
+            background: var(--primary-teal);
+            color: #fff !important;
+            box-shadow: 0 4px 16px rgba(0,184,169,0.15);
+            transform: translateY(-2px) scale(1.03);
+        }
     </style>
 </head>
 
 <body class="bg-gray-50 text-gray-800 min-h-screen">
-    <div class="container mx-auto p-4 max-w-7xl">
+    <!-- Header with Logout -->
+    
+    <!-- Main Content with top margin for fixed header -->
+    <div class="container mx-auto p-4 max-w-7xl" style="margin-top: 80px;">
         <!-- Back Navigation -->
         <div class="mb-6">
             <a href="{{ route('teacher.student-management') }}"
-                class="flex items-center text-gray-600 hover:text-primary transition-colors">
-                <div class="w-5 h-5 flex items-center justify-center mr-1">
-                    <i class="ri-arrow-left-line"></i>
-                </div>
+               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white shadow-md border border-gray-200 text-primary font-semibold text-base transition-all duration-200 hover:bg-primary hover:text-white hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 back-btn">
+                <i class="ri-arrow-left-line text-lg"></i>
                 <span>Back</span>
             </a>
         </div>
@@ -2106,6 +2119,7 @@
                 </div>
             </div>
         </div>
+    </div> <!-- Close the main container div -->
 </body>
 
 </html>

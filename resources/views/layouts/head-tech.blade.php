@@ -133,24 +133,7 @@
             margin-left: auto;
         }
 
-        .logout-btn {
-            background: var(--accent);
-            color: var(--neutral-light);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: var(--transition);
-            font-weight: 500;
-        }
 
-        .logout-btn:hover {
-            background: var(--accent-light);
-            transform: translateY(-2px);
-        }
 
         /* Teacher User Dropdown Styles */
         .teacher-user-dropdown {
@@ -275,11 +258,18 @@
 
         .teacher-logout-item {
             color: var(--text);
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
 
         .teacher-logout-item:hover {
-            background: var(--text);
-            color: #dc3545;
+            background: #dc3545 !important;
+            color: white !important;
+            transform: translateX(5px);
+        }
+
+        .teacher-logout-item:active {
+            transform: scale(0.95);
         }
 
         /* Dashboard Content */
@@ -860,10 +850,11 @@
 
                         <!-- Teacher Dropdown Menu -->
                         <div class="teacher-dropdown-menu" id="teacherUserDropdownMenu">
-                            <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                            <form method="POST" action="{{ route('logout') }}" style="margin: 0;" id="teacherLogoutForm">
                                 @csrf
                                 <button type="submit" class="teacher-dropdown-item teacher-logout-item"
-                                    style="width: 100%; border: none; background: none; text-align: left; cursor: pointer;">
+                                    style="width: 100%; border: none; background: none; text-align: left; cursor: pointer;"
+                                    onclick="console.log('Teacher logout button clicked');">
                                     <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
                                         <path
                                             d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
@@ -954,6 +945,11 @@
 
             if (teacherUserDropdownToggle) {
                 teacherUserDropdownToggle.addEventListener('click', function (e) {
+                    // Don't prevent default or stop propagation if clicking on form elements
+                    if (e.target.closest('form') || e.target.closest('button[type="submit"]')) {
+                        return;
+                    }
+                    
                     e.preventDefault();
                     e.stopPropagation();
                     toggleTeacherUserDropdown();
@@ -1029,6 +1025,33 @@
 
         // Active state is now handled by Laravel route detection
         // No need for manual JavaScript active state management
+
+        // Ensure teacher logout form works properly
+        document.addEventListener('DOMContentLoaded', function () {
+            const teacherLogoutForm = document.getElementById('teacherLogoutForm');
+            const teacherLogoutButton = teacherLogoutForm ? teacherLogoutForm.querySelector('button[type="submit"]') : null;
+
+            if (teacherLogoutForm && teacherLogoutButton) {
+                // Add event listener to the form
+                teacherLogoutForm.addEventListener('submit', function(e) {
+                    console.log('Teacher logout form submitted');
+                    // Show loading state
+                    teacherLogoutButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging out...';
+                    teacherLogoutButton.disabled = true;
+                    // Don't prevent default - let the form submit normally
+                });
+
+                // Add event listener to the button
+                teacherLogoutButton.addEventListener('click', function(e) {
+                    console.log('Teacher logout button clicked via event listener');
+                    // Don't prevent default - let the form submit normally
+                });
+            } else {
+                console.error('Teacher logout form or button not found');
+            }
+
+
+        });
 
         // Ensure header shadow is always visible
         function ensureHeaderShadow() {

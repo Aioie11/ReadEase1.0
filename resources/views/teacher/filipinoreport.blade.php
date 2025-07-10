@@ -1012,11 +1012,15 @@
 
         // Get chart data from backend
         const gradeDistribution = @json($grade_distribution ?? []);
+        const readingLevelDistribution = @json($reading_level_distribution ?? []);
+        const comprehensionLevelDistribution = @json($comprehension_level_distribution ?? []);
         const currentGrade = '{{ (string)($grade ?? "7") }}';
         const currentSection = '{{ (string)($section ?? "all") }}';
 
         console.log('Initial Filipino data from backend:', {
             gradeDistribution,
+            readingLevelDistribution,
+            comprehensionLevelDistribution,
             currentGrade,
             currentSection
         });
@@ -1052,7 +1056,7 @@
         window.filipinoProgressChart = new Chart(filipinoCtx, {
             type: 'pie',
             data: {
-                labels: ['Independiyente (97-100%)', 'Pagtuturo (90-96%)', 'Pagkabalisa (Below 90%)'],
+                labels: ['Independiyente (Pagbasa ng Salita: 97-100%)', 'Pagtuturo (Pagbasa ng Salita: 90-96%)', 'Pagkabalisa (Pagbasa ng Salita: Below 90%)'],
                 datasets: [{
                     data: displayFilipinoData,
                     backgroundColor: ['#00B8A9', '#F6AD55', '#E53E3E'], // Always show colors
@@ -1156,8 +1160,8 @@
         // Function to get Filipino comprehension chart data for specific grade
         function getFilipinoComprehensionChartDataForGrade(selectedGrade) {
             const gradeKey = `Grade ${selectedGrade}`;
-            // We'll calculate comprehension levels based on comprehension scores only
-            const gradeData = gradeDistribution[gradeKey] || { Independent: 0, Instructional: 0, Frustration: 0 };
+            // Use comprehensionLevelDistribution for comprehension data (this will be updated by AJAX)
+            const gradeData = comprehensionLevelDistribution[gradeKey] || { Independent: 0, Instructional: 0, Frustration: 0 };
 
             return {
                 labels: [gradeKey],
@@ -1183,7 +1187,7 @@
         window.filipinoComprehensionChart = new Chart(filipinoComprehensionCtx, {
             type: 'pie',
             data: {
-                labels: ['Independiyente (80-100%)', 'Pagtuturo (59-79%)', 'Pagkabalisa (Below 59%)'],
+                labels: ['Independiyente (Pag-unawa: 80-100%)', 'Pagtuturo (Pag-unawa: 59-79%)', 'Pagkabalisa (Pag-unawa: Below 59%)'],
                 datasets: [{
                     data: displayFilipinoComprehensionData,
                     backgroundColor: ['#00B8A9', '#F6AD55', '#E53E3E'], // Always show colors
@@ -1280,6 +1284,11 @@
                 }
             }
         });
+
+        // Initialize performance cards with initial data
+        const initialFilipinoReadingData = gradeDistribution[`Grade ${currentGrade}`] || { Independent: 0, Instructional: 0, Frustration: 0 };
+        const initialFilipinoComprehensionData = comprehensionLevelDistribution[`Grade ${currentGrade}`] || { Independent: 0, Instructional: 0, Frustration: 0 };
+        updateFilipinoPerformanceCards(initialFilipinoReadingData, initialFilipinoComprehensionData);
 
         // Function to update chart for selected grade (this will be updated by AJAX call)
         function updateChartForGrade(selectedGrade) {
@@ -1671,7 +1680,7 @@
         // Also update performance cards with any initial data
         setTimeout(() => {
             const initialReadingData = gradeDistribution[`Grade ${currentGrade}`] || { Independent: 0, Instructional: 0, Frustration: 0 };
-            const initialComprehensionData = gradeDistribution[`Grade ${currentGrade}`] || { Independent: 0, Instructional: 0, Frustration: 0 };
+            const initialComprehensionData = comprehensionLevelDistribution[`Grade ${currentGrade}`] || { Independent: 0, Instructional: 0, Frustration: 0 };
             updateFilipinoPerformanceCards(initialReadingData, initialComprehensionData);
         }, 500);
     });

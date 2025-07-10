@@ -261,11 +261,20 @@
 
         .logout-item {
             color: var(--text);
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
 
         .logout-item:hover {
-            background: var(--text);
-            color: #dc3545;
+            background: #dc3545 !important;
+            color: #fff !important;
+            transform: translateX(5px);
+        }
+
+        .logout-item:active {
+            background: #b52a37 !important;
+            color: #fff !important;
+            transform: scale(0.98);
         }
 
         /* Dashboard Content */
@@ -925,14 +934,53 @@
 
             if (userDropdownToggle) {
                 userDropdownToggle.addEventListener('click', function (e) {
+                    // Don't prevent default or stop propagation if clicking on form elements
+                    if (e.target.closest('form') || e.target.closest('button[type="submit"]')) {
+                        return;
+                    }
                     e.preventDefault();
                     e.stopPropagation();
                     toggleUserDropdown();
                 });
-
                 userDropdownToggle.style.cursor = 'pointer';
             } else {
                 console.error('User dropdown toggle element not found!');
+            }
+
+            // Ensure logout form works properly
+            const logoutForm = document.querySelector('#userDropdownMenu form');
+            const logoutButton = logoutForm ? logoutForm.querySelector('button[type="submit"]') : null;
+            if (logoutForm && logoutButton) {
+                logoutForm.addEventListener('submit', function(e) {
+                    logoutButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging out...';
+                    logoutButton.disabled = true;
+                });
+                logoutButton.addEventListener('click', function(e) {
+                    // Don't prevent default - let the form submit normally
+                });
+            }
+
+            // Add direct logout button fallback
+            let directLogoutBtn = document.querySelector('.logout-btn');
+            if (!directLogoutBtn) {
+                // Add direct logout button to header-right if not present
+                const headerRight = document.querySelector('.header-right');
+                if (headerRight) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = logoutForm ? logoutForm.action : '/logout';
+                    form.style.margin = '0 10px 0 0';
+                    form.style.display = 'inline-block';
+                    form.innerHTML = `@csrf <button type="submit" class="logout-btn" title="Logout"><i class="fas fa-sign-out-alt"></i> Logout</button>`;
+                    headerRight.insertBefore(form, headerRight.querySelector('.menu-toggle'));
+                    directLogoutBtn = form.querySelector('button');
+                }
+            }
+            if (directLogoutBtn) {
+                directLogoutBtn.addEventListener('click', function(e) {
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging out...';
+                    this.disabled = true;
+                });
             }
         });
 

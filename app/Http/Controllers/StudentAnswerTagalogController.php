@@ -33,6 +33,14 @@ class StudentAnswerTagalogController extends Controller
 
         $questions = $readingMaterial->questions()->orderBy('id')->get();
 
+        // Log submission for tracking
+        \Log::info('Student Filipino submission', [
+            'student_id' => $user->userId,
+            'reading_material_id' => $readingMaterial->id,
+            'reading_material_title' => $readingMaterial->title,
+            'questions_count' => $questions->count()
+        ]);
+
         // Get correct answers from the database
         $correctAnswers = [];
         $studentAnswers = [];
@@ -41,6 +49,8 @@ class StudentAnswerTagalogController extends Controller
             $correctAnswers[$questionKey] = $question->correct_answer;
             $studentAnswers[$questionKey] = $request->input($questionKey);
         }
+
+
 
         // Validate input
         $validationRules = [];
@@ -59,13 +69,14 @@ class StudentAnswerTagalogController extends Controller
         }
 
         try {
-            // Save to database with JSON answers
+            // Save to database with JSON answers and reading material ID
             StudentAnswerTagalog::create([
                 'student_id' => $user->userId,
                 'answers' => $studentAnswers,
                 'score' => $score,
                 'reading_time' => $request->input('reading_time'),
                 'reading_speed' => $request->input('reading_speed'),
+                'reading_material_id' => $readingMaterial->id, // Store which material was used
             ]);
 
             // Store score and total questions in session for graphs

@@ -1160,13 +1160,23 @@
                     <label for="studentSelect">Select Student:</label>
                     <select id="studentSelect" class="assessment-select">
                         <option value="">Choose a student...</option>
-                        @foreach($students as $student)
-                            @if($student->grade_level == str_replace('grade', '', $grade) && $student->section == ucfirst($section))
-                                <option value="{{ $student->student_number }}">{{ $student->last_name }}, {{ $student->first_name }}
-                                    {{ $student->middle_name }}
-                                </option>
-                            @endif
-                        @endforeach
+                        @if(request('student_number'))
+                            @foreach($students as $student)
+                                @if($student->student_number == request('student_number'))
+                                    <option value="{{ $student->student_number }}" selected>
+                                        {{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}
+                                    </option>
+                                @endif
+                            @endforeach
+                        @else
+                            @foreach($students as $student)
+                                @if($student->grade_level == str_replace('grade', '', $grade) && $student->section == ucfirst($section))
+                                    <option value="{{ $student->student_number }}">
+                                        {{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}
+                                    </option>
+                                @endif
+                            @endforeach
+                        @endif
                     </select>
                 </div>
             </div>
