@@ -449,7 +449,7 @@
       $avatarColors = ['avatar-blue', 'avatar-green', 'avatar-orange', 'avatar-red', 'avatar-purple', 'avatar-pink'];
       $avatarClass = $avatarColors[$index % count($avatarColors)];
       @endphp
-        <div class="student-avatar {{ $avatarClass }}">{{ $student['initials'] }}</div>
+        
         <div class="student-name">{{ $student['name'] }}</div>
         </div>
         </td>

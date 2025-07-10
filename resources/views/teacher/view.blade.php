@@ -137,16 +137,6 @@
             font-weight: 600;
         }
 
-        /* Tab Navigation Enhancement */
-        .border-b.border-gray-200.mb-6 {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border: 1px solid #E2E8F0;
-            padding: 0.5rem;
-            margin-bottom: 2rem;
-        }
-
         .border-primary {
             border-color: var(--primary-teal) !important;
             color: var(--primary-teal) !important;
@@ -383,258 +373,15 @@
         </div>
 
         <!-- Performance Metrics -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            <!-- Average Correct Reading (Combined) -->
-            <div class="bg-white p-5 rounded-lg shadow-sm">
-                <div class="flex justify-between mb-3">
-                    <span class="text-gray-500 text-sm">Average Correct Reading</span>
-                    <div class="w-5 h-5 flex items-center justify-center text-blue-500">
-                        <i class="ri-book-open-line"></i>
-                    </div>
-                </div>
-
-                <!-- English Data -->
-                <div class="mb-3">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-sm text-gray-600">English:</span>
-                        <span class="text-lg font-bold text-blue-600">
-                            @if(isset($student) && $student->readingAssessments->where('language', 'english')->count() > 0)
-                                {{ round($student->readingAssessments->where('language', 'english')->avg('correct_reading'), 1) }}%
-                            @else
-                                N/A
-                            @endif
-                        </span>
-                    </div>
-                    <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs">
-                        @if(isset($student) && $student->readingAssessments->where('language', 'english')->count() > 0)
-                            @php
-                                $avgEnglishCorrect = $student->readingAssessments->where('language', 'english')->avg('correct_reading');
-                            @endphp
-                            @if($avgEnglishCorrect >= 90)
-                                Excellent
-                            @elseif($avgEnglishCorrect >= 80)
-                                Good
-                            @elseif($avgEnglishCorrect >= 70)
-                                Fair
-                            @else
-                                Needs Improvement
-                            @endif
-                        @else
-                            No Data
-                        @endif
-                    </span>
-                </div>
-
-                <!-- Filipino Data -->
-                <div>
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-sm text-gray-600">Filipino:</span>
-                        <span class="text-lg font-bold text-green-600">
-                            @if(isset($student) && $student->readingAssessments->where('language', 'filipino')->count() > 0)
-                                {{ round($student->readingAssessments->where('language', 'filipino')->avg('correct_reading'), 1) }}%
-                            @else
-                                N/A
-                            @endif
-                        </span>
-                    </div>
-                    <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs">
-                        @if(isset($student) && $student->readingAssessments->where('language', 'filipino')->count() > 0)
-                            @php
-                                $avgFilipinoCorrect = $student->readingAssessments->where('language', 'filipino')->avg('correct_reading');
-                            @endphp
-                            @if($avgFilipinoCorrect >= 90)
-                                Excellent
-                            @elseif($avgFilipinoCorrect >= 80)
-                                Good
-                            @elseif($avgFilipinoCorrect >= 70)
-                                Fair
-                            @else
-                                Needs Improvement
-                            @endif
-                        @else
-                            No Data
-                        @endif
-                    </span>
-                </div>
-            </div>
-
-            <!-- Average Comprehension (Combined) -->
-            <div class="bg-white p-5 rounded-lg shadow-sm">
-                <div class="flex justify-between mb-3">
-                    <span class="text-gray-500 text-sm">Average Comprehension</span>
-                    <div class="w-5 h-5 flex items-center justify-center text-purple-500">
-                        <i class="ri-mental-health-line"></i>
-                    </div>
-                </div>
-
-                <!-- English Comprehension -->
-                <div class="mb-3">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-sm text-gray-600">English:</span>
-                        <span class="text-lg font-bold text-blue-600">
-                            @if(isset($student) && $student->readingAssessments->where('language', 'english')->count() > 0)
-                                {{ round($student->readingAssessments->where('language', 'english')->avg('comprehension'), 1) }}%
-                            @else
-                                N/A
-                            @endif
-                        </span>
-                    </div>
-                    <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs">
-                        @if(isset($student) && $student->readingAssessments->where('language', 'english')->count() > 0)
-                            @php
-                                $avgEnglishComp = $student->readingAssessments->where('language', 'english')->avg('comprehension');
-                            @endphp
-                            @if($avgEnglishComp >= 90)
-                                Excellent
-                            @elseif($avgEnglishComp >= 80)
-                                Good
-                            @elseif($avgEnglishComp >= 70)
-                                Fair
-                            @else
-                                Needs Improvement
-                            @endif
-                        @else
-                            No Data
-                        @endif
-                    </span>
-                </div>
-
-                <!-- Filipino Comprehension -->
-                <div>
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-sm text-gray-600">Filipino:</span>
-                        <span class="text-lg font-bold text-green-600">
-                            @if(isset($student) && $student->readingAssessments->where('language', 'filipino')->count() > 0)
-                                {{ round($student->readingAssessments->where('language', 'filipino')->avg('comprehension'), 1) }}%
-                            @else
-                                N/A
-                            @endif
-                        </span>
-                    </div>
-                    <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs">
-                        @if(isset($student) && $student->readingAssessments->where('language', 'filipino')->count() > 0)
-                            @php
-                                $avgFilipinoComp = $student->readingAssessments->where('language', 'filipino')->avg('comprehension');
-                            @endphp
-                            @if($avgFilipinoComp >= 90)
-                                Excellent
-                            @elseif($avgFilipinoComp >= 80)
-                                Good
-                            @elseif($avgFilipinoComp >= 70)
-                                Fair
-                            @else
-                                Needs Improvement
-                            @endif
-                        @else
-                            No Data
-                        @endif
-                    </span>
-                </div>
-            </div>
-
-            <!-- Average Reading Speed (Combined) -->
-            <div class="bg-white p-5 rounded-lg shadow-sm">
-                <div class="flex justify-between mb-3">
-                    <span class="text-gray-500 text-sm">Average Reading Speed</span>
-                    <div class="w-5 h-5 flex items-center justify-center text-orange-500">
-                        <i class="ri-speed-line"></i>
-                    </div>
-                </div>
-
-                <!-- English Reading Speed -->
-                <div class="mb-3">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-sm text-gray-600">English:</span>
-                        <span class="text-lg font-bold text-blue-600">
-                            @if(isset($student) && $student->readingAssessments->where('language', 'english')->count() > 0)
-                                {{ round($student->readingAssessments->where('language', 'english')->avg('reading_speed'), 1) }}
-                                wpm
-                            @else
-                                N/A
-                            @endif
-                        </span>
-                    </div>
-                    <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs">
-                        @if(isset($student) && $student->readingAssessments->where('language', 'english')->count() > 0)
-                            @php
-                                $avgEnglishSpeed = $student->readingAssessments->where('language', 'english')->avg('reading_speed');
-                            @endphp
-                            @if($avgEnglishSpeed >= 120)
-                                Excellent
-                            @elseif($avgEnglishSpeed >= 100)
-                                Good
-                            @elseif($avgEnglishSpeed >= 80)
-                                Fair
-                            @else
-                                Needs Improvement
-                            @endif
-                        @else
-                            No Data
-                        @endif
-                    </span>
-                </div>
-
-                <!-- Filipino Reading Speed -->
-                <div>
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-sm text-gray-600">Filipino:</span>
-                        <span class="text-lg font-bold text-green-600">
-                            @if(isset($student) && $student->readingAssessments->where('language', 'filipino')->count() > 0)
-                                {{ round($student->readingAssessments->where('language', 'filipino')->avg('reading_speed'), 1) }}
-                                wpm
-                            @else
-                                N/A
-                            @endif
-                        </span>
-                    </div>
-                    <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs">
-                        @if(isset($student) && $student->readingAssessments->where('language', 'filipino')->count() > 0)
-                            @php
-                                $avgFilipinoSpeed = $student->readingAssessments->where('language', 'filipino')->avg('reading_speed');
-                            @endphp
-                            @if($avgFilipinoSpeed >= 120)
-                                Excellent
-                            @elseif($avgFilipinoSpeed >= 100)
-                                Good
-                            @elseif($avgFilipinoSpeed >= 80)
-                                Fair
-                            @else
-                                Needs Improvement
-                            @endif
-                        @else
-                            No Data
-                        @endif
-                    </span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tab Navigation -->
-        <div class="border-b border-gray-200 mb-6">
-            <nav class="flex flex-wrap -mb-px">
-                <button
-                    class="inline-block py-4 px-6 border-b-2 border-primary text-primary font-medium hover:bg-blue-50 transition-colors">
-                    <i class="ri-book-open-line mr-2"></i>Reading Records
-                </button>
-
-            </nav>
-        </div>
-
+        
+       
         <!-- Main Content -->
         <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <!-- Reading Records -->
             <div id="reading-assessments">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-3xl font-bold text-gray-800">Reading Records</h2>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-sm text-gray-500">Filter by:</span>
-                        <select class="text-sm border-gray-200 rounded-md focus:ring-primary focus:border-primary">
-                            <option>All Levels</option>
-                            <option>Instructional</option>
-                            <option>Frustration</option>
-                            <option>Independent</option>
-                        </select>
-                    </div>
+                    
                 </div>
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
@@ -650,7 +397,6 @@
                                     Comprehension</th>
                                 <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Correct
                                     Reading</th>
-                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Status</th>
                                 <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Actions
                                 </th>
                             </tr>
@@ -670,7 +416,7 @@
                                         </td>
                                         <td class="py-4 px-4">
                                             <span
-                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                class="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-medium
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         {{ $assessment->language == 'english' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
                                                 {{ ucfirst($assessment->language) }}
                                             </span>
@@ -681,7 +427,7 @@
                                                     @php
                                                         $speedPercentage = min(100, ($assessment->reading_speed / 150) * 100);
                                                     @endphp
-                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                    <div class="bg-red-500 h-2 rounded-full"
                                                         style="width: {{ $speedPercentage }}%"></div>
                                                 </div>
                                                 <span>{{ $assessment->reading_speed }} wpm</span>
@@ -690,7 +436,7 @@
                                         <td class="py-4 px-4">
                                             <div class="flex items-center">
                                                 <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                    <div class="bg-green-400 h-2 rounded-full"
                                                         style="width: {{ $assessment->comprehension }}%"></div>
                                                 </div>
                                                 <span>{{ $assessment->comprehension }}%</span>
@@ -705,26 +451,11 @@
                                                 <span>{{ $assessment->correct_reading }}%</span>
                                             </div>
                                         </td>
-                                        <td class="py-4 px-4">
-                                            @php
-                                                $overallScore = ($assessment->comprehension + $assessment->correct_reading) / 2;
-                                            @endphp
-                                            <span
-                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @if($overallScore >= 90) bg-green-100 text-green-800
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @elseif($overallScore >= 80) bg-blue-100 text-blue-800
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @elseif($overallScore >= 70) bg-yellow-100 text-yellow-800
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @else bg-red-100 text-red-800 @endif">
-                                                @if($overallScore >= 90) Excellent
-                                                @elseif($overallScore >= 80) Good
-                                                @elseif($overallScore >= 70) Fair
-                                                @else Needs Improvement @endif
-                                            </span>
-                                        </td>
+
                                         <td class="py-4 px-4">
                                             <button
                                                 onclick="showComprehensionDetails('{{ $student->student_number ?? '' }}', '{{ $assessment->language }}')"
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-400 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
                                                 title="View comprehension details">
                                                 <i class="ri-eye-line mr-1"></i>
                                                 View Details
@@ -734,7 +465,7 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="7" class="py-8 px-4 text-center text-gray-500">
+                                    <td colspan="6" class="py-8 px-4 text-center text-gray-500">
                                         <div class="flex flex-col items-center">
                                             <i class="ri-book-open-line text-4xl mb-2"></i>
                                             <p>No reading assessments found for this student.</p>
@@ -1335,7 +1066,7 @@
 
             .question-number {
                 background: #1E3A8A;
-                color: white;
+                color: white !important; 
                 padding: 0.25rem 0.75rem;
                 border-radius: 20px;
                 font-size: 0.875rem;
@@ -1765,7 +1496,7 @@
                 if (latestEnglish) {
                     // English Reading Speed Chart
                     const speedData = [latestEnglish.reading_time || 0, latestEnglish.total_words || 0];
-                    const speedColors = ['#3498db', '#e74c3c'];
+                    const speedColors = ['#27ae60', '#3498db'];
                     window.chartInstances.speedChart = createSimpleChart(
                         'reading-speed-chart',
                         speedData,
@@ -1787,7 +1518,7 @@
 
                     // English Word Reading Chart
                     const wordData = [latestEnglish.miscues || 0, latestEnglish.total_words || 0];
-                    const wordColors = ['#e74c3c', '#3498db'];
+                    const wordColors = ['#27ae60', '#3498db'];
                     window.chartInstances.wordChart = createSimpleChart(
                         'word-reading-chart',
                         wordData,
@@ -1801,7 +1532,7 @@
                 if (latestFilipino) {
                     // Filipino Reading Speed Chart
                     const filipinoSpeedData = [latestFilipino.reading_time || 0, latestFilipino.total_words || 0];
-                    const filipinoSpeedColors = ['#3498db', '#e74c3c'];
+                    const filipinoSpeedColors = ['#27ae60', '#3498db'];
                     window.chartInstances.filipinoSpeedChart = createSimpleChart(
                         'filipino-reading-speed-chart',
                         filipinoSpeedData,
@@ -1823,7 +1554,7 @@
 
                     // Filipino Word Reading Chart
                     const filipinoWordData = [latestFilipino.miscues || 0, latestFilipino.total_words || 0];
-                    const filipinoWordColors = ['#e74c3c', '#3498db'];
+                    const filipinoWordColors = ['#27ae60', '#3498db'];
                     window.chartInstances.filipinoWordChart = createSimpleChart(
                         'filipino-word-reading-chart',
                         filipinoWordData,
@@ -2006,9 +1737,6 @@
                     <!-- Professional Student Information Card -->
                     <div class="student-info-card">
                         <div class="info-header">
-                            <div class="student-avatar">
-                                <i class="fas fa-user-graduate"></i>
-                            </div>
                             <div class="student-basic-info">
                                 <h3 id="modalStudentName" class="student-name">Student Name</h3>
                                 <div class="student-meta">
