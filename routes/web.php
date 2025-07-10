@@ -96,6 +96,8 @@ Route::middleware(['web', 'auth', 'password.change'])->group(function () {
         Route::get('/get-student-assessments/{studentId}', [ReportsController::class, 'getStudentAssessments'])->name('teacher.get-student-assessments');
         Route::get('/grade-level-data', [ReportsController::class, 'getGradeLevelData'])->name('teacher.grade-level-data');
         Route::get('/comprehension-level-data', [ReportsController::class, 'getTeacherComprehensionLevelDistribution'])->name('teacher.comprehension-level-data');
+        Route::get('/section-wise-reading-data', [ReportsController::class, 'getSectionWiseReadingData'])->name('teacher.section-wise-reading-data');
+        Route::get('/section-wise-comprehension-data', [ReportsController::class, 'getSectionWiseComprehensionData'])->name('teacher.section-wise-comprehension-data');
 
         // Comprehension Details Routes
         Route::get('/get-student-comprehension/{studentId}/{language?}', [TeacherController::class, 'getStudentComprehensionDetails'])->name('teacher.get-student-comprehension');

@@ -131,11 +131,20 @@
             gap: 0.5rem;
             transition: var(--transition);
             font-weight: 500;
+            text-decoration: none;
+            font-size: 0.9rem;
         }
 
         .logout-btn:hover {
             background: var(--accent-light);
             transform: translateY(-2px);
+            color: white;
+        }
+
+        .logout-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
         }
 
         /* User Dropdown Styles */
@@ -261,11 +270,17 @@
 
         .logout-item {
             color: var(--text);
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
 
         .logout-item:hover {
             background: var(--text);
-            color: #dc3545;
+            color: #dc3545; 
+        }
+
+        .logout-item:active {
+            transform: scale(0.95);
         }
 
         /* Dashboard Content */
@@ -825,10 +840,11 @@
 
                         <!-- Dropdown Menu -->
                         <div class="dropdown-menu" id="userDropdownMenu">
-                            <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                            <form method="POST" action="{{ route('logout') }}" style="margin: 0;" id="logoutForm">
                                 @csrf
                                 <button type="submit" class="dropdown-item logout-item"
-                                    style="width: 100%; border: none; background: none; text-align: left; cursor: pointer;">
+                                    style="width: 100%; border: none; background: none; text-align: left; cursor: pointer;"
+                                    onclick="console.log('Logout button clicked');">
                                     <svg viewBox="0 0 24 24" fill="currentColor" style="width: 16px; height: 16px;">
                                         <path
                                             d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
@@ -919,6 +935,11 @@
 
             if (userDropdownToggle) {
                 userDropdownToggle.addEventListener('click', function (e) {
+                    // Don't prevent default or stop propagation if clicking on form elements
+                    if (e.target.closest('form') || e.target.closest('button[type="submit"]')) {
+                        return;
+                    }
+                    
                     e.preventDefault();
                     e.stopPropagation();
                     toggleUserDropdown();
@@ -994,6 +1015,31 @@
 
         // Active state is now handled by Laravel route detection
         // No need for manual JavaScript active state management
+
+        // Ensure logout form works properly
+        document.addEventListener('DOMContentLoaded', function () {
+            const logoutForm = document.getElementById('logoutForm');
+            const logoutButton = logoutForm ? logoutForm.querySelector('button[type="submit"]') : null;
+
+            if (logoutForm && logoutButton) {
+                // Add event listener to the form
+                logoutForm.addEventListener('submit', function(e) {
+                    console.log('Logout form submitted');
+                    // Show loading state
+                    logoutButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging out...';
+                    logoutButton.disabled = true;
+                    // Don't prevent default - let the form submit normally
+                });
+
+                // Add event listener to the button
+                logoutButton.addEventListener('click', function(e) {
+                    console.log('Logout button clicked via event listener');
+                    // Don't prevent default - let the form submit normally
+                });
+            } else {
+                console.error('Logout form or button not found');
+            }
+        });
     </script>
 </body>
 

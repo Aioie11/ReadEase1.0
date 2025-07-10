@@ -875,6 +875,168 @@ class ReportsController extends Controller
     }
 
     /**
+     * Get section-wise reading level data for bar charts
+     */
+    public function getSectionWiseReadingData(Request $request)
+    {
+        try {
+            $grade = $request->input('grade', '7');
+            $language = $request->input('language', 'english');
+
+            // Get all sections for the specified grade
+            $sections = $this->getSectionsForGrade($grade);
+
+            $sectionData = [];
+
+            foreach ($sections as $section) {
+                // Get assessments for this specific section
+                $assessments = ReadingAssessment::where('grade', $grade)
+                    ->where('language', $language)
+                    ->where('section', $section)
+                    ->orderBy('assessment_date', 'desc')
+                    ->get()
+                    ->groupBy('student_name')
+                    ->map(function ($studentAssessments) {
+                        return $studentAssessments->first(); // Get latest assessment per student
+                    });
+
+                // Calculate reading level distribution for this section
+                $readingLevels = $assessments->groupBy(function ($assessment) {
+                    return $this->calculateWordReadingLevel($assessment->correct_reading);
+                });
+
+                $sectionData[$section] = [
+                    'Independent' => $readingLevels->get('Independent', collect())->count(),
+                    'Instructional' => $readingLevels->get('Instructional', collect())->count(),
+                    'Frustration' => $readingLevels->get('Frustration', collect())->count(),
+                    'total_students' => $assessments->count()
+                ];
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'sections' => $sections,
+                    'section_data' => $sectionData,
+                    'grade' => $grade,
+                    'language' => $language
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error getting section-wise reading data:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error getting section data: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get section-wise comprehension level data for bar charts
+     */
+    public function getSectionWiseComprehensionData(Request $request)
+    {
+        try {
+            $grade = $request->input('grade', '7');
+            $language = $request->input('language', 'english');
+
+            // Get all sections for the specified grade
+            $sections = $this->getSectionsForGrade($grade);
+
+            $sectionData = [];
+
+            foreach ($sections as $section) {
+                // Get comprehension results for this specific section
+                if ($language === 'english') {
+                    $comprehensionResults = \App\Models\StudentAnswerEnglish::orderBy('created_at', 'desc')
+                        ->get()
+                        ->groupBy('student_id')
+                        ->map(function ($studentResults) {
+                            return $studentResults->first(); // Get latest result per student
+                        });
+                } else {
+                    $comprehensionResults = \App\Models\StudentAnswerTagalog::orderBy('created_at', 'desc')
+                        ->get()
+                        ->groupBy('student_id')
+                        ->map(function ($studentResults) {
+                            return $studentResults->first(); // Get latest result per student
+                        });
+                }
+
+                // Filter by students in this grade and section
+                $students = \App\Models\Student::where('grade_level', $grade)
+                    ->where('section', $section)
+                    ->get()
+                    ->keyBy('student_number');
+
+                $levelCounts = ['Independent' => 0, 'Instructional' => 0, 'Frustration' => 0];
+
+                foreach ($comprehensionResults as $studentId => $result) {
+                    $student = $students->get($studentId);
+                    if (!$student)
+                        continue;
+
+                    // Calculate comprehension percentage
+                    $totalQuestions = count($result->answers ?? []);
+                    $comprehensionPercentage = $totalQuestions > 0 ? round(($result->score / $totalQuestions) * 100) : 0;
+
+                    // Determine comprehension level
+                    $level = $this->calculateComprehensionLevel($comprehensionPercentage);
+                    $levelCounts[$level]++;
+                }
+
+                $sectionData[$section] = [
+                    'Independent' => $levelCounts['Independent'],
+                    'Instructional' => $levelCounts['Instructional'],
+                    'Frustration' => $levelCounts['Frustration'],
+                    'total_students' => $students->count()
+                ];
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'sections' => $sections,
+                    'section_data' => $sectionData,
+                    'grade' => $grade,
+                    'language' => $language
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error getting section-wise comprehension data:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error getting section comprehension data: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get sections for a specific grade
+     */
+    private function getSectionsForGrade($grade)
+    {
+        $sectionsMap = [
+            '7' => ['Narra', 'Lawaan', 'Dao', 'Mahugani'],
+            '8' => ['Avocado', 'Guava', 'Duhat', 'Mango'],
+            '9' => ['Gold', 'Silver', 'Zinc'],
+            '10' => ['Galileo', 'Edison', 'Newton']
+        ];
+
+        return $sectionsMap[$grade] ?? [];
+    }
+
+    /**
      * Calculate comprehension level distribution for teachers with section filtering
      */
     private function calculateTeacherComprehensionLevelDistribution($language, $grade = null, $section = null)
@@ -1107,37 +1269,47 @@ class ReportsController extends Controller
         $totalStudents = $assessments->count();
         $distribution = [];
 
-        // Get actual sections from the database for each grade
-        $actualSections = ReadingAssessment::where('language', $language)
-            ->select('grade', 'section')
-            ->distinct()
-            ->get()
-            ->groupBy('grade');
+        // Define predefined sections for each grade
+        $predefinedSections = [
+            7 => ['Narra', 'Dao', 'Mahugani', 'Lawaan'],
+            8 => ['Avocado', 'Guava', 'Duhat', 'Mango'],
+            9 => ['Gold', 'Silver', 'Zinc'],
+            10 => ['Galileo', 'Edison', 'Newton']
+        ];
+
+        // Initialize distribution for all predefined sections
+        foreach ($predefinedSections as $grade => $sections) {
+            foreach ($sections as $section) {
+                $distribution["Grade $grade - $section"] = [
+                    'Independent' => 0,
+                    'Instructional' => 0,
+                    'Frustration' => 0
+                ];
+            }
+        }
 
         // Calculate distribution by grade and section using actual data
-        foreach ($actualSections as $grade => $gradeSections) {
+        foreach ($predefinedSections as $grade => $sections) {
             $gradeAssessments = $assessments->where('grade', $grade);
 
-            foreach ($gradeSections as $sectionData) {
-                $section = $sectionData->section;
-
+            foreach ($sections as $section) {
                 // Use case-insensitive comparison for section matching
                 $sectionAssessments = $gradeAssessments->filter(function ($assessment) use ($section) {
                     return strtolower($assessment->section) === strtolower($section);
                 });
 
-                $sectionLevels = $sectionAssessments->groupBy(function ($assessment) {
-                    return $this->calculateWordReadingLevel($assessment->correct_reading);
-                });
-
-                // Only include sections that have data
                 if ($sectionAssessments->count() > 0) {
+                    $sectionLevels = $sectionAssessments->groupBy(function ($assessment) {
+                        return $this->calculateWordReadingLevel($assessment->correct_reading);
+                    });
+
                     $distribution["Grade $grade - $section"] = [
                         'Independent' => $sectionLevels->get('Independent', collect())->count(),
                         'Instructional' => $sectionLevels->get('Instructional', collect())->count(),
                         'Frustration' => $sectionLevels->get('Frustration', collect())->count()
                     ];
                 }
+                // If no data, the section will keep its initialized zero values
             }
         }
 
@@ -1175,24 +1347,16 @@ class ReportsController extends Controller
         $totalStudents = 0;
         $distribution = [];
 
-        // Get actual grade-section combinations from students who have comprehension data
-        $studentsWithData = [];
-        foreach ($comprehensionResults as $studentId => $result) {
-            $student = $students->get($studentId);
-            if ($student && $student->grade_level >= 7 && $student->grade_level <= 10) {
-                $studentsWithData[] = $student;
-            }
-        }
+        // Define predefined sections for each grade
+        $predefinedSections = [
+            7 => ['Narra', 'Dao', 'Mahugani', 'Lawaan'],
+            8 => ['Avocado', 'Guava', 'Duhat', 'Mango'],
+            9 => ['Gold', 'Silver', 'Zinc'],
+            10 => ['Galileo', 'Edison', 'Newton']
+        ];
 
-        // Group students by grade and section to get actual combinations
-        $actualGradeSections = collect($studentsWithData)
-            ->groupBy('grade_level')
-            ->map(function ($gradeStudents) {
-                return $gradeStudents->pluck('section')->unique()->values();
-            });
-
-        // Initialize distribution for actual grade-section combinations
-        foreach ($actualGradeSections as $grade => $sections) {
+        // Initialize distribution for all predefined sections
+        foreach ($predefinedSections as $grade => $sections) {
             foreach ($sections as $section) {
                 $distribution["Grade $grade - $section"] = [
                     'Independent' => 0,
@@ -1225,11 +1389,16 @@ class ReportsController extends Controller
             // Determine comprehension level
             $level = $this->calculateComprehensionLevel($comprehensionPercentage);
 
-            // Add to distribution
-            $sectionKey = "Grade $grade - $section";
-            if (isset($distribution[$sectionKey])) {
-                $distribution[$sectionKey][$level]++;
-                $totalStudents++;
+            // Add to distribution using case-insensitive section matching
+            foreach ($predefinedSections[$grade] as $predefinedSection) {
+                if (strtolower($section) === strtolower($predefinedSection)) {
+                    $sectionKey = "Grade $grade - $predefinedSection";
+                    if (isset($distribution[$sectionKey])) {
+                        $distribution[$sectionKey][$level]++;
+                        $totalStudents++;
+                    }
+                    break; // Found matching section, no need to continue
+                }
             }
         }
 
