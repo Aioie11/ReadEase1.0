@@ -15,6 +15,7 @@ class StudentAnswerTagalog extends Model
         'reading_material_id',
         'answers',
         'score',
+        'total_questions',
         'reading_time',
         'reading_speed',
         'start_time',

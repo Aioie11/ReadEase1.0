@@ -40,8 +40,8 @@
                         </div>
                         <div class="reading-metrics">
                             @php
-                                $englishScore = session('english_score', 0);
-                                $englishTotal = session('english_total_questions', 0);
+                                $englishScore = $latestEnglishActivity ? $latestEnglishActivity->score ?? 0 : 0;
+                                $englishTotal = $englishTotalQuestions ?? 0;
                                 $englishPercentage = $englishTotal > 0 ? round(($englishScore / $englishTotal) * 100) : 0;
 
                                 if ($englishPercentage >= 80) {
@@ -193,8 +193,8 @@
                         </div>
                         <div class="reading-metrics">
                             @php
-                                $filipinoScore = session('filipino_score', 0);
-                                $filipinoTotal = session('filipino_total_questions', 0);
+                                $filipinoScore = $latestFilipinoActivity ? $latestFilipinoActivity->score ?? 0 : 0;
+                                $filipinoTotal = $filipinoTotalQuestions ?? 0;
                                 $filipinoPercentage = $filipinoTotal > 0 ? round(($filipinoScore / $filipinoTotal) * 100) : 0;
 
                                 if ($filipinoPercentage >= 80) {
@@ -429,22 +429,26 @@
                                 @if($filipinoAnswers->count() > 0)
                                     @php
                                         $latestFilipino = $filipinoAnswers->first();
+                                        $filipinoScore = $latestFilipino->score ?? 0;
+                                        $filipinoTotal = $filipinoTotalQuestions ?? 0;
                                     @endphp
                                     <tr>
                                         <td><strong>Filipino Question</strong></td>
                                         <td>{{ $latestFilipino->created_at->format('Y-m-d') }}</td>
-                                        <td>{{ session('filipino_score', 0) }}/{{ session('filipino_total_questions', 0) }}</td>
+                                        <td>{{ $filipinoScore }}/{{ $filipinoTotal }}</td>
                                         <td><span class="status completed">Completed</span></td>
                                     </tr>
                                 @endif
                                 @if($englishAnswers->count() > 0)
                                     @php
                                         $latestEnglish = $englishAnswers->first();
+                                        $englishScore = $latestEnglish->score ?? 0;
+                                        $englishTotal = $englishTotalQuestions ?? 0;
                                     @endphp
                                     <tr>
                                         <td><strong>English Question</strong></td>
                                         <td>{{ $latestEnglish->created_at->format('Y-m-d') }}</td>
-                                        <td>{{ session('english_score', 0) }}/{{ session('english_total_questions', 0) }}</td>
+                                        <td>{{ $englishScore }}/{{ $englishTotal }}</td>
                                         <td><span class="status completed">Completed</span></td>
                                     </tr>
                                 @endif
@@ -1043,7 +1047,7 @@
                 width: 100%;
                 flex-direction: column;
             }
-
+            
             .form-select {
                 width: 100%;
             }
@@ -1179,8 +1183,8 @@
                 datasets: [{
                     data: [englishReadingTime, englishTotalWords],
                     backgroundColor: [
-                        '#3498db',
-                        '#e74c3c'
+                        '#27ae60',
+                        '#3498db'
                     ],
                     borderWidth: 0,
                     borderRadius: 6,
@@ -1218,8 +1222,8 @@
 
         // English Comprehension Chart
         const ctx1 = document.getElementById('myChart1').getContext('2d');
-        const englishCorrect = {{ session('english_score', 0) }};
-        const englishTotal = {{ session('english_total_questions', 0) }};
+        const englishCorrect = {{ $latestEnglishActivity ? $latestEnglishActivity->score ?? 0 : 0 }};
+        const englishTotal = {{ $englishTotalQuestions ?? 0 }};
 
         new Chart(ctx1, {
             type: 'bar',
@@ -1286,7 +1290,7 @@
                 datasets: [{
                     data: [englishMiscues, englishWords],
                     backgroundColor: [
-                        '#e74c3c',
+                        '#27ae60',
                         '#3498db'
                     ],
                     borderWidth: 0,
@@ -1335,8 +1339,8 @@
                 datasets: [{
                     data: [filipinoReadingTime, filipinoTotalWords],
                     backgroundColor: [
-                        '#3498db',
-                        '#e74c3c'
+                        '#27ae60',
+                        '#3498db'
                     ],
                     borderWidth: 0,
                     borderRadius: 6,
@@ -1374,8 +1378,8 @@
 
         // Filipino Comprehension Chart
         const ctx4 = document.getElementById('myChart4').getContext('2d');
-        const filipinoCorrect = {{ session('filipino_score', 0) }};
-        const filipinoTotal = {{ session('filipino_total_questions', 0) }};
+        const filipinoCorrect = {{ $latestFilipinoActivity ? $latestFilipinoActivity->score ?? 0 : 0 }};
+        const filipinoTotal = {{ $filipinoTotalQuestions ?? 0 }};
 
         new Chart(ctx4, {
             type: 'bar',
@@ -1442,7 +1446,7 @@
                 datasets: [{
                     data: [filipinoMiscues, filipinoWords],
                     backgroundColor: [
-                        '#e74c3c',
+                        '#27ae60',
                         '#3498db'
                     ],
                     borderWidth: 0,

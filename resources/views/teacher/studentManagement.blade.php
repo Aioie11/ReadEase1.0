@@ -195,27 +195,35 @@
       color: #1a202c;
     }
 
-    .badge {
+    /* Status Badges - Exact AdminDashboard Style */
+    .status-badge {
       padding: 4px 12px;
       border-radius: 20px;
       font-size: 0.85rem;
       font-weight: 500;
       display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
 
-    .badge-complete {
-      background: #d1fae5;
-      color: #065f46;
+    .status-completed {
+      background: #dcfce7;
+      color: #166534;
     }
 
-    .badge-incomplete {
+    .status-in-progress {
       background: #fef3c7;
       color: #92400e;
     }
 
-    .badge-no-assessment {
+    .status-not-started {
       background: #f3f4f6;
-      color: #6b7280;
+      color: #4b5563;
+    }
+
+    .status-icon {
+      font-size: 0.8rem;
+      margin-right: 0.5rem;
     }
 
     .action-buttons {
@@ -434,7 +442,7 @@
         <th>ID</th>
         <th>Student</th>
         <th>Grade & Section</th>
-        <th>Academic Status</th>
+        <th>Test Status</th>
         <th>Actions</th>
       </tr>
       </thead>
@@ -455,12 +463,33 @@
         </td>
         <td>Grade {{ $student['grade_level'] }} - Section {{ $student['section'] }}</td>
         <td>
-        <span class="badge
-      @if($student['status'] == 'Complete') badge-complete
-      @elseif($student['status'] == 'Incomplete') badge-incomplete
-      @elseif($student['status'] == 'No Assessment') badge-no-assessment
-      @else badge-no-assessment @endif">
-        {{ $student['status'] }}
+        @php
+          $status = $student['status'] ?? 'No Assessment';
+          $statusClass = '';
+          $statusText = '';
+          $statusIcon = '';
+
+          switch($status) {
+            case 'Complete':
+              $statusClass = 'status-completed';
+              $statusText = 'Complete';
+              $statusIcon = 'fa-check-circle';
+              break;
+            case 'Incomplete':
+              $statusClass = 'status-in-progress';
+              $statusText = 'Incomplete';
+              $statusIcon = 'fa-clock';
+              break;
+            default:
+              $statusClass = 'status-not-started';
+              $statusText = 'No Assessment';
+              $statusIcon = 'fa-circle';
+              break;
+          }
+        @endphp
+        <span class="status-badge {{ $statusClass }}">
+          <i class="fas {{ $statusIcon }} status-icon"></i>
+          {{ $statusText }}
         </span>
         </td>
 
