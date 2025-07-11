@@ -73,8 +73,9 @@ class StudentAnswerEnglishController extends Controller
                 'student_id' => $user->userId,
                 'answers' => $studentAnswers,
                 'score' => $score,
-                'reading_time' => $request->input('reading_time'),
-                'reading_speed' => $request->input('reading_speed'),
+                'total_questions' => $totalQuestions,
+                'reading_time' => $request->input('reading_time', 0), // Default to 0 if not provided
+                'reading_speed' => $request->input('reading_speed', 0), // Default to 0 if not provided
                 'reading_material_id' => $readingMaterial->id, // Store which material was used
             ]);
 
@@ -82,8 +83,8 @@ class StudentAnswerEnglishController extends Controller
             session([
                 'english_score' => $score,
                 'english_total_questions' => $totalQuestions,
-                'english_reading_time' => $request->input('reading_time'),
-                'english_reading_speed' => $request->input('reading_speed')
+                'english_reading_time' => $request->input('reading_time', 0),
+                'english_reading_speed' => $request->input('reading_speed', 0)
             ]);
 
             // Update reading assessment with comprehension data
@@ -94,7 +95,20 @@ class StudentAnswerEnglishController extends Controller
 
             return redirect()->route('student.reports');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'There was an error submitting your answers. Please try again.');
+            \Log::error('Error saving English answers: ' . $e->getMessage(), [
+                'student_id' => $user->userId,
+                'error_trace' => $e->getTraceAsString(),
+                'data_being_saved' => [
+                    'student_id' => $user->userId,
+                    'answers' => $studentAnswers,
+                    'score' => $score,
+                    'total_questions' => $totalQuestions,
+                    'reading_time' => $request->input('reading_time'),
+                    'reading_speed' => $request->input('reading_speed'),
+                    'reading_material_id' => $readingMaterial->id
+                ]
+            ]);
+            return redirect()->back()->with('error', 'There was an error submitting your answers. Please try again. Error: ' . $e->getMessage());
         }
     }
 

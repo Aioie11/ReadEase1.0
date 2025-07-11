@@ -7,6 +7,13 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\Student;
+use App\Models\StudentAnswerEnglish;
+use App\Models\StudentAnswerTagalog;
+use App\Models\ReadingAssessment;
+use App\Models\TeacherFeedback;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ProfileController extends Controller
@@ -206,14 +213,14 @@ class ProfileController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-            
-            // If the user is a student, delete the associated student record
+
+            // If the user is a student, delete all associated student data
             if ($user->role === 'student') {
-                Student::where('student_number', $user->userId)->delete();
+                $this->deleteStudentData($user->userId);
             }
-            
+
             $user->delete();
-            
+
             return response()->json([
                 'success' => true,
                 'message' => 'User deleted successfully'
@@ -228,6 +235,49 @@ class ProfileController extends Controller
                 'success' => false,
                 'message' => 'Failed to delete user: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    /**
+     * Delete all student-related data when a student is removed
+     * This ensures complete cleanup of all student records
+     */
+    private function deleteStudentData($studentUserId)
+    {
+        try {
+            // Delete from students table (main student record)
+            Student::where('student_number', $studentUserId)->delete();
+
+            // Delete English comprehension test results
+            StudentAnswerEnglish::where('student_id', $studentUserId)->delete();
+
+            // Delete Filipino/Tagalog comprehension test results
+            StudentAnswerTagalog::where('student_id', $studentUserId)->delete();
+
+            // Delete reading assessment records
+            ReadingAssessment::where('student_id', $studentUserId)->delete();
+
+            // Delete teacher feedback
+            TeacherFeedback::where('student_id', $studentUserId)->delete();
+
+            // Delete student reading levels (if table exists)
+            if (Schema::hasTable('student_reading_levels')) {
+                DB::table('student_reading_levels')->where('student_id', $studentUserId)->delete();
+            }
+
+            // Delete student readings (if table exists)
+            if (Schema::hasTable('student_readings')) {
+                DB::table('student_readings')
+                    ->join('users', 'student_readings.user_id', '=', 'users.id')
+                    ->where('users.userId', $studentUserId)
+                    ->delete();
+            }
+
+            Log::info("Successfully deleted all data for student: {$studentUserId}");
+
+        } catch (\Exception $e) {
+            Log::error("Error deleting student data for {$studentUserId}: " . $e->getMessage());
+            throw $e;
         }
     }
 

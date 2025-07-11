@@ -11,7 +11,66 @@ class StudentController extends Controller
 {
     public function index()
     {
-        $students = Student::all()->groupBy('grade_level');
+        $students = Student::with('readingAssessments')
+            ->get()
+            ->map(function ($student) {
+                // Check for complete English and Filipino assessments
+                // A complete assessment must have reading data (reading_speed, correct_reading)
+                // and comprehension data (comprehension > 0, correct_answers > 0)
+                $completeEnglishAssessment = $student->readingAssessments()
+                    ->where('language', 'english')
+                    ->where('reading_speed', '>', 0)
+                    ->where('correct_reading', '>', 0)
+                    ->where('comprehension', '>', 0)
+                    ->where('correct_answers', '>', 0)
+                    ->exists();
+
+                $completeFilipinoAssessment = $student->readingAssessments()
+                    ->where('language', 'filipino')
+                    ->where('reading_speed', '>', 0)
+                    ->where('correct_reading', '>', 0)
+                    ->where('comprehension', '>', 0)
+                    ->where('correct_answers', '>', 0)
+                    ->exists();
+
+                // Check for incomplete assessments (has some data but not complete)
+                $incompleteEnglishAssessment = $student->readingAssessments()
+                    ->where('language', 'english')
+                    ->where(function ($query) {
+                        $query->where('reading_speed', '>', 0)
+                            ->orWhere('correct_reading', '>', 0)
+                            ->orWhere('comprehension', '>', 0)
+                            ->orWhere('correct_answers', '>', 0);
+                    })
+                    ->exists();
+
+                $incompleteFilipinoAssessment = $student->readingAssessments()
+                    ->where('language', 'filipino')
+                    ->where(function ($query) {
+                        $query->where('reading_speed', '>', 0)
+                            ->orWhere('correct_reading', '>', 0)
+                            ->orWhere('comprehension', '>', 0)
+                            ->orWhere('correct_answers', '>', 0);
+                    })
+                    ->exists();
+
+                // Determine status based on assessment completion
+                $status = 'No Assessment';
+                if ($completeEnglishAssessment && $completeFilipinoAssessment) {
+                    $status = 'Complete';
+                } elseif (
+                    $completeEnglishAssessment || $completeFilipinoAssessment ||
+                    $incompleteEnglishAssessment || $incompleteFilipinoAssessment
+                ) {
+                    $status = 'Incomplete';
+                }
+
+                // Add the calculated test_status to the student object
+                $student->test_status = $status;
+                return $student;
+            })
+            ->groupBy('grade_level');
+
         return view('admin.studentRecord', compact('students'));
     }
 

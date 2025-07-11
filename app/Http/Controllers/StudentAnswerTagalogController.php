@@ -74,8 +74,9 @@ class StudentAnswerTagalogController extends Controller
                 'student_id' => $user->userId,
                 'answers' => $studentAnswers,
                 'score' => $score,
-                'reading_time' => $request->input('reading_time'),
-                'reading_speed' => $request->input('reading_speed'),
+                'total_questions' => $totalQuestions,
+                'reading_time' => $request->input('reading_time', 0), // Default to 0 if not provided
+                'reading_speed' => $request->input('reading_speed', 0), // Default to 0 if not provided
                 'reading_material_id' => $readingMaterial->id, // Store which material was used
             ]);
 
@@ -83,8 +84,8 @@ class StudentAnswerTagalogController extends Controller
             session([
                 'filipino_score' => $score,
                 'filipino_total_questions' => $totalQuestions,
-                'filipino_reading_time' => $request->input('reading_time'),
-                'filipino_reading_speed' => $request->input('reading_speed')
+                'filipino_reading_time' => $request->input('reading_time', 0),
+                'filipino_reading_speed' => $request->input('reading_speed', 0)
             ]);
 
             // Update reading assessment with comprehension data
@@ -95,8 +96,20 @@ class StudentAnswerTagalogController extends Controller
 
             return redirect()->route('student.reports');
         } catch (\Exception $e) {
-            \Log::error('Error saving Filipino answers: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'May error sa pagpapasa ng iyong mga sagot. Pakisubukan muli.');
+            \Log::error('Error saving Filipino answers: ' . $e->getMessage(), [
+                'student_id' => $user->userId,
+                'error_trace' => $e->getTraceAsString(),
+                'data_being_saved' => [
+                    'student_id' => $user->userId,
+                    'answers' => $studentAnswers,
+                    'score' => $score,
+                    'total_questions' => $totalQuestions,
+                    'reading_time' => $request->input('reading_time'),
+                    'reading_speed' => $request->input('reading_speed'),
+                    'reading_material_id' => $readingMaterial->id
+                ]
+            ]);
+            return redirect()->back()->with('error', 'May error sa pagpapasa ng iyong mga sagot. Pakisubukan muli. Error: ' . $e->getMessage());
         }
     }
 
