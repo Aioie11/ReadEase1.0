@@ -1486,8 +1486,33 @@
     }
 
     function deleteProfile(id) {
-        if (!confirm('Are you sure you want to delete this profile?')) return;
-        
+        // Find the user data to determine if it's a student
+        const user = allUsers.find(u => u.id === id);
+
+        let confirmMessage = 'Are you sure you want to delete this profile?';
+
+        // Enhanced confirmation for student accounts
+        if (user && user.role === 'student') {
+            confirmMessage = `⚠️ STUDENT ACCOUNT DELETION ⚠️
+
+Are you sure you want to permanently delete this student account?
+
+Student: ${user.name}
+ID: ${user.userId}
+
+This action will permanently delete:
+✓ Student profile and account
+✓ All reading assessment records
+✓ All comprehension test results (English & Filipino)
+✓ All teacher feedback and reports
+✓ All performance data and statistics
+
+⚠️ THIS CANNOT BE UNDONE ⚠️`;
+        }
+
+        // Use simple confirm dialog for all users (no prompt form)
+        if (!confirm(confirmMessage)) return;
+
         fetch(`/admin/users/${id}`, {
             method: 'DELETE',
             headers: {
@@ -1504,7 +1529,11 @@
         })
         .then(data => {
             if (data.success) {
-                alert('Profile deleted successfully!');
+                if (user && user.role === 'student') {
+                    alert('✅ Student account and all associated data have been permanently deleted.');
+                } else {
+                    alert('Profile deleted successfully!');
+                }
                 loadProfiles();
             } else {
                 throw new Error(data.message || 'Failed to delete profile');
