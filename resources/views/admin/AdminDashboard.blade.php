@@ -125,22 +125,7 @@
         line-height: 1;
     }
 
-    .metric-trend {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-top: 1rem;
-        font-size: 0.9rem;
-        color: #7f8c8d;
-    }
 
-    .trend-up {
-        color: #27ae60;
-    }
-
-    .trend-down {
-        color: #e74c3c;
-    }
 
     /* Quick Actions Section - Clean Stud-Dash Style */
     .quick-actions {
@@ -231,27 +216,7 @@
         color: #00B8A9;
     }
 
-    .search-container {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
 
-    .search-input {
-        padding: 12px 16px;
-        border-radius: 12px;
-        border: 1px solid #e9ecef;
-        width: 280px;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        background: white;
-    }
-
-    .search-input:focus {
-        outline: none;
-        border-color: #00B8A9;
-        box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.1);
-    }
 
     /* Table Styles - Beautiful Student Management Style */
     .table-container {
@@ -366,35 +331,44 @@
         color: #065f46;
     }
 
-    /* Pagination Styles - Clean Stud-Dash Style */
-    .pagination-container {
-        margin-top: 2rem;
-        display: flex;
-        justify-content: center;
-        gap: 0.5rem;
-    }
-
-    .pagination-btn {
-        padding: 0.75rem 1rem;
-        border: 1px solid #e9ecef;
-        background: white;
-        color: #2c3e50;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-weight: 500;
-    }
-
-    .pagination-btn:hover {
-        background: #f8f9fa;
-        border-color: #2c3e50;
-    }
-
-    .pagination-btn.active {
-        background: #2c3e50;
+    /* Assessment Level badges - Matching student reports colors */
+    .level-independent {
+        background: #00B8A9;
         color: white;
-        border-color: #2c3e50;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
     }
+
+    .level-instructional {
+        background: #F39C12;
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .level-frustration {
+        background: #E74C3C;
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+
 
     /* Responsive Design - Clean Stud-Dash Style */
     @media (max-width: 1200px) {
@@ -468,10 +442,7 @@
                     </div>
                     <h2>Total Tests</h2>
                     <p class="metric-value">{{ $totalTests }}</p>
-                    <div class="metric-trend trend-up">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>+12% from last month</span>
-                    </div>
+
                 </div>
 
                 <div class="metric-card">
@@ -482,10 +453,7 @@
                     </div>
                     <h2>Total Students</h2>
                     <p class="metric-value">{{ $totalStudents }}</p>
-                    <div class="metric-trend trend-up">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>+8% from last month</span>
-                    </div>
+
                 </div>
 
                 <div class="metric-card">
@@ -496,10 +464,7 @@
                     </div>
                     <h2>Active Students</h2>
                     <p class="metric-value">{{ $topListeners }}</p>
-                    <div class="metric-trend trend-up">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>+15% from last month</span>
-                    </div>
+
                 </div>
             </div>
             
@@ -511,43 +476,41 @@
                         <i class="fas fa-clock"></i>
                         Recent Test Activity
                     </h2>
-                    <div class="search-container">
-                        <input type="text" id="searchInput" class="search-input" placeholder="Search by student or test type...">
-                    </div>
                 </div>
 
                 <div class="table-container">
                     <table id="recentTestsTable">
                         <thead>
                             <tr>
+                                <th><i class="fas fa-calendar"></i> Date</th>
                                 <th><i class="fas fa-user"></i> Student</th>
                                 <th><i class="fas fa-file-alt"></i> Test Type</th>
                                 <th><i class="fas fa-percentage"></i> Score</th>
-                                <th><i class="fas fa-calendar"></i> Date</th>
+                                <th><i class="fas fa-chart-line"></i> Assessment Level</th>
                                 <th><i class="fas fa-check-circle"></i> Status</th>
-                                <th><i class="fas fa-cog"></i> Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if(count($recentTests) > 0)
                                 @foreach($recentTests as $test)
                                     <tr>
-                                        <td><strong>{{ $test->student_name }}</strong></td>
-                                        <td>
+                                        <td>{{ $test->created_at->format('M d, Y') }}</td>
+                                        <td>{{ $test->student_name }}</td>
+                                        <td>{{ $test->test_type }}</td>
+                                        <td style="text-align: center;">{{ $test->score }}%</td>
+                                        <td style="text-align: center;">
                                             @php
-                                                $badgeClass = 'test-type-badge ';
-                                                if (str_contains($test->test_type, 'English')) {
-                                                    $badgeClass .= 'test-type-english';
-                                                } elseif (str_contains($test->test_type, 'Filipino')) {
-                                                    $badgeClass .= 'test-type-filipino';
+                                                $levelClass = '';
+                                                if ($test->assessment_level === 'Independent') {
+                                                    $levelClass = 'level-independent';
+                                                } elseif ($test->assessment_level === 'Instructional') {
+                                                    $levelClass = 'level-instructional';
                                                 } else {
-                                                    $badgeClass .= 'test-type-reading';
+                                                    $levelClass = 'level-frustration';
                                                 }
                                             @endphp
-                                            <span class="{{ $badgeClass }}">{{ $test->test_type }}</span>
+                                            <span class="{{ $levelClass }}">{{ $test->assessment_level }}</span>
                                         </td>
-                                        <td style="text-align: center;"><strong>{{ $test->score }}%</strong></td>
-                                        <td>{{ $test->created_at->format('M d, Y') }}</td>
                                         <td>
                                             @php
                                                 $statusClass = 'status-badge ';
@@ -562,15 +525,6 @@
                                                 }
                                             @endphp
                                             <span class="{{ $statusClass }}">{{ $test->status }}</span>
-                                        </td>
-                                        <td style="text-align: center;">
-                                            <form action="{{ route('admin.delete.test', $test->id) }}" method="POST" style="display: inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete this test?')">
-                                                    <i class="fas fa-trash"></i> Delete
-                                                </button>
-                                            </form>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -589,8 +543,7 @@
                     </table>
                 </div>
 
-                <!-- Pagination Controls -->
-                <div id="pagination" class="pagination-container"></div>
+
             </div>
         </div>
     </main>
@@ -598,139 +551,9 @@
     <script>
         // Wait for DOM to be fully loaded
         document.addEventListener('DOMContentLoaded', function() {
-            // Search functionality with enhanced UX
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput) {
-                searchInput.addEventListener('keyup', function() {
-                    let filter = this.value.toLowerCase();
-                    let rows = document.querySelectorAll('#recentTestsTable tbody tr');
-                    let visibleRows = 0;
 
-                    rows.forEach(row => {
-                        // Skip the "no data" row
-                        if (row.children.length === 1 && row.children[0].getAttribute('colspan')) {
-                            return;
-                        }
 
-                        let student = row.children[0].textContent.toLowerCase();
-                        let testType = row.children[1].textContent.toLowerCase();
 
-                        if (student.includes(filter) || testType.includes(filter)) {
-                            row.style.display = '';
-                            visibleRows++;
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    });
-
-                    // Reset to first page when searching
-                    currentPage = 1;
-                    paginateTable();
-                });
-            }
-
-            // Enhanced pagination functionality
-            const rowsPerPage = 8;
-            let currentPage = 1;
-
-            function paginateTable() {
-                let rows = Array.from(document.querySelectorAll('#recentTestsTable tbody tr')).filter(row => {
-                    // Filter out hidden rows and "no data" rows
-                    return row.style.display !== 'none' &&
-                           !(row.children.length === 1 && row.children[0].getAttribute('colspan'));
-                });
-
-                let totalRows = rows.length;
-                let totalPages = Math.ceil(totalRows / rowsPerPage);
-                let pagination = document.getElementById('pagination');
-
-                if (pagination) {
-                    pagination.innerHTML = '';
-
-                    if (totalPages <= 1) {
-                        showPage(rows);
-                        return;
-                    }
-
-                    // Previous button
-                    if (currentPage > 1) {
-                        let prevBtn = createPaginationButton('‹ Previous', currentPage - 1);
-                        pagination.appendChild(prevBtn);
-                    }
-
-                    // Page numbers
-                    let startPage = Math.max(1, currentPage - 2);
-                    let endPage = Math.min(totalPages, currentPage + 2);
-
-                    if (startPage > 1) {
-                        pagination.appendChild(createPaginationButton('1', 1));
-                        if (startPage > 2) {
-                            let ellipsis = document.createElement('span');
-                            ellipsis.textContent = '...';
-                            ellipsis.className = 'pagination-ellipsis';
-                            ellipsis.style.padding = '0.75rem';
-                            ellipsis.style.color = '#666';
-                            pagination.appendChild(ellipsis);
-                        }
-                    }
-
-                    for (let i = startPage; i <= endPage; i++) {
-                        let btn = createPaginationButton(i.toString(), i);
-                        if (i === currentPage) {
-                            btn.classList.add('active');
-                        }
-                        pagination.appendChild(btn);
-                    }
-
-                    if (endPage < totalPages) {
-                        if (endPage < totalPages - 1) {
-                            let ellipsis = document.createElement('span');
-                            ellipsis.textContent = '...';
-                            ellipsis.className = 'pagination-ellipsis';
-                            ellipsis.style.padding = '0.75rem';
-                            ellipsis.style.color = '#666';
-                            pagination.appendChild(ellipsis);
-                        }
-                        pagination.appendChild(createPaginationButton(totalPages.toString(), totalPages));
-                    }
-
-                    // Next button
-                    if (currentPage < totalPages) {
-                        let nextBtn = createPaginationButton('Next ›', currentPage + 1);
-                        pagination.appendChild(nextBtn);
-                    }
-
-                    showPage(rows);
-                }
-            }
-
-            function createPaginationButton(text, page) {
-                let btn = document.createElement('button');
-                btn.textContent = text;
-                btn.className = 'pagination-btn';
-                btn.onclick = function() {
-                    currentPage = page;
-                    paginateTable();
-                };
-                return btn;
-            }
-
-            function showPage(rows = null) {
-                if (!rows) {
-                    rows = Array.from(document.querySelectorAll('#recentTestsTable tbody tr')).filter(row => {
-                        return row.style.display !== 'none' &&
-                               !(row.children.length === 1 && row.children[0].getAttribute('colspan'));
-                    });
-                }
-
-                rows.forEach((row, idx) => {
-                    let shouldShow = (idx >= (currentPage - 1) * rowsPerPage && idx < currentPage * rowsPerPage);
-                    row.style.display = shouldShow ? '' : 'none';
-                });
-            }
-
-            // Initial pagination
-            paginateTable();
 
             // Add smooth scrolling to action cards
             document.querySelectorAll('.action-card').forEach(card => {
