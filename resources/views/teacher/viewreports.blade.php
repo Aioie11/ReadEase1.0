@@ -1412,11 +1412,11 @@
 
                 // Update chart titles based on current selection
                 const chartTitle = currentSection === 'all'
-                    ? `📊 Reading Performance Distribution - Grade ${currentGrade} (All Sections)`
-                    : `📊 Reading Performance Distribution - Grade ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
+                    ? `Reading Performance Distribution - Grade ${currentGrade} (All Sections)`
+                    : `Reading Performance Distribution - Grade ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
                 const comprehensionChartTitle = currentSection === 'all'
-                    ? `🧠 Comprehension Level Distribution - Grade ${currentGrade} (All Sections)`
-                    : `🧠 Comprehension Level Distribution - Grade ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
+                    ? `Comprehension Level Distribution - Grade ${currentGrade} (All Sections)`
+                    : `Comprehension Level Distribution - Grade ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
 
                 console.log('Setting chart titles:', { chartTitle, comprehensionChartTitle });
                 document.getElementById('chartTitle').textContent = chartTitle;
@@ -1640,12 +1640,12 @@
                 let readingChartTitle, comprehensionChartTitle;
 
                 if (selectedSection === 'all') {
-                    readingChartTitle = `📊 Reading Performance Distribution - Grade ${grade} (All Sections)`;
-                    comprehensionChartTitle = `📊 Comprehension Performance Distribution - Grade ${grade} (All Sections)`;
+                    readingChartTitle = `Reading Performance Distribution - Grade ${grade} (All Sections)`;
+                    comprehensionChartTitle = `Comprehension Performance Distribution - Grade ${grade} (All Sections)`;
                 } else {
                     const sectionName = selectedSection.charAt(0).toUpperCase() + selectedSection.slice(1);
-                    readingChartTitle = `📊 Reading Performance Distribution - Grade ${grade} - Section ${sectionName}`;
-                    comprehensionChartTitle = `📊 Comprehension Performance Distribution - Grade ${grade} - Section ${sectionName}`;
+                    readingChartTitle = `Reading Performance Distribution - Grade ${grade} - Section ${sectionName}`;
+                    comprehensionChartTitle = `Comprehension Performance Distribution - Grade ${grade} - Section ${sectionName}`;
                 }
 
                 const readingTitleEl = document.querySelector('.chart-container h3');

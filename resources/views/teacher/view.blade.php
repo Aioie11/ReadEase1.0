@@ -7,7 +7,8 @@
     <title>Student Profile - {{ isset($student) ? $student->first_name . ' ' . $student->last_name : 'Student' }}
     </title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script>tailwind.config = { theme: { extend: { colors: { primary: '#0369a1', secondary: '#6b7280' }, borderRadius: { 'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px' } } }</script>
+    <script>tailwind.config = {
+            theme: { extend: { colors: { primary: '#0369a1', secondary: '#6b7280' }, borderRadius: { 'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px' } } }</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
@@ -293,27 +294,39 @@
         }
 
         .back-btn {
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(0,184,169,0.08);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 184, 169, 0.08);
+            background: white;
+            border: 1px solid #e2e8f0;
         }
+
         .back-btn:hover {
-            background: var(--primary-teal);
+            background: #00B8A9 !important;
             color: #fff !important;
-            box-shadow: 0 4px 16px rgba(0,184,169,0.15);
-            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 4px 16px rgba(0, 184, 169, 0.25);
+            transform: translateY(-2px);
+            border-color: #00B8A9;
+        }
+
+        .back-btn:hover i {
+            color: #fff !important;
+        }
+
+        .back-btn:hover span {
+            color: #fff !important;
         }
     </style>
 </head>
 
 <body class="bg-gray-50 text-gray-800 min-h-screen">
     <!-- Header with Logout -->
-    
+
     <!-- Main Content with top margin for fixed header -->
     <div class="container mx-auto p-4 max-w-7xl" style="margin-top: 80px;">
         <!-- Back Navigation -->
         <div class="mb-6">
             <a href="{{ route('teacher.student-management') }}"
-               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white shadow-md border border-gray-200 text-primary font-semibold text-base transition-all duration-200 hover:bg-primary hover:text-white hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 back-btn">
+                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white shadow-md border border-gray-200 text-primary font-semibold text-base transition-all duration-200 hover:bg-primary hover:text-white hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 back-btn">
                 <i class="ri-arrow-left-line text-lg"></i>
                 <span>Back</span>
             </a>
@@ -325,12 +338,8 @@
                 <!-- Avatar -->
                 <div class="mr-6">
                     <div
-                        class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-2xl font-bold">
-                        @if(isset($student))
-                            {{ strtoupper(substr($student->first_name, 0, 1) . substr($student->last_name, 0, 1)) }}
-                        @else
-                            ST
-                        @endif
+                        class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-3xl">
+                        <i class="fas fa-user"></i>
                     </div>
                 </div>
 
@@ -386,15 +395,15 @@
         </div>
 
         <!-- Performance Metrics -->
-        
-       
+
+
         <!-- Main Content -->
         <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <!-- Reading Records -->
             <div id="reading-assessments">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-3xl font-bold text-gray-800">Reading Records</h2>
-                    
+
                 </div>
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
@@ -429,8 +438,8 @@
                                         </td>
                                         <td class="py-4 px-4">
                                             <span
-                                                class="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-medium
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        {{ $assessment->language == 'english' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
+                                                class="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-medium                   
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             {{ $assessment->language == 'english' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
                                                 {{ ucfirst($assessment->language) }}
                                             </span>
                                         </td>
@@ -1079,7 +1088,7 @@
 
             .question-number {
                 background: #1E3A8A;
-                color: white !important; 
+                color: white !important;
                 padding: 0.25rem 0.75rem;
                 border-radius: 20px;
                 font-size: 0.875rem;
@@ -1592,8 +1601,8 @@
 
         <script>
 
-            // Comprehension Modal Functions
-            function showComprehensionDetails(studentId, language = 'english') {
+                // Comprehension Modal Functions
+                function showComprehensionDetails(studentId, language = 'english') {
                 if (!studentId) {
                     alert('Please select a student first');
                     return;

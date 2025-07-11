@@ -16,7 +16,7 @@
             --primary: #00B8A9;
             --primary-light: #4DD0E1;
             --primary-dark: #009688;
-            --primary-slight:rgb(3, 204, 187);
+            --primary-slight: rgb(3, 204, 187);
 
             /* Secondary - Navigation and Secondary UI */
             --secondary: #F6AD55;
@@ -107,7 +107,7 @@
         }
 
         .readease-logo {
-            font-size: 1.8rem;
+            font-size: 2.2rem;
             font-weight: 700;
             color: var(--neutral-light);
             text-decoration: none;
@@ -462,26 +462,38 @@
         .sidebar {
             position: fixed;
             left: 0;
-            top: 0;
-            margin-top: 70px; /* Push below header */
-            height: calc(100vh - 70px); /* Full height minus header */
-            width: 280px;
+            top: 70px;
+            /* Push below header */
+            height: calc(100vh - 70px);
+            /* Full height minus header */
+            width: 260px;
             background: var(--primary);
             padding: 1.5rem;
-            transition: all 0.3s ease;
-            z-index: 1001;
-            box-shadow: var(--shadow-lg);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         /* Mobile sidebar - hidden by default */
         @media (max-width: 768px) {
             .sidebar {
-                left: -280px; /* Hidden by default on mobile */
-                transition: left 0.3s ease;
+                left: -260px;
+                /* Hidden by default on mobile */
+                transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
             .sidebar.active {
-                left: 0; /* Show sidebar when burger menu is clicked */
+                left: 0;
+                /* Show sidebar when burger menu is clicked */
+            }
+        }
+
+        /* Desktop sidebar always visible */
+        @media (min-width: 769px) {
+            .sidebar {
+                left: 0;
             }
         }
 
@@ -658,21 +670,16 @@
 
         /* Adjust main content for sidebar */
         .main-content {
-            margin-left: 280px; /* Same as sidebar width */
-            padding-top: 70px;  /* Same as header height */
-            transition: var(--transition);
+            margin-left: 260px;
+            /* Same as sidebar width */
+            padding-top: 70px;
+            /* Same as header height */
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: calc(100vh - 70px);
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
             .main-content {
                 margin-left: 0;
             }
@@ -684,6 +691,31 @@
 
             .menu-toggle {
                 display: block;
+            }
+        }
+
+        /* Sidebar Overlay */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @media (min-width: 769px) {
+            .sidebar-overlay {
+                display: none;
             }
         }
 
@@ -711,15 +743,18 @@
         /* Mobile Responsive Styles */
         @media (max-width: 768px) {
             .sidebar-menu-toggle {
-                display: flex; /* Show burger menu only on mobile */
+                display: flex;
+                /* Show burger menu only on mobile */
                 align-items: center;
                 justify-content: center;
                 margin-left: 1rem;
-                order: 2; /* Place burger menu after user dropdown */
+                order: 2;
+                /* Place burger menu after user dropdown */
             }
 
             .teacher-user-details {
-                display: none; /* Hide user details on mobile */
+                display: none;
+                /* Hide user details on mobile */
             }
 
             .teacher-user-dropdown {
@@ -781,19 +816,22 @@
             <ul class="nav-menu">
                 <div class="nav-section">
                     <li class="nav-item">
-                        <a href="{{ route('teacher.dashboard') }}" class="nav-link {{ Route::currentRouteName() == 'teacher.dashboard' ? 'active' : '' }}">
+                        <a href="{{ route('teacher.dashboard') }}"
+                            class="nav-link {{ Route::currentRouteName() == 'teacher.dashboard' ? 'active' : '' }}">
                             <i class="fas fa-home"></i>
                             Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('teacher.student-management') }}" class="nav-link {{ Route::currentRouteName() == 'teacher.student-management' ? 'active' : '' }}">
+                        <a href="{{ route('teacher.student-management') }}"
+                            class="nav-link {{ Route::currentRouteName() == 'teacher.student-management' ? 'active' : '' }}">
                             <i class="fas fa-users"></i>
                             Student Management
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('teacher.viewreports') }}" class="nav-link {{ Route::currentRouteName() == 'teacher.viewreports' ? 'active' : '' }}">
+                        <a href="{{ route('teacher.viewreports') }}"
+                            class="nav-link {{ Route::currentRouteName() == 'teacher.viewreports' ? 'active' : '' }}">
                             <i class="fas fa-chart-line"></i>
                             Reports
                         </a>
@@ -826,8 +864,9 @@
     <header>
         <div class="header-container">
             <div class="header-left-section">
-                <a class="readease-logo" style="display: flex; align-items: center; gap: 0.5rem;">
-                    <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo" style="height: 60px; width: 60px; object-fit: contain;">
+                <a class="readease-logo" style="display: flex; align-items: center; gap: 0.7rem;">
+                    <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo"
+                        style="height: 75px; width: 75px; object-fit: contain;">
                     <span>ReadEase</span>
                 </a>
             </div>
@@ -850,7 +889,8 @@
 
                         <!-- Teacher Dropdown Menu -->
                         <div class="teacher-dropdown-menu" id="teacherUserDropdownMenu">
-                            <form method="POST" action="{{ route('logout') }}" style="margin: 0;" id="teacherLogoutForm">
+                            <form method="POST" action="{{ route('logout') }}" style="margin: 0;"
+                                id="teacherLogoutForm">
                                 @csrf
                                 <button type="submit" class="teacher-dropdown-item teacher-logout-item"
                                     style="width: 100%; border: none; background: none; text-align: left; cursor: pointer;"
@@ -949,7 +989,7 @@
                     if (e.target.closest('form') || e.target.closest('button[type="submit"]')) {
                         return;
                     }
-                    
+
                     e.preventDefault();
                     e.stopPropagation();
                     toggleTeacherUserDropdown();
@@ -1033,7 +1073,7 @@
 
             if (teacherLogoutForm && teacherLogoutButton) {
                 // Add event listener to the form
-                teacherLogoutForm.addEventListener('submit', function(e) {
+                teacherLogoutForm.addEventListener('submit', function (e) {
                     console.log('Teacher logout form submitted');
                     // Show loading state
                     teacherLogoutButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging out...';
@@ -1042,7 +1082,7 @@
                 });
 
                 // Add event listener to the button
-                teacherLogoutButton.addEventListener('click', function(e) {
+                teacherLogoutButton.addEventListener('click', function (e) {
                     console.log('Teacher logout button clicked via event listener');
                     // Don't prevent default - let the form submit normally
                 });
@@ -1088,7 +1128,7 @@
         // Re-apply shadow when navigating (for SPA-like behavior)
         if (window.history && window.history.pushState) {
             const originalPushState = window.history.pushState;
-            window.history.pushState = function() {
+            window.history.pushState = function () {
                 originalPushState.apply(window.history, arguments);
                 setTimeout(ensureHeaderShadow, 100);
             };

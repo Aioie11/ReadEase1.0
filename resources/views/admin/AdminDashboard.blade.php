@@ -28,7 +28,6 @@
 
     /* Dashboard Header - Clean Stud-Dash Style */
     .dashboard-header {
-        text-align: center;
         background: white;
         padding: 2.5rem;
         border-radius: 12px;
@@ -37,7 +36,7 @@
     }
 
     .dashboard-header h1 {
-        text-align: center;
+        text-align: left;
         color: #00B8A9;
         font-size: 1.75rem;
         font-weight: 700;
@@ -50,7 +49,7 @@
         font-size: 1.1rem;
         margin: 0;
         line-height: 0. 9rem;
-
+        text-align: left;
     }
 
     /* Dashboard Metrics - Clean Stud-Dash Style */

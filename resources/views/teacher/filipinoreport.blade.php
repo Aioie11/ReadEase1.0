@@ -1302,11 +1302,11 @@
 
             // Update chart titles based on current selection
             const chartTitle = currentSection === 'all'
-                ? `📊 Pag-unlad sa Pagbasa ng Filipino - Baitang ${currentGrade} (Lahat ng Seksyon)`
-                : `📊 Pag-unlad sa Pagbasa ng Filipino - Baitang ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
+                ? `Pag-unlad sa Pagbasa ng Filipino - Baitang ${currentGrade} (Lahat ng Seksyon)`
+                : `Pag-unlad sa Pagbasa ng Filipino - Baitang ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
             const comprehensionChartTitle = currentSection === 'all'
-                ? `🧠 Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang ${currentGrade} (Lahat ng Seksyon)`
-                : `🧠 Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
+                ? `Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang ${currentGrade} (Lahat ng Seksyon)`
+                : `Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
 
             console.log('Setting Filipino chart titles:', { chartTitle, comprehensionChartTitle });
             document.getElementById('filipinoChartTitle').textContent = chartTitle;
@@ -1519,12 +1519,12 @@
             let readingChartTitle, comprehensionChartTitle;
 
             if (selectedSection === 'all') {
-                readingChartTitle = `📊 Pag-unlad sa Pagbasa ng Filipino - Baitang ${grade} (Lahat ng Seksyon)`;
-                comprehensionChartTitle = `🧠 Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang ${grade} (Lahat ng Seksyon)`;
+                readingChartTitle = `Pag-unlad sa Pagbasa ng Filipino - Baitang ${grade} (Lahat ng Seksyon)`;
+                comprehensionChartTitle = `Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang ${grade} (Lahat ng Seksyon)`;
             } else {
                 const sectionName = selectedSection.charAt(0).toUpperCase() + selectedSection.slice(1);
-                readingChartTitle = `📊 Pag-unlad sa Pagbasa ng Filipino - Baitang ${grade} - Seksyon ${sectionName}`;
-                comprehensionChartTitle = `🧠 Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang ${grade} - Seksyon ${sectionName}`;
+                readingChartTitle = `Pag-unlad sa Pagbasa ng Filipino - Baitang ${grade} - Seksyon ${sectionName}`;
+                comprehensionChartTitle = `Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang ${grade} - Seksyon ${sectionName}`;
             }
 
             const readingTitleEl = document.getElementById('filipinoChartTitle');

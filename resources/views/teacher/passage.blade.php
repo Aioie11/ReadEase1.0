@@ -261,13 +261,13 @@
 
             .timer-controls {
                 display: flex;
-                align-items: center;
+                align-items: flex-end;
                 gap: 1rem;
                 padding: 25px;
                 background: white;
                 border-radius: 12px;
                 flex-wrap: wrap;
-                justify-content: space-between;
+                justify-content: flex-start;
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
                 margin-bottom: 20px;
             }
@@ -277,7 +277,8 @@
                 flex-direction: column;
                 align-items: center;
                 margin-right: 0;
-                gap: 0.3rem;
+                gap: 0.5rem;
+                min-width: 80px;
             }
 
             .timer-controls .control-group label {
@@ -291,7 +292,7 @@
 
             .timer-buttons-section {
                 display: flex;
-                align-items: center;
+                align-items: flex-end;
                 gap: 0.75rem;
                 flex-wrap: wrap;
             }
@@ -300,6 +301,7 @@
                 display: flex;
                 gap: 0.5rem;
                 flex-wrap: wrap;
+                align-items: flex-end;
             }
 
             .save-controls {
@@ -315,6 +317,7 @@
                 gap: 0.5rem;
                 align-items: flex-end;
                 margin-left: auto;
+                height: 36px;
             }
 
             /* Save Assessment buttons within timer-controls */
@@ -322,12 +325,12 @@
                 background: var(--secondary);
                 color: white;
                 border: none;
-                padding: 0.7rem 1.5rem;
-                border-radius: 8px;
+                padding: 8px 16px;
+                border-radius: 6px;
                 font-weight: 600;
                 cursor: pointer;
                 transition: var(--transition);
-                height: 42px;
+                height: 36px;
                 font-size: 0.9rem;
                 min-width: 80px;
             }
@@ -341,14 +344,14 @@
                 background: #F56565 !important;
                 color: white !important;
                 border: none !important;
-                padding: 0.7rem 1.5rem;
-                border-radius: 8px;
+                padding: 8px 16px;
+                border-radius: 6px;
                 font-weight: 600;
                 cursor: pointer;
                 transition: all 0.3s ease;
-                height: 42px;
+                height: 36px;
                 font-size: 0.9rem;
-                min-width: 90px;
+                min-width: 80px;
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             }
 
@@ -404,27 +407,38 @@
 
             .timer {
                 font-family: 'Poppins', monospace;
-                font-size: 1.4rem;
+                font-size: 0.9rem;
                 margin: 0;
                 font-weight: 700;
                 color: #00B8A9;
-                height: 50px;
+                height: 36px;
                 display: flex;
                 align-items: center;
-                padding: 0 20px;
+                padding: 8px 16px;
                 background: #F7FAFC;
-                border-radius: 8px;
-                min-width: 130px;
+                border-radius: 6px;
+                width: 100px;
+                min-width: 100px;
                 justify-content: center;
                 letter-spacing: 1px;
+                box-sizing: border-box;
+                align-self: flex-end;
             }
 
-            .btn {
+            /* Unified Button Height System */
+            .btn,
+            .save-assessment,
+            .clear-assessment,
+            .btn-save,
+            .btn-cancel,
+            .clear-btn,
+            .btn-send,
+            .back-btn {
                 border: none;
                 outline: none;
-                padding: 12px 24px;
-                border-radius: 8px;
-                font-size: 1rem;
+                padding: 8px 16px;
+                border-radius: 6px;
+                font-size: 0.9rem;
                 font-weight: 600;
                 cursor: pointer;
                 transition: all 0.3s ease;
@@ -432,9 +446,12 @@
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                gap: 0.5rem;
+                gap: 0.4rem;
                 text-decoration: none;
-                min-height: 44px;
+                min-height: 36px;
+                height: 36px;
+                min-width: 80px;
+                box-sizing: border-box;
             }
 
             .btn:hover {
@@ -706,16 +723,20 @@
 
             .miscues-input,
             .assessment-input {
-                padding: 12px 16px;
+                padding: 8px 16px;
                 border: none;
-                border-radius: 8px;
-                font-size: 1rem;
+                border-radius: 6px;
+                font-size: 0.9rem;
                 transition: all 0.3s ease;
                 background: #F7FAFC;
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
                 text-align: center;
                 font-weight: 600;
                 color: #2D3748;
+                height: 36px;
+                width: 80px;
+                min-width: 80px;
+                box-sizing: border-box;
             }
 
             .miscues-input:focus,
@@ -1231,26 +1252,26 @@
                 </div>
 
                 <!-- <div class="feedback-history">
-                                            <h4>Previous Feedback</h4>
-                                            <div class="feedback-item">
-                                                <div class="feedback-meta">
-                                                    <span>Date: 12/15/2024</span>
-                                                    <span>Reading Level: Grade 7</span>
-                                                </div>
-                                                <div class="feedback-content">
-                                                    <p><strong>Strengths:</strong> Good pronunciation and clear voice projection</p>
-                                                    <p><strong>Areas for Improvement:</strong> Reading speed and comprehension</p>
-                                                    <p><strong>Recommendations:</strong> Practice with shorter passages first</p>
-                                                </div>
+                                                                                        <h4>Previous Feedback</h4>
+                                                                                        <div class="feedback-item">
+                                                                                            <div class="feedback-meta">
+                                                                                                <span>Date: 12/15/2024</span>
+                                                                                                <span>Reading Level: Grade 7</span>
+                                                                                            </div>
+                                                                                            <div class="feedback-content">
+                                                                                                <p><strong>Strengths:</strong> Good pronunciation and clear voice projection</p>
+                                                                                                <p><strong>Areas for Improvement:</strong> Reading speed and comprehension</p>
+                                                                                                <p><strong>Recommendations:</strong> Practice with shorter passages first</p>
+                                                                                            </div>
 
-                                                <div class="feedback-actions-history">
-                                                    <button class="btn-send" onclick="sendFeedbackToStudent(this, 'sample-feedback-1')">
-                                                        <i class="fas fa-paper-plane"></i> Send to Student
-                                                    </button>
-                                                    <span class="send-status sent">✓ Sent</span>
-                                                </div>
-                                            </div>
-                                        </div> -->
+                                                                                            <div class="feedback-actions-history">
+                                                                                                <button class="btn-send" onclick="sendFeedbackToStudent(this, 'sample-feedback-1')">
+                                                                                                    <i class="fas fa-paper-plane"></i> Send to Student
+                                                                                                </button>
+                                                                                                <span class="send-status sent">✓ Sent</span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div> -->
             </div>
         </div>
     </div>
@@ -1508,29 +1529,29 @@
             const feedbackDate = new Date(feedback.created_at).toLocaleDateString();
 
             feedbackItem.innerHTML = `
-                                                <div class="feedback-meta">
-                                                    <span>Date: ${feedbackDate}</span>
-                                                    <span>Reading Level: Grade ${feedback.grade_level}</span>
-                                                    <span>Language: ${feedback.language.charAt(0).toUpperCase() + feedback.language.slice(1)}</span>
-                                                </div>
-                                                <div class="feedback-content">
-                                                    <p><strong>Strengths:</strong> ${feedback.strengths || 'Not specified'}</p>
-                                                    <p><strong>Areas for Improvement:</strong> ${feedback.areas_for_improvement || 'Not specified'}</p>
-                                                    <p><strong>Recommendations:</strong> ${feedback.recommendations || 'Not specified'}</p>
-                                                </div>
+                                                                                            <div class="feedback-meta">
+                                                                                                <span>Date: ${feedbackDate}</span>
+                                                                                                <span>Reading Level: Grade ${feedback.grade_level}</span>
+                                                                                                <span>Language: ${feedback.language.charAt(0).toUpperCase() + feedback.language.slice(1)}</span>
+                                                                                            </div>
+                                                                                            <div class="feedback-content">
+                                                                                                <p><strong>Strengths:</strong> ${feedback.strengths || 'Not specified'}</p>
+                                                                                                <p><strong>Areas for Improvement:</strong> ${feedback.areas_for_improvement || 'Not specified'}</p>
+                                                                                                <p><strong>Recommendations:</strong> ${feedback.recommendations || 'Not specified'}</p>
+                                                                                            </div>
 
-                                            <div class="feedback-actions-history">
-                                                <button class="btn-send ${feedback.is_sent ? 'sent' : ''}"
-                                                        onclick="sendFeedbackToStudent(this, ${feedbackId})"
-                                                        ${feedback.is_sent ? 'disabled' : ''}>
-                                                    <i class="fas fa-${feedback.is_sent ? 'check' : 'paper-plane'}"></i>
-                                                    ${feedback.is_sent ? 'Sent' : 'Send to Student'}
-                                                </button>
-                                                <span class="send-status ${feedback.is_sent ? 'sent' : 'not-sent'}">
-                                                    ${feedback.is_sent ? '✓ Sent' : 'Not Sent'}
-                                                </span>
-                                            </div>
-                                        `;
+                                                                                        <div class="feedback-actions-history">
+                                                                                            <button class="btn-send ${feedback.is_sent ? 'sent' : ''}"
+                                                                                                    onclick="sendFeedbackToStudent(this, ${feedbackId})"
+                                                                                                    ${feedback.is_sent ? 'disabled' : ''}>
+                                                                                                <i class="fas fa-${feedback.is_sent ? 'check' : 'paper-plane'}"></i>
+                                                                                                ${feedback.is_sent ? 'Sent' : 'Send to Student'}
+                                                                                            </button>
+                                                                                            <span class="send-status ${feedback.is_sent ? 'sent' : 'not-sent'}">
+                                                                                                ${feedback.is_sent ? '✓ Sent' : 'Not Sent'}
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    `;
 
             // Store feedback data for sending
             feedbackItem.dataset.feedbackData = JSON.stringify(feedback);

@@ -16,7 +16,7 @@
             --primary: #00B8A9;
             --primary-light: #4DD0E1;
             --primary-dark: #009688;
-            --primary-slight:rgb(3, 204, 187);
+            --primary-slight: rgb(3, 204, 187);
 
             /* Secondary - Navigation and Secondary UI */
             --secondary: #F6AD55;
@@ -93,7 +93,7 @@
         }
 
         .logo {
-            font-size: 1.8rem;
+            font-size: 2.2rem;
             font-weight: 700;
             color: var(--neutral-light);
             text-decoration: none;
@@ -276,7 +276,7 @@
 
         .logout-item:hover {
             background: var(--text);
-            color: #dc3545; 
+            color: #dc3545;
         }
 
         .logout-item:active {
@@ -473,26 +473,38 @@
         .sidebar {
             position: fixed;
             left: 0;
-            top: 0;
-            margin-top: 70px; /* Push below header */
-            height: calc(100vh - 70px); /* Full height minus header */
-            width: 280px;
+            top: 70px;
+            /* Push below header */
+            height: calc(100vh - 70px);
+            /* Full height minus header */
+            width: 260px;
             background: var(--primary);
             padding: 1.5rem;
-            transition: all 0.3s ease;
-            z-index: 1001;
-            box-shadow: var(--shadow-lg);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         /* Mobile sidebar - hidden by default */
         @media (max-width: 768px) {
             .sidebar {
-                left: -280px; /* Hidden by default on mobile */
-                transition: left 0.3s ease;
+                left: -260px;
+                /* Hidden by default on mobile */
+                transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
             .sidebar.active {
-                left: 0; /* Show sidebar when burger menu is clicked */
+                left: 0;
+                /* Show sidebar when burger menu is clicked */
+            }
+        }
+
+        /* Desktop sidebar always visible */
+        @media (min-width: 769px) {
+            .sidebar {
+                left: 0;
             }
         }
 
@@ -652,21 +664,16 @@
 
         /* Adjust main content for sidebar */
         .main-content {
-            margin-left: 280px; /* Same as sidebar width */
-            padding-top: 70px;  /* Same as header height */
-            transition: var(--transition);
+            margin-left: 260px;
+            /* Same as sidebar width */
+            padding-top: 70px;
+            /* Same as header height */
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: calc(100vh - 70px);
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
             .main-content {
                 margin-left: 0;
             }
@@ -678,6 +685,31 @@
 
             .menu-toggle {
                 display: block;
+            }
+        }
+
+        /* Sidebar Overlay */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @media (min-width: 769px) {
+            .sidebar-overlay {
+                display: none;
             }
         }
 
@@ -705,15 +737,18 @@
         /* Mobile Responsive Styles */
         @media (max-width: 768px) {
             .menu-toggle {
-                display: flex; /* Show burger menu only on mobile */
+                display: flex;
+                /* Show burger menu only on mobile */
                 align-items: center;
                 justify-content: center;
                 margin-left: 1rem;
-                order: 2; /* Place burger menu after user dropdown */
+                order: 2;
+                /* Place burger menu after user dropdown */
             }
 
             .user-details {
-                display: none; /* Hide user details on mobile */
+                display: none;
+                /* Hide user details on mobile */
             }
 
             .user-dropdown {
@@ -775,30 +810,34 @@
             <ul class="nav-menu">
                 <div class="nav-section">
                     <li class="nav-item">
-                        <a href="{{ route('student.dashboard') }}" class="nav-link {{ Route::currentRouteName() == 'student.dashboard' ? 'active' : '' }}">
+                        <a href="{{ route('student.dashboard') }}"
+                            class="nav-link {{ Route::currentRouteName() == 'student.dashboard' ? 'active' : '' }}">
                             <i class="fas fa-home"></i>
                             Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url('/stud-eng') }}" class="nav-link {{ Route::currentRouteName() == 'student.students-eng' ? 'active' : '' }}">
+                        <a href="{{ url('/stud-eng') }}"
+                            class="nav-link {{ Route::currentRouteName() == 'student.students-eng' ? 'active' : '' }}">
                             <i class="fas fa-question"></i>
                             English Questions
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url('/stud-fil') }}" class="nav-link {{ Route::currentRouteName() == 'student.students-fil' ? 'active' : '' }}">
+                        <a href="{{ url('/stud-fil') }}"
+                            class="nav-link {{ Route::currentRouteName() == 'student.students-fil' ? 'active' : '' }}">
                             <i class="fas fa-question"></i>
                             Filipino Questions
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ url('/stud-reports') }}" class="nav-link {{ Route::currentRouteName() == 'student.reports' ? 'active' : '' }}">
+                        <a href="{{ url('/stud-reports') }}"
+                            class="nav-link {{ Route::currentRouteName() == 'student.reports' ? 'active' : '' }}">
                             <i class="fas fa-chart-line"></i>
                             Reports
                         </a>
                     </li>
-                   
+
 
                 </div>
             </ul>
@@ -822,8 +861,9 @@
     <header>
         <div class="header-container">
             <div class="header-left">
-                <a class="logo" style="display: flex; align-items: center; gap: 0.5rem;">
-                    <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo" style="height: 60px; width: 60px; object-fit: contain;">
+                <a class="logo" style="display: flex; align-items: center; gap: 0.7rem;">
+                    <img src="{{ asset('pic/RElogo.png') }}" alt="ReadEase Logo"
+                        style="height: 75px; width: 75px; object-fit: contain;">
                     <span>ReadEase</span>
                 </a>
             </div>
@@ -939,7 +979,7 @@
                     if (e.target.closest('form') || e.target.closest('button[type="submit"]')) {
                         return;
                     }
-                    
+
                     e.preventDefault();
                     e.stopPropagation();
                     toggleUserDropdown();
@@ -1023,7 +1063,7 @@
 
             if (logoutForm && logoutButton) {
                 // Add event listener to the form
-                logoutForm.addEventListener('submit', function(e) {
+                logoutForm.addEventListener('submit', function (e) {
                     console.log('Logout form submitted');
                     // Show loading state
                     logoutButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging out...';
@@ -1032,7 +1072,7 @@
                 });
 
                 // Add event listener to the button
-                logoutButton.addEventListener('click', function(e) {
+                logoutButton.addEventListener('click', function (e) {
                     console.log('Logout button clicked via event listener');
                     // Don't prevent default - let the form submit normally
                 });

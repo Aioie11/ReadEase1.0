@@ -13,36 +13,36 @@
     }
 
     .welcome-message {
-                background: white;
-                padding: 30px;
-                border-radius: 12px;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-                margin-bottom: 30px;
-                border: 1px solid #e9ecef;
-                text-align: center;
-                transition: transform 0.2s ease, box-shadow 0.2s ease;
-            }
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      margin-bottom: 30px;
+      border: 1px solid #e9ecef;
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-            .welcome-message:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-            }
+    .welcome-message:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
 
-            .welcome-content h2 {
-               text-align: left;
-                color: #00B8A9;
-                font-size: 1.8em;
-                font-weight: 700;
-            }
+    .welcome-content h2 {
+      text-align: left;
+      color: #00B8A9;
+      font-size: 1.8em;
+      font-weight: 700;
+    }
 
-            .welcome-content p {
-                text-align: left;
-                color: #7f8c8d;
-                font-size: 1rem;
-                margin: 0;
-                max-width: 600px;
-              }
-   
+    .welcome-content p {
+      text-align: left;
+      color: #7f8c8d;
+      font-size: 1rem;
+      margin: 0;
+      max-width: 600px;
+    }
+
     .dashboard-header {
       padding: 25px;
       border-radius: 12px;
@@ -235,8 +235,8 @@
     }
 
     .btn-view {
-      background: #E8F5E8;
-      color: #00B8A9;
+      background: #d1fae5;
+      color: #065f46;
     }
 
     .btn-view:hover {
@@ -245,8 +245,8 @@
     }
 
     .btn-assess {
-      background: #f0fdf4;
-      color: #166534;
+      background: #d1fae5;
+      color: #065f46;
     }
 
     .btn-assess:hover {
@@ -402,10 +402,10 @@
     <!-- Student Management Content -->
     <div class="page">
     <div class="welcome-message">
-        <div class="welcome-content">
-            <h2>Student Management</h2>
-            <p>View and manage all student information</p>
-        </div>
+      <div class="welcome-content">
+      <h2>Student Management</h2>
+      <p>View and manage all student information</p>
+      </div>
     </div>
 
     <div class="controls">
@@ -449,7 +449,7 @@
       $avatarColors = ['avatar-blue', 'avatar-green', 'avatar-orange', 'avatar-red', 'avatar-purple', 'avatar-pink'];
       $avatarClass = $avatarColors[$index % count($avatarColors)];
       @endphp
-        
+
         <div class="student-name">{{ $student['name'] }}</div>
         </div>
         </td>
