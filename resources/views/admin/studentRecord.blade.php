@@ -659,6 +659,7 @@
 
         .status-icon {
             font-size: 0.8rem;
+            margin-right: 0.5rem;
         }
 
         .student-table-scroll {

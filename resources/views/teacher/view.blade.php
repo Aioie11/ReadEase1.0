@@ -309,7 +309,7 @@
     <!-- Header with Logout -->
     
     <!-- Main Content with top margin for fixed header -->
-    <div class="container mx-auto p-4 max-w-7xl" style="margin-top: 80px;">
+    <div class="container mx-auto p-4 max-w-7xl" style="margin-top: 30px;">
         <!-- Back Navigation -->
         <div class="mb-6">
             <a href="{{ route('teacher.student-management') }}"
@@ -320,19 +320,9 @@
         </div>
 
         <!-- Student Profile Card -->
-        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+        <div class="bg-white rounded-xl shadow-sm p-10 mb-6">
             <div class="flex flex-wrap items-center">
-                <!-- Avatar -->
-                <div class="mr-6">
-                    <div
-                        class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-2xl font-bold">
-                        @if(isset($student))
-                            {{ strtoupper(substr($student->first_name, 0, 1) . substr($student->last_name, 0, 1)) }}
-                        @else
-                            ST
-                        @endif
-                    </div>
-                </div>
+               
 
                 <!-- Student Info -->
                 <div class="flex-grow">
@@ -914,23 +904,7 @@
                 gap: 1rem;
             }
 
-            .student-avatar {
-                width: 60px;
-                height: 60px;
-                background: linear-gradient(135deg, #00B8A9, #009688);
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-shadow: 0 4px 12px rgba(0, 184, 169, 0.2);
-                flex-shrink: 0;
-            }
-
-            .student-avatar i {
-                font-size: 1.5rem;
-                color: white;
-            }
-
+          
             .student-basic-info {
                 flex: 1;
             }

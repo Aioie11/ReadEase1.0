@@ -331,42 +331,22 @@
         color: #065f46;
     }
 
-    /* Assessment Level badges - Matching student reports colors */
-    .level-independent {
-        background: #00B8A9;
-        color: white;
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        display: inline-block;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
+    .status-in-progress {
+        background: #fef3c7;
+        color: #92400e;
     }
 
-    .level-instructional {
-        background: #F39C12;
-        color: white;
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        display: inline-block;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
+    .status-not-started {
+        background: #f3f4f6;
+        color: #4b5563;
     }
 
-    .level-frustration {
-        background: #E74C3C;
-        color: white;
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        display: inline-block;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
+    .status-icon {
+        font-size: 0.8rem;
+        margin-right: 0.5rem;
     }
+
+
 
 
 
@@ -486,8 +466,7 @@
                                 <th><i class="fas fa-user"></i> Student</th>
                                 <th><i class="fas fa-file-alt"></i> Test Type</th>
                                 <th><i class="fas fa-percentage"></i> Score</th>
-                                <th><i class="fas fa-chart-line"></i> Assessment Level</th>
-                                <th><i class="fas fa-check-circle"></i> Status</th>
+                                <th><i class="fas fa-info-circle"></i> Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -497,40 +476,35 @@
                                         <td>{{ $test->created_at->format('M d, Y') }}</td>
                                         <td>{{ $test->student_name }}</td>
                                         <td>{{ $test->test_type }}</td>
-                                        <td style="text-align: center;">{{ $test->score }}%</td>
-                                        <td style="text-align: center;">
-                                            @php
-                                                $levelClass = '';
-                                                if ($test->assessment_level === 'Independent') {
-                                                    $levelClass = 'level-independent';
-                                                } elseif ($test->assessment_level === 'Instructional') {
-                                                    $levelClass = 'level-instructional';
-                                                } else {
-                                                    $levelClass = 'level-frustration';
-                                                }
-                                            @endphp
-                                            <span class="{{ $levelClass }}">{{ $test->assessment_level }}</span>
-                                        </td>
+                                        <td>{{ $test->score }}%</td>
                                         <td>
                                             @php
                                                 $statusClass = 'status-badge ';
+                                                $statusIcon = '';
                                                 if ($test->status === 'Completed') {
                                                     $statusClass .= 'status-completed';
+                                                    $statusIcon = 'fa-check-circle';
                                                 } elseif ($test->status === 'Reading Only') {
                                                     $statusClass .= 'status-reading-only';
+                                                    $statusIcon = 'fa-book-open';
                                                 } elseif ($test->status === 'Fully Complete') {
                                                     $statusClass .= 'status-fully-complete';
+                                                    $statusIcon = 'fa-check-double';
                                                 } else {
                                                     $statusClass .= 'status-completed';
+                                                    $statusIcon = 'fa-check-circle';
                                                 }
                                             @endphp
-                                            <span class="{{ $statusClass }}">{{ $test->status }}</span>
+                                            <span class="{{ $statusClass }}">
+                                                <i class="fas {{ $statusIcon }} status-icon"></i>
+                                                {{ $test->status }}
+                                            </span>
                                         </td>
                                     </tr>
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="6" style="text-align: center; color: #888; padding: 3rem;">
+                                    <td colspan="5" style="text-align: center; color: #888; padding: 3rem;">
                                         <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
                                         <br>
                                         <strong>No recent tests found.</strong>
