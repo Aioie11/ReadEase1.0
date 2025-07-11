@@ -1190,6 +1190,42 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Sections',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                color: '#2D3748'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Students',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                color: '#2D3748'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
                     plugins: {
                         legend: {
                             display: true,
@@ -1223,68 +1259,18 @@
                                 size: 13
                             },
                             callbacks: {
-                                title: function (context) {
-                                    const label = context[0].label;
-                                    const value = context[0].raw;
-                                    const total = context[0].dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
-                                    return `${label}\n${value} students (${percentage}%)`;
-                                },
                                 label: function (context) {
-                                    const label = context.label;
+                                    const label = context.dataset.label;
                                     const value = context.raw;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
-
-                                    let description = '';
-                                    if (label.includes('Independent')) {
-                                        description = 'Students who read fluently without assistance';
-                                    } else if (label.includes('Instructional')) {
-                                        description = 'Students who can read with teacher support';
-                                    } else if (label.includes('Frustration')) {
-                                        description = 'Students who struggle with reading material';
-                                    }
-
-                                    return [
-                                        `Total Students: ${total}`,
-                                        `Reading Level: ${label.split(' ')[0]}`,
-                                        `Description: ${description}`
-                                    ];
+                                    return `${label}: ${value} students`;
+                                },
+                                footer: function(tooltipItems) {
+                                    let total = 0;
+                                    tooltipItems.forEach(function(tooltipItem) {
+                                        total += tooltipItem.parsed.y;
+                                    });
+                                    return 'Total: ' + total + ' students';
                                 }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Sections',
-                                font: {
-                                    size: 14,
-                                    weight: 'bold'
-                                },
-                                color: '#2D3748'
-                            },
-                            grid: {
-                                display: false
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Number of Students',
-                                font: {
-                                    size: 14,
-                                    weight: 'bold'
-                                },
-                                color: '#2D3748'
-                            },
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            },
-                            ticks: {
-                                stepSize: 1
                             }
                         }
                     }
@@ -1352,6 +1338,42 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Sections',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                color: '#2D3748'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Students',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                color: '#2D3748'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
                     plugins: {
                         legend: {
                             display: true,
@@ -1385,73 +1407,69 @@
                                 size: 13
                             },
                             callbacks: {
-                                title: function (context) {
-                                    const label = context[0].label;
-                                    const value = context[0].raw;
-                                    const total = context[0].dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
-                                    return `${label}\n${value} students (${percentage}%)`;
-                                },
                                 label: function (context) {
-                                    const label = context.label;
+                                    const label = context.dataset.label;
                                     const value = context.raw;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
-
-                                    let description = '';
-                                    if (label.includes('Independent')) {
-                                        description = 'Students with excellent comprehension skills';
-                                    } else if (label.includes('Instructional')) {
-                                        description = 'Students with good comprehension with support';
-                                    } else if (label.includes('Frustration')) {
-                                        description = 'Students who need comprehension improvement';
-                                    }
-
-                                    return [
-                                        `Total Students: ${total}`,
-                                        `Comprehension Level: ${label.split(' ')[0]}`,
-                                        `Description: ${description}`
-                                    ];
+                                    return `${label}: ${value} students`;
+                                },
+                                footer: function(tooltipItems) {
+                                    let total = 0;
+                                    tooltipItems.forEach(function(tooltipItem) {
+                                        total += tooltipItem.parsed.y;
+                                    });
+                                    return 'Total: ' + total + ' students';
                                 }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Sections',
-                                font: {
-                                    size: 14,
-                                    weight: 'bold'
-                                },
-                                color: '#2D3748'
-                            },
-                            grid: {
-                                display: false
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Number of Students',
-                                font: {
-                                    size: 14,
-                                    weight: 'bold'
-                                },
-                                color: '#2D3748'
-                            },
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            },
-                            ticks: {
-                                stepSize: 1
                             }
                         }
                     }
                 }
             });
+
+            // Load initial data immediately after chart creation
+            console.log('=== ENGLISH REPORTS INITIALIZATION ===');
+            console.log('Loading initial data for current grade on page load:', currentGrade);
+            console.log('Current section:', currentSection);
+            console.log('Grade distribution from backend:', gradeDistribution);
+            console.log('Reading level distribution from backend:', readingLevelDistribution);
+
+            setTimeout(() => {
+                console.log('=== INITIALIZING SECTION OPTIONS AND FETCHING DATA ===');
+
+                // Ensure section options are initialized first
+                const sectionSelect = document.getElementById('sectionFilter');
+                console.log('Section select element found:', !!sectionSelect);
+
+                if (sectionSelect) {
+                    sectionSelect.innerHTML = '<option value="all">All Sections</option>';
+                    if (gradeSectionMapping[currentGrade]) {
+                        console.log('Adding sections for grade:', currentGrade, gradeSectionMapping[currentGrade]);
+                        gradeSectionMapping[currentGrade].forEach(section => {
+                            const option = document.createElement('option');
+                            option.value = section.toLowerCase();
+                            option.textContent = section.charAt(0).toUpperCase() + section.slice(1);
+                            sectionSelect.appendChild(option);
+                        });
+                    }
+                    sectionSelect.value = currentSection;
+                    console.log('Section select final value:', sectionSelect.value);
+                }
+
+                // Update chart titles based on current selection
+                const chartTitle = currentSection === 'all'
+                    ? `📊 Reading Performance Distribution - Grade ${currentGrade} (All Sections)`
+                    : `📊 Reading Performance Distribution - Grade ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
+                const comprehensionChartTitle = currentSection === 'all'
+                    ? `🧠 Comprehension Level Distribution - Grade ${currentGrade} (All Sections)`
+                    : `🧠 Comprehension Level Distribution - Grade ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
+
+                console.log('Setting chart titles:', { chartTitle, comprehensionChartTitle });
+                document.getElementById('chartTitle').textContent = chartTitle;
+                document.getElementById('englishComprehensionChartTitle').textContent = comprehensionChartTitle;
+
+                // Now fetch the data
+                console.log('About to fetch grade data for:', currentGrade, currentSection);
+                fetchGradeData(currentGrade, currentSection);
+            }, 300);
 
             // Function to update chart for selected grade (this will be updated by AJAX call)
             function updateChartForGrade(selectedGrade) {
@@ -1512,22 +1530,41 @@
 
             // Function to fetch section-wise data via AJAX
             function fetchGradeData(grade, section) {
+                console.log('=== ENGLISH FETCH GRADE DATA ===');
                 console.log('Fetching section-wise data for grade:', grade, 'section:', section);
 
                 // Show loading state
                 showLoadingState();
 
+                const readingUrl = `{{ route('teacher.section-wise-reading-data') }}?grade=${grade}&section=${section}&language=english`;
+                const comprehensionUrl = `{{ route('teacher.section-wise-comprehension-data') }}?grade=${grade}&section=${section}&language=english`;
+
+                console.log('Reading URL:', readingUrl);
+                console.log('Comprehension URL:', comprehensionUrl);
+
                 // Fetch reading data
                 Promise.all([
-                    fetch(`{{ route('teacher.section-wise-reading-data') }}?grade=${grade}&language=english`),
-                    fetch(`{{ route('teacher.section-wise-comprehension-data') }}?grade=${grade}&language=english`)
+                    fetch(readingUrl),
+                    fetch(comprehensionUrl)
                 ])
-                    .then(responses => Promise.all(responses.map(r => r.json())))
+                    .then(responses => {
+                        console.log('Fetch responses received:', responses.map(r => r.status));
+                        return Promise.all(responses.map(r => r.json()));
+                    })
                     .then(([readingData, comprehensionData]) => {
+                        console.log('=== ENGLISH FETCH RESPONSE DATA ===');
+                        console.log('Reading data response:', readingData);
+                        console.log('Comprehension data response:', comprehensionData);
+                        console.log('Reading success:', readingData.success);
+                        console.log('Comprehension success:', comprehensionData.success);
+
                         if (readingData.success && comprehensionData.success) {
+                            console.log('Both requests successful, calling updateSectionWiseCharts');
                             updateSectionWiseCharts(readingData.data, comprehensionData.data, grade);
                         } else {
                             console.error('Error fetching data:', readingData.message || comprehensionData.message);
+                            console.error('Reading data:', readingData);
+                            console.error('Comprehension data:', comprehensionData);
                             hideLoadingState();
                         }
                     })
@@ -1555,16 +1592,31 @@
 
             // Function to update section-wise charts
             function updateSectionWiseCharts(readingData, comprehensionData, grade) {
+                console.log('=== ENGLISH UPDATE SECTION-WISE CHARTS ===');
                 console.log('Updating section-wise charts for grade:', grade);
                 console.log('Reading data:', readingData);
                 console.log('Comprehension data:', comprehensionData);
 
+                // Get current section selection
+                const selectedSection = document.getElementById('sectionFilter') ? document.getElementById('sectionFilter').value : 'all';
+                console.log('Selected section for chart update:', selectedSection);
+                console.log('Reading data sections:', readingData.sections);
+                console.log('Reading data section_data:', readingData.section_data);
+
                 // Update reading chart
                 if (window.mainChart && readingData.sections) {
-                    const sections = readingData.sections;
-                    const independentData = [];
-                    const instructionalData = [];
-                    const frustrationData = [];
+                    let sections = readingData.sections;
+                    let independentData = [];
+                    let instructionalData = [];
+                    let frustrationData = [];
+
+                    // Filter sections based on selection
+                    if (selectedSection !== 'all') {
+                        // Show only the selected section
+                        const sectionName = selectedSection.charAt(0).toUpperCase() + selectedSection.slice(1);
+                        sections = [sectionName];
+                        console.log('Filtering to show only section:', sectionName);
+                    }
 
                     sections.forEach(section => {
                         const sectionData = readingData.section_data[section] || {};
@@ -1572,6 +1624,11 @@
                         instructionalData.push(sectionData.Instructional || 0);
                         frustrationData.push(sectionData.Frustration || 0);
                     });
+
+                    console.log('Chart sections:', sections);
+                    console.log('Chart data - Independent:', independentData);
+                    console.log('Chart data - Instructional:', instructionalData);
+                    console.log('Chart data - Frustration:', frustrationData);
 
                     window.mainChart.data.labels = sections;
                     window.mainChart.data.datasets[0].data = independentData;
@@ -1582,10 +1639,18 @@
 
                 // Update comprehension chart
                 if (window.englishComprehensionChart && comprehensionData.sections) {
-                    const sections = comprehensionData.sections;
-                    const independentData = [];
-                    const instructionalData = [];
-                    const frustrationData = [];
+                    let sections = comprehensionData.sections;
+                    let independentData = [];
+                    let instructionalData = [];
+                    let frustrationData = [];
+
+                    // Filter sections based on selection (same as reading chart)
+                    if (selectedSection !== 'all') {
+                        // Show only the selected section
+                        const sectionName = selectedSection.charAt(0).toUpperCase() + selectedSection.slice(1);
+                        sections = [sectionName];
+                        console.log('Filtering comprehension chart to show only section:', sectionName);
+                    }
 
                     sections.forEach(section => {
                         const sectionData = comprehensionData.section_data[section] || {};
@@ -1593,6 +1658,11 @@
                         instructionalData.push(sectionData.Instructional || 0);
                         frustrationData.push(sectionData.Frustration || 0);
                     });
+
+                    console.log('Comprehension chart sections:', sections);
+                    console.log('Comprehension chart data - Independent:', independentData);
+                    console.log('Comprehension chart data - Instructional:', instructionalData);
+                    console.log('Comprehension chart data - Frustration:', frustrationData);
 
                     window.englishComprehensionChart.data.labels = sections;
                     window.englishComprehensionChart.data.datasets[0].data = independentData;
@@ -1610,12 +1680,23 @@
                 const totalStudentsEl = document.getElementById('totalStudents');
                 if (totalStudentsEl) totalStudentsEl.textContent = totalStudents;
 
-                // Update chart titles
-                const readingChartTitle = `📊 Reading Performance Distribution - Grade ${grade} (All Sections)`;
-                const comprehensionChartTitle = `📊 Comprehension Performance Distribution - Grade ${grade} (All Sections)`;
+                // Update chart titles based on selection
+                let readingChartTitle, comprehensionChartTitle;
+
+                if (selectedSection === 'all') {
+                    readingChartTitle = `📊 Reading Performance Distribution - Grade ${grade} (All Sections)`;
+                    comprehensionChartTitle = `📊 Comprehension Performance Distribution - Grade ${grade} (All Sections)`;
+                } else {
+                    const sectionName = selectedSection.charAt(0).toUpperCase() + selectedSection.slice(1);
+                    readingChartTitle = `📊 Reading Performance Distribution - Grade ${grade} - Section ${sectionName}`;
+                    comprehensionChartTitle = `📊 Comprehension Performance Distribution - Grade ${grade} - Section ${sectionName}`;
+                }
 
                 const readingTitleEl = document.querySelector('.chart-container h3');
+                const comprehensionTitleEl = document.getElementById('englishComprehensionChartTitle');
+
                 if (readingTitleEl) readingTitleEl.textContent = readingChartTitle;
+                if (comprehensionTitleEl) comprehensionTitleEl.textContent = comprehensionChartTitle;
 
                 hideLoadingState();
             }
@@ -1676,60 +1757,7 @@
 
         // Initialize page with current data
         document.addEventListener('DOMContentLoaded', function () {
-            console.log('English Reports page loaded');
-            console.log('gradeSectionMapping:', gradeSectionMapping);
-
-            // Initialize section options based on current grade
-            const currentGrade = document.getElementById('gradeFilter').value;
-            const currentSection = '{{ is_string($section ?? "all") ? ($section ?? "all") : "all" }}';
-
-            console.log('Current grade:', currentGrade);
-            console.log('Current section:', currentSection);
-
-            // Update section options for the current grade
-            const sectionSelect = document.getElementById('sectionFilter');
-            console.log('Section select element:', sectionSelect);
-
-            sectionSelect.innerHTML = '<option value="all">All Sections</option>';
-
-            if (gradeSectionMapping[currentGrade]) {
-                console.log('Adding sections for grade:', currentGrade, gradeSectionMapping[currentGrade]);
-                gradeSectionMapping[currentGrade].forEach(section => {
-                    const option = document.createElement('option');
-                    option.value = section.toLowerCase();
-                    option.textContent = section.charAt(0).toUpperCase() + section.slice(1);
-                    if (section.toLowerCase() === currentSection.toLowerCase()) {
-                        option.selected = true;
-                    }
-                    sectionSelect.appendChild(option);
-                });
-            } else {
-                console.log('No sections found for grade:', currentGrade);
-            }
-
-            // Set the current section if it exists
-            if (currentSection !== 'all') {
-                sectionSelect.value = currentSection.toLowerCase();
-            }
-
-            console.log('Final section select HTML:', sectionSelect.innerHTML);
-
-            // Update chart title based on current selection
-            const chartTitle = currentSection === 'all'
-                ? `📊 Reading Performance Distribution - Grade ${currentGrade} (All Sections)`
-                : `📊 Reading Performance Distribution - Grade ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
-            document.getElementById('chartTitle').textContent = chartTitle;
-
-            // Automatically load section-wise data for the current grade when page loads
-            console.log('Page loaded - fetching initial section-wise data for grade:', currentGrade);
-            fetchGradeData(currentGrade, currentSection);
-
-            // Also update performance cards with any initial data
-            setTimeout(() => {
-                const initialReadingData = gradeDistribution[`Grade ${currentGrade}`] || { Independent: 0, Instructional: 0, Frustration: 0 };
-                const initialComprehensionData = readingLevelDistribution[`Grade ${currentGrade}`] || { Independent: 0, Instructional: 0, Frustration: 0 };
-                updatePerformanceCards(initialReadingData, initialComprehensionData);
-            }, 500);
+            console.log('English Reports page loaded - charts and data initialization handled in main DOMContentLoaded');
         });
     </script>
 @endsection

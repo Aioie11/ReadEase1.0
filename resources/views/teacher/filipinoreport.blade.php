@@ -1054,24 +1054,76 @@
         const displayFilipinoData = filipinoChartData.some(value => value > 0) ? filipinoChartData : [1, 1, 1]; // Show equal segments if no data
 
         window.filipinoProgressChart = new Chart(filipinoCtx, {
-            type: 'pie',
+            type: 'bar',
             data: {
-                labels: ['Independiyente (Pagbasa ng Salita: 97-100%)', 'Pagtuturo (Pagbasa ng Salita: 90-96%)', 'Pagkabalisa (Pagbasa ng Salita: Below 90%)'],
-                datasets: [{
-                    data: displayFilipinoData,
-                    backgroundColor: ['#00B8A9', '#F6AD55', '#E53E3E'], // Always show colors
-                    borderColor: '#FFFFFF',
-                    borderWidth: 2,
-                }]
+                labels: [], // Will be populated with section names
+                datasets: [
+                    {
+                        label: 'Independiyente (97-100%)',
+                        data: [],
+                        backgroundColor: '#00B8A9',
+                        borderColor: '#00B8A9',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Pagtuturo (90-96%)',
+                        data: [],
+                        backgroundColor: '#F6AD55',
+                        borderColor: '#F6AD55',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Pagkabalisa (Below 90%)',
+                        data: [],
+                        backgroundColor: '#E53E3E',
+                        borderColor: '#E53E3E',
+                        borderWidth: 1
+                    }
+                ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: true,
+                        title: {
+                            display: true,
+                            text: 'Mga Seksyon',
+                            font: {
+                                size: 14,
+                                weight: '600'
+                            },
+                            color: '#2D3748'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Bilang ng mga Mag-aaral',
+                            font: {
+                                size: 14,
+                                weight: '600'
+                            },
+                            color: '#2D3748'
+                        },
+                        ticks: {
+                            stepSize: 1,
+                            callback: function(value) {
+                                return Math.round(value);
+                            }
+                        }
+                    }
+                },
                 plugins: {
                     legend: {
                         display: true,
-                        position: 'right',
-                        align: 'center',
+                        position: 'top',
                         labels: {
                             usePointStyle: true,
                             pointStyle: 'circle',
@@ -1080,76 +1132,29 @@
                                 size: 12,
                                 weight: '600'
                             },
-                            color: '#2D3748',
-                            generateLabels: function(chart) {
-                                const data = chart.data;
-                                if (data.labels.length && data.datasets.length) {
-                                    return data.labels.map(function(label, i) {
-                                        const value = data.datasets[0].data[i];
-                                        const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
-                                        const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
-
-                                        return {
-                                            text: `${label}: ${value} mag-aaral (${percentage}%)`,
-                                            fillStyle: data.datasets[0].backgroundColor[i],
-                                            strokeStyle: data.datasets[0].backgroundColor[i],
-                                            lineWidth: 2,
-                                            hidden: isNaN(data.datasets[0].data[i]),
-                                            index: i
-                                        };
-                                    });
-                                }
-                                return [];
-                            }
+                            color: '#2D3748'
                         }
                     },
                     tooltip: {
-                        backgroundColor: 'rgba(255, 255, 255, 0.98)',
-                        titleColor: '#1A202C',
-                        bodyColor: '#2D3748',
-                        borderColor: '#00B8A9',
-                        borderWidth: 2,
-                        cornerRadius: 12,
-                        displayColors: true,
-                        padding: 16,
-                        titleFont: {
-                            size: 14,
-                            weight: 'bold'
-                        },
-                        bodyFont: {
-                            size: 13
-                        },
+                        mode: 'index',
+                        intersect: false,
                         callbacks: {
-                            title: function(context) {
-                                const label = context[0].label;
-                                const value = context[0].raw;
-                                const total = context[0].dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
-                                return `${label}\n${value} mag-aaral (${percentage}%)`;
-                            },
                             label: function(context) {
-                                const label = context.label;
-                                const value = context.raw;
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
-
-                                let description = '';
-                                if (label.includes('Independiyente')) {
-                                    description = 'Mga mag-aaral na makakabasa nang maayos nang walang tulong';
-                                } else if (label.includes('Pagtuturo')) {
-                                    description = 'Mga mag-aaral na makakabasa sa tulong ng guro';
-                                } else if (label.includes('Pagkabalisa')) {
-                                    description = 'Mga mag-aaral na nahihirapan sa materyal na binabasa';
-                                }
-
-                                return [
-                                    `Kabuuang Mag-aaral: ${total}`,
-                                    `Antas ng Pagbasa: ${label.split(' ')[0]}`,
-                                    `Paglalarawan: ${description}`
-                                ];
+                                return `${context.dataset.label}: ${context.parsed.y} mag-aaral`;
+                            },
+                            footer: function(tooltipItems) {
+                                let total = 0;
+                                tooltipItems.forEach(function(tooltipItem) {
+                                    total += tooltipItem.parsed.y;
+                                });
+                                return 'Kabuuan: ' + total + ' mag-aaral';
                             }
                         }
                     }
+                },
+                interaction: {
+                    mode: 'index',
+                    intersect: false
                 }
             }
         });
@@ -1185,24 +1190,76 @@
         const displayFilipinoComprehensionData = filipinoComprehensionChartData.some(value => value > 0) ? filipinoComprehensionChartData : [1, 1, 1]; // Show equal segments if no data
 
         window.filipinoComprehensionChart = new Chart(filipinoComprehensionCtx, {
-            type: 'pie',
+            type: 'bar',
             data: {
-                labels: ['Independiyente (Pag-unawa: 80-100%)', 'Pagtuturo (Pag-unawa: 59-79%)', 'Pagkabalisa (Pag-unawa: Below 59%)'],
-                datasets: [{
-                    data: displayFilipinoComprehensionData,
-                    backgroundColor: ['#00B8A9', '#F6AD55', '#E53E3E'], // Always show colors
-                    borderColor: '#FFFFFF',
-                    borderWidth: 2,
-                }]
+                labels: [], // Will be populated with section names
+                datasets: [
+                    {
+                        label: 'Independiyente (80-100%)',
+                        data: [],
+                        backgroundColor: '#00B8A9',
+                        borderColor: '#00B8A9',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Pagtuturo (59-79%)',
+                        data: [],
+                        backgroundColor: '#F6AD55',
+                        borderColor: '#F6AD55',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Pagkabalisa (Below 59%)',
+                        data: [],
+                        backgroundColor: '#E53E3E',
+                        borderColor: '#E53E3E',
+                        borderWidth: 1
+                    }
+                ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: true,
+                        title: {
+                            display: true,
+                            text: 'Mga Seksyon',
+                            font: {
+                                size: 14,
+                                weight: '600'
+                            },
+                            color: '#2D3748'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Bilang ng mga Mag-aaral',
+                            font: {
+                                size: 14,
+                                weight: '600'
+                            },
+                            color: '#2D3748'
+                        },
+                        ticks: {
+                            stepSize: 1,
+                            callback: function(value) {
+                                return Math.round(value);
+                            }
+                        }
+                    }
+                },
                 plugins: {
                     legend: {
                         display: true,
-                        position: 'right',
-                        align: 'center',
+                        position: 'top',
                         labels: {
                             usePointStyle: true,
                             pointStyle: 'circle',
@@ -1211,76 +1268,29 @@
                                 size: 12,
                                 weight: '600'
                             },
-                            color: '#2D3748',
-                            generateLabels: function(chart) {
-                                const data = chart.data;
-                                if (data.labels.length && data.datasets.length) {
-                                    return data.labels.map(function(label, i) {
-                                        const value = data.datasets[0].data[i];
-                                        const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
-                                        const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
-
-                                        return {
-                                            text: `${label}: ${value} mag-aaral (${percentage}%)`,
-                                            fillStyle: data.datasets[0].backgroundColor[i],
-                                            strokeStyle: data.datasets[0].backgroundColor[i],
-                                            lineWidth: 2,
-                                            hidden: isNaN(data.datasets[0].data[i]),
-                                            index: i
-                                        };
-                                    });
-                                }
-                                return [];
-                            }
+                            color: '#2D3748'
                         }
                     },
                     tooltip: {
-                        backgroundColor: 'rgba(255, 255, 255, 0.98)',
-                        titleColor: '#1A202C',
-                        bodyColor: '#2D3748',
-                        borderColor: '#00B8A9',
-                        borderWidth: 2,
-                        cornerRadius: 12,
-                        displayColors: true,
-                        padding: 16,
-                        titleFont: {
-                            size: 14,
-                            weight: 'bold'
-                        },
-                        bodyFont: {
-                            size: 13
-                        },
+                        mode: 'index',
+                        intersect: false,
                         callbacks: {
-                            title: function(context) {
-                                const label = context[0].label;
-                                const value = context[0].raw;
-                                const total = context[0].dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
-                                return `${label}\n${value} mag-aaral (${percentage}%)`;
-                            },
                             label: function(context) {
-                                const label = context.label;
-                                const value = context.raw;
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
-
-                                let description = '';
-                                if (label.includes('Independiyente')) {
-                                    description = 'Mga mag-aaral na may napakahusay na kakayahan sa pag-unawa';
-                                } else if (label.includes('Pagtuturo')) {
-                                    description = 'Mga mag-aaral na may mabuting pag-unawa sa tulong';
-                                } else if (label.includes('Pagkabalisa')) {
-                                    description = 'Mga mag-aaral na kailangan ng pagpapabuti sa pag-unawa';
-                                }
-
-                                return [
-                                    `Kabuuang Mag-aaral: ${total}`,
-                                    `Antas ng Pag-unawa: ${label.split(' ')[0]}`,
-                                    `Paglalarawan: ${description}`
-                                ];
+                                return `${context.dataset.label}: ${context.parsed.y} mag-aaral`;
+                            },
+                            footer: function(tooltipItems) {
+                                let total = 0;
+                                tooltipItems.forEach(function(tooltipItem) {
+                                    total += tooltipItem.parsed.y;
+                                });
+                                return 'Kabuuan: ' + total + ' mag-aaral';
                             }
                         }
                     }
+                },
+                interaction: {
+                    mode: 'index',
+                    intersect: false
                 }
             }
         });
@@ -1290,10 +1300,57 @@
         const initialFilipinoComprehensionData = comprehensionLevelDistribution[`Grade ${currentGrade}`] || { Independent: 0, Instructional: 0, Frustration: 0 };
         updateFilipinoPerformanceCards(initialFilipinoReadingData, initialFilipinoComprehensionData);
 
+        // Load initial data immediately after chart creation
+        console.log('=== FILIPINO REPORTS INITIALIZATION ===');
+        console.log('Loading initial Filipino data for current grade on page load:', currentGrade);
+        console.log('Current section:', currentSection);
+        console.log('Grade distribution from backend:', gradeDistribution);
+        console.log('Reading level distribution from backend:', readingLevelDistribution);
+        console.log('Comprehension level distribution from backend:', comprehensionLevelDistribution);
+
+        setTimeout(() => {
+            console.log('=== INITIALIZING FILIPINO SECTION OPTIONS AND FETCHING DATA ===');
+
+            // Ensure section options are initialized first
+            const sectionSelect = document.getElementById('sectionFilter');
+            console.log('Section select element found:', !!sectionSelect);
+
+            if (sectionSelect) {
+                sectionSelect.innerHTML = '<option value="all">All Sections</option>';
+                if (gradeSectionMapping[currentGrade]) {
+                    console.log('Adding sections for grade:', currentGrade, gradeSectionMapping[currentGrade]);
+                    gradeSectionMapping[currentGrade].forEach(section => {
+                        const option = document.createElement('option');
+                        option.value = section.toLowerCase();
+                        option.textContent = section.charAt(0).toUpperCase() + section.slice(1);
+                        sectionSelect.appendChild(option);
+                    });
+                }
+                sectionSelect.value = currentSection;
+                console.log('Section select final value:', sectionSelect.value);
+            }
+
+            // Update chart titles based on current selection
+            const chartTitle = currentSection === 'all'
+                ? `📊 Pag-unlad sa Pagbasa ng Filipino - Baitang ${currentGrade} (Lahat ng Seksyon)`
+                : `📊 Pag-unlad sa Pagbasa ng Filipino - Baitang ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
+            const comprehensionChartTitle = currentSection === 'all'
+                ? `🧠 Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang ${currentGrade} (Lahat ng Seksyon)`
+                : `🧠 Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
+
+            console.log('Setting Filipino chart titles:', { chartTitle, comprehensionChartTitle });
+            document.getElementById('filipinoChartTitle').textContent = chartTitle;
+            document.getElementById('filipinoComprehensionChartTitle').textContent = comprehensionChartTitle;
+
+            // Now fetch the data
+            console.log('About to fetch Filipino grade data for:', currentGrade, currentSection);
+            fetchGradeData(currentGrade, currentSection);
+        }, 300);
+
         // Function to update chart for selected grade (this will be updated by AJAX call)
         function updateChartForGrade(selectedGrade) {
             // This function is now mainly used for immediate visual feedback
-            // The actual data update will be handled by the AJAX response in updateUIWithData
+            // The actual data update will be handled by the AJAX response in updateSectionWiseCharts
             console.log('Chart update requested for grade:', selectedGrade);
         }
 
@@ -1347,26 +1404,38 @@
             fetchGradeData(selectedGrade, selectedSection);
         }
 
-        // Function to fetch grade data via AJAX
+        // Function to fetch section-wise data via AJAX
         function fetchGradeData(grade, section) {
-            console.log('Fetching data for grade:', grade, 'section:', section);
+            console.log('Fetching section-wise data for grade:', grade, 'section:', section);
 
             // Show loading state
             showLoadingState();
 
-            // Make AJAX request to get updated data
-            fetch(`{{ route('teacher.grade-level-data') }}?grade=${grade}&section=${section}&language=filipino`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        updateUIWithData(data.data, grade, section);
+            // Fetch reading data
+            Promise.all([
+                fetch(`{{ route('teacher.section-wise-reading-data') }}?grade=${grade}&section=${section}&language=filipino`),
+                fetch(`{{ route('teacher.section-wise-comprehension-data') }}?grade=${grade}&section=${section}&language=filipino`)
+            ])
+                .then(responses => Promise.all(responses.map(r => r.json())))
+                .then(([readingData, comprehensionData]) => {
+                    console.log('=== FILIPINO FETCH RESPONSE ===');
+                    console.log('Reading data response:', readingData);
+                    console.log('Comprehension data response:', comprehensionData);
+                    console.log('Reading success:', readingData.success);
+                    console.log('Comprehension success:', comprehensionData.success);
+
+                    if (readingData.success && comprehensionData.success) {
+                        console.log('Both requests successful, calling updateSectionWiseCharts');
+                        updateSectionWiseCharts(readingData.data, comprehensionData.data, grade);
                     } else {
-                        console.error('Error fetching data:', data.message);
+                        console.error('Error fetching data:', readingData.message || comprehensionData.message);
+                        console.error('Reading data:', readingData);
+                        console.error('Comprehension data:', comprehensionData);
                         hideLoadingState();
                     }
                 })
                 .catch(error => {
-                    console.error('Error fetching grade data:', error);
+                    console.error('Error fetching section-wise data:', error);
                     hideLoadingState();
                 });
         }
@@ -1385,6 +1454,116 @@
         // Function to hide loading state
         function hideLoadingState() {
             // This will be called after data is updated or on error
+        }
+
+        // Function to update section-wise charts
+        function updateSectionWiseCharts(readingData, comprehensionData, grade) {
+            console.log('=== FILIPINO SECTION-WISE CHARTS DEBUG ===');
+            console.log('Updating section-wise charts for grade:', grade);
+            console.log('Reading data:', readingData);
+            console.log('Comprehension data:', comprehensionData);
+
+            // Get current section selection
+            const selectedSection = document.getElementById('sectionFilter') ? document.getElementById('sectionFilter').value : 'all';
+            console.log('Selected section for chart update:', selectedSection);
+            console.log('Reading data sections:', readingData.sections);
+            console.log('Reading data section_data:', readingData.section_data);
+
+            // Update reading chart
+            console.log('Checking reading chart conditions:');
+            console.log('window.filipinoProgressChart exists:', !!window.filipinoProgressChart);
+            console.log('readingData.sections exists:', !!readingData.sections);
+            console.log('readingData.sections:', readingData.sections);
+
+            if (window.filipinoProgressChart && readingData.sections) {
+                console.log('=== CREATING BAR CHART FOR READING ===');
+                let sections = readingData.sections;
+                let independentData = [];
+                let instructionalData = [];
+                let frustrationData = [];
+
+                // Filter sections based on selection
+                if (selectedSection !== 'all') {
+                    // Show only the selected section
+                    const sectionName = selectedSection.charAt(0).toUpperCase() + selectedSection.slice(1);
+                    sections = [sectionName];
+                    console.log('Filtering to show only section:', sectionName);
+                }
+
+                sections.forEach(section => {
+                    const sectionData = readingData.section_data[section] || {};
+                    independentData.push(sectionData.Independent || 0);
+                    instructionalData.push(sectionData.Instructional || 0);
+                    frustrationData.push(sectionData.Frustration || 0);
+                });
+
+                console.log('Chart sections:', sections);
+                console.log('Chart data - Independent:', independentData);
+                console.log('Chart data - Instructional:', instructionalData);
+                console.log('Chart data - Frustration:', frustrationData);
+
+                // Update existing bar chart data
+                window.filipinoProgressChart.data.labels = sections;
+                window.filipinoProgressChart.data.datasets[0].data = independentData;
+                window.filipinoProgressChart.data.datasets[1].data = instructionalData;
+                window.filipinoProgressChart.data.datasets[2].data = frustrationData;
+                window.filipinoProgressChart.update();
+            }
+
+            // Update comprehension chart
+            if (window.filipinoComprehensionChart && comprehensionData.sections) {
+                let sections = comprehensionData.sections;
+                let independentData = [];
+                let instructionalData = [];
+                let frustrationData = [];
+
+                // Filter sections based on selection (same as reading chart)
+                if (selectedSection !== 'all') {
+                    // Show only the selected section
+                    const sectionName = selectedSection.charAt(0).toUpperCase() + selectedSection.slice(1);
+                    sections = [sectionName];
+                    console.log('Filtering comprehension chart to show only section:', sectionName);
+                }
+
+                sections.forEach(section => {
+                    const sectionData = comprehensionData.section_data[section] || {};
+                    independentData.push(sectionData.Independent || 0);
+                    instructionalData.push(sectionData.Instructional || 0);
+                    frustrationData.push(sectionData.Frustration || 0);
+                });
+
+                console.log('Comprehension chart sections:', sections);
+                console.log('Comprehension chart data - Independent:', independentData);
+                console.log('Comprehension chart data - Instructional:', instructionalData);
+                console.log('Comprehension chart data - Frustration:', frustrationData);
+
+                // Update existing bar chart data
+                window.filipinoComprehensionChart.data.labels = sections;
+                window.filipinoComprehensionChart.data.datasets[0].data = independentData;
+                window.filipinoComprehensionChart.data.datasets[1].data = instructionalData;
+                window.filipinoComprehensionChart.data.datasets[2].data = frustrationData;
+                window.filipinoComprehensionChart.update();
+            }
+
+            // Update chart titles based on selection
+            let readingChartTitle, comprehensionChartTitle;
+
+            if (selectedSection === 'all') {
+                readingChartTitle = `📊 Pag-unlad sa Pagbasa ng Filipino - Baitang ${grade} (Lahat ng Seksyon)`;
+                comprehensionChartTitle = `🧠 Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang ${grade} (Lahat ng Seksyon)`;
+            } else {
+                const sectionName = selectedSection.charAt(0).toUpperCase() + selectedSection.slice(1);
+                readingChartTitle = `📊 Pag-unlad sa Pagbasa ng Filipino - Baitang ${grade} - Seksyon ${sectionName}`;
+                comprehensionChartTitle = `🧠 Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang ${grade} - Seksyon ${sectionName}`;
+            }
+
+            const readingTitleEl = document.getElementById('filipinoChartTitle');
+            const comprehensionTitleEl = document.getElementById('filipinoComprehensionChartTitle');
+
+            if (readingTitleEl) readingTitleEl.textContent = readingChartTitle;
+            if (comprehensionTitleEl) comprehensionTitleEl.textContent = comprehensionChartTitle;
+
+            hideLoadingState();
         }
 
         // Function to calculate majority level from distribution
@@ -1473,56 +1652,8 @@
             }
         }
 
-        // Function to update UI with fetched data
-        function updateUIWithData(data, grade, section) {
-            console.log('Updating UI with data:', data);
-
-            // Update summary statistics
-            const totalStudentsEl = document.getElementById('totalStudents');
-            const avgReadingSpeedEl = document.getElementById('avgReadingSpeed');
-            const avgComprehensionEl = document.getElementById('avgComprehension');
-
-            if (totalStudentsEl) totalStudentsEl.textContent = data.total_students || 0;
-            if (avgReadingSpeedEl) avgReadingSpeedEl.textContent = `${data.statistics.avg_reading_speed || 0} WPM`;
-            if (avgComprehensionEl) avgComprehensionEl.textContent = `${data.statistics.avg_comprehension || 0}%`;
-
-            // Update chart title
-            const chartTitle = section === 'all'
-                ? `📊 Pag-unlad sa Pagbasa ng Filipino - Lahat ng Baitang (Lahat ng Seksyon)`
-                : `📊 Pag-unlad sa Pagbasa ng Filipino - Lahat ng Baitang - ${section.charAt(0).toUpperCase() + section.slice(1)}`;
-            document.getElementById('filipinoChartTitle').textContent = chartTitle;
-
-            // Update chart data
-            const levelDistribution = data.reading_level_distribution;
-            const newFilipinoChartData = [
-                levelDistribution.Independent || 0,
-                levelDistribution.Instructional || 0,
-                levelDistribution.Frustration || 0
-            ];
-
-            // Update chart data (always keep colors)
-            window.filipinoProgressChart.data.datasets[0].data = newFilipinoChartData;
-            window.filipinoProgressChart.data.datasets[0].backgroundColor = ['#00B8A9', '#F6AD55', '#E53E3E'];
-
-            window.filipinoProgressChart.update('active');
-
-            console.log('Updated Filipino chart with data:', newFilipinoChartData);
-
-            // Update performance cards when reading data changes
-            const currentComprehensionData = window.filipinoComprehensionChart ? {
-                Independent: window.filipinoComprehensionChart.data.datasets[0].data[0] || 0,
-                Instructional: window.filipinoComprehensionChart.data.datasets[0].data[1] || 0,
-                Frustration: window.filipinoComprehensionChart.data.datasets[0].data[2] || 0
-            } : { Independent: 0, Instructional: 0, Frustration: 0 };
-
-            updateFilipinoPerformanceCards(levelDistribution, currentComprehensionData);
-
-            // Update comprehension chart data (fetch from API)
-            fetchFilipinoComprehensionData(grade, section);
-
-            // Update section table
-            updateSectionTable(data.section_data, section);
-        }
+        // Legacy function - replaced by updateSectionWiseCharts
+        // Keeping for compatibility but will be removed in future updates
 
         // Function to update section table
         function updateSectionTable(sectionData, selectedSection) {
@@ -1626,63 +1757,7 @@
 
     // Initialize page with current data
     document.addEventListener('DOMContentLoaded', function () {
-        console.log('English Reports page loaded');
-        console.log('gradeSectionMapping:', gradeSectionMapping);
-
-        // Initialize section options based on current grade
-        const currentGrade = document.getElementById('gradeFilter').value;
-        const currentSection = '{{ is_string($section ?? "all") ? ($section ?? "all") : "all" }}';
-
-        console.log('Current grade:', currentGrade);
-        console.log('Current section:', currentSection);
-
-        // Update section options for the current grade
-        const sectionSelect = document.getElementById('sectionFilter');
-        console.log('Section select element:', sectionSelect);
-
-        sectionSelect.innerHTML = '<option value="all">All Sections</option>';
-
-        if (gradeSectionMapping[currentGrade]) {
-            console.log('Adding sections for grade:', currentGrade, gradeSectionMapping[currentGrade]);
-            gradeSectionMapping[currentGrade].forEach(section => {
-                const option = document.createElement('option');
-                option.value = section.toLowerCase();
-                option.textContent = section.charAt(0).toUpperCase() + section.slice(1);
-                if (section.toLowerCase() === currentSection.toLowerCase()) {
-                    option.selected = true;
-                }
-                sectionSelect.appendChild(option);
-            });
-        } else {
-            console.log('No sections found for grade:', currentGrade);
-        }
-
-        // Set the current section if it exists
-        if (currentSection !== 'all') {
-            sectionSelect.value = currentSection.toLowerCase();
-        }
-
-        console.log('Final section select HTML:', sectionSelect.innerHTML);
-
-        // Update chart title based on current selection
-        const chartTitle = currentSection === 'all'
-            ? `📊 Pag-unlad sa Pagbasa ng Filipino - Baitang ${currentGrade} (Lahat ng Seksyon)`
-            : `📊 Pag-unlad sa Pagbasa ng Filipino - Baitang ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
-        document.getElementById('filipinoChartTitle').textContent = chartTitle;
-
-        // Load initial comprehension data
-        fetchFilipinoComprehensionData(currentGrade, currentSection);
-
-        // Automatically load data for the current grade and section when page loads
-        console.log('Filipino page loaded - fetching initial data for grade:', currentGrade, 'section:', currentSection);
-        fetchGradeData(currentGrade, currentSection);
-
-        // Also update performance cards with any initial data
-        setTimeout(() => {
-            const initialReadingData = gradeDistribution[`Grade ${currentGrade}`] || { Independent: 0, Instructional: 0, Frustration: 0 };
-            const initialComprehensionData = comprehensionLevelDistribution[`Grade ${currentGrade}`] || { Independent: 0, Instructional: 0, Frustration: 0 };
-            updateFilipinoPerformanceCards(initialReadingData, initialComprehensionData);
-        }, 500);
+        console.log('Filipino Reports page loaded - charts and data initialization handled in main DOMContentLoaded');
     });
 </script>
 @endsection
