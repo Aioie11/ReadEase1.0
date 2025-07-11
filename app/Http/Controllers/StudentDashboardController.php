@@ -265,11 +265,13 @@ class StudentDashboardController extends Controller
 
         // Get latest English test result for this student
         $latestEnglishActivity = StudentAnswerEnglish::where('student_id', $user->userId)
+            ->with('readingMaterial.questions') // Eager load reading material and questions
             ->latest()
             ->first();
 
         // Get latest Filipino test result for this student
         $latestFilipinoActivity = StudentAnswerTagalog::where('student_id', $user->userId)
+            ->with('readingMaterial.questions') // Eager load reading material and questions
             ->latest()
             ->first();
 
@@ -327,11 +329,32 @@ class StudentDashboardController extends Controller
                 'read_at' => now()
             ]);
 
+        // Calculate total questions from reading material or use stored value as fallback
+        $englishTotalQuestions = 0;
+        if ($latestEnglishActivity) {
+            if ($latestEnglishActivity->readingMaterial) {
+                $englishTotalQuestions = $latestEnglishActivity->readingMaterial->questions()->count();
+            } else {
+                // Fallback to stored total_questions field
+                $englishTotalQuestions = $latestEnglishActivity->total_questions ?? 0;
+            }
+        }
+
+        $filipinoTotalQuestions = 0;
+        if ($latestFilipinoActivity) {
+            if ($latestFilipinoActivity->readingMaterial) {
+                $filipinoTotalQuestions = $latestFilipinoActivity->readingMaterial->questions()->count();
+            } else {
+                // Fallback to stored total_questions field
+                $filipinoTotalQuestions = $latestFilipinoActivity->total_questions ?? 0;
+            }
+        }
+
         // Set session variables for graphs - combine student activity and teacher assessment data
         session([
             // English comprehension data (from student activity)
             'english_score' => $latestEnglishActivity ? $latestEnglishActivity->score ?? 0 : 0,
-            'english_total_questions' => $latestEnglishActivity ? count($latestEnglishActivity->answers ?? []) : 0,
+            'english_total_questions' => $englishTotalQuestions,
 
             // English reading data (from teacher assessment)
             'english_reading_time' => $latestEnglishReading ? $latestEnglishReading->reading_time ?? 0 : 0,
@@ -344,7 +367,7 @@ class StudentDashboardController extends Controller
         session([
             // Filipino comprehension data (from student activity)
             'filipino_score' => $latestFilipinoActivity ? $latestFilipinoActivity->score ?? 0 : 0,
-            'filipino_total_questions' => $latestFilipinoActivity ? count($latestFilipinoActivity->answers ?? []) : 0,
+            'filipino_total_questions' => $filipinoTotalQuestions,
 
             // Filipino reading data (from teacher assessment)
             'filipino_reading_time' => $latestFilipinoReading ? $latestFilipinoReading->reading_time ?? 0 : 0,
@@ -365,7 +388,9 @@ class StudentDashboardController extends Controller
             'englishAnswers',
             'filipinoAnswers',
             'englishFeedback',
-            'filipinoFeedback'
+            'filipinoFeedback',
+            'englishTotalQuestions',
+            'filipinoTotalQuestions'
         ));
     }
 
