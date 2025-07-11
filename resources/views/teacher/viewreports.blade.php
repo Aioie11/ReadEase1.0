@@ -49,7 +49,7 @@
                     <!-- Word Reading Chart -->
                     <div class="chart-panel">
                         <div class="chart-panel-header">
-                            <h3 id="chartTitle">📊 Word Reading Level Distribution - Grade {{ (string) ($grade ?? '7') }}
+                            <h3 id="chartTitle"> Word Reading Level Distribution - Grade {{ (string) ($grade ?? '7') }}
                                 (All Sections)</h3>
                             <div class="time-selector">
                                 <button class="time-btn active">Selected Grade</button>
@@ -63,7 +63,7 @@
                     <!-- Comprehension Chart -->
                     <div class="chart-panel">
                         <div class="chart-panel-header">
-                            <h3 id="englishComprehensionChartTitle">🧠 Comprehension Level Distribution - Grade
+                            <h3 id="englishComprehensionChartTitle">Comprehension Level Distribution - Grade
                                 {{ (string) ($grade ?? '7') }} (All Sections)
                             </h3>
                             <div class="time-selector">
@@ -76,86 +76,42 @@
                     </div>
                 </div>
 
-                <!-- Right Column - Data and Information -->
+                <!-- Right Column - Reading Performance Guide -->
                 <div class="dashboard-column side-column">
-                    <!-- Performance Metrics -->
-                    <div class="performance-metrics">
-                        <!-- Overall Reading Performance Card -->
-                        <div class="performance-card">
-                            <div class="performance-icon reading-icon">
-                                <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path
-                                        d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
-                                </svg>
-                            </div>
-                            <div class="performance-content">
-                                <div class="performance-label">Overall Reading Level</div>
-                                <div class="performance-value" id="overallReadingLevel">No Data</div>
-                                <div class="performance-description">
-                                    Majority level based on student distribution
+                    <!-- Reading Performance Guide -->
+                    <div class="reading-performance-guide">
+                        <h3>Reading Performance Levels</h3>
+                        <div class="performance-level-item">
+                            <span class="performance-badge independent-level">Independent</span>
+                            <div class="performance-level-details">
+                                <div class="performance-level-range">Word Reading: 97-100% | Comprehension: 80-100%
                                 </div>
-                                <div class="performance-stats">
-                                    <span class="student-count" id="readingStudentCount">{{ $total_students ?? 0 }}
-                                        students</span>
+                                <div class="performance-level-description">Students read fluently without assistance
                                 </div>
                             </div>
                         </div>
 
-                        <div class="performance-card">
-                            <div class="performance-icon reading-icon">
-                                <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path
-                                        d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
-                                </svg>
-                            </div>
-                            <div class="performance-content">
-                                <div class="performance-label">Overall Comprehension Level</div>
-                                <div class="performance-value" id="overallComprehensionLevel">No Data</div>
-                                <div class="performance-description">
-                                    Majority level based on student distribution
-                                </div>
-                                <div class="performance-stats">
-                                    <span class="student-count" id="comprehensionStudentCount">{{ $total_students ?? 0 }}
-                                        students</span>
-                                </div>
+                        <div class="performance-level-item">
+                            <span class="performance-badge instructional-level">Instructional</span>
+                            <div class="performance-level-details">
+                                <div class="performance-level-range">Word Reading: 90-96% | Comprehension: 59-79%</div>
+                                <div class="performance-level-description">Students can read with teacher support</div>
                             </div>
                         </div>
 
-                        <!-- Reading Performance Guide -->
-                        <div class="reading-performance-guide">
-                            <h3>Reading Performance Levels</h3>
-                            <div class="performance-level-item">
-                                <span class="performance-badge independent-level">Independent</span>
-                                <div class="performance-level-details">
-                                    <div class="performance-level-range">Word Reading: 97-100% | Comprehension: 80-100%
-                                    </div>
-                                    <div class="performance-level-description">Students read fluently without assistance
-                                    </div>
+                        <div class="performance-level-item">
+                            <span class="performance-badge frustration-level">Frustration</span>
+                            <div class="performance-level-details">
+                                <div class="performance-level-range">Word Reading: 89% Below | Comprehension: 58% Below
                                 </div>
-                            </div>
-
-                            <div class="performance-level-item">
-                                <span class="performance-badge instructional-level">Instructional</span>
-                                <div class="performance-level-details">
-                                    <div class="performance-level-range">Word Reading: 90-96% | Comprehension: 59-79%</div>
-                                    <div class="performance-level-description">Students can read with teacher support</div>
-                                </div>
-                            </div>
-
-                            <div class="performance-level-item">
-                                <span class="performance-badge frustration-level">Frustration</span>
-                                <div class="performance-level-details">
-                                    <div class="performance-level-range">Word Reading: 89% Below | Comprehension: 58% Below
-                                    </div>
-                                    <div class="performance-level-description">Students struggle with reading material</div>
-                                </div>
+                                <div class="performance-level-description">Students struggle with reading material</div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
     </div>
     </div>
@@ -1611,8 +1567,8 @@
                 if (totalStudentsEl) totalStudentsEl.textContent = totalStudents;
 
                 // Update chart titles
-                const readingChartTitle = `📊 Reading Performance Distribution - Grade ${grade} (All Sections)`;
-                const comprehensionChartTitle = `📊 Comprehension Performance Distribution - Grade ${grade} (All Sections)`;
+                const readingChartTitle = `Reading Performance Distribution - Grade ${grade} (All Sections)`;
+                const comprehensionChartTitle = `Comprehension Performance Distribution - Grade ${grade} (All Sections)`;
 
                 const readingTitleEl = document.querySelector('.chart-container h3');
                 if (readingTitleEl) readingTitleEl.textContent = readingChartTitle;
@@ -1630,12 +1586,12 @@
 
                 if (!sectionData || sectionData.length === 0) {
                     tableBody.innerHTML = `
-                                                            <tr>
-                                                                <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-light);">
-                                                                    No data available for the selected filters
-                                                                </td>
-                                                            </tr>
-                                                        `;
+                                                                <tr>
+                                                                    <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-light);">
+                                                                        No data available for the selected filters
+                                                                    </td>
+                                                                </tr>
+                                                            `;
                     return;
                 }
 
@@ -1647,24 +1603,24 @@
                     if (section.avg_comprehension < 70) performanceClass = 'red';
 
                     tableHTML += `
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="student-info">
-                                                                        <div class="student-avatar">${sectionIcon}</div>
-                                                                        <div>${section.section}</div>
-                                                                    </div>
-                                                                </td>
-                                                                <td>${section.student_count} students</td>
-                                                                <td>${section.avg_reading_speed} WPM</td>
-                                                                <td>${section.avg_comprehension}%</td>
-                                                                <td>${section.avg_correct_reading}%</td>
-                                                                <td>
-                                                                    <div class="progress-bar">
-                                                                        <div class="progress ${performanceClass}" style="width: ${section.avg_comprehension}%"></div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        `;
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="student-info">
+                                                                            <div class="student-avatar">${sectionIcon}</div>
+                                                                            <div>${section.section}</div>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>${section.student_count} students</td>
+                                                                    <td>${section.avg_reading_speed} WPM</td>
+                                                                    <td>${section.avg_comprehension}%</td>
+                                                                    <td>${section.avg_correct_reading}%</td>
+                                                                    <td>
+                                                                        <div class="progress-bar">
+                                                                            <div class="progress ${performanceClass}" style="width: ${section.avg_comprehension}%"></div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            `;
                 });
 
                 tableBody.innerHTML = tableHTML;
@@ -1716,8 +1672,8 @@
 
             // Update chart title based on current selection
             const chartTitle = currentSection === 'all'
-                ? `📊 Reading Performance Distribution - Grade ${currentGrade} (All Sections)`
-                : `📊 Reading Performance Distribution - Grade ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
+                ? ` Reading Performance Distribution - Grade ${currentGrade} (All Sections)`
+                : ` Reading Performance Distribution - Grade ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
             document.getElementById('chartTitle').textContent = chartTitle;
 
             // Automatically load section-wise data for the current grade when page loads
