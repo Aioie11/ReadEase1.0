@@ -1043,7 +1043,7 @@
                 width: 100%;
                 flex-direction: column;
             }
-
+            
             .form-select {
                 width: 100%;
             }
@@ -1179,8 +1179,8 @@
                 datasets: [{
                     data: [englishReadingTime, englishTotalWords],
                     backgroundColor: [
-                        '#3498db',
-                        '#e74c3c'
+                        '#27ae60',
+                        '#3498db'
                     ],
                     borderWidth: 0,
                     borderRadius: 6,
@@ -1286,7 +1286,7 @@
                 datasets: [{
                     data: [englishMiscues, englishWords],
                     backgroundColor: [
-                        '#e74c3c',
+                        '#27ae60',
                         '#3498db'
                     ],
                     borderWidth: 0,
@@ -1335,8 +1335,8 @@
                 datasets: [{
                     data: [filipinoReadingTime, filipinoTotalWords],
                     backgroundColor: [
-                        '#3498db',
-                        '#e74c3c'
+                        '#27ae60',
+                        '#3498db'
                     ],
                     borderWidth: 0,
                     borderRadius: 6,
@@ -1442,7 +1442,7 @@
                 datasets: [{
                     data: [filipinoMiscues, filipinoWords],
                     backgroundColor: [
-                        '#e74c3c',
+                        '#27ae60',
                         '#3498db'
                     ],
                     borderWidth: 0,
