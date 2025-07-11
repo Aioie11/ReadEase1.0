@@ -704,7 +704,8 @@
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             }
 
-            .miscues-input, .assessment-input {
+            .miscues-input,
+            .assessment-input {
                 padding: 12px 16px;
                 border: none;
                 border-radius: 8px;
@@ -717,14 +718,16 @@
                 color: #2D3748;
             }
 
-            .miscues-input:focus, .assessment-input:focus {
+            .miscues-input:focus,
+            .assessment-input:focus {
                 outline: none;
                 background: white;
                 box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.1);
                 transform: translateY(-1px);
             }
 
-            .miscues-input:hover, .assessment-input:hover {
+            .miscues-input:hover,
+            .assessment-input:hover {
                 background: white;
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             }
@@ -738,7 +741,8 @@
                 margin-top: 1rem;
             }
 
-            .btn-save, .save-assessment {
+            .btn-save,
+            .save-assessment {
                 background: #00B8A9;
                 color: white;
                 border: none;
@@ -753,13 +757,15 @@
                 min-height: 44px;
             }
 
-            .btn-save:hover, .save-assessment:hover {
+            .btn-save:hover,
+            .save-assessment:hover {
                 background: #009688;
                 transform: translateY(-2px);
                 box-shadow: 0 4px 12px rgba(0, 184, 169, 0.3);
             }
 
-            .btn-cancel, .clear-assessment {
+            .btn-cancel,
+            .clear-assessment {
                 background: #F7FAFC;
                 color: #718096;
                 border: none;
@@ -777,7 +783,8 @@
                 font-size: 0.95rem;
             }
 
-            .btn-cancel:hover, .clear-assessment:hover {
+            .btn-cancel:hover,
+            .clear-assessment:hover {
                 background: #E2E8F0;
                 color: #4A5568;
                 transform: translateY(-2px);
@@ -1075,177 +1082,177 @@
             }
         </style>
 
-    <div class="dashboard-wrapper">
-        <div class="main">
-            <!-- Dashboard Header -->
-            <div class="dashboard-header">
-                <div class="header-content">
-                    <h1>Reading Assessment</h1>
-                    <p>Conduct comprehensive reading assessments with timer controls and feedback system</p>
+        <div class="dashboard-wrapper">
+            <div class="main">
+                <!-- Dashboard Header -->
+                <div class="dashboard-header">
+                    <div class="header-content">
+                        <h1>Reading Assessment</h1>
+                        <p>Conduct comprehensive reading assessments with timer controls and feedback system</p>
+                    </div>
+                </div>
+
+                <div class="header-controls">
+                    <button class="btn back-btn" onclick="window.history.back()">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                    <div class="dropdown">
+                        <a href="#">Reading Languages <i class="fas fa-caret-down"></i></a>
+                        <div class="dropdown-content">
+                            <a href="#" id="lang-english">English</a>
+                            <a href="#" id="lang-filipino">Filipino</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sticky Reading Container -->
+                <div class="reading-sticky-container"
+                    style="max-height: 500px; overflow-y: auto; position: relative; margin-bottom: 2rem;">
+                    <div class="card">
+                        <div class="passage-header">
+                            <div class="section-title" id="passage-title">READING PASSAGE</div>
+                        </div>
+                        <div class="passage" id="passage-text">
+                            @if(isset($readingMaterial))
+                                <h3>{{ $readingMaterial->title }}</h3>
+                                <div class="reading-content">
+                                    <p>{{ $readingMaterial->content }}</p>
+                                </div>
+                            @else
+                                <div class="empty-state">
+                                    <i class="fas fa-book"></i>
+                                    <p>No reading material has been published for this grade level and subject yet.</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="timer-controls floating-controls">
+                        <!-- Reading Miscues -->
+                        <div class="control-group">
+                            <label for="miscues">Miscues</label>
+                            <input type="number" id="miscues" class="miscues-input" min="0" value="0"
+                                style="text-align: center;">
+                        </div>
+                        <!-- Total Words -->
+                        <div class="control-group">
+                            <label for="totalWords">Total Words</label>
+                            <input type="number" id="totalWords" class="miscues-input" readonly
+                                style="text-align: center; background-color: var(--neutral-light); cursor: not-allowed;">
+                        </div>
+                        <span class="timer" id="timer">00:00:00</span>
+                        <div class="timer-buttons-section">
+                            <button class="btn start" onclick="startTimer()">Start Time</button>
+                            <button class="btn stop" onclick="stopTimer()">Stop Time</button>
+                            <button class="btn reset" onclick="resetTimer()">Reset Time</button>
+                        </div>
+                        <!-- Save Assessment Buttons -->
+                        <div class="assessment-buttons">
+                            <button class="btn save-assessment" onclick="saveAssessment()">Save</button>
+                            <button class="btn clear-assessment" onclick="clearAssessment()">Clear All</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Student Reading Assessment positioned below the reading passage box -->
+                <div class="student-card">
+                    <div class="student-header">
+                        <i class="fas fa-user-graduate"></i>
+                        Student Reading Assessment
+                    </div>
+                    <div class="student-meta">Section: {{ ucfirst($section ?? 'Narra') }} &nbsp; | &nbsp; Grade Level:
+                        {{ str_replace('grade', '', $grade ?? 'grade7') }}
+                    </div>
+                    <!-- Student Selection -->
+                    <div class="assessment-group">
+                        <label for="studentSelect">Select Student:</label>
+                        <select id="studentSelect" class="assessment-select">
+                            <option value="">Choose a student...</option>
+                            @if(request('student_number'))
+                                @foreach($students as $student)
+                                    @if($student->student_number == request('student_number'))
+                                        <option value="{{ $student->student_number }}" selected>
+                                            {{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}
+                                        </option>
+                                    @endif
+                                @endforeach
+                            @else
+                                @foreach($students as $student)
+                                    @if($student->grade_level == str_replace('grade', '', $grade) && $student->section == ucfirst($section))
+                                        <option value="{{ $student->student_number }}">
+                                            {{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}
+                                        </option>
+                                    @endif
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            <div class="header-controls">
-                <button class="btn back-btn" onclick="window.history.back()">
-                    <i class="fas fa-arrow-left"></i> Back
-                </button>
-                <div class="dropdown">
-                    <a href="#">Reading Languages <i class="fas fa-caret-down"></i></a>
-                    <div class="dropdown-content">
-                        <a href="#" id="lang-english">English</a>
-                        <a href="#" id="lang-filipino">Filipino</a>
-                    </div>
+            <!-- Feedback Section -->
+            <div class="feedback-section">
+                <div class="feedback-header">
+                    <h3>
+                        <i class="fas fa-comments"></i>
+                        Student Reading Assessment Feedback
+                    </h3>
                 </div>
-            </div>
+                <form class="feedback-form" id="feedbackForm">
+                    <div class="feedback-group">
+                        <label for="strengths">Reading Strengths:</label>
+                        <textarea id="strengths" class="feedback-input"
+                            placeholder="What did the student do well in their reading?"></textarea>
+                    </div>
 
-            <!-- Sticky Reading Container -->
-            <div class="reading-sticky-container"
-                style="max-height: 500px; overflow-y: auto; position: relative; margin-bottom: 2rem;">
-                <div class="card">
-                    <div class="passage-header">
-                        <div class="section-title" id="passage-title">READING PASSAGE</div>
+                    <div class="feedback-group">
+                        <label for="areasForImprovement">Areas for Improvement:</label>
+                        <textarea id="areasForImprovement" class="feedback-input"
+                            placeholder="What areas need more practice?"></textarea>
                     </div>
-                    <div class="passage" id="passage-text">
-                        @if(isset($readingMaterial))
-                            <h3>{{ $readingMaterial->title }}</h3>
-                            <div class="reading-content">
-                                <p>{{ $readingMaterial->content }}</p>
-                            </div>
-                        @else
-                            <div class="empty-state">
-                                <i class="fas fa-book"></i>
-                                <p>No reading material has been published for this grade level and subject yet.</p>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-                <div class="timer-controls floating-controls">
-                    <!-- Reading Miscues -->
-                    <div class="control-group">
-                        <label for="miscues">Miscues</label>
-                        <input type="number" id="miscues" class="miscues-input" min="0" value="0"
-                            style="text-align: center;">
-                    </div>
-                    <!-- Total Words -->
-                    <div class="control-group">
-                        <label for="totalWords">Total Words</label>
-                        <input type="number" id="totalWords" class="miscues-input" readonly
-                            style="text-align: center; background-color: var(--neutral-light); cursor: not-allowed;">
-                    </div>
-                    <span class="timer" id="timer">00:00:00</span>
-                    <div class="timer-buttons-section">
-                        <button class="btn start" onclick="startTimer()">Start Time</button>
-                        <button class="btn stop" onclick="stopTimer()">Stop Time</button>
-                        <button class="btn reset" onclick="resetTimer()">Reset Time</button>
-                    </div>
-                    <!-- Save Assessment Buttons -->
-                    <div class="assessment-buttons">
-                        <button class="btn save-assessment" onclick="saveAssessment()">Save</button>
-                        <button class="btn clear-assessment" onclick="clearAssessment()">Clear All</button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Student Reading Assessment positioned below the reading passage box -->
-            <div class="student-card">
-                <div class="student-header">
-                    <i class="fas fa-user-graduate"></i>
-                    Student Reading Assessment
+                    <div class="feedback-group">
+                        <label for="recommendations">Recommendations:</label>
+                        <textarea id="recommendations" class="feedback-input"
+                            placeholder="Specific recommendations for improvement..."></textarea>
+                    </div>
+
+                    <div class="feedback-actions">
+                        <button type="button" class="btn-cancel" onclick="resetFeedback()">Clear</button>
+                        <button type="submit" class="btn-save">Save Feedback</button>
+                    </div>
+                </form>
+                <div class="feedback-history">
+                    <h4>Previous Feedback</h4>
+                    <div id="feedbackHistory"></div>
+                    <div class="empty-state" id="noFeedbackMessage" style="display: none;">
+                        <i class="fas fa-comment-slash"></i>
+                        <p>No previous feedback available.</p>
+                    </div>
                 </div>
-                <div class="student-meta">Section: {{ ucfirst($section ?? 'Narra') }} &nbsp; | &nbsp; Grade Level:
-                    {{ str_replace('grade', '', $grade ?? 'grade7') }}
-                </div>
-                <!-- Student Selection -->
-                <div class="assessment-group">
-                    <label for="studentSelect">Select Student:</label>
-                    <select id="studentSelect" class="assessment-select">
-                        <option value="">Choose a student...</option>
-                        @if(request('student_number'))
-                            @foreach($students as $student)
-                                @if($student->student_number == request('student_number'))
-                                    <option value="{{ $student->student_number }}" selected>
-                                        {{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}
-                                    </option>
-                                @endif
-                            @endforeach
-                        @else
-                            @foreach($students as $student)
-                                @if($student->grade_level == str_replace('grade', '', $grade) && $student->section == ucfirst($section))
-                                    <option value="{{ $student->student_number }}">
-                                        {{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}
-                                    </option>
-                                @endif
-                            @endforeach
-                        @endif
-                    </select>
-                </div>
+
+                <!-- <div class="feedback-history">
+                                            <h4>Previous Feedback</h4>
+                                            <div class="feedback-item">
+                                                <div class="feedback-meta">
+                                                    <span>Date: 12/15/2024</span>
+                                                    <span>Reading Level: Grade 7</span>
+                                                </div>
+                                                <div class="feedback-content">
+                                                    <p><strong>Strengths:</strong> Good pronunciation and clear voice projection</p>
+                                                    <p><strong>Areas for Improvement:</strong> Reading speed and comprehension</p>
+                                                    <p><strong>Recommendations:</strong> Practice with shorter passages first</p>
+                                                </div>
+
+                                                <div class="feedback-actions-history">
+                                                    <button class="btn-send" onclick="sendFeedbackToStudent(this, 'sample-feedback-1')">
+                                                        <i class="fas fa-paper-plane"></i> Send to Student
+                                                    </button>
+                                                    <span class="send-status sent">✓ Sent</span>
+                                                </div>
+                                            </div>
+                                        </div> -->
             </div>
         </div>
-
-        <!-- Feedback Section -->
-        <div class="feedback-section">
-            <div class="feedback-header">
-                <h3>
-                    <i class="fas fa-comments"></i>
-                    Student Reading Assessment Feedback
-                </h3>
-            </div>
-            <form class="feedback-form" id="feedbackForm">
-                <div class="feedback-group">
-                    <label for="strengths">Reading Strengths:</label>
-                    <textarea id="strengths" class="feedback-input"
-                        placeholder="What did the student do well in their reading?"></textarea>
-                </div>
-
-                <div class="feedback-group">
-                    <label for="areasForImprovement">Areas for Improvement:</label>
-                    <textarea id="areasForImprovement" class="feedback-input"
-                        placeholder="What areas need more practice?"></textarea>
-                </div>
-
-                <div class="feedback-group">
-                    <label for="recommendations">Recommendations:</label>
-                    <textarea id="recommendations" class="feedback-input"
-                        placeholder="Specific recommendations for improvement..."></textarea>
-                </div>
-
-                <div class="feedback-actions">
-                    <button type="button" class="btn-cancel" onclick="resetFeedback()">Clear</button>
-                    <button type="submit" class="btn-save">Save Feedback</button>
-                </div>
-            </form>
-            <div class="feedback-history">
-                <h4>Previous Feedback</h4>
-                <div id="feedbackHistory"></div>
-                <div class="empty-state" id="noFeedbackMessage" style="display: none;">
-                    <i class="fas fa-comment-slash"></i>
-                    <p>No previous feedback available.</p>
-                </div>
-            </div>
-
-            <!-- <div class="feedback-history">
-                                        <h4>Previous Feedback</h4>
-                                        <div class="feedback-item">
-                                            <div class="feedback-meta">
-                                                <span>Date: 12/15/2024</span>
-                                                <span>Reading Level: Grade 7</span>
-                                            </div>
-                                            <div class="feedback-content">
-                                                <p><strong>Strengths:</strong> Good pronunciation and clear voice projection</p>
-                                                <p><strong>Areas for Improvement:</strong> Reading speed and comprehension</p>
-                                                <p><strong>Recommendations:</strong> Practice with shorter passages first</p>
-                                            </div>
-
-                                            <div class="feedback-actions-history">
-                                                <button class="btn-send" onclick="sendFeedbackToStudent(this, 'sample-feedback-1')">
-                                                    <i class="fas fa-paper-plane"></i> Send to Student
-                                                </button>
-                                                <span class="send-status sent">✓ Sent</span>
-                                            </div>
-                                        </div>
-                                    </div> -->
-        </div>
-    </div>
     </div>
 
     <script>
@@ -1501,29 +1508,29 @@
             const feedbackDate = new Date(feedback.created_at).toLocaleDateString();
 
             feedbackItem.innerHTML = `
-                                            <div class="feedback-meta">
-                                                <span>Date: ${feedbackDate}</span>
-                                                <span>Reading Level: Grade ${feedback.grade_level}</span>
-                                                <span>Language: ${feedback.language.charAt(0).toUpperCase() + feedback.language.slice(1)}</span>
-                                            </div>
-                                            <div class="feedback-content">
-                                                <p><strong>Strengths:</strong> ${feedback.strengths || 'Not specified'}</p>
-                                                <p><strong>Areas for Improvement:</strong> ${feedback.areas_for_improvement || 'Not specified'}</p>
-                                                <p><strong>Recommendations:</strong> ${feedback.recommendations || 'Not specified'}</p>
-                                            </div>
+                                                <div class="feedback-meta">
+                                                    <span>Date: ${feedbackDate}</span>
+                                                    <span>Reading Level: Grade ${feedback.grade_level}</span>
+                                                    <span>Language: ${feedback.language.charAt(0).toUpperCase() + feedback.language.slice(1)}</span>
+                                                </div>
+                                                <div class="feedback-content">
+                                                    <p><strong>Strengths:</strong> ${feedback.strengths || 'Not specified'}</p>
+                                                    <p><strong>Areas for Improvement:</strong> ${feedback.areas_for_improvement || 'Not specified'}</p>
+                                                    <p><strong>Recommendations:</strong> ${feedback.recommendations || 'Not specified'}</p>
+                                                </div>
 
-                                        <div class="feedback-actions-history">
-                                            <button class="btn-send ${feedback.is_sent ? 'sent' : ''}"
-                                                    onclick="sendFeedbackToStudent(this, ${feedbackId})"
-                                                    ${feedback.is_sent ? 'disabled' : ''}>
-                                                <i class="fas fa-${feedback.is_sent ? 'check' : 'paper-plane'}"></i>
-                                                ${feedback.is_sent ? 'Sent' : 'Send to Student'}
-                                            </button>
-                                            <span class="send-status ${feedback.is_sent ? 'sent' : 'not-sent'}">
-                                                ${feedback.is_sent ? '✓ Sent' : 'Not Sent'}
-                                            </span>
-                                        </div>
-                                    `;
+                                            <div class="feedback-actions-history">
+                                                <button class="btn-send ${feedback.is_sent ? 'sent' : ''}"
+                                                        onclick="sendFeedbackToStudent(this, ${feedbackId})"
+                                                        ${feedback.is_sent ? 'disabled' : ''}>
+                                                    <i class="fas fa-${feedback.is_sent ? 'check' : 'paper-plane'}"></i>
+                                                    ${feedback.is_sent ? 'Sent' : 'Send to Student'}
+                                                </button>
+                                                <span class="send-status ${feedback.is_sent ? 'sent' : 'not-sent'}">
+                                                    ${feedback.is_sent ? '✓ Sent' : 'Not Sent'}
+                                                </span>
+                                            </div>
+                                        `;
 
             // Store feedback data for sending
             feedbackItem.dataset.feedbackData = JSON.stringify(feedback);
@@ -1759,7 +1766,7 @@
             // Just log the success - don't open any new windows or redirect
             console.log('Assessment data has been saved to the student record');
 
-        
+
         }
     </script>
 @endsection
