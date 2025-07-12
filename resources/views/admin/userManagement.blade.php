@@ -735,7 +735,7 @@
                         <tr>
                             <th>User ID</th>
                             <th>Full Name</th>
-                            <th>Grade Level Access</th>
+                            <th>Assigned Year Level</th>
                             <th>Email</th>
                             <th>Date Created</th>
                             <th style="text-align: center;">Actions</th>
@@ -822,7 +822,7 @@
                 </div>
                 <div id="teacherFields" style="display: none;">
                     <div class="form-group">
-                        <label for="profileTeacherGrade">Grade Level Access</label>
+                        <label for="profileTeacherGrade">Assigned Year Level</label>
                         <select id="profileTeacherGrade" name="teacherGrade" class="teacher-field" required>
                             <option value="">Select Grade Level</option>
                             <option value="7">Grade 7</option>
@@ -904,7 +904,7 @@
                 </div>
                 <div id="editTeacherFields" style="display: none;">
                     <div class="form-group">
-                        <label for="editProfileTeacherGrade">Grade Level Access</label>
+                        <label for="editProfileTeacherGrade">Assigned Year Level</label>
                         <select id="editProfileTeacherGrade" name="teacherGrade" class="teacher-field">
                             <option value="">Select Grade Level</option>
                             <option value="7">Grade 7</option>

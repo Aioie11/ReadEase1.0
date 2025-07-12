@@ -25,7 +25,15 @@
                 </div>
             @endif
 
-            <form id="answerForm" action="{{ route('student.add.filipino') }}" method="post">
+            @if(!$hasCompletedAssessment)
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong><i class="fas fa-exclamation-triangle"></i> Kinakailangan ang Reading Assessment</strong><br>
+                    Kailangan mong makumpletuhin ang reading assessment kasama ng inyong guro bago ka makasagot sa mga tanong. Makipag-ugnayan sa inyong guro para sa inyong reading assessment.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            <form id="answerForm" action="{{ route('student.add.filipino') }}" method="post" @if(!$hasCompletedAssessment) style="pointer-events: none; opacity: 0.6;" @endif>
                 @csrf
                 <div class="grade-card">
                     <h2><i class="fas fa-book-open"></i> Reading Passage</h2>
@@ -75,7 +83,13 @@
                         @endif
 
                         <div class="submit-container">
-                            <button type="button" class="submit-btn" onclick="confirmSubmit()">Submit Answers</button>
+                            <button type="button" class="submit-btn" onclick="confirmSubmit()" @if(!$hasCompletedAssessment) disabled title="Kumpletuhin muna ang reading assessment" @endif>
+                                @if($hasCompletedAssessment)
+                                    Submit Answers
+                                @else
+                                    Kinakailangan ang Reading Assessment
+                                @endif
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -120,6 +134,12 @@
 
     <script>
         function confirmSubmit() {
+            // Check if reading assessment is completed
+            @if(!$hasCompletedAssessment)
+                alert('Kailangan mong makumpletuhin ang reading assessment kasama ng inyong guro bago ka makasagot.');
+                return;
+            @endif
+
             // Check if all questions are answered
             const radioButtons = document.querySelectorAll('input[type="radio"]');
             const textInputs = document.querySelectorAll('input[type="text"]');
@@ -347,9 +367,16 @@
             box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
         }
 
-        .submit-btn:hover {
+        .submit-btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
         /* Modal Styles */

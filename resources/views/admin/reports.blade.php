@@ -14,9 +14,8 @@
 
         /* Main Content */
         .main-content {
-            margin-top: 100px;
-            margin-left: 280px;
-            padding: 2rem 5% 2rem;
+            margin-top: 60px;
+            padding: 70px 30px 50px 50px;
             transition: var(--transition);
             max-width: calc(100% - 280px);
         }
@@ -27,12 +26,11 @@
             padding: 2.5rem;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
         }
 
         .page-header h1 {
             color: #00B8A9;
-            ;
             font-size: 1.75rem;
             font-weight: 700;
             margin: 0;

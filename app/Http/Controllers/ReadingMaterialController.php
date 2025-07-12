@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ReadingMaterial;
 use App\Models\ReadingQuestion;
+use App\Models\ReadingAssessment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -218,12 +219,22 @@ class ReadingMaterialController extends Controller
         }
     }
 
+    /**
+     * Check if student has completed reading assessment for a specific language
+     */
+    private function hasCompletedReadingAssessment($studentId, $language)
+    {
+        return ReadingAssessment::where('student_id', $studentId)
+            ->where('language', $language)
+            ->exists();
+    }
+
     public function getPublishedMaterial($grade = null, $subject = 'english')
     {
         try {
             // Get the current route name to determine which view to use
             $routeName = request()->route()->getName();
-            
+
             // Set the subject based on the route
             if ($routeName === 'student.students-fil') {
                 $subject = 'filipino';
@@ -241,6 +252,12 @@ class ReadingMaterialController extends Controller
             // For students, use their grade level
             $grade = $user->role === 'teacher' ? $grade : $user->grade;
 
+            // Check if student has completed reading assessment (only for students)
+            $hasCompletedAssessment = true;
+            if ($user->role === 'student') {
+                $hasCompletedAssessment = $this->hasCompletedReadingAssessment($user->userId, $subject);
+            }
+
             // Get the published material for this specific grade and subject
             $readingMaterial = ReadingMaterial::with('questions')
                 ->where('grade_level', $grade)
@@ -254,7 +271,8 @@ class ReadingMaterialController extends Controller
                     'error' => 'No published reading material found for this grade level.',
                     'user' => $user,
                     'grade' => $grade,
-                    'subject' => $subject
+                    'subject' => $subject,
+                    'hasCompletedAssessment' => $hasCompletedAssessment
                 ]);
             }
 
@@ -262,7 +280,8 @@ class ReadingMaterialController extends Controller
                 'readingMaterial' => $readingMaterial,
                 'user' => $user,
                 'grade' => $grade,
-                'subject' => $subject
+                'subject' => $subject,
+                'hasCompletedAssessment' => $hasCompletedAssessment
             ]);
         } catch (\Exception $e) {
             \Log::error('Error fetching published material: ' . $e->getMessage());
@@ -270,7 +289,8 @@ class ReadingMaterialController extends Controller
                 'readingMaterial' => null,
                 'error' => 'Error fetching reading material: ' . $e->getMessage(),
                 'grade' => $grade,
-                'subject' => $subject
+                'subject' => $subject,
+                'hasCompletedAssessment' => false
             ]);
         }
     }

@@ -8,7 +8,7 @@
         <style>
             /* Main Content Layout - Exact Stud-Dash Styling */
             .main-content {
-                padding: 20px;
+                padding: 100px 0px 0px 0px;
                 background-color: #f8f9fa;
                 min-height: 100vh;
             }
@@ -16,7 +16,6 @@
             /* Dashboard Header - Clean Stud-Dash Style */
             .dashboard-header {
                 background: white;
-                padding: 25px;
                 border-radius: 12px;
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
                 border: 1px solid #e9ecef;
@@ -43,36 +42,6 @@
                 margin: 0;
             }
 
-            /* Welcome Message - Clean Stud-Dash Style */
-            .welcome-message {
-                background: white;
-                padding: 15px 20px;
-                border-radius: 12px;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-                margin-bottom: 20px;
-                border: 1px solid #e9ecef;
-                transition: transform 0.2s ease, box-shadow 0.2s ease;
-            }
-
-            .welcome-message:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-            }
-
-            .welcome-content h2 {
-                color: #2c3e50;
-                margin-bottom: 0.5rem;
-                font-size: 1.8em;
-                font-weight: 700;
-            }
-
-            .welcome-content p {
-                color: #7f8c8d;
-                font-size: 1rem;
-                margin: 0;
-                max-width: 600px;
-            }
-
             /* Container - Clean Organization */
             .dashboard-container {
                 max-width: 1200px;
@@ -81,35 +50,36 @@
 
 
 
-            /* Welcome Message - Enhanced Visibility */
             .welcome-message {
-                margin-bottom: 1.5rem;
-                margin-top: 60px;
-                background: white;
-                padding: 1.5rem 1.5rem;
-                border-radius: 15px;
-                border: 1px solid #e2e8f0;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-                position: relative;
-                z-index: 1;
-            }
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      margin-bottom: 30px;
+      border: 1px solid #e9ecef;
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
 
-            .welcome-content h2 {
-                color: #00B8A9;
-                margin-bottom: 0.5rem;
-                font-size: 2rem;
-                font-weight: 700;
-                text-shadow: none;
-            }
+    .welcome-message:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    }
 
-            .welcome-content p {
-                color: #2c3e50;
-                font-size: 1.1rem;
-                margin: 0;
-                max-width: 600px;
-                line-height: 1.6;
-            }
+    .welcome-content h2 {
+      text-align: left;
+      color: #00B8A9;
+      font-size: 1.8em;
+      font-weight: 700;
+    }
 
+    .welcome-content p {
+      text-align: left;
+      color: #7f8c8d;
+      font-size: 1rem;
+      margin: 0;
+      max-width: 600px;
+    }
             /* Grade Levels Grid - Clean Stud-Dash Style */
             .grade-levels {
                 display: grid;
@@ -217,7 +187,7 @@
 
             /* Dashboard Container - Clean Organization with proper top spacing */
             .dashboard-container {
-                max-width: 1100px;
+                max-width: 1143px;
                 margin: 0 auto;
                 padding-top: 2rem;
                 position: relative;
