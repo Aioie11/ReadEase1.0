@@ -735,7 +735,6 @@
                         <tr>
                             <th>User ID</th>
                             <th>Full Name</th>
-                            <th>Assigned Year Level</th>
                             <th>Email</th>
                             <th>Date Created</th>
                             <th style="text-align: center;">Actions</th>
@@ -1002,13 +1001,13 @@
         const teacherFields = document.getElementById('teacherFields');
         const studentInputs = studentFields.getElementsByClassName('student-field');
         const teacherInputs = teacherFields.getElementsByClassName('teacher-field');
-        
+
         // Hide all role-specific fields first
         studentFields.style.display = 'none';
         teacherFields.style.display = 'none';
         Array.from(studentInputs).forEach(input => input.required = false);
         Array.from(teacherInputs).forEach(input => input.required = false);
-        
+
         // Show and set required fields based on role
         if (role === 'student') {
             studentFields.style.display = 'block';
@@ -1016,8 +1015,10 @@
             // Reset sections when role changes
             document.getElementById('profileSection').innerHTML = '<option value="">Select Section</option>';
         } else if (role === 'teacher') {
-            teacherFields.style.display = 'block';
-            Array.from(teacherInputs).forEach(input => input.required = true);
+            // For teachers, hide the "Assigned Year Level" field
+            // The form will go directly from Role to User ID
+            teacherFields.style.display = 'none';
+            Array.from(teacherInputs).forEach(input => input.required = false);
         }
     }
 
@@ -1040,8 +1041,10 @@
             // Reset sections when role changes
             document.getElementById('editProfileSection').innerHTML = '<option value="">Select Section</option>';
         } else if (role === 'teacher') {
-            teacherFields.style.display = 'block';
-            Array.from(teacherInputs).forEach(input => input.required = false); // Teacher grade is optional
+            // For teachers, hide the "Assigned Year Level" field
+            // The form will go directly from Role to User ID
+            teacherFields.style.display = 'none';
+            Array.from(teacherInputs).forEach(input => input.required = false);
         }
     }
 
@@ -1263,7 +1266,7 @@
         if (users.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="6">
+                    <td colspan="5">
                         <div class="empty-state">
                             <i class="fas fa-chalkboard-teacher"></i>
                             <h3>No Teachers Found</h3>
@@ -1280,7 +1283,6 @@
             tr.innerHTML = `
                 <td><span class="user-id">${user.userId}</span></td>
                 <td>${user.name}</td>
-                <td>${user.teacherGrade ? `Grade ${user.teacherGrade}` : 'Not specified'}</td>
                 <td>${user.email || 'Not provided'}</td>
                 <td>${new Date(user.created_at).toLocaleDateString()}</td>
                 <td>

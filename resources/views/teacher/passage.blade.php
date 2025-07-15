@@ -1243,7 +1243,7 @@
                     </div>
                 </form>
                 <div class="feedback-history">
-                    <h4>Previous Feedback</h4>
+                    <h4>Teacher Feedback</h4>
                     <div id="feedbackHistory"></div>
                     <div class="empty-state" id="noFeedbackMessage" style="display: none;">
                         <i class="fas fa-comment-slash"></i>
@@ -1383,6 +1383,27 @@
                     characterData: true
                 });
             }
+
+            // Add event listener for student selection change to load feedback history
+            const studentSelect = document.getElementById('studentSelect');
+            if (studentSelect) {
+                studentSelect.addEventListener('change', function() {
+                    const selectedStudentId = this.value;
+                    console.log('Student selection changed to:', selectedStudentId);
+
+                    if (selectedStudentId) {
+                        loadFeedbackHistory(selectedStudentId);
+                    } else {
+                        clearFeedbackHistory();
+                    }
+                });
+
+                // Load feedback history if a student is already selected (from URL parameter)
+                if (studentSelect.value) {
+                    console.log('Loading feedback for pre-selected student:', studentSelect.value);
+                    loadFeedbackHistory(studentSelect.value);
+                }
+            }
         });
 
         function switchLanguage(language) {
@@ -1496,8 +1517,12 @@
                     if (data.success) {
                         alert('Feedback saved successfully!');
 
-                        // Add to feedback history
-                        addFeedbackToHistory(data.feedback);
+                        // Reload feedback history to show the updated/new feedback
+                        const studentSelect = document.getElementById('studentSelect');
+                        const studentId = studentSelect.value;
+                        if (studentId) {
+                            loadFeedbackHistory(studentId);
+                        }
 
                         // Reset form
                         resetFeedback();
@@ -1520,7 +1545,7 @@
         }
 
         function addFeedbackToHistory(feedback) {
-            const feedbackHistory = document.querySelector('.feedback-history');
+            const feedbackHistoryDiv = document.getElementById('feedbackHistory');
             const feedbackItem = document.createElement('div');
             feedbackItem.className = 'feedback-item';
 
@@ -1543,7 +1568,8 @@
                                                                                         <div class="feedback-actions-history">
                                                                                             <button class="btn-send ${feedback.is_sent ? 'sent' : ''}"
                                                                                                     onclick="sendFeedbackToStudent(this, ${feedbackId})"
-                                                                                                    ${feedback.is_sent ? 'disabled' : ''}>
+                                                                                                    ${feedback.is_sent ? 'disabled' : ''}
+                                                                                                    ${feedback.is_sent ? 'style="background: #CBD5E0; color: #718096; cursor: not-allowed; transform: none; box-shadow: none;"' : ''}>
                                                                                                 <i class="fas fa-${feedback.is_sent ? 'check' : 'paper-plane'}"></i>
                                                                                                 ${feedback.is_sent ? 'Sent' : 'Send to Student'}
                                                                                             </button>
@@ -1558,11 +1584,11 @@
             feedbackItem.dataset.feedbackId = feedbackId;
 
             // Insert at the beginning of feedback history
-            const existingItems = feedbackHistory.querySelectorAll('.feedback-item');
+            const existingItems = feedbackHistoryDiv.querySelectorAll('.feedback-item');
             if (existingItems.length > 0) {
-                feedbackHistory.insertBefore(feedbackItem, existingItems[0]);
+                feedbackHistoryDiv.insertBefore(feedbackItem, existingItems[0]);
             } else {
-                feedbackHistory.appendChild(feedbackItem);
+                feedbackHistoryDiv.appendChild(feedbackItem);
             }
         }
 
@@ -1638,7 +1664,71 @@
                 });
         }
 
+        // Load feedback history for selected student
+        function loadFeedbackHistory(studentId) {
+            console.log('Loading feedback history for student:', studentId);
 
+            if (!studentId) {
+                clearFeedbackHistory();
+                return;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentLanguage = urlParams.get('language') || 'english';
+
+            console.log('Current language:', currentLanguage);
+
+            // Show loading state
+            const feedbackHistoryDiv = document.getElementById('feedbackHistory');
+            const noFeedbackMessage = document.getElementById('noFeedbackMessage');
+
+            feedbackHistoryDiv.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading feedback history...</p></div>';
+            noFeedbackMessage.style.display = 'none';
+
+            // Fetch feedback history from backend
+            const url = `/teacher/feedback-history?student_id=${studentId}&language=${currentLanguage}`;
+            console.log('Fetching from URL:', url);
+
+            fetch(url)
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Feedback history data:', data);
+
+                    if (data.success && data.feedback && data.feedback.length > 0) {
+                        // Clear loading state
+                        feedbackHistoryDiv.innerHTML = '';
+                        noFeedbackMessage.style.display = 'none';
+
+                        // Add each feedback item to history
+                        data.feedback.forEach(feedback => {
+                            addFeedbackToHistory(feedback);
+                        });
+
+                        console.log('Added', data.feedback.length, 'feedback items to history');
+                    } else {
+                        // No feedback found
+                        console.log('No feedback found for student');
+                        clearFeedbackHistory();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading feedback history:', error);
+                    feedbackHistoryDiv.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Error loading feedback history.</p></div>';
+                    noFeedbackMessage.style.display = 'none';
+                });
+        }
+
+        // Clear feedback history display
+        function clearFeedbackHistory() {
+            const feedbackHistoryDiv = document.getElementById('feedbackHistory');
+            const noFeedbackMessage = document.getElementById('noFeedbackMessage');
+
+            feedbackHistoryDiv.innerHTML = '';
+            noFeedbackMessage.style.display = 'block';
+        }
 
         // Assessment saving functionality
         function saveAssessment() {
