@@ -155,7 +155,7 @@ class TeacherController extends Controller
             ->map(function ($student) {
                 $latestAssessment = $student->readingAssessments()->latest('assessment_date')->first();
                 $avgScore = $student->readingAssessments()->count() > 0
-                    ? round(($student->readingAssessments()->avg('comprehension') + $student->readingAssessments()->avg('correct_reading')) / 2, 1)
+                    ? round((($student->readingAssessments()->avg('comprehension') ?: 0) + ($student->readingAssessments()->avg('correct_reading') ?: 0)) / 2, 1)
                     : 0;
 
                 // Check for complete English and Filipino assessments

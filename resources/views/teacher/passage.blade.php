@@ -1373,7 +1373,7 @@
                 <!-- Student Reading Assessment positioned below the reading passage box -->
                 <div class="student-card">
                     <div class="student-header">
-                        <i class="fas fa-user-graduate"></i>
+                        <i class="fas fa-user"></i>
                         Student Reading Assessment
                     </div>
                     <div class="student-meta">Section: {{ ucfirst($section ?? 'Narra') }} &nbsp; | &nbsp; Grade Level:
@@ -1403,7 +1403,7 @@
                                                     <div class="dropdown-option selected"
                                                          data-value="{{ $student->student_number }}"
                                                          data-text="{{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}">
-                                                        <i class="fas fa-user-graduate"></i>
+                                                        <i class="fas fa-user"></i>
                                                         {{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}
                                                     </div>
                                                 @endif
@@ -1414,7 +1414,7 @@
                                                     <div class="dropdown-option"
                                                          data-value="{{ $student->student_number }}"
                                                          data-text="{{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}">
-                                                        <i class="fas fa-user-graduate"></i>
+                                                        <i class="fas fa-user"></i>
                                                         {{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}
                                                     </div>
                                                 @endif

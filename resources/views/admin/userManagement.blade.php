@@ -753,7 +753,7 @@
                 <div class="table-section">
                     <div class="user-type-header">
                         <h3 class="user-type-title">
-                            <i class="fas fa-user-graduate"></i>
+                            <i class="fas fa-user"></i>
                             Students
                         </h3>
                         <span class="user-count" id="studentDisplayCount">0 users</span>
@@ -1316,7 +1316,7 @@
                 <tr>
                     <td colspan="7">
                         <div class="empty-state">
-                            <i class="fas fa-user-graduate"></i>
+                            <i class="fas fa-user"></i>
                             <h3>No Students Found</h3>
                             <p>${message}</p>
                         </div>
