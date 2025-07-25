@@ -12,6 +12,7 @@ class ReadingAssessment extends Model
     protected $fillable = [
         'student_id',
         'student_name',
+        'reading_material_id',
         'reading_time',
         'miscues',
         'total_words',
@@ -42,6 +43,11 @@ class ReadingAssessment extends Model
     public function student()
     {
         return $this->belongsTo(Student::class, 'student_id', 'student_number');
+    }
+
+    public function readingMaterial()
+    {
+        return $this->belongsTo(ReadingMaterial::class, 'reading_material_id');
     }
 
     /**

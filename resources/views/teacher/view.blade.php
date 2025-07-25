@@ -370,8 +370,8 @@
                                 <div>
                                     <p class="text-sm text-gray-500">Total Assessments</p>
                                     <p>
-                                        @if(isset($student))
-                                            {{ $student->readingAssessments->count() }}
+                                        @if(isset($student) && isset($student->allReadingAssessments))
+                                            {{ $student->allReadingAssessments->count() }}
                                         @else
                                             0
                                         @endif
@@ -413,6 +413,8 @@
                                     Date</th>
                                 <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Language
                                 </th>
+                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Title
+                                </th>
                                 <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Reading
                                     Speed</th>
                                 <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">
@@ -424,8 +426,8 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
-                            @if(isset($student) && $student->readingAssessments->count() > 0)
-                                @foreach($student->readingAssessments->sortByDesc('assessment_date') as $assessment)
+                            @if(isset($student) && isset($student->allReadingAssessments) && $student->allReadingAssessments->count() > 0)
+                                @foreach($student->allReadingAssessments->sortByDesc('assessment_date') as $assessment)
                                     <tr class="hover:bg-gray-50 transition-colors">
                                         <td class="py-4 px-4">
                                             <div class="flex items-center">
@@ -438,10 +440,21 @@
                                         </td>
                                         <td class="py-4 px-4">
                                             <span
-                                                class="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-medium                   
+                                                class="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-medium
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              {{ $assessment->language == 'english' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
                                                 {{ ucfirst($assessment->language) }}
                                             </span>
+                                        </td>
+                                        <td class="py-4 px-4">
+                                            <div class="flex items-center">
+                                                <div
+                                                    class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mr-3">
+                                                    <i class="ri-bookmark-line"></i>
+                                                </div>
+                                                <span class="text-sm font-medium">
+                                                    {{ $assessment->readingMaterial ? $assessment->readingMaterial->title : 'Material not found' }}
+                                                </span>
+                                            </div>
                                         </td>
                                         <td class="py-4 px-4">
                                             <div class="flex items-center">
@@ -470,13 +483,13 @@
                                                     <div class="bg-purple-500 h-2 rounded-full"
                                                         style="width: {{ $assessment->correct_reading }}%"></div>
                                                 </div>
-                                                <span>{{ $assessment->correct_reading }}%</span>
+                                                <span>{{ round($assessment->correct_reading) }}%</span>
                                             </div>
                                         </td>
 
                                         <td class="py-4 px-4">
                                             <button
-                                                onclick="showComprehensionDetails('{{ $student->student_number ?? '' }}', '{{ $assessment->language }}')"
+                                                onclick="showComprehensionDetails('{{ $student->student_number ?? '' }}', '{{ $assessment->language }}', '{{ $assessment->reading_material_id ?? '' }}')"
                                                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-400 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
                                                 title="View comprehension details">
                                                 <i class="ri-eye-line mr-1"></i>
@@ -487,7 +500,7 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="6" class="py-8 px-4 text-center text-gray-500">
+                                    <td colspan="7" class="py-8 px-4 text-center text-gray-500">
                                         <div class="flex flex-col items-center">
                                             <i class="ri-book-open-line text-4xl mb-2"></i>
                                             <p>No reading assessments found for this student.</p>
@@ -541,39 +554,74 @@
                 </div>
 
                 <!-- Reading Comprehension Chart -->
-                <div class="reading-passage">
-                    <div class="chart-card">
-                        <canvas id="reading-comprehension-chart"></canvas>
-                    </div>
-                    <div class="reading-metrics">
-                        @if(isset($student) && $student->readingAssessments->where('language', 'english')->first())
-                            @php
-                                $englishAssessment = $student->readingAssessments->where('language', 'english')->first();
-                                $comprehensionScore = $englishAssessment->comprehension ?? 0;
-                                $totalQuestions = $englishAssessment->total_questions ?? 0;
-                                $correctAnswers = $englishAssessment->correct_answers ?? 0;
+                @if(isset($student) && $student->readingAssessments->where('language', 'english')->first())
+                    @php
+                        $englishAssessment = $student->readingAssessments->where('language', 'english')->first();
+                        $comprehensionScore = $englishAssessment->comprehension ?? 0;
+                        $totalQuestions = $englishAssessment->total_questions ?? 0;
+                        $correctAnswers = $englishAssessment->correct_answers ?? 0;
+                        $hasComprehensionData = $totalQuestions > 0 && $correctAnswers > 0;
+                    @endphp
 
-                                if ($comprehensionScore >= 80) {
-                                    $level = 'Independent Level';
-                                    $levelClass = 'text-success';
-                                } elseif ($comprehensionScore >= 59) {
-                                    $level = 'Instructional Level';
-                                    $levelClass = 'text-warning';
-                                } else {
-                                    $level = 'Frustration Level';
-                                    $levelClass = 'text-danger';
-                                }
-                            @endphp
-                            <p><strong class="{{ $levelClass }}">{{ $level }}</strong></p>
-                            <p>{{ $comprehensionScore }}% comprehension score</p>
-                            <p>{{ $correctAnswers }} out of {{ $totalQuestions }} correct answers</p>
-                        @else
+                    @if($hasComprehensionData)
+                        <div class="reading-passage">
+                            <div class="chart-card">
+                                <canvas id="reading-comprehension-chart"></canvas>
+                            </div>
+                            <div class="reading-metrics">
+                                @php
+                                    if ($comprehensionScore >= 80) {
+                                        $level = 'Independent Level';
+                                        $levelClass = 'text-success';
+                                    } elseif ($comprehensionScore >= 59) {
+                                        $level = 'Instructional Level';
+                                        $levelClass = 'text-warning';
+                                    } else {
+                                        $level = 'Frustration Level';
+                                        $levelClass = 'text-danger';
+                                    }
+                                @endphp
+                                <p><strong class="{{ $levelClass }}">{{ $level }}</strong></p>
+                                <p>{{ $comprehensionScore }}% comprehension score</p>
+                                <p>{{ $correctAnswers }} out of {{ $totalQuestions }} correct answers</p>
+                            </div>
+                        </div>
+                    @else
+                        <div class="reading-passage">
+                            <div class="chart-card">
+                                <div class="flex items-center justify-center h-full">
+                                    <div class="text-center">
+                                        <i class="ri-file-text-line text-6xl text-gray-300 mb-4"></i>
+                                        <p class="text-gray-500 text-lg font-medium">No data available yet</p>
+                                        <p class="text-gray-400 text-sm">Please complete the comprehension test</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="reading-metrics">
+                                <p><strong class="text-muted">No Assessment</strong></p>
+                                <p>0% comprehension score</p>
+                                <p>0 out of 0 correct answers</p>
+                            </div>
+                        </div>
+                    @endif
+                @else
+                    <div class="reading-passage">
+                        <div class="chart-card">
+                            <div class="flex items-center justify-center h-full">
+                                <div class="text-center">
+                                    <i class="ri-file-text-line text-6xl text-gray-300 mb-4"></i>
+                                    <p class="text-gray-500 text-lg font-medium">No data available yet</p>
+                                    <p class="text-gray-400 text-sm">Please complete the comprehension test</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="reading-metrics">
                             <p><strong class="text-muted">No Assessment</strong></p>
                             <p>0% comprehension score</p>
                             <p>0 out of 0 correct answers</p>
-                        @endif
+                        </div>
                     </div>
-                </div>
+                @endif
 
                 <!-- Word Reading Chart -->
                 <div class="reading-passage">
@@ -600,7 +648,7 @@
                                 }
                             @endphp
                             <p><strong class="{{ $wordLevelClass }}">{{ $wordLevel }}</strong></p>
-                            <p>{{ $wordAccuracy }}% reading accuracy</p>
+                            <p>{{ round($wordAccuracy) }}% reading accuracy</p>
                             <p>{{ $miscues }} miscues out of {{ $totalWords }} words</p>
                         @else
                             <p><strong class="text-muted">No Assessment</strong></p>
@@ -648,39 +696,74 @@
                 </div>
 
                 <!-- Filipino Reading Comprehension Chart -->
-                <div class="reading-passage">
-                    <div class="chart-card">
-                        <canvas id="filipino-reading-comprehension-chart"></canvas>
-                    </div>
-                    <div class="reading-metrics">
-                        @if(isset($student) && $student->readingAssessments->where('language', 'filipino')->first())
-                            @php
-                                $filipinoAssessment = $student->readingAssessments->where('language', 'filipino')->first();
-                                $comprehensionScore = $filipinoAssessment->comprehension ?? 0;
-                                $totalQuestions = $filipinoAssessment->total_questions ?? 0;
-                                $correctAnswers = $filipinoAssessment->correct_answers ?? 0;
+                @if(isset($student) && $student->readingAssessments->where('language', 'filipino')->first())
+                    @php
+                        $filipinoAssessment = $student->readingAssessments->where('language', 'filipino')->first();
+                        $comprehensionScore = $filipinoAssessment->comprehension ?? 0;
+                        $totalQuestions = $filipinoAssessment->total_questions ?? 0;
+                        $correctAnswers = $filipinoAssessment->correct_answers ?? 0;
+                        $hasComprehensionData = $totalQuestions > 0 && $correctAnswers > 0;
+                    @endphp
 
-                                if ($comprehensionScore >= 80) {
-                                    $level = 'Independent Level';
-                                    $levelClass = 'text-success';
-                                } elseif ($comprehensionScore >= 59) {
-                                    $level = 'Instructional Level';
-                                    $levelClass = 'text-warning';
-                                } else {
-                                    $level = 'Frustration Level';
-                                    $levelClass = 'text-danger';
-                                }
-                            @endphp
-                            <p><strong class="{{ $levelClass }}">{{ $level }}</strong></p>
-                            <p>{{ $comprehensionScore }}% comprehension score</p>
-                            <p>{{ $correctAnswers }} out of {{ $totalQuestions }} correct answers</p>
-                        @else
+                    @if($hasComprehensionData)
+                        <div class="reading-passage">
+                            <div class="chart-card">
+                                <canvas id="filipino-reading-comprehension-chart"></canvas>
+                            </div>
+                            <div class="reading-metrics">
+                                @php
+                                    if ($comprehensionScore >= 80) {
+                                        $level = 'Independent Level';
+                                        $levelClass = 'text-success';
+                                    } elseif ($comprehensionScore >= 59) {
+                                        $level = 'Instructional Level';
+                                        $levelClass = 'text-warning';
+                                    } else {
+                                        $level = 'Frustration Level';
+                                        $levelClass = 'text-danger';
+                                    }
+                                @endphp
+                                <p><strong class="{{ $levelClass }}">{{ $level }}</strong></p>
+                                <p>{{ $comprehensionScore }}% comprehension score</p>
+                                <p>{{ $correctAnswers }} out of {{ $totalQuestions }} correct answers</p>
+                            </div>
+                        </div>
+                    @else
+                        <div class="reading-passage">
+                            <div class="chart-card">
+                                <div class="flex items-center justify-center h-full">
+                                    <div class="text-center">
+                                        <i class="ri-file-text-line text-6xl text-gray-300 mb-4"></i>
+                                        <p class="text-gray-500 text-lg font-medium">No data available yet</p>
+                                        <p class="text-gray-400 text-sm">Please complete the comprehension test</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="reading-metrics">
+                                <p><strong class="text-muted">No Assessment</strong></p>
+                                <p>0% comprehension score</p>
+                                <p>0 out of 0 correct answers</p>
+                            </div>
+                        </div>
+                    @endif
+                @else
+                    <div class="reading-passage">
+                        <div class="chart-card">
+                            <div class="flex items-center justify-center h-full">
+                                <div class="text-center">
+                                    <i class="ri-file-text-line text-6xl text-gray-300 mb-4"></i>
+                                    <p class="text-gray-500 text-lg font-medium">No data available yet</p>
+                                    <p class="text-gray-400 text-sm">Please complete the comprehension test</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="reading-metrics">
                             <p><strong class="text-muted">No Assessment</strong></p>
                             <p>0% comprehension score</p>
                             <p>0 out of 0 correct answers</p>
-                        @endif
+                        </div>
                     </div>
-                </div>
+                @endif
 
                 <!-- Filipino Word Reading Chart -->
                 <div class="reading-passage">
@@ -707,7 +790,7 @@
                                 }
                             @endphp
                             <p><strong class="{{ $wordLevelClass }}">{{ $wordLevel }}</strong></p>
-                            <p>{{ $wordAccuracy }}% reading accuracy</p>
+                            <p>{{ round($wordAccuracy) }}% reading accuracy</p>
                             <p>{{ $miscues }} miscues out of {{ $totalWords }} words</p>
                         @else
                             <p><strong class="text-muted">No Assessment</strong></p>
@@ -1511,16 +1594,18 @@
                         'English Reading Speed'
                     );
 
-                    // English Comprehension Chart
-                    const compData = [latestEnglish.correct_answers || 0, latestEnglish.total_questions || 5];
-                    const compColors = ['#27ae60', '#3498db'];
-                    window.chartInstances.comprehensionChart = createSimpleChart(
-                        'reading-comprehension-chart',
-                        compData,
-                        ['Correct', 'Total'],
-                        compColors,
-                        'English Comprehension'
-                    );
+                    // English Comprehension Chart - only create if there's actual comprehension data
+                    if (latestEnglish.total_questions > 0 && latestEnglish.correct_answers > 0) {
+                        const compData = [latestEnglish.correct_answers || 0, latestEnglish.total_questions || 5];
+                        const compColors = ['#27ae60', '#3498db'];
+                        window.chartInstances.comprehensionChart = createSimpleChart(
+                            'reading-comprehension-chart',
+                            compData,
+                            ['Correct', 'Total'],
+                            compColors,
+                            'English Comprehension'
+                        );
+                    }
 
                     // English Word Reading Chart
                     const wordData = [latestEnglish.miscues || 0, latestEnglish.total_words || 0];
@@ -1547,16 +1632,18 @@
                         'Filipino Reading Speed'
                     );
 
-                    // Filipino Comprehension Chart
-                    const filipinoCompData = [latestFilipino.correct_answers || 0, latestFilipino.total_questions || 5];
-                    const filipinoCompColors = ['#27ae60', '#3498db'];
-                    window.chartInstances.filipinoComprehensionChart = createSimpleChart(
-                        'filipino-reading-comprehension-chart',
-                        filipinoCompData,
-                        ['Correct', 'Total'],
-                        filipinoCompColors,
-                        'Filipino Comprehension'
-                    );
+                    // Filipino Comprehension Chart - only create if there's actual comprehension data
+                    if (latestFilipino.total_questions > 0 && latestFilipino.correct_answers > 0) {
+                        const filipinoCompData = [latestFilipino.correct_answers || 0, latestFilipino.total_questions || 5];
+                        const filipinoCompColors = ['#27ae60', '#3498db'];
+                        window.chartInstances.filipinoComprehensionChart = createSimpleChart(
+                            'filipino-reading-comprehension-chart',
+                            filipinoCompData,
+                            ['Correct', 'Total'],
+                            filipinoCompColors,
+                            'Filipino Comprehension'
+                        );
+                    }
 
                     // Filipino Word Reading Chart
                     const filipinoWordData = [latestFilipino.miscues || 0, latestFilipino.total_words || 0];
@@ -1586,13 +1673,13 @@
         <script>
 
                 // Comprehension Modal Functions
-                function showComprehensionDetails(studentId, language = 'english') {
+                function showComprehensionDetails(studentId, language = 'english', readingMaterialId = '') {
                 if (!studentId) {
                     alert('Please select a student first');
                     return;
                 }
 
-                console.log('Fetching comprehension details for student:', studentId, 'language:', language);
+                console.log('Fetching comprehension details for student:', studentId, 'language:', language, 'reading material:', readingMaterialId);
 
                 // Show loading state
                 document.getElementById('modalStudentName').textContent = 'Loading...';
@@ -1602,8 +1689,14 @@
                 // Show modal
                 document.getElementById('comprehensionModal').style.display = 'block';
 
+                // Build URL with optional reading material ID parameter
+                let url = `/teacher/get-student-comprehension/${studentId}/${language}`;
+                if (readingMaterialId) {
+                    url += `?reading_material_id=${readingMaterialId}`;
+                }
+
                 // Fetch comprehension details
-                fetch(`/teacher/get-student-comprehension/${studentId}/${language}`)
+                fetch(url)
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
@@ -1629,7 +1722,7 @@
 
                 // Set percentage with dynamic color
                 const percentageElement = document.getElementById('modalPercentage');
-                percentageElement.textContent = data.assessment.percentage + '%';
+                percentageElement.textContent = Math.round(data.assessment.percentage) + '%';
 
                 // Apply color based on percentage
                 const percentage = data.assessment.percentage;
@@ -1713,9 +1806,7 @@
                 document.getElementById('comprehensionModal').style.display = 'none';
             }
 
-            function printComprehensionDetails() {
-                window.print();
-            }
+
 
             // Close modal when clicking outside
             window.onclick = function (event) {
@@ -1728,7 +1819,6 @@
             // Make functions globally available
             window.showComprehensionDetails = showComprehensionDetails;
             window.closeComprehensionModal = closeComprehensionModal;
-            window.printComprehensionDetails = printComprehensionDetails;
         </script>
 
         <!-- Comprehension Details Modal -->
@@ -1834,9 +1924,6 @@
 
                 <div class="modal-footer">
                     <button class="btn btn-secondary" onclick="closeComprehensionModal()">Close</button>
-                    <button class="btn btn-primary" onclick="printComprehensionDetails()">
-                        <i class="fas fa-print"></i> Print Report
-                    </button>
                 </div>
             </div>
         </div>

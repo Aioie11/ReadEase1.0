@@ -1101,6 +1101,202 @@
                     overflow-y: visible;
                 }
             }
+
+            /* Searchable Select Styles */
+            .searchable-select-container {
+                position: relative;
+                width: 100%;
+            }
+
+            .searchable-select {
+                position: relative;
+                width: 100%;
+            }
+
+            .searchable-input {
+                width: 100%;
+                padding: 12px 45px 12px 16px;
+                border: none;
+                border-radius: 8px;
+                font-size: 1rem;
+                background: #F7FAFC;
+                cursor: text;
+                transition: all 0.3s ease;
+                font-family: inherit;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                color: #2D3748;
+            }
+
+            .searchable-input:focus {
+                outline: none;
+                background: white;
+                box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.1);
+                transform: translateY(-1px);
+            }
+
+            .searchable-input:hover {
+                background: white;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .searchable-input::placeholder {
+                color: #A0AEC0;
+                font-style: italic;
+            }
+
+            .search-clear-btn {
+                position: absolute;
+                right: 45px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #A0AEC0;
+                cursor: pointer;
+                padding: 4px;
+                border-radius: 50%;
+                transition: all 0.3s ease;
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.8rem;
+            }
+
+            .search-clear-btn:hover {
+                color: #E53E3E;
+                background: #FED7D7;
+            }
+
+            .search-dropdown-arrow {
+                position: absolute;
+                right: 16px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #718096;
+                pointer-events: none;
+                transition: all 0.3s ease;
+            }
+
+            .searchable-select.active .search-dropdown-arrow {
+                transform: translateY(-50%) rotate(180deg);
+                color: #00B8A9;
+            }
+
+            .searchable-dropdown {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+                z-index: 1000;
+                margin-top: 4px;
+                max-height: 300px;
+                overflow-y: auto;
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(-10px);
+                transition: all 0.3s ease;
+                border: 1px solid #E2E8F0;
+            }
+
+            .searchable-dropdown.show {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0);
+            }
+
+            .dropdown-options {
+                padding: 8px 0;
+            }
+
+            .dropdown-option {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 12px 16px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                color: #4A5568;
+                border-bottom: 1px solid #F7FAFC;
+            }
+
+            .dropdown-option:last-child {
+                border-bottom: none;
+            }
+
+            .dropdown-option:hover {
+                background: #F7FAFC;
+                color: #00B8A9;
+                padding-left: 20px;
+            }
+
+            .dropdown-option.selected {
+                background: #00B8A9;
+                color: white;
+            }
+
+            .dropdown-option.selected:hover {
+                background: #009688;
+                padding-left: 16px;
+            }
+
+            .dropdown-option.highlighted {
+                background: #E6FFFA;
+                color: #00B8A9;
+                padding-left: 20px;
+            }
+
+            .dropdown-option.highlighted.selected {
+                background: #009688;
+                color: white;
+                padding-left: 16px;
+            }
+
+            .dropdown-option i {
+                color: #00B8A9;
+                font-size: 0.9rem;
+                width: 16px;
+                text-align: center;
+            }
+
+            .dropdown-option.selected i {
+                color: white;
+            }
+
+            .no-results {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                padding: 20px;
+                color: #A0AEC0;
+                font-style: italic;
+            }
+
+            .no-results i {
+                font-size: 1.2rem;
+            }
+
+            /* Scrollbar styling for dropdown */
+            .searchable-dropdown::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .searchable-dropdown::-webkit-scrollbar-track {
+                background: #F7FAFC;
+                border-radius: 3px;
+            }
+
+            .searchable-dropdown::-webkit-scrollbar-thumb {
+                background: #CBD5E0;
+                border-radius: 3px;
+            }
+
+            .searchable-dropdown::-webkit-scrollbar-thumb:hover {
+                background: #A0AEC0;
+            }
         </style>
 
         <div class="dashboard-wrapper">
@@ -1186,26 +1382,54 @@
                     <!-- Student Selection -->
                     <div class="assessment-group">
                         <label for="studentSelect">Select Student:</label>
-                        <select id="studentSelect" class="assessment-select">
-                            <option value="">Choose a student...</option>
-                            @if(request('student_number'))
-                                @foreach($students as $student)
-                                    @if($student->student_number == request('student_number'))
-                                        <option value="{{ $student->student_number }}" selected>
-                                            {{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}
-                                        </option>
-                                    @endif
-                                @endforeach
-                            @else
-                                @foreach($students as $student)
-                                    @if($student->grade_level == str_replace('grade', '', $grade) && $student->section == ucfirst($section))
-                                        <option value="{{ $student->student_number }}">
-                                            {{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}
-                                        </option>
-                                    @endif
-                                @endforeach
-                            @endif
-                        </select>
+                        <div class="searchable-select-container">
+                            <div class="searchable-select" id="searchableSelect">
+                                <input type="text"
+                                       id="studentSearchInput"
+                                       class="searchable-input"
+                                       placeholder="Search and select a student..."
+                                       autocomplete="off">
+                                <div class="search-clear-btn" id="searchClearBtn" style="display: none;">
+                                    <i class="fas fa-times"></i>
+                                </div>
+                                <div class="search-dropdown-arrow">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="searchable-dropdown" id="studentDropdown">
+                                    <div class="dropdown-options">
+                                        @if(request('student_number'))
+                                            @foreach($students as $student)
+                                                @if($student->student_number == request('student_number'))
+                                                    <div class="dropdown-option selected"
+                                                         data-value="{{ $student->student_number }}"
+                                                         data-text="{{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}">
+                                                        <i class="fas fa-user-graduate"></i>
+                                                        {{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        @else
+                                            @foreach($students as $student)
+                                                @if($student->grade_level == str_replace('grade', '', $grade) && $student->section == ucfirst($section))
+                                                    <div class="dropdown-option"
+                                                         data-value="{{ $student->student_number }}"
+                                                         data-text="{{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}">
+                                                        <i class="fas fa-user-graduate"></i>
+                                                        {{ $student->last_name }}, {{ $student->first_name }} {{ $student->middle_name }}
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                    <div class="no-results" id="noResults" style="display: none;">
+                                        <i class="fas fa-search"></i>
+                                        <span>No students found</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Hidden input to store the selected value -->
+                            <input type="hidden" id="studentSelect" name="student_number" value="{{ request('student_number') ?? '' }}">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1384,19 +1608,29 @@
                 });
             }
 
+            // Initialize searchable dropdown
+            initializeSearchableDropdown();
+
             // Add event listener for student selection change to load feedback history
             const studentSelect = document.getElementById('studentSelect');
             if (studentSelect) {
-                studentSelect.addEventListener('change', function() {
-                    const selectedStudentId = this.value;
-                    console.log('Student selection changed to:', selectedStudentId);
+                // Create a custom event listener for the hidden input
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
+                            const selectedStudentId = studentSelect.value;
+                            console.log('Student selection changed to:', selectedStudentId);
 
-                    if (selectedStudentId) {
-                        loadFeedbackHistory(selectedStudentId);
-                    } else {
-                        clearFeedbackHistory();
-                    }
+                            if (selectedStudentId) {
+                                loadFeedbackHistory(selectedStudentId);
+                            } else {
+                                clearFeedbackHistory();
+                            }
+                        }
+                    });
                 });
+
+                observer.observe(studentSelect, { attributes: true });
 
                 // Load feedback history if a student is already selected (from URL parameter)
                 if (studentSelect.value) {
@@ -1405,6 +1639,226 @@
                 }
             }
         });
+
+        // Searchable Dropdown Functionality
+        function initializeSearchableDropdown() {
+            const searchInput = document.getElementById('studentSearchInput');
+            const dropdown = document.getElementById('studentDropdown');
+            const searchableSelect = document.getElementById('searchableSelect');
+            const hiddenInput = document.getElementById('studentSelect');
+            const noResults = document.getElementById('noResults');
+            const clearBtn = document.getElementById('searchClearBtn');
+
+            if (!searchInput || !dropdown || !searchableSelect || !hiddenInput) {
+                console.error('Searchable dropdown elements not found');
+                return;
+            }
+
+            let allOptions = Array.from(dropdown.querySelectorAll('.dropdown-option'));
+            let isOpen = false;
+
+            // Set initial value if student is pre-selected
+            const preSelectedOption = dropdown.querySelector('.dropdown-option.selected');
+            if (preSelectedOption) {
+                searchInput.value = preSelectedOption.getAttribute('data-text');
+                hiddenInput.value = preSelectedOption.getAttribute('data-value');
+
+                // Show clear button if there's a pre-selected value
+                if (clearBtn && searchInput.value) {
+                    clearBtn.style.display = 'flex';
+                }
+            }
+
+            // Toggle dropdown on input click
+            searchInput.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleDropdown();
+            });
+
+            // Filter options as user types
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                filterOptions(searchTerm);
+
+                // Show/hide clear button
+                if (clearBtn) {
+                    clearBtn.style.display = this.value ? 'flex' : 'none';
+                }
+
+                if (!isOpen) {
+                    showDropdown();
+                }
+            });
+
+            // Clear button functionality
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    clearSelection();
+                });
+            }
+
+            // Handle option selection
+            dropdown.addEventListener('click', function(e) {
+                const option = e.target.closest('.dropdown-option');
+                if (option) {
+                    selectOption(option);
+                }
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!searchableSelect.contains(e.target)) {
+                    hideDropdown();
+                }
+            });
+
+            // Handle keyboard navigation
+            searchInput.addEventListener('keydown', function(e) {
+                const visibleOptions = dropdown.querySelectorAll('.dropdown-option:not([style*="display: none"])');
+                const currentHighlighted = dropdown.querySelector('.dropdown-option.highlighted');
+
+                switch(e.key) {
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        if (!isOpen) {
+                            showDropdown();
+                        } else {
+                            highlightNext(visibleOptions, currentHighlighted);
+                        }
+                        break;
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        highlightPrevious(visibleOptions, currentHighlighted);
+                        break;
+                    case 'Enter':
+                        e.preventDefault();
+                        if (currentHighlighted) {
+                            selectOption(currentHighlighted);
+                        }
+                        break;
+                    case 'Escape':
+                        hideDropdown();
+                        break;
+                }
+            });
+
+            function toggleDropdown() {
+                if (isOpen) {
+                    hideDropdown();
+                } else {
+                    showDropdown();
+                }
+            }
+
+            function showDropdown() {
+                dropdown.classList.add('show');
+                searchableSelect.classList.add('active');
+                isOpen = true;
+                filterOptions(searchInput.value.toLowerCase());
+            }
+
+            function hideDropdown() {
+                dropdown.classList.remove('show');
+                searchableSelect.classList.remove('active');
+                isOpen = false;
+                clearHighlights();
+            }
+
+            function filterOptions(searchTerm) {
+                let hasVisibleOptions = false;
+
+                allOptions.forEach(option => {
+                    const text = option.getAttribute('data-text').toLowerCase();
+                    const matches = text.includes(searchTerm);
+
+                    option.style.display = matches ? 'flex' : 'none';
+                    if (matches) {
+                        hasVisibleOptions = true;
+                    }
+                });
+
+                noResults.style.display = hasVisibleOptions ? 'none' : 'flex';
+            }
+
+            function selectOption(option) {
+                const value = option.getAttribute('data-value');
+                const text = option.getAttribute('data-text');
+
+                // Update input and hidden field
+                searchInput.value = text;
+                hiddenInput.value = value;
+
+                // Update selected state
+                allOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+
+                // Trigger change event for feedback loading
+                const changeEvent = new Event('change', { bubbles: true });
+                hiddenInput.dispatchEvent(changeEvent);
+
+                // Update hidden input value attribute for MutationObserver
+                hiddenInput.setAttribute('value', value);
+
+                hideDropdown();
+            }
+
+            function highlightNext(visibleOptions, current) {
+                clearHighlights();
+                let nextIndex = 0;
+
+                if (current) {
+                    const currentIndex = Array.from(visibleOptions).indexOf(current);
+                    nextIndex = (currentIndex + 1) % visibleOptions.length;
+                }
+
+                if (visibleOptions[nextIndex]) {
+                    visibleOptions[nextIndex].classList.add('highlighted');
+                }
+            }
+
+            function highlightPrevious(visibleOptions, current) {
+                clearHighlights();
+                let prevIndex = visibleOptions.length - 1;
+
+                if (current) {
+                    const currentIndex = Array.from(visibleOptions).indexOf(current);
+                    prevIndex = currentIndex > 0 ? currentIndex - 1 : visibleOptions.length - 1;
+                }
+
+                if (visibleOptions[prevIndex]) {
+                    visibleOptions[prevIndex].classList.add('highlighted');
+                }
+            }
+
+            function clearHighlights() {
+                allOptions.forEach(option => option.classList.remove('highlighted'));
+            }
+
+            function clearSelection() {
+                searchInput.value = '';
+                hiddenInput.value = '';
+
+                // Remove selected state from all options
+                allOptions.forEach(opt => opt.classList.remove('selected'));
+
+                // Hide clear button
+                if (clearBtn) {
+                    clearBtn.style.display = 'none';
+                }
+
+                // Trigger change event
+                const changeEvent = new Event('change', { bubbles: true });
+                hiddenInput.dispatchEvent(changeEvent);
+
+                // Update hidden input value attribute for MutationObserver
+                hiddenInput.setAttribute('value', '');
+
+                // Reset filter
+                filterOptions('');
+                hideDropdown();
+            }
+        }
 
         function switchLanguage(language) {
             const passage = passages[language];
@@ -1558,6 +2012,9 @@
                                                                                                 <span>Date: ${feedbackDate}</span>
                                                                                                 <span>Reading Level: Grade ${feedback.grade_level}</span>
                                                                                                 <span>Language: ${feedback.language.charAt(0).toUpperCase() + feedback.language.slice(1)}</span>
+                                                                                                ${feedback.reading_material && feedback.reading_material.title ?
+                                                                                                    `<span>Reading Material: ${feedback.reading_material.title}</span>` :
+                                                                                                    '<span>Reading Material: Not specified</span>'}
                                                                                             </div>
                                                                                             <div class="feedback-content">
                                                                                                 <p><strong>Strengths:</strong> ${feedback.strengths || 'Not specified'}</p>
@@ -1734,8 +2191,8 @@
         function saveAssessment() {
             const studentSelect = document.getElementById('studentSelect');
             const studentId = studentSelect.value; // Student ID is in the value attribute
-            const selectedOption = studentSelect.options[studentSelect.selectedIndex];
-            const studentName = selectedOption.textContent.trim(); // Get the display name from option text
+            const studentSearchInput = document.getElementById('studentSearchInput');
+            const studentName = studentSearchInput.value.trim(); // Get the display name from search input
 
             const miscues = parseInt(document.getElementById('miscues').value) || 0;
             const totalWords = parseInt(document.getElementById('totalWords').value) || 0;
@@ -1772,6 +2229,11 @@
                 return;
             }
 
+            if (!studentName) {
+                alert('Student name is missing. Please select a student again!');
+                return;
+            }
+
             if (totalWords <= 0) {
                 alert('Please enter the total number of words!');
                 return;
@@ -1788,6 +2250,7 @@
             const assessmentData = {
                 student_id: studentId,
                 student_name: studentName,
+                reading_material_id: {{ $readingMaterial ? $readingMaterial->id : 'null' }}, // Include the reading material ID
                 reading_time: totalSeconds,
                 miscues: miscues,
                 total_words: totalWords,
@@ -1802,26 +2265,43 @@
                 assessment_date: new Date().toISOString()
             };
 
+            // Debug log the assessment data
+            console.log('Assessment data to be sent:', assessmentData);
+
             // Show loading state
             const saveButton = document.querySelector('.save-assessment');
             const originalText = saveButton.textContent;
             saveButton.disabled = true;
             saveButton.textContent = 'Saving...';
 
+            // Check CSRF token
+            const csrfToken = document.querySelector('meta[name="csrf-token"]');
+            if (!csrfToken) {
+                alert('CSRF token not found. Please refresh the page and try again.');
+                saveButton.disabled = false;
+                saveButton.textContent = originalText;
+                return;
+            }
+
             // Send to backend
             fetch('/teacher/save-reading-assessment', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    'X-CSRF-TOKEN': csrfToken.getAttribute('content')
                 },
                 body: JSON.stringify(assessmentData)
             })
                 .then(async response => {
+                    console.log('Response status:', response.status);
+                    console.log('Response headers:', response.headers);
+
                     let data;
                     try {
                         data = await response.json();
+                        console.log('Response data:', data);
                     } catch (e) {
+                        console.error('Failed to parse JSON response:', e);
                         throw new Error('Invalid JSON response');
                     }
                     if (response.ok && data.success) {
@@ -1853,6 +2333,7 @@
         function clearAssessment() {
             // Reset all form fields
             document.getElementById('studentSelect').value = '';
+            document.getElementById('studentSearchInput').value = '';
             document.getElementById('miscues').value = '0';
 
             // Reset timer
@@ -1860,6 +2341,10 @@
 
             // Recalculate word count from current passage
             updateWordCount();
+
+            // Clear any selected student in dropdown
+            const allOptions = document.querySelectorAll('.dropdown-option');
+            allOptions.forEach(opt => opt.classList.remove('selected'));
 
             // Show confirmation
             console.log('Assessment form cleared');

@@ -30,6 +30,16 @@ class StudentAnswerEnglishController extends Controller
             return redirect()->back()->with('error', 'No active reading material found for your grade level.');
         }
 
+        // Check if student has completed reading assessment for this specific material
+        $hasCompletedAssessment = \App\Models\ReadingAssessment::where('student_id', $user->userId)
+            ->where('language', 'english')
+            ->where('reading_material_id', $readingMaterial->id)
+            ->exists();
+
+        if (!$hasCompletedAssessment) {
+            return redirect()->back()->with('error', 'You must complete the reading assessment with your teacher for this material before you can submit comprehension test answers.');
+        }
+
         $questions = $readingMaterial->questions()->orderBy('id')->get();
 
         // Log submission for tracking
@@ -88,7 +98,7 @@ class StudentAnswerEnglishController extends Controller
             ]);
 
             // Update reading assessment with comprehension data
-            $this->updateReadingAssessmentWithComprehension($user, $score, $totalQuestions, 'english');
+            $this->updateReadingAssessmentWithComprehension($user, $score, $totalQuestions, 'english', $readingMaterial->id);
 
             // Trigger dashboard update notification
             $this->triggerDashboardUpdate($user->userId, 'english');
@@ -115,12 +125,13 @@ class StudentAnswerEnglishController extends Controller
     /**
      * Update reading assessment with comprehension data when student completes questions
      */
-    private function updateReadingAssessmentWithComprehension($user, $score, $totalQuestions, $language)
+    private function updateReadingAssessmentWithComprehension($user, $score, $totalQuestions, $language, $readingMaterialId)
     {
         try {
-            // Find the latest reading assessment for this student and language
+            // Find the latest reading assessment for this student, language, and specific reading material
             $assessment = ReadingAssessment::where('student_id', $user->userId)
                 ->where('language', $language)
+                ->where('reading_material_id', $readingMaterialId)
                 ->latest('assessment_date')
                 ->first();
 
@@ -172,6 +183,7 @@ class StudentAnswerEnglishController extends Controller
                     ReadingAssessment::create([
                         'student_id' => $user->userId,
                         'student_name' => $student->first_name . ' ' . $student->last_name,
+                        'reading_material_id' => $readingMaterialId, // Link to the specific reading material used
                         'reading_time' => $sampleReadingTime, // Sample data for chart display
                         'miscues' => $sampleMiscues, // Sample data for chart display
                         'total_words' => $sampleTotalWords, // Sample data for chart display

@@ -1412,8 +1412,8 @@
 
                 // Update chart titles based on current selection
                 const chartTitle = currentSection === 'all'
-                    ? `Reading Performance Distribution - Grade ${currentGrade} (All Sections)`
-                    : `Reading Performance Distribution - Grade ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
+                    ? `Word Reading Level Distribution - Grade ${currentGrade} (All Sections)`
+                    : `Word Reading Level Distribution - Grade ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
                 const comprehensionChartTitle = currentSection === 'all'
                     ? `Comprehension Level Distribution - Grade ${currentGrade} (All Sections)`
                     : `Comprehension Level Distribution - Grade ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
@@ -1640,12 +1640,12 @@
                 let readingChartTitle, comprehensionChartTitle;
 
                 if (selectedSection === 'all') {
-                    readingChartTitle = `Reading Performance Distribution - Grade ${grade} (All Sections)`;
-                    comprehensionChartTitle = `Comprehension Performance Distribution - Grade ${grade} (All Sections)`;
+                    readingChartTitle = `Word Reading Level Distribution - Grade ${grade} (All Sections)`;
+                    comprehensionChartTitle = `Comprehension Level Distribution - Grade ${grade} (All Sections)`;
                 } else {
                     const sectionName = selectedSection.charAt(0).toUpperCase() + selectedSection.slice(1);
-                    readingChartTitle = `Reading Performance Distribution - Grade ${grade} - Section ${sectionName}`;
-                    comprehensionChartTitle = `Comprehension Performance Distribution - Grade ${grade} - Section ${sectionName}`;
+                    readingChartTitle = `Word Reading Level Distribution - Grade ${grade} - Section ${sectionName}`;
+                    comprehensionChartTitle = `Comprehension Level Distribution - Grade ${grade} - Section ${sectionName}`;
                 }
 
                 const readingTitleEl = document.querySelector('.chart-container h3');

@@ -263,38 +263,71 @@ class StudentDashboardController extends Controller
             return redirect()->route('login')->with('error', 'Session expired. Please login again.');
         }
 
-        // Get latest English test result for this student
-        $latestEnglishActivity = StudentAnswerEnglish::where('student_id', $user->userId)
-            ->with('readingMaterial.questions') // Eager load reading material and questions
-            ->latest()
+        // Get currently published reading materials for this student's grade
+        $currentEnglishMaterial = ReadingMaterial::where('grade_level', $user->grade)
+            ->where('subject', 'english')
+            ->where('is_published', true)
             ->first();
 
-        // Get latest Filipino test result for this student
-        $latestFilipinoActivity = StudentAnswerTagalog::where('student_id', $user->userId)
-            ->with('readingMaterial.questions') // Eager load reading material and questions
-            ->latest()
+        $currentFilipinoMaterial = ReadingMaterial::where('grade_level', $user->grade)
+            ->where('subject', 'filipino')
+            ->where('is_published', true)
             ->first();
 
-        // Get latest English reading assessment from teacher
-        $latestEnglishReading = \App\Models\ReadingAssessment::where('student_id', $user->userId)
-            ->where('language', 'english')
-            ->latest('assessment_date')
-            ->first();
+        // Get latest activities for CURRENT published materials (for graphs)
+        $latestEnglishActivity = null;
+        if ($currentEnglishMaterial) {
+            $latestEnglishActivity = StudentAnswerEnglish::where('student_id', $user->userId)
+                ->where('reading_material_id', $currentEnglishMaterial->id)
+                ->with('readingMaterial.questions')
+                ->latest()
+                ->first();
+        }
 
-        // Get latest Filipino reading assessment from teacher
-        $latestFilipinoReading = \App\Models\ReadingAssessment::where('student_id', $user->userId)
-            ->where('language', 'filipino')
-            ->latest('assessment_date')
-            ->first();
+        $latestFilipinoActivity = null;
+        if ($currentFilipinoMaterial) {
+            $latestFilipinoActivity = StudentAnswerTagalog::where('student_id', $user->userId)
+                ->where('reading_material_id', $currentFilipinoMaterial->id)
+                ->with('readingMaterial.questions')
+                ->latest()
+                ->first();
+        }
 
-        // Get all reading assessments for this student (for Reading Results table)
-        $allReadingAssessments = \App\Models\ReadingAssessment::where('student_id', $user->userId)
-            ->orderBy('assessment_date', 'desc')
+        // Get ALL historical activities (for Answer Results table)
+        $allEnglishActivities = StudentAnswerEnglish::where('student_id', $user->userId)
+            ->with('readingMaterial.questions')
+            ->orderBy('created_at', 'desc')
             ->get();
 
-        // Get reading materials to match with assessments
-        $readingMaterials = \App\Models\ReadingMaterial::where('is_published', true)
-            ->orderBy('published_at', 'desc')
+        $allFilipinoActivities = StudentAnswerTagalog::where('student_id', $user->userId)
+            ->with('readingMaterial.questions')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Get reading assessments for CURRENT published materials (for graphs)
+        $latestEnglishReading = null;
+        if ($currentEnglishMaterial) {
+            $latestEnglishReading = \App\Models\ReadingAssessment::where('student_id', $user->userId)
+                ->where('language', 'english')
+                ->where('reading_material_id', $currentEnglishMaterial->id)
+                ->latest('assessment_date')
+                ->first();
+        }
+
+        $latestFilipinoReading = null;
+        if ($currentFilipinoMaterial) {
+            $latestFilipinoReading = \App\Models\ReadingAssessment::where('student_id', $user->userId)
+                ->where('language', 'filipino')
+                ->where('reading_material_id', $currentFilipinoMaterial->id)
+                ->latest('assessment_date')
+                ->first();
+        }
+
+        // Get all reading assessments for this student (for Reading Results table)
+        // Include the reading material relationship to get the correct title
+        $allReadingAssessments = \App\Models\ReadingAssessment::where('student_id', $user->userId)
+            ->with('readingMaterial')
+            ->orderBy('assessment_date', 'desc')
             ->get();
 
         // Get all English answers for this student
@@ -308,13 +341,15 @@ class StudentDashboardController extends Controller
             ->get();
 
         // Get teacher feedback for this student
-        $englishFeedback = TeacherFeedback::where('student_id', $user->userId)
+        $englishFeedback = TeacherFeedback::with('readingMaterial')
+            ->where('student_id', $user->userId)
             ->where('language', 'english')
             ->where('is_sent', true)
             ->orderBy('sent_at', 'desc')
             ->get();
 
-        $filipinoFeedback = TeacherFeedback::where('student_id', $user->userId)
+        $filipinoFeedback = TeacherFeedback::with('readingMaterial')
+            ->where('student_id', $user->userId)
             ->where('language', 'filipino')
             ->where('is_sent', true)
             ->orderBy('sent_at', 'desc')
@@ -384,9 +419,10 @@ class StudentDashboardController extends Controller
             'latestEnglishReading',
             'latestFilipinoReading',
             'allReadingAssessments',
-            'readingMaterials',
             'englishAnswers',
             'filipinoAnswers',
+            'allEnglishActivities',
+            'allFilipinoActivities',
             'englishFeedback',
             'filipinoFeedback',
             'englishTotalQuestions',

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('language'); // 'english' or 'filipino'
             $table->integer('grade_level');
             $table->string('section');
+            $table->unsignedBigInteger('reading_material_id')->nullable(); // References reading_materials table
             $table->text('strengths')->nullable();
             $table->text('areas_for_improvement')->nullable();
             $table->text('recommendations')->nullable();
@@ -24,6 +25,9 @@ return new class extends Migration
             $table->boolean('is_read')->default(false);
             $table->timestamp('read_at')->nullable();
             $table->timestamps();
+
+            // Add foreign key constraint
+            $table->foreign('reading_material_id')->references('id')->on('reading_materials')->onDelete('set null');
 
             // Add foreign key constraint
             $table->foreign('student_id')

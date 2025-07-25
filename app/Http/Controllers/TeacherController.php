@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Student;
 use App\Models\ReadingMaterial;
+use App\Models\ReadingAssessment;
 use App\Models\TeacherFeedback;
 
 class TeacherController extends Controller
@@ -46,16 +47,67 @@ class TeacherController extends Controller
             return view('teacher.view');
         }
 
-        $student = Student::with('readingAssessments')->where('student_number', $studentIdentifier)->first();
+        $student = Student::where('student_number', $studentIdentifier)->first();
 
         if (!$student) {
             // Try finding by ID if student_number doesn't work
-            $student = Student::with('readingAssessments')->find($studentIdentifier);
+            $student = Student::find($studentIdentifier);
         }
 
         if (!$student) {
             return view('teacher.view');
         }
+
+        // Get currently published reading materials for this student's grade
+        $currentEnglishMaterial = ReadingMaterial::where('grade_level', $student->grade_level)
+            ->where('subject', 'english')
+            ->where('is_published', true)
+            ->first();
+
+        $currentFilipinoMaterial = ReadingMaterial::where('grade_level', $student->grade_level)
+            ->where('subject', 'filipino')
+            ->where('is_published', true)
+            ->first();
+
+        // Get reading assessments for CURRENT published materials only (for graphs)
+        $currentReadingAssessments = collect();
+
+        if ($currentEnglishMaterial) {
+            $englishAssessment = ReadingAssessment::with('readingMaterial')
+                ->where('student_id', $student->student_number)
+                ->where('language', 'english')
+                ->where('reading_material_id', $currentEnglishMaterial->id)
+                ->latest('assessment_date')
+                ->first();
+            if ($englishAssessment) {
+                $currentReadingAssessments->push($englishAssessment);
+            }
+        }
+
+        if ($currentFilipinoMaterial) {
+            $filipinoAssessment = ReadingAssessment::with('readingMaterial')
+                ->where('student_id', $student->student_number)
+                ->where('language', 'filipino')
+                ->where('reading_material_id', $currentFilipinoMaterial->id)
+                ->latest('assessment_date')
+                ->first();
+            if ($filipinoAssessment) {
+                $currentReadingAssessments->push($filipinoAssessment);
+            }
+        }
+
+        // Get ALL reading assessments for this student (for Reading Results and Answer Results tables)
+        // This ensures historical records are preserved when new materials are published
+        $allReadingAssessments = ReadingAssessment::with('readingMaterial')
+            ->where('student_id', $student->student_number)
+            ->orderBy('assessment_date', 'desc')
+            ->get();
+
+        // Add the current assessments to the student object for graphs
+        $student->readingAssessments = $currentReadingAssessments;
+
+        // Add all assessments for historical data display
+        $student->allReadingAssessments = $allReadingAssessments;
 
         return view('teacher.view', compact('student'));
     }
@@ -194,7 +246,7 @@ class TeacherController extends Controller
         return response()->json($students);
     }
 
-    public function getStudentComprehensionDetails($studentId, $language = 'english')
+    public function getStudentComprehensionDetails(Request $request, $studentId, $language = 'english')
     {
         try {
             // Find the student
@@ -207,18 +259,31 @@ class TeacherController extends Controller
                 ], 404);
             }
 
-            // Get the latest comprehension assessment for this student and language
+            // Get the reading material ID from request if provided
+            $readingMaterialId = $request->get('reading_material_id');
+
+            // Get the comprehension assessment for this student and language
             $answerModel = $language === 'english' ?
                 \App\Models\StudentAnswerEnglish::class :
                 \App\Models\StudentAnswerTagalog::class;
 
-            $latestAnswer = $answerModel::where('student_id', $studentId)
-                ->latest('created_at')
-                ->first();
+            // If reading material ID is provided, get the specific answer for that material
+            // Otherwise, get the latest answer (fallback for backward compatibility)
+            if ($readingMaterialId) {
+                $latestAnswer = $answerModel::where('student_id', $studentId)
+                    ->where('reading_material_id', $readingMaterialId)
+                    ->latest('created_at')
+                    ->first();
+            } else {
+                $latestAnswer = $answerModel::where('student_id', $studentId)
+                    ->latest('created_at')
+                    ->first();
+            }
 
             \Log::info('Searching for student answers', [
                 'student_id' => $studentId,
                 'language' => $language,
+                'reading_material_id' => $readingMaterialId,
                 'answer_model' => $answerModel,
                 'found_answer' => $latestAnswer ? 'Yes' : 'No',
                 'answer_data' => $latestAnswer ? $latestAnswer->toArray() : null
@@ -233,15 +298,52 @@ class TeacherController extends Controller
             }
 
             // Get the corresponding ReadingAssessment record for accurate score information
-            $readingAssessment = \App\Models\ReadingAssessment::where('student_id', $studentId)
-                ->where('language', $language)
-                ->latest('created_at')
-                ->first();
+            // If we have a specific reading material ID, get the assessment for that material
+            // Otherwise, fall back to the latest assessment for backward compatibility
+            $readingAssessment = null;
+            if ($readingMaterialId) {
+                $readingAssessment = \App\Models\ReadingAssessment::where('student_id', $studentId)
+                    ->where('language', $language)
+                    ->where('reading_material_id', $readingMaterialId)
+                    ->latest('created_at')
+                    ->first();
+
+                \Log::info('Fetching reading assessment for specific material', [
+                    'student_id' => $studentId,
+                    'language' => $language,
+                    'reading_material_id' => $readingMaterialId,
+                    'found_assessment' => $readingAssessment ? 'Yes' : 'No',
+                    'assessment_score' => $readingAssessment ? $readingAssessment->correct_answers : 'N/A'
+                ]);
+            } else {
+                $readingAssessment = \App\Models\ReadingAssessment::where('student_id', $studentId)
+                    ->where('language', $language)
+                    ->latest('created_at')
+                    ->first();
+
+                \Log::info('Fetching latest reading assessment (fallback)', [
+                    'student_id' => $studentId,
+                    'language' => $language,
+                    'found_assessment' => $readingAssessment ? 'Yes' : 'No',
+                    'assessment_score' => $readingAssessment ? $readingAssessment->correct_answers : 'N/A'
+                ]);
+            }
 
             // Get the reading material that the student actually answered
-            // First try to get it from the student answer record (if reading_material_id is set)
+            // Priority order: 1) Requested reading material ID, 2) Student answer record, 3) Latest published
             $readingMaterial = null;
-            if ($latestAnswer->reading_material_id) {
+
+            // First priority: Use the specific reading material ID from the request
+            if ($readingMaterialId) {
+                $readingMaterial = \App\Models\ReadingMaterial::find($readingMaterialId);
+                \Log::info('Using reading material from request parameter', [
+                    'requested_reading_material_id' => $readingMaterialId,
+                    'material_title' => $readingMaterial ? $readingMaterial->title : 'NOT FOUND'
+                ]);
+            }
+
+            // Second priority: Get it from the student answer record (if reading_material_id is set)
+            if (!$readingMaterial && $latestAnswer->reading_material_id) {
                 $readingMaterial = \App\Models\ReadingMaterial::find($latestAnswer->reading_material_id);
                 \Log::info('Using reading material from student answer record', [
                     'reading_material_id' => $latestAnswer->reading_material_id,
@@ -249,7 +351,7 @@ class TeacherController extends Controller
                 ]);
             }
 
-            // Fallback to latest published material if not found
+            // Third priority: Fallback to latest published material if not found
             if (!$readingMaterial) {
                 $readingMaterial = \App\Models\ReadingMaterial::where('subject', $language)
                     ->where('is_published', true)
@@ -401,9 +503,16 @@ class TeacherController extends Controller
                 ], 404);
             }
 
-            // Check if feedback already exists for this student and language
+            // Get the currently published reading material for this grade and language
+            $readingMaterial = ReadingMaterial::where('grade_level', $request->grade_level)
+                ->where('subject', $request->language)
+                ->where('is_published', true)
+                ->first();
+
+            // Check if feedback already exists for this student, language, and reading material
             $existingFeedback = TeacherFeedback::where('student_id', $request->student_id)
                 ->where('language', $request->language)
+                ->where('reading_material_id', $readingMaterial ? $readingMaterial->id : null)
                 ->where('is_sent', false)
                 ->first();
 
@@ -414,6 +523,7 @@ class TeacherController extends Controller
                     'teacher_name' => $user->name,
                     'grade_level' => $request->grade_level,
                     'section' => $request->section,
+                    'reading_material_id' => $readingMaterial ? $readingMaterial->id : null,
                     'strengths' => $request->strengths,
                     'areas_for_improvement' => $request->areas_for_improvement,
                     'recommendations' => $request->recommendations
@@ -428,6 +538,7 @@ class TeacherController extends Controller
                     'language' => $request->language,
                     'grade_level' => $request->grade_level,
                     'section' => $request->section,
+                    'reading_material_id' => $readingMaterial ? $readingMaterial->id : null,
                     'strengths' => $request->strengths,
                     'areas_for_improvement' => $request->areas_for_improvement,
                     'recommendations' => $request->recommendations
@@ -495,7 +606,7 @@ class TeacherController extends Controller
             $studentId = $request->get('student_id');
             $language = $request->get('language', 'english');
 
-            $query = TeacherFeedback::with('student');
+            $query = TeacherFeedback::with(['student', 'readingMaterial']);
 
             if ($studentId) {
                 $query->where('student_id', $studentId);

@@ -26,10 +26,42 @@
             @endif
 
             @if(!$hasCompletedAssessment)
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong><i class="fas fa-exclamation-triangle"></i> Reading Assessment Required</strong><br>
-                    You must complete the reading assessment with your teacher before you can answer the activity questions. Please contact your teacher to schedule your reading assessment.
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="assessment-warning-container">
+                    <div class="assessment-warning-card">
+                        <div class="warning-icon">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                        <div class="warning-content">
+                            <div class="warning-header">
+                                <h3>Reading Assessment Required</h3>
+                                <span class="warning-badge">Action Needed</span>
+                            </div>
+                            <div class="warning-message">
+                                <p>Before you can take this comprehension test, you need to complete the reading assessment with your teacher first.</p>
+                            </div>
+                            <div class="warning-steps">
+                                <h4>Next Steps:</h4>
+                                <div class="steps-list">
+                                    <div class="step-item">
+                                        <span class="step-number">1</span>
+                                        <span class="step-text">Contact your teacher to schedule your reading assessment</span>
+                                    </div>
+                                    <div class="step-item">
+                                        <span class="step-number">2</span>
+                                        <span class="step-text">Complete the reading assessment session</span>
+                                    </div>
+                                    <div class="step-item">
+                                        <span class="step-number">3</span>
+                                        <span class="step-text">Return here to take the comprehension test</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="warning-note">
+                                <i class="fas fa-info-circle"></i>
+                                <span>The reading assessment helps your teacher understand your reading level and provides personalized guidance.</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             @endif
 
@@ -133,11 +165,39 @@
         </div>
     </div>
 
+    <!-- Assessment Required Modal -->
+    <div id="assessmentRequiredModal" class="modal">
+        <div class="confirmation-content assessment-required-modal">
+            <div class="modal-icon">
+                <i class="fas fa-clipboard-check"></i>
+            </div>
+            <h2>Reading Assessment Required</h2>
+            <p>You need to complete the reading assessment with your teacher before taking this comprehension test.</p>
+            <div class="modal-steps">
+                <div class="modal-step">
+                    <span class="step-icon">1</span>
+                    <span>Contact your teacher</span>
+                </div>
+                <div class="modal-step">
+                    <span class="step-icon">2</span>
+                    <span>Complete reading assessment</span>
+                </div>
+                <div class="modal-step">
+                    <span class="step-icon">3</span>
+                    <span>Return to take the test</span>
+                </div>
+            </div>
+            <div class="confirmation-buttons">
+                <button class="confirm-submit" onclick="closeAssessmentRequiredModal()">I Understand</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function confirmSubmit() {
             // Check if reading assessment is completed
             @if(!$hasCompletedAssessment)
-                alert('You must complete the reading assessment with your teacher before you can submit answers.');
+                showAssessmentRequiredModal();
                 return;
             @endif
 
@@ -193,6 +253,14 @@
 
         function closeAlertModal() {
             document.getElementById('alertModal').classList.remove('show');
+        }
+
+        function showAssessmentRequiredModal() {
+            document.getElementById('assessmentRequiredModal').classList.add('show');
+        }
+
+        function closeAssessmentRequiredModal() {
+            document.getElementById('assessmentRequiredModal').classList.remove('show');
         }
 
         // Show success modal if there's a success message
@@ -453,6 +521,228 @@
             font-weight: bold;
         }
 
+        /* Enhanced Warning Message Styles */
+        .assessment-warning-container {
+            margin-bottom: 30px;
+        }
+
+        .assessment-warning-card {
+            background: linear-gradient(135deg, #fff8e1 0%, #fff3c4 100%);
+            border: 2px solid #ffa726;
+            border-radius: 16px;
+            padding: 0;
+            box-shadow: 0 8px 25px rgba(255, 167, 38, 0.15);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .assessment-warning-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff9800, #ffa726, #ffb74d);
+        }
+
+        .assessment-warning-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 25px;
+        }
+
+        .warning-icon {
+            flex-shrink: 0;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff9800, #ffa726);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        .warning-icon i {
+            font-size: 24px;
+            color: white;
+        }
+
+        .warning-content {
+            flex: 1;
+        }
+
+        .warning-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .warning-header h3 {
+            color: #e65100;
+            font-size: 1.4em;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .warning-badge {
+            background: #ff9800;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .warning-message {
+            margin-bottom: 20px;
+        }
+
+        .warning-message p {
+            color: #bf360c;
+            font-size: 1.05em;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .warning-steps h4 {
+            color: #e65100;
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .steps-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            background: #ff9800;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9em;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            color: #bf360c;
+            font-size: 1em;
+            line-height: 1.5;
+        }
+
+        .warning-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: rgba(255, 152, 0, 0.1);
+            padding: 12px 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ff9800;
+        }
+
+        .warning-note i {
+            color: #ff9800;
+            font-size: 1.1em;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .warning-note span {
+            color: #bf360c;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        /* Assessment Required Modal Styles */
+        .assessment-required-modal {
+            max-width: 450px;
+        }
+
+        .modal-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #ff9800, #ffa726);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        .modal-icon i {
+            font-size: 28px;
+            color: white;
+        }
+
+        .assessment-required-modal h2 {
+            color: #e65100;
+            margin-bottom: 15px;
+        }
+
+        .assessment-required-modal p {
+            color: #bf360c;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .modal-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .modal-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 15px;
+            background: rgba(255, 152, 0, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #ff9800;
+        }
+
+        .step-icon {
+            width: 24px;
+            height: 24px;
+            background: #ff9800;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85em;
+            flex-shrink: 0;
+        }
+
+        .modal-step span:last-child {
+            color: #bf360c;
+            font-weight: 500;
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 padding: 15px;
@@ -465,6 +755,57 @@
             .confirmation-content {
                 width: 95%;
                 padding: 20px;
+            }
+
+            /* Mobile responsive styles for warning message */
+            .assessment-warning-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .warning-icon {
+                align-self: center;
+                width: 50px;
+                height: 50px;
+            }
+
+            .warning-icon i {
+                font-size: 20px;
+            }
+
+            .warning-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .warning-header h3 {
+                font-size: 1.2em;
+            }
+
+            .steps-list {
+                gap: 8px;
+            }
+
+            .step-item {
+                gap: 10px;
+            }
+
+            .step-number {
+                width: 24px;
+                height: 24px;
+                font-size: 0.8em;
+            }
+
+            .step-text {
+                font-size: 0.95em;
+            }
+
+            .warning-note {
+                flex-direction: column;
+                gap: 8px;
+                text-align: left;
             }
         }
     </style>

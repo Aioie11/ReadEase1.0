@@ -17,17 +17,13 @@ class StudentAnswerTagalog extends Model
         'score',
         'total_questions',
         'reading_time',
-        'reading_speed',
-        'start_time',
-        'end_time'
+        'reading_speed'
     ];
 
     protected $casts = [
         'answers' => 'array',
         'reading_time' => 'integer',
-        'reading_speed' => 'integer',
-        'start_time' => 'datetime',
-        'end_time' => 'datetime'
+        'reading_speed' => 'integer'
     ];
 
     public function student()

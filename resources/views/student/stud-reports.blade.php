@@ -113,6 +113,12 @@
                                                     <i class="fas fa-user-tie"></i>
                                                     {{ $feedback->teacher_name }}
                                                 </span>
+                                                @if($feedback->readingMaterial)
+                                                    <span class="feedback-material">
+                                                        <i class="fas fa-book"></i>
+                                                        {{ $feedback->readingMaterial->title }}
+                                                    </span>
+                                                @endif
                                             </div>
                                             <button class="feedback-toggle" onclick="toggleFeedback({{ $index }})">
                                                 <i class="fas fa-chevron-down"></i>
@@ -268,6 +274,12 @@
                                                     <i class="fas fa-user-tie"></i>
                                                     {{ $feedback->teacher_name }}
                                                 </span>
+                                                @if($feedback->readingMaterial)
+                                                    <span class="feedback-material">
+                                                        <i class="fas fa-book"></i>
+                                                        {{ $feedback->readingMaterial->title }}
+                                                    </span>
+                                                @endif
                                             </div>
                                             <button class="feedback-toggle" onclick="toggleFeedback('filipino-{{ $index }}')">
                                                 <i class="fas fa-chevron-down"></i>
@@ -331,74 +343,61 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Reading Title</th>
+                                <th>Reading Material</th>
+                                <th>Language</th>
                                 <th>Date</th>
-                                <th>Score</th>
-                                <th>Time Spent</th>
+                                <th>Reading Speed</th>
+                                <th>Correct Reading</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             @php
-                                // Get only the most recent English and Filipino reading assessments
-                                $latestEnglishAssessment = $allReadingAssessments->where('language', 'english')->first();
-                                $latestFilipinoAssessment = $allReadingAssessments->where('language', 'filipino')->first();
-
-                                $recentAssessments = collect();
-                                if ($latestEnglishAssessment) {
-                                    $recentAssessments->push($latestEnglishAssessment);
-                                }
-                                if ($latestFilipinoAssessment) {
-                                    $recentAssessments->push($latestFilipinoAssessment);
-                                }
-
-                                // Sort by assessment date (most recent first)
-                                $recentAssessments = $recentAssessments->sortByDesc('assessment_date');
+                                // Show ALL reading assessments (not just the latest ones)
+                                // Sort all assessments by assessment date (most recent first)
+                                $allAssessmentsSorted = $allReadingAssessments->sortByDesc('assessment_date');
                             @endphp
 
-                            @if($recentAssessments->count() > 0)
-                                @foreach($recentAssessments as $assessment)
+                            @if($allAssessmentsSorted->count() > 0)
+                                @foreach($allAssessmentsSorted as $assessment)
                                     @php
-                                        // Find matching reading material by grade and language
-                                        $matchingMaterial = $readingMaterials->where('grade_level', $assessment->grade)
-                                            ->where('subject', $assessment->language)
-                                            ->first();
+                                        // Get the reading title from the related reading material
+                                        // This ensures we show the title of the material the student actually worked on
+                                        $readingTitle = $assessment->readingMaterial
+                                            ? $assessment->readingMaterial->title
+                                            : 'Reading Assessment (' . ucfirst($assessment->language) . ')';
 
-                                        $readingTitle = $matchingMaterial ? $matchingMaterial->title : 'Reading Assessment (' . ucfirst($assessment->language) . ')';
-
-                                        // Calculate reading score using formula: (total words - miscues) / total words
+                                        // Calculate reading accuracy percentage: (total words - miscues) / total words * 100
                                         $totalWords = $assessment->total_words;
                                         $miscues = $assessment->miscues;
                                         $correctWords = $totalWords - $miscues;
-                                        $readingScore = $correctWords . '/' . $totalWords;
+                                        $readingAccuracyPercentage = $totalWords > 0 ? round(($correctWords / $totalWords) * 100) : 0;
 
-                                        // Format time spent (no WPM info)
-                                        $timeSpent = $assessment->reading_time;
-                                        if ($timeSpent >= 60) {
-                                            $minutes = floor($timeSpent / 60);
-                                            $seconds = $timeSpent % 60;
-                                            $timeFormatted = $minutes . ' min' . ($seconds > 0 ? ' ' . $seconds . ' sec' : '');
-                                        } else {
-                                            $timeFormatted = $timeSpent . ' sec';
-                                        }
+                                        // Get reading speed (WPM)
+                                        $readingSpeed = $assessment->reading_speed ?? 0;
                                     @endphp
                                     <tr>
                                         <td>
                                             <strong>{{ $readingTitle }}</strong>
                                         </td>
+                                        <td>
+                                            <span class="language-badge {{ $assessment->language }}">
+                                                {{ ucfirst($assessment->language) }}
+                                            </span>
+                                        </td>
                                         <td>{{ $assessment->assessment_date->format('M j, Y') }}</td>
                                         <td>
-                                            {{ $readingScore }}
+                                            <strong>{{ $readingSpeed }} WPM</strong>
                                         </td>
                                         <td>
-                                            {{ $timeFormatted }}
+                                            <strong>{{ $readingAccuracyPercentage }}%</strong>
                                         </td>
                                         <td><span class="status completed">Completed</span></td>
                                     </tr>
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="5" style="text-align:center;">No reading assessments completed yet.</td>
+                                    <td colspan="6" style="text-align:center;">No reading assessments completed yet.</td>
                                 </tr>
                             @endif
                         </tbody>
@@ -423,35 +422,49 @@
                         </thead>
                         <tbody>
                             @php
-                                $hasAnswers = ($englishAnswers->count() > 0) || ($filipinoAnswers->count() > 0);
+                                // Combine all English and Filipino activities and sort by date (most recent first)
+                                $allActivities = collect();
+
+                                // Add all English activities with language identifier
+                                foreach($allEnglishActivities as $activity) {
+                                    $activity->language = 'english';
+                                    $allActivities->push($activity);
+                                }
+
+                                // Add all Filipino activities with language identifier
+                                foreach($allFilipinoActivities as $activity) {
+                                    $activity->language = 'filipino';
+                                    $allActivities->push($activity);
+                                }
+
+                                // Sort all activities by creation date (most recent first)
+                                $allActivitiesSorted = $allActivities->sortByDesc('created_at');
+
+                                $hasAnswers = $allActivitiesSorted->count() > 0;
                             @endphp
                             @if($hasAnswers)
-                                @if($filipinoAnswers->count() > 0)
+                                @foreach($allActivitiesSorted as $activity)
                                     @php
-                                        $latestFilipino = $filipinoAnswers->first();
-                                        $filipinoScore = $latestFilipino->score ?? 0;
-                                        $filipinoTotal = $filipinoTotalQuestions ?? 0;
+                                        $activityScore = $activity->score ?? 0;
+                                        $activityTotal = $activity->total_questions ?? 0;
+                                        $languageLabel = ucfirst($activity->language) . ' Question';
+
+                                        // Calculate percentage score
+                                        $activityPercentage = $activityTotal > 0 ? round(($activityScore / $activityTotal) * 100) : 0;
+
+                                        // Get reading material title if available
+                                        $materialTitle = '';
+                                        if ($activity->readingMaterial && $activity->readingMaterial->title) {
+                                            $materialTitle = ' - ' . $activity->readingMaterial->title;
+                                        }
                                     @endphp
                                     <tr>
-                                        <td><strong>Filipino Question</strong></td>
-                                        <td>{{ $latestFilipino->created_at->format('Y-m-d') }}</td>
-                                        <td>{{ $filipinoScore }}/{{ $filipinoTotal }}</td>
+                                        <td><strong>{{ $languageLabel }}{{ $materialTitle }}</strong></td>
+                                        <td>{{ $activity->created_at->format('M j, Y') }}</td>
+                                        <td><strong>{{ $activityPercentage }}%</strong> ({{ $activityScore }}/{{ $activityTotal }})</td>
                                         <td><span class="status completed">Completed</span></td>
                                     </tr>
-                                @endif
-                                @if($englishAnswers->count() > 0)
-                                    @php
-                                        $latestEnglish = $englishAnswers->first();
-                                        $englishScore = $latestEnglish->score ?? 0;
-                                        $englishTotal = $englishTotalQuestions ?? 0;
-                                    @endphp
-                                    <tr>
-                                        <td><strong>English Question</strong></td>
-                                        <td>{{ $latestEnglish->created_at->format('Y-m-d') }}</td>
-                                        <td>{{ $englishScore }}/{{ $englishTotal }}</td>
-                                        <td><span class="status completed">Completed</span></td>
-                                    </tr>
-                                @endif
+                                @endforeach
                             @else
                                 <tr>
                                     <td colspan="4" style="text-align:center;">No answers yet.</td>
@@ -746,6 +759,26 @@
             border: 1px solid #ffeaa7;
         }
 
+        .language-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .language-badge.english {
+            background: transparent;
+            color: inherit;
+            border: none;
+        }
+
+        .language-badge.filipino {
+            background: transparent;
+            color: inherit;
+            border: none;
+        }
+
         .feedback-section {
             margin-top: 25px;
             background: white;
@@ -827,7 +860,8 @@
         }
 
         .feedback-date,
-        .feedback-teacher {
+        .feedback-teacher,
+        .feedback-material {
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -836,9 +870,16 @@
         }
 
         .feedback-date i,
-        .feedback-teacher i {
+        .feedback-teacher i,
+        .feedback-material i {
             color: #00B8A9;
             font-size: 0.8rem;
+        }
+
+        .feedback-material {
+            color: #6c757d;
+            font-style: italic;
+            font-weight: 500;
         }
 
         .feedback-toggle {
@@ -1036,6 +1077,17 @@
         }
 
         @media (max-width: 768px) {
+            .feedback-info {
+                flex-direction: column;
+                gap: 0.75rem;
+                align-items: flex-start;
+            }
+
+            .feedback-date,
+            .feedback-teacher,
+            .feedback-material {
+                font-size: 0.8rem;
+            }
 
             .overview-header,
             .results-header {

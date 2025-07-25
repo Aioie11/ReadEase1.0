@@ -220,13 +220,19 @@ class ReadingMaterialController extends Controller
     }
 
     /**
-     * Check if student has completed reading assessment for a specific language
+     * Check if student has completed reading assessment for a specific reading material
      */
-    private function hasCompletedReadingAssessment($studentId, $language)
+    private function hasCompletedReadingAssessment($studentId, $language, $readingMaterialId = null)
     {
-        return ReadingAssessment::where('student_id', $studentId)
-            ->where('language', $language)
-            ->exists();
+        $query = ReadingAssessment::where('student_id', $studentId)
+            ->where('language', $language);
+
+        // If a specific reading material ID is provided, check for that specific material
+        if ($readingMaterialId) {
+            $query->where('reading_material_id', $readingMaterialId);
+        }
+
+        return $query->exists();
     }
 
     public function getPublishedMaterial($grade = null, $subject = 'english')
@@ -252,18 +258,18 @@ class ReadingMaterialController extends Controller
             // For students, use their grade level
             $grade = $user->role === 'teacher' ? $grade : $user->grade;
 
-            // Check if student has completed reading assessment (only for students)
-            $hasCompletedAssessment = true;
-            if ($user->role === 'student') {
-                $hasCompletedAssessment = $this->hasCompletedReadingAssessment($user->userId, $subject);
-            }
-
-            // Get the published material for this specific grade and subject
+            // Get the published material for this specific grade and subject first
             $readingMaterial = ReadingMaterial::with('questions')
                 ->where('grade_level', $grade)
                 ->where('subject', $subject)
                 ->where('is_published', true)
                 ->first();
+
+            // Check if student has completed reading assessment for this specific material (only for students)
+            $hasCompletedAssessment = true;
+            if ($user->role === 'student' && $readingMaterial) {
+                $hasCompletedAssessment = $this->hasCompletedReadingAssessment($user->userId, $subject, $readingMaterial->id);
+            }
 
             if (!$readingMaterial) {
                 return view($subject === 'english' ? 'student.stud-eng' : 'student.stud-fil', [

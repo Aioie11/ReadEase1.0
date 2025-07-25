@@ -78,7 +78,7 @@
       color: #7f8c8d;
       font-size: 1rem;
       margin: 0;
-      max-width: 600px;
+      max-width: auto;
     }
             /* Grade Levels Grid - Clean Stud-Dash Style */
             .grade-levels {

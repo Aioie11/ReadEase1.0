@@ -49,7 +49,7 @@
                     <!-- Filipino Reading Chart -->
                     <div class="chart-panel">
                         <div class="chart-panel-header">
-                            <h3 id="filipinoChartTitle">Filipino Reading Progress - All Grades (All
+                            <h3 id="filipinoChartTitle">Word Reading Level Distribution - All Grades (All
                                 Sections)</h3>
                             <div class="time-selector">
                                 <button class="time-btn active">Selected Grade</button>
@@ -63,7 +63,7 @@
                     <!-- Filipino Comprehension Chart -->
                     <div class="chart-panel">
                         <div class="chart-panel-header">
-                            <h3 id="filipinoComprehensionChartTitle">Filipino Reading Comprehension Performance - All
+                            <h3 id="filipinoComprehensionChartTitle">Comprehension Level Distribution - All
                                 Grades (All Sections)</h3>
                             <div class="time-selector">
                                 <button class="time-btn active">Selected Grade</button>
@@ -1302,11 +1302,11 @@
 
             // Update chart titles based on current selection
             const chartTitle = currentSection === 'all'
-                ? `Pag-unlad sa Pagbasa ng Filipino - Baitang ${currentGrade} (Lahat ng Seksyon)`
-                : `Pag-unlad sa Pagbasa ng Filipino - Baitang ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
+                ? `Word Reading Level Distribution - Grade ${currentGrade} (All Sections)`
+                : `Word Reading Level Distribution - Grade ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
             const comprehensionChartTitle = currentSection === 'all'
-                ? `Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang ${currentGrade} (Lahat ng Seksyon)`
-                : `Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
+                ? `Comprehension Level Distribution - Grade ${currentGrade} (All Sections)`
+                : `Comprehension Level Distribution - Grade ${currentGrade} - ${currentSection.charAt(0).toUpperCase() + currentSection.slice(1)}`;
 
             console.log('Setting Filipino chart titles:', { chartTitle, comprehensionChartTitle });
             document.getElementById('filipinoChartTitle').textContent = chartTitle;
@@ -1519,12 +1519,12 @@
             let readingChartTitle, comprehensionChartTitle;
 
             if (selectedSection === 'all') {
-                readingChartTitle = `Pag-unlad sa Pagbasa ng Filipino - Baitang ${grade} (Lahat ng Seksyon)`;
-                comprehensionChartTitle = `Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang ${grade} (Lahat ng Seksyon)`;
+                readingChartTitle = `Word Reading Level Distribution - Grade ${grade} (All Sections)`;
+                comprehensionChartTitle = `Comprehension Level Distribution - Grade ${grade} (All Sections)`;
             } else {
                 const sectionName = selectedSection.charAt(0).toUpperCase() + selectedSection.slice(1);
-                readingChartTitle = `Pag-unlad sa Pagbasa ng Filipino - Baitang ${grade} - Seksyon ${sectionName}`;
-                comprehensionChartTitle = `Pagganap sa Pag-unawa sa Pagbasa ng Filipino - Baitang ${grade} - Seksyon ${sectionName}`;
+                readingChartTitle = `Word Reading Level Distribution - Grade ${grade} - Section ${sectionName}`;
+                comprehensionChartTitle = `Comprehension Level Distribution - Grade ${grade} - Section ${sectionName}`;
             }
 
             const readingTitleEl = document.getElementById('filipinoChartTitle');
@@ -1695,8 +1695,8 @@
 
                 // Update chart title
                 const chartTitle = section === 'all'
-                    ? `Filipino Reading Comprehension Performance - All Grades (All Sections)`
-                    : `Filipino Reading Comprehension Performance - All Grades - ${section.charAt(0).toUpperCase() + section.slice(1)}`;
+                    ? `Comprehension Level Distribution - All Grades (All Sections)`
+                    : `Comprehension Level Distribution - All Grades - ${section.charAt(0).toUpperCase() + section.slice(1)}`;
                 document.getElementById('filipinoComprehensionChartTitle').textContent = chartTitle;
 
                 // Update chart data

@@ -253,9 +253,14 @@ class ReportsController extends Controller
     public function saveReadingAssessment(Request $request)
     {
         try {
+            // Log incoming request data for debugging
+            Log::info('Reading assessment save request received:', $request->all());
+
             // Validate the incoming data
             $validatedData = $request->validate([
+                'student_id' => 'nullable|string|max:255', // Optional student ID
                 'student_name' => 'required|string|max:255',
+                'reading_material_id' => 'nullable|integer|exists:reading_materials,id',
                 'reading_time' => 'required|integer|min:0', // Allow minimum 0 seconds
                 'miscues' => 'required|integer|min:0',
                 'total_words' => 'required|integer|min:1',
@@ -297,6 +302,7 @@ class ReportsController extends Controller
             $assessment = ReadingAssessment::create([
                 'student_id' => $student ? $student->student_number : null,
                 'student_name' => $validatedData['student_name'],
+                'reading_material_id' => $validatedData['reading_material_id'],
                 'reading_time' => $validatedData['reading_time'],
                 'miscues' => $validatedData['miscues'],
                 'total_words' => $validatedData['total_words'],
@@ -547,6 +553,7 @@ class ReportsController extends Controller
                 ],
                 [
                     'student_id' => $validated['student_id'],
+                    'reading_material_id' => $validated['reading_material_id'] ?? null,
                     'reading_time' => $validated['reading_time'],
                     'miscues' => $validated['miscues'],
                     'total_words' => $validated['total_words'],

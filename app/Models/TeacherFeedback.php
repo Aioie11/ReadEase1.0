@@ -18,6 +18,7 @@ class TeacherFeedback extends Model
         'language',
         'grade_level',
         'section',
+        'reading_material_id',
         'strengths',
         'areas_for_improvement',
         'recommendations',
@@ -43,6 +44,11 @@ class TeacherFeedback extends Model
     public function teacher()
     {
         return $this->belongsTo(User::class, 'teacher_id');
+    }
+
+    public function readingMaterial()
+    {
+        return $this->belongsTo(ReadingMaterial::class, 'reading_material_id');
     }
 
     // Scope for getting feedback by language
