@@ -34,123 +34,173 @@ class StudentDashboardController extends Controller
             return redirect()->route('login')->with('error', 'Session expired. Please login again.');
         }
 
-        // Get latest English test result
-        $latestEnglishActivity = StudentAnswerEnglish::where('student_id', $user->userId)
-            ->latest()
+        // Get currently published reading materials for this student's grade
+        $currentEnglishMaterial = ReadingMaterial::where('grade_level', $user->grade)
+            ->where('subject', 'english')
+            ->where('is_published', true)
             ->first();
 
-        // Get latest Filipino test result
-        $latestFilipinoActivity = StudentAnswerTagalog::where('student_id', $user->userId)
-            ->latest()
+        $currentFilipinoMaterial = ReadingMaterial::where('grade_level', $user->grade)
+            ->where('subject', 'filipino')
+            ->where('is_published', true)
             ->first();
 
-        // Get latest English reading assessment
-        $latestEnglishReading = \App\Models\ReadingAssessment::where('student_id', $user->userId)
-            ->where('language', 'english')
-            ->latest('assessment_date')
-            ->first();
+        // Get latest English test result for CURRENT published material only
+        $latestEnglishActivity = null;
+        if ($currentEnglishMaterial) {
+            $latestEnglishActivity = StudentAnswerEnglish::where('student_id', $user->userId)
+                ->where('reading_material_id', $currentEnglishMaterial->id)
+                ->latest()
+                ->first();
+        }
 
-        // Get latest Filipino reading assessment
-        $latestFilipinoReading = \App\Models\ReadingAssessment::where('student_id', $user->userId)
-            ->where('language', 'filipino')
-            ->latest('assessment_date')
-            ->first();
+        // Get latest Filipino test result for CURRENT published material only
+        $latestFilipinoActivity = null;
+        if ($currentFilipinoMaterial) {
+            $latestFilipinoActivity = StudentAnswerTagalog::where('student_id', $user->userId)
+                ->where('reading_material_id', $currentFilipinoMaterial->id)
+                ->latest()
+                ->first();
+        }
 
-        // Get total questions from reading materials
-        $totalEnglishQuestions = ReadingQuestion::whereHas('readingMaterial', function($query) {
-            $query->where('subject', 'english')
-                  ->where('is_published', true);
-        })->count();
+        // Get latest English reading assessment for CURRENT published material only
+        $latestEnglishReading = null;
+        if ($currentEnglishMaterial) {
+            $latestEnglishReading = \App\Models\ReadingAssessment::where('student_id', $user->userId)
+                ->where('language', 'english')
+                ->where('reading_material_id', $currentEnglishMaterial->id)
+                ->latest('assessment_date')
+                ->first();
+        }
 
-        $totalFilipinoQuestions = ReadingQuestion::whereHas('readingMaterial', function($query) {
-            $query->where('subject', 'filipino')
-                  ->where('is_published', true);
-        })->count();
+        // Get latest Filipino reading assessment for CURRENT published material only
+        $latestFilipinoReading = null;
+        if ($currentFilipinoMaterial) {
+            $latestFilipinoReading = \App\Models\ReadingAssessment::where('student_id', $user->userId)
+                ->where('language', 'filipino')
+                ->where('reading_material_id', $currentFilipinoMaterial->id)
+                ->latest('assessment_date')
+                ->first();
+        }
 
-        // Calculate individual percentages and scores for all 4 activities
+        // Get total questions from CURRENT published materials for this student's grade
+        $totalEnglishQuestions = 0;
+        if ($currentEnglishMaterial) {
+            $totalEnglishQuestions = $currentEnglishMaterial->questions()->count();
+        }
+
+        $totalFilipinoQuestions = 0;
+        if ($currentFilipinoMaterial) {
+            $totalFilipinoQuestions = $currentFilipinoMaterial->questions()->count();
+        }
+
+        // Calculate individual percentages and scores for current published materials only
         $completedCount = 0;
         $totalPercent = 0;
         $latestEnglishScore = 0;
         $latestFilipinoScore = 0;
 
-        // 1. English Reading Assessment (teacher's submitted percentage)
+        // 1. English Reading Assessment (teacher's submitted percentage) - only for current material
         if ($latestEnglishReading && $latestEnglishReading->correct_reading !== null) {
             $englishReadingPercent = $latestEnglishReading->correct_reading;
             $totalPercent += $englishReadingPercent;
             $completedCount++;
         }
 
-        // 2. Filipino Reading Assessment (teacher's submitted percentage)
+        // 2. Filipino Reading Assessment (teacher's submitted percentage) - only for current material
         if ($latestFilipinoReading && $latestFilipinoReading->correct_reading !== null) {
             $filipinoReadingPercent = $latestFilipinoReading->correct_reading;
             $totalPercent += $filipinoReadingPercent;
             $completedCount++;
         }
 
-        // 3. English Comprehension (correct answers / total questions)
-        if ($latestEnglishActivity) {
+        // 3. English Comprehension (correct answers / total questions) - only for current material
+        if ($latestEnglishActivity && $totalEnglishQuestions > 0) {
             $latestEnglishScore = $latestEnglishActivity->score;
-            $totalEnglishQuestions = count($latestEnglishActivity->answers ?? []);
-            if ($totalEnglishQuestions > 0) {
-                $englishComprehensionPercent = round(($latestEnglishScore / $totalEnglishQuestions) * 100);
-                $totalPercent += $englishComprehensionPercent;
-                $completedCount++;
-            }
+            $englishComprehensionPercent = round(($latestEnglishScore / $totalEnglishQuestions) * 100);
+            $totalPercent += $englishComprehensionPercent;
+            $completedCount++;
         }
 
-        // 4. Filipino Comprehension (correct answers / total questions)
-        if ($latestFilipinoActivity) {
+        // 4. Filipino Comprehension (correct answers / total questions) - only for current material
+        if ($latestFilipinoActivity && $totalFilipinoQuestions > 0) {
             $latestFilipinoScore = $latestFilipinoActivity->score;
-            $totalFilipinoQuestions = count($latestFilipinoActivity->answers ?? []);
-            if ($totalFilipinoQuestions > 0) {
-                $filipinoComprehensionPercent = round(($latestFilipinoScore / $totalFilipinoQuestions) * 100);
-                $totalPercent += $filipinoComprehensionPercent;
-                $completedCount++;
-            }
+            $filipinoComprehensionPercent = round(($latestFilipinoScore / $totalFilipinoQuestions) * 100);
+            $totalPercent += $filipinoComprehensionPercent;
+            $completedCount++;
         }
 
-        // Calculate average performance based on completed activities
+        // Calculate average performance based on completed activities for current materials
         $averageScore = $completedCount > 0 ? round($totalPercent / $completedCount) : 0;
 
+        // Calculate completion percentage based on completed activities for CURRENT published materials
+        // Count available activities based on published materials
+        $availableActivities = 0;
+        $completedActivities = 0;
+
+        // English activities (only count if English material is published)
+        if ($currentEnglishMaterial) {
+            $availableActivities += 2; // English Reading + English Answering
+            if ($latestEnglishReading) $completedActivities++;
+            if ($latestEnglishActivity) $completedActivities++;
+        }
+
+        // Filipino activities (only count if Filipino material is published)
+        if ($currentFilipinoMaterial) {
+            $availableActivities += 2; // Filipino Reading + Filipino Answering
+            if ($latestFilipinoReading) $completedActivities++;
+            if ($latestFilipinoActivity) $completedActivities++;
+        }
+
+        $completionPercentage = $availableActivities > 0 ? round(($completedActivities / $availableActivities) * 100) : 0;
+
         // Log calculation details for debugging
-        \Log::info('📊 Student Dashboard Performance Calculation', [
+        \Log::info('📊 Student Dashboard Performance Calculation (Current Materials Only)', [
             'student_id' => $user->userId,
             'completed_activities' => $completedCount,
+            'available_activities' => $availableActivities,
             'total_percent_sum' => $totalPercent,
             'average_score' => $averageScore,
-            'completion_percentage' => round(($completedCount / 4) * 100),
+            'completion_percentage' => $completionPercentage,
+            'current_materials' => [
+                'english_material' => $currentEnglishMaterial ? [
+                    'id' => $currentEnglishMaterial->id,
+                    'title' => $currentEnglishMaterial->title,
+                    'published_at' => $currentEnglishMaterial->published_at
+                ] : 'none',
+                'filipino_material' => $currentFilipinoMaterial ? [
+                    'id' => $currentFilipinoMaterial->id,
+                    'title' => $currentFilipinoMaterial->title,
+                    'published_at' => $currentFilipinoMaterial->published_at
+                ] : 'none'
+            ],
             'activities' => [
                 'english_reading' => $latestEnglishReading ? [
                     'status' => 'completed',
+                    'material_id' => $latestEnglishReading->reading_material_id,
                     'teacher_submitted_percentage' => $latestEnglishReading->correct_reading,
                     'assessment_date' => $latestEnglishReading->assessment_date
                 ] : 'pending',
                 'filipino_reading' => $latestFilipinoReading ? [
                     'status' => 'completed',
+                    'material_id' => $latestFilipinoReading->reading_material_id,
                     'teacher_submitted_percentage' => $latestFilipinoReading->correct_reading,
                     'assessment_date' => $latestFilipinoReading->assessment_date
                 ] : 'pending',
                 'english_comprehension' => $latestEnglishActivity ? [
                     'status' => 'completed',
+                    'material_id' => $latestEnglishActivity->reading_material_id,
                     'score' => $latestEnglishActivity->score,
-                    'total_questions' => count($latestEnglishActivity->answers ?? [])
+                    'total_questions' => $totalEnglishQuestions
                 ] : 'pending',
                 'filipino_comprehension' => $latestFilipinoActivity ? [
                     'status' => 'completed',
+                    'material_id' => $latestFilipinoActivity->reading_material_id,
                     'score' => $latestFilipinoActivity->score,
-                    'total_questions' => count($latestFilipinoActivity->answers ?? [])
+                    'total_questions' => $totalFilipinoQuestions
                 ] : 'pending'
             ]
         ]);
-
-        // Calculate completion percentage based on completed activities
-        // Total possible activities: 4 (English Reading, English Answering, Filipino Reading, Filipino Answering)
-        $completedActivities = 0;
-        if ($latestEnglishActivity) $completedActivities++;
-        if ($latestFilipinoActivity) $completedActivities++;
-        if ($latestEnglishReading) $completedActivities++;
-        if ($latestFilipinoReading) $completedActivities++;
-        $completionPercentage = round(($completedActivities / 4) * 100);
 
         // Calculate total time spent
         $totalTimeSpent = 0;
@@ -200,7 +250,9 @@ class StudentDashboardController extends Controller
             'totalFilipinoQuestions',
             'averageScore',
             'completionPercentage',
-            'averageTimeFormatted'
+            'averageTimeFormatted',
+            'currentEnglishMaterial',
+            'currentFilipinoMaterial'
         ));
     }
 

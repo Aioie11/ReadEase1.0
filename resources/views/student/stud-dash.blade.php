@@ -61,82 +61,125 @@
                 <div class="activity-list">
                     <!-- English Answering -->
                     <div class="activity-item">
-                        <div class="activity-icon {{ $latestEnglishActivity ? 'completed' : 'in-progress' }}">
-                            <i class="fas {{ $latestEnglishActivity ? 'fa-check' : 'fa-spinner' }}"></i>
-                        </div>
-                        <div class="activity-details">
-                            <h4>English Answering</h4>
-                            @if($latestEnglishActivity)
-                                @php
-                                    $englishPercent = ($totalEnglishQuestions > 0) ? round(($latestEnglishScore / $totalEnglishQuestions) * 100) : 0;
-                                @endphp
-                                <p>Completed with {{ $englishPercent }}% score</p>
-                                <span class="activity-time">{{ $latestEnglishActivity->created_at->diffForHumans() }}</span>
-                            @else
-                                <p>0% - Not yet completed</p>
-                                <span class="activity-time">Pending</span>
-                            @endif
-                        </div>
+                        @if($currentEnglishMaterial)
+                            <div class="activity-icon {{ $latestEnglishActivity ? 'completed' : 'in-progress' }}">
+                                <i class="fas {{ $latestEnglishActivity ? 'fa-check' : 'fa-spinner' }}"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>English Answering</h4>
+                                @if($latestEnglishActivity)
+                                    @php
+                                        $englishPercent = ($totalEnglishQuestions > 0) ? round(($latestEnglishScore / $totalEnglishQuestions) * 100) : 0;
+                                    @endphp
+                                    <p>✅ Completed with {{ $englishPercent }}% score</p>
+                                    <span class="activity-time">{{ $latestEnglishActivity->created_at->diffForHumans() }}</span>
+                                @else
+                                    <p>⏳ Not Yet Completed</p>
+                                    <span class="activity-time">{{ $currentEnglishMaterial->title }}</span>
+                                @endif
+                            </div>
+                        @else
+                            <div class="activity-icon pending">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>English Answering</h4>
+                                <p>No material published yet</p>
+                                <span class="activity-time">Waiting for teacher</span>
+                            </div>
+                        @endif
                     </div>
                     <!-- English Reading Assessment -->
                     <div class="activity-item">
-                        <div class="activity-icon {{ $latestEnglishReading ? 'completed' : 'in-progress' }}">
-                            <i class="fas {{ $latestEnglishReading ? 'fa-check' : 'fa-spinner' }}"></i>
-                        </div>
-                        <div class="activity-details">
-                            <h4>English Reading</h4>
-                            @if($latestEnglishReading)
-                                @php
-                                    // Use teacher's submitted reading percentage for this student
-                                    $englishReadingPercent = $latestEnglishReading->correct_reading ?? 0;
-                                @endphp
-                                <p>Completed with {{ $englishReadingPercent }}% reading accuracy</p>
-                                
-                                <span class="activity-time">{{ $latestEnglishReading->assessment_date->diffForHumans() }}</span>
-                            @else
-                                <p>0% - Not yet completed</p>
-                                <span class="activity-time">Pending</span>
-                            @endif
-                        </div>
+                        @if($currentEnglishMaterial)
+                            <div class="activity-icon {{ $latestEnglishReading ? 'completed' : 'in-progress' }}">
+                                <i class="fas {{ $latestEnglishReading ? 'fa-check' : 'fa-spinner' }}"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>English Reading</h4>
+                                @if($latestEnglishReading)
+                                    @php
+                                        // Use teacher's submitted reading percentage for this student
+                                        $englishReadingPercent = $latestEnglishReading->correct_reading ?? 0;
+                                    @endphp
+                                    <p>✅ Completed with {{ $englishReadingPercent }}% reading accuracy</p>
+                                    <span class="activity-time">{{ $latestEnglishReading->assessment_date->diffForHumans() }}</span>
+                                @else
+                                    <p>⏳ Not Yet Completed</p>
+                                    <span class="activity-time">{{ $currentEnglishMaterial->title }}</span>
+                                @endif
+                            </div>
+                        @else
+                            <div class="activity-icon pending">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>English Reading</h4>
+                                <p>No material published yet</p>
+                                <span class="activity-time">Waiting for teacher</span>
+                            </div>
+                        @endif
                     </div>
                     <!-- Filipino Answering -->
                     <div class="activity-item">
-                        <div class="activity-icon {{ $latestFilipinoActivity ? 'completed' : 'in-progress' }}">
-                            <i class="fas {{ $latestFilipinoActivity ? 'fa-check' : 'fa-spinner' }}"></i>
-                        </div>
-                        <div class="activity-details">
-                            <h4>Filipino Answering</h4>
-                            @if($latestFilipinoActivity)
-                                @php
-                                    $filipinoPercent = ($totalFilipinoQuestions > 0) ? round(($latestFilipinoScore / $totalFilipinoQuestions) * 100) : 0;
-                                @endphp
-                                <p>Completed with {{ $filipinoPercent }}% score</p>
-                                <span class="activity-time">{{ $latestFilipinoActivity->created_at->diffForHumans() }}</span>
-                            @else
-                                <p>0% - Not yet completed</p>
-                                <span class="activity-time">Pending</span>
-                            @endif
-                        </div>
+                        @if($currentFilipinoMaterial)
+                            <div class="activity-icon {{ $latestFilipinoActivity ? 'completed' : 'in-progress' }}">
+                                <i class="fas {{ $latestFilipinoActivity ? 'fa-check' : 'fa-spinner' }}"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Filipino Answering</h4>
+                                @if($latestFilipinoActivity)
+                                    @php
+                                        $filipinoPercent = ($totalFilipinoQuestions > 0) ? round(($latestFilipinoScore / $totalFilipinoQuestions) * 100) : 0;
+                                    @endphp
+                                    <p>✅ Completed with {{ $filipinoPercent }}% score</p>
+                                    <span class="activity-time">{{ $latestFilipinoActivity->created_at->diffForHumans() }}</span>
+                                @else
+                                    <p>⏳ Not Yet Completed</p>
+                                    <span class="activity-time">{{ $currentFilipinoMaterial->title }}</span>
+                                @endif
+                            </div>
+                        @else
+                            <div class="activity-icon pending">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Filipino Answering</h4>
+                                <p>No material published yet</p>
+                                <span class="activity-time">Waiting for teacher</span>
+                            </div>
+                        @endif
                     </div>
                     <!-- Filipino Reading Assessment -->
                     <div class="activity-item">
-                        <div class="activity-icon {{ $latestFilipinoReading ? 'completed' : 'in-progress' }}">
-                            <i class="fas {{ $latestFilipinoReading ? 'fa-check' : 'fa-spinner' }}"></i>
-                        </div>
-                        <div class="activity-details">
-                            <h4>Filipino Reading</h4>
-                            @if($latestFilipinoReading)
-                                @php
-                                    // Use teacher's submitted reading percentage for this student
-                                    $filipinoReadingPercent = $latestFilipinoReading->correct_reading ?? 0;
-                                @endphp
-                                <p>Completed with {{ $filipinoReadingPercent }}% reading accuracy</p>
-                                <span class="activity-time">{{ $latestFilipinoReading->assessment_date->diffForHumans() }}</span>
-                            @else
-                                <p>0% - Not yet completed</p>
-                                <span class="activity-time">Pending</span>
-                            @endif
-                        </div>
+                        @if($currentFilipinoMaterial)
+                            <div class="activity-icon {{ $latestFilipinoReading ? 'completed' : 'in-progress' }}">
+                                <i class="fas {{ $latestFilipinoReading ? 'fa-check' : 'fa-spinner' }}"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Filipino Reading</h4>
+                                @if($latestFilipinoReading)
+                                    @php
+                                        // Use teacher's submitted reading percentage for this student
+                                        $filipinoReadingPercent = $latestFilipinoReading->correct_reading ?? 0;
+                                    @endphp
+                                    <p>✅ Completed with {{ $filipinoReadingPercent }}% reading accuracy</p>
+                                    <span class="activity-time">{{ $latestFilipinoReading->assessment_date->diffForHumans() }}</span>
+                                @else
+                                    <p>⏳ Not Yet Completed</p>
+                                    <span class="activity-time">{{ $currentFilipinoMaterial->title }}</span>
+                                @endif
+                            </div>
+                        @else
+                            <div class="activity-icon pending">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Filipino Reading</h4>
+                                <p>No material published yet</p>
+                                <span class="activity-time">Waiting for teacher</span>
+                            </div>
+                        @endif
                     </div>
 
                     

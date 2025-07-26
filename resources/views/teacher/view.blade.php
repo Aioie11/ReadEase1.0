@@ -1425,7 +1425,11 @@
                             scales: {
                                 y: {
                                     beginAtZero: true,
-                                    ticks: { color: '#2c3e50', font: { size: 12 } }
+                                    ticks: {
+                                        color: '#2c3e50',
+                                        font: { size: 12 },
+                                        stepSize: 1
+                                    }
                                 },
                                 x: {
                                     ticks: { color: '#2c3e50', font: { size: 12 } }
