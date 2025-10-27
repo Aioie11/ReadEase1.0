@@ -60,4 +60,9 @@ class User extends Authenticatable
         $random = strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, 5));
         return $prefix . $random;
     }
+
+    public function student()
+    {
+        return $this->hasOne(Student::class, 'student_number', 'userId');
+    }
 }

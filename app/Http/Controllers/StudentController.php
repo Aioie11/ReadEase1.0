@@ -14,10 +14,24 @@ class StudentController extends Controller
         $students = Student::with('readingAssessments')
             ->get()
             ->map(function ($student) {
+                // Only consider assessments taken for the student's CURRENT grade and section
+                $currentGrade = $student->grade_level;
+                $currentSection = $student->section;
+
+                // Helper to constrain to current grade/section, accounting for possible grade formats (e.g., '7' or 'grade7')
+                $gradeConstraint = function ($query) use ($currentGrade) {
+                    $query->where(function ($q) use ($currentGrade) {
+                        $q->where('grade', $currentGrade)
+                          ->orWhere('grade', 'grade' . $currentGrade);
+                    });
+                };
+
                 // Check for complete English and Filipino assessments
                 // A complete assessment must have reading data (reading_speed, correct_reading)
                 // and comprehension data (comprehension > 0, correct_answers > 0)
                 $completeEnglishAssessment = $student->readingAssessments()
+                    ->where($gradeConstraint)
+                    ->where('section', $currentSection)
                     ->where('language', 'english')
                     ->where('reading_speed', '>', 0)
                     ->where('correct_reading', '>', 0)
@@ -26,6 +40,8 @@ class StudentController extends Controller
                     ->exists();
 
                 $completeFilipinoAssessment = $student->readingAssessments()
+                    ->where($gradeConstraint)
+                    ->where('section', $currentSection)
                     ->where('language', 'filipino')
                     ->where('reading_speed', '>', 0)
                     ->where('correct_reading', '>', 0)
@@ -35,6 +51,8 @@ class StudentController extends Controller
 
                 // Check for incomplete assessments (has some data but not complete)
                 $incompleteEnglishAssessment = $student->readingAssessments()
+                    ->where($gradeConstraint)
+                    ->where('section', $currentSection)
                     ->where('language', 'english')
                     ->where(function ($query) {
                         $query->where('reading_speed', '>', 0)
@@ -45,6 +63,8 @@ class StudentController extends Controller
                     ->exists();
 
                 $incompleteFilipinoAssessment = $student->readingAssessments()
+                    ->where($gradeConstraint)
+                    ->where('section', $currentSection)
                     ->where('language', 'filipino')
                     ->where(function ($query) {
                         $query->where('reading_speed', '>', 0)

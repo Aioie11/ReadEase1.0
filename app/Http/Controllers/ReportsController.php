@@ -124,18 +124,28 @@ class ReportsController extends Controller
 
     private function getDashboardData($grade, $section, $language)
     {
-        // Build query for assessments
-        $query = ReadingAssessment::where('grade', $grade)
-            ->where('language', $language);
+        // Build query for assessments scoped to CURRENT student grade/section
+        // Join with students to ensure we only include students currently in the selected cohort
+        $query = ReadingAssessment::query()
+            ->where('language', $language)
+            ->join('students', 'reading_assessments.student_id', '=', 'students.student_number')
+            ->where('students.grade_level', $grade)
+            // Only include assessments that were taken for the student's current grade
+            ->whereColumn('reading_assessments.grade', 'students.grade_level');
 
         if ($section && $section !== 'all') {
-            $query->where('section', $section);
+            $query->where('students.section', $section)
+                  // Ensure the assessment section matches the student's current section
+                  ->whereColumn('reading_assessments.section', 'students.section');
         }
 
-        // Get latest assessment per student
+        // Always select reading_assessments columns; also include current student section for grouping
+        $query->select('reading_assessments.*', 'students.section as current_section', 'students.grade_level as current_grade');
+
+        // Get latest assessment per student (by student_id) within the scoped cohort
         $assessments = $query->orderBy('assessment_date', 'desc')
             ->get()
-            ->groupBy('student_name')
+            ->groupBy('student_id')
             ->map(function ($studentAssessments) {
                 return $studentAssessments->first();
             });
@@ -157,8 +167,8 @@ class ReportsController extends Controller
             'Frustration' => $readingLevels->get('Frustration', collect())->count()
         ];
 
-        // Get section-wise data
-        $sectionData = $assessments->groupBy('section')->map(function ($sectionAssessments, $sectionName) {
+        // Get section-wise data based on the student's CURRENT section
+        $sectionData = $assessments->groupBy('current_section')->map(function ($sectionAssessments, $sectionName) {
             return [
                 'section' => ucfirst($sectionName),
                 'student_count' => $sectionAssessments->count(),
@@ -171,11 +181,17 @@ class ReportsController extends Controller
         // Get grade distribution for chart (using Word Reading only for teacher view consistency)
         $gradeDistribution = [];
         for ($g = 7; $g <= 10; $g++) {
-            $gradeAssessments = ReadingAssessment::where('grade', $g)
+            // Scope to students whose CURRENT grade is $g
+            $gradeAssessments = ReadingAssessment::query()
                 ->where('language', $language)
+                ->join('students', 'reading_assessments.student_id', '=', 'students.student_number')
+                ->where('students.grade_level', $g)
+                // Only include assessments taken for the student's current grade
+                ->whereColumn('reading_assessments.grade', 'students.grade_level')
                 ->orderBy('assessment_date', 'desc')
+                ->select('reading_assessments.*')
                 ->get()
-                ->groupBy('student_name')
+                ->groupBy('student_id')
                 ->map(function ($studentAssessments) {
                     return $studentAssessments->first();
                 });
@@ -207,9 +223,16 @@ class ReportsController extends Controller
             $comprehensionLevel = 'Frustration';
         }
 
-        // Count total sessions
-        $totalSessions = ReadingAssessment::where('grade', $grade)
+        // Count total sessions for students currently in the selected cohort
+        $totalSessions = ReadingAssessment::query()
             ->where('language', $language)
+            ->join('students', 'reading_assessments.student_id', '=', 'students.student_number')
+            ->where('students.grade_level', $grade)
+            ->whereColumn('reading_assessments.grade', 'students.grade_level')
+            ->when($section && $section !== 'all', function ($q) use ($section) {
+                $q->where('students.section', $section)
+                  ->whereColumn('reading_assessments.section', 'students.section');
+            })
             ->count();
 
         // Get comprehension level distribution for the second chart
@@ -363,18 +386,25 @@ class ReportsController extends Controller
             $language = $request->input('language', 'english');
             $section = $request->input('section');
 
-            // Build query
-            $query = ReadingAssessment::where('grade', $grade)
-                ->where('language', $language);
+            // Build query joined with students to scope to CURRENT student grade/section
+            $query = ReadingAssessment::query()
+                ->where('language', $language)
+                ->join('students', 'reading_assessments.student_id', '=', 'students.student_number')
+                ->where('students.grade_level', $grade)
+                // Only include assessments taken at the student's CURRENT grade
+                ->whereColumn('reading_assessments.grade', 'students.grade_level')
+                ->select('reading_assessments.*', 'students.section as current_section');
 
             if ($section && $section !== 'all') {
-                $query->where('section', $section);
+                $query->where('students.section', $section)
+                      // Ensure the assessment section matches the student's CURRENT section
+                      ->whereColumn('reading_assessments.section', 'students.section');
             }
 
-            // Get assessments grouped by student (latest assessment per student)
+            // Get assessments grouped by student_id (latest assessment per student)
             $assessments = $query->orderBy('assessment_date', 'desc')
                 ->get()
-                ->groupBy('student_name')
+                ->groupBy('student_id')
                 ->map(function ($studentAssessments) {
                     return $studentAssessments->first(); // Get latest assessment
                 });
@@ -397,8 +427,8 @@ class ReportsController extends Controller
                 'Frustration' => $readingLevels->get('Frustration', collect())->count()
             ];
 
-            // Get section-wise data
-            $sectionData = $assessments->groupBy('section')->map(function ($sectionAssessments, $sectionName) {
+            // Get section-wise data based on CURRENT section
+            $sectionData = $assessments->groupBy('current_section')->map(function ($sectionAssessments, $sectionName) {
                 return [
                     'section' => $sectionName,
                     'student_count' => $sectionAssessments->count(),
@@ -896,13 +926,19 @@ class ReportsController extends Controller
             $sectionData = [];
 
             foreach ($sections as $section) {
-                // Get assessments for this specific section
-                $assessments = ReadingAssessment::where('grade', $grade)
+                // Get assessments for this specific section based on CURRENT student placement
+                $assessments = ReadingAssessment::query()
                     ->where('language', $language)
-                    ->where('section', $section)
+                    ->join('students', 'reading_assessments.student_id', '=', 'students.student_number')
+                    ->where('students.grade_level', $grade)
+                    ->where('students.section', $section)
+                    // Only include assessments taken at the student's CURRENT grade and section
+                    ->whereColumn('reading_assessments.grade', 'students.grade_level')
+                    ->whereColumn('reading_assessments.section', 'students.section')
                     ->orderBy('assessment_date', 'desc')
+                    ->select('reading_assessments.*')
                     ->get()
-                    ->groupBy('student_name')
+                    ->groupBy('student_id')
                     ->map(function ($studentAssessments) {
                         return $studentAssessments->first(); // Get latest assessment per student
                     });
@@ -981,12 +1017,29 @@ class ReportsController extends Controller
                     ->get()
                     ->keyBy('student_number');
 
+                // Build eligibility: students must have at least one READING assessment in CURRENT grade/section & language
+                $eligibleIds = ReadingAssessment::query()
+                    ->join('students', 'reading_assessments.student_id', '=', 'students.student_number')
+                    ->where('students.grade_level', $grade)
+                    ->where('students.section', $section)
+                    ->where('reading_assessments.language', $language)
+                    ->whereColumn('reading_assessments.grade', 'students.grade_level')
+                    ->whereColumn('reading_assessments.section', 'students.section')
+                    ->distinct()
+                    ->pluck('reading_assessments.student_id')
+                    ->toArray();
+
                 $levelCounts = ['Independent' => 0, 'Instructional' => 0, 'Frustration' => 0];
 
                 foreach ($comprehensionResults as $studentId => $result) {
                     $student = $students->get($studentId);
                     if (!$student)
                         continue;
+
+                    // Skip if student hasn't taken a CURRENT grade/section reading assessment in this language
+                    if (!in_array($studentId, $eligibleIds, true)) {
+                        continue;
+                    }
 
                     // Calculate comprehension percentage
                     $totalQuestions = count($result->answers ?? []);
@@ -1078,6 +1131,23 @@ class ReportsController extends Controller
 
         $students = $studentsQuery->get()->keyBy('student_number');
 
+        // Eligibility: only include students with a CURRENT-grade reading assessment in the same language
+        $eligibilityQuery = ReadingAssessment::query()
+            ->join('students', 'reading_assessments.student_id', '=', 'students.student_number')
+            ->where('reading_assessments.language', $language)
+            ->whereColumn('reading_assessments.grade', 'students.grade_level');
+
+        if ($grade) {
+            $eligibilityQuery->where('students.grade_level', $grade);
+        }
+
+        if ($section && $section !== 'all') {
+            $eligibilityQuery->where('students.section', $section)
+                ->whereColumn('reading_assessments.section', 'students.section');
+        }
+
+        $eligibleIds = $eligibilityQuery->distinct()->pluck('reading_assessments.student_id')->toArray();
+
         $totalStudents = 0;
         $distribution = [];
 
@@ -1104,6 +1174,11 @@ class ReportsController extends Controller
 
             if (!$student) {
                 continue; // Skip if student not found or doesn't match filters
+            }
+
+            // Must be eligible (has reading assessment in current grade/language and section if specified)
+            if (!in_array($studentId, $eligibleIds, true)) {
+                continue;
             }
 
             $studentGrade = $student->grade_level;
@@ -1154,8 +1229,17 @@ class ReportsController extends Controller
                 });
         }
 
-        // Get student information to map student_id to grade
+        // Get student information to map student_id to grade (current placement)
         $students = \App\Models\Student::all()->keyBy('student_number');
+
+        // Eligibility: only include students who have a CURRENT-grade reading assessment in the same language
+        $eligibleIds = ReadingAssessment::query()
+            ->join('students', 'reading_assessments.student_id', '=', 'students.student_number')
+            ->where('reading_assessments.language', $language)
+            ->whereColumn('reading_assessments.grade', 'students.grade_level')
+            ->distinct()
+            ->pluck('reading_assessments.student_id')
+            ->toArray();
 
         $totalStudents = 0;
         $distribution = [];
@@ -1175,6 +1259,11 @@ class ReportsController extends Controller
 
             if (!$student) {
                 continue; // Skip if student not found
+            }
+
+            // Must be eligible (has reading assessment in current grade for this language)
+            if (!in_array($studentId, $eligibleIds, true)) {
+                continue;
             }
 
             $grade = $student->grade_level;
@@ -1227,10 +1316,16 @@ class ReportsController extends Controller
     private function calculateWordReadingLevelDistribution($language)
     {
         // Get latest assessment per student for the specified language
-        $assessments = ReadingAssessment::where('language', $language)
+        // IMPORTANT: Only include assessments taken at the student's CURRENT grade
+        $assessments = ReadingAssessment::query()
+            ->where('language', $language)
+            ->join('students', 'reading_assessments.student_id', '=', 'students.student_number')
+            // Ensure we only count assessments that match the student's current grade
+            ->whereColumn('reading_assessments.grade', 'students.grade_level')
             ->orderBy('assessment_date', 'desc')
+            ->select('reading_assessments.*', 'students.grade_level as current_grade')
             ->get()
-            ->groupBy('student_name')
+            ->groupBy('student_id')
             ->map(function ($studentAssessments) {
                 return $studentAssessments->first();
             });
@@ -1240,7 +1335,10 @@ class ReportsController extends Controller
 
         // Calculate distribution by grade
         for ($grade = 7; $grade <= 10; $grade++) {
-            $gradeAssessments = $assessments->where('grade', $grade);
+            // Use CURRENT grade from students table
+            $gradeAssessments = $assessments->filter(function ($assessment) use ($grade) {
+                return (int) ($assessment->current_grade ?? $assessment->grade) === (int) $grade;
+            });
 
             $gradeLevels = $gradeAssessments->groupBy(function ($assessment) {
                 return $this->calculateWordReadingLevel($assessment->correct_reading);
@@ -1264,11 +1362,16 @@ class ReportsController extends Controller
      */
     private function calculateWordReadingLevelDistributionBySection($language)
     {
-        // Get latest assessment per student for the specified language
-        $assessments = ReadingAssessment::where('language', $language)
+        // Get latest assessment per student for the specified language, tied to CURRENT student grade/section
+        $assessments = ReadingAssessment::query()
+            ->where('language', $language)
+            ->join('students', 'reading_assessments.student_id', '=', 'students.student_number')
+            ->whereColumn('reading_assessments.grade', 'students.grade_level')
+            ->whereColumn('reading_assessments.section', 'students.section')
             ->orderBy('assessment_date', 'desc')
+            ->select('reading_assessments.*', 'students.grade_level as current_grade', 'students.section as current_section')
             ->get()
-            ->groupBy('student_name')
+            ->groupBy('student_id')
             ->map(function ($studentAssessments) {
                 return $studentAssessments->first(); // Get latest assessment per student
             });
@@ -1297,12 +1400,16 @@ class ReportsController extends Controller
 
         // Calculate distribution by grade and section using actual data
         foreach ($predefinedSections as $grade => $sections) {
-            $gradeAssessments = $assessments->where('grade', $grade);
+            // Use CURRENT grade from students table
+            $gradeAssessments = $assessments->filter(function ($assessment) use ($grade) {
+                return (int) ($assessment->current_grade ?? $assessment->grade) === (int) $grade;
+            });
 
             foreach ($sections as $section) {
-                // Use case-insensitive comparison for section matching
+                // Use case-insensitive comparison for CURRENT section matching
                 $sectionAssessments = $gradeAssessments->filter(function ($assessment) use ($section) {
-                    return strtolower($assessment->section) === strtolower($section);
+                    $currentSection = $assessment->current_section ?? $assessment->section;
+                    return strtolower($currentSection) === strtolower($section);
                 });
 
                 if ($sectionAssessments->count() > 0) {
@@ -1351,6 +1458,15 @@ class ReportsController extends Controller
         // Get student information to map student_id to grade and section
         $students = \App\Models\Student::all()->keyBy('student_number');
 
+        // Eligibility: only include students who have a CURRENT-grade reading assessment in the same language and section
+        $eligible = ReadingAssessment::query()
+            ->join('students', 'reading_assessments.student_id', '=', 'students.student_number')
+            ->where('reading_assessments.language', $language)
+            ->whereColumn('reading_assessments.grade', 'students.grade_level')
+            ->whereColumn('reading_assessments.section', 'students.section')
+            ->get(['reading_assessments.student_id', 'students.grade_level as current_grade', 'students.section as current_section'])
+            ->groupBy('student_id');
+
         $totalStudents = 0;
         $distribution = [];
 
@@ -1379,6 +1495,11 @@ class ReportsController extends Controller
 
             if (!$student) {
                 continue; // Skip if student not found
+            }
+
+            // Must be eligible in current grade and section for this language
+            if (!$eligible->has($studentId)) {
+                continue;
             }
 
             $grade = $student->grade_level;

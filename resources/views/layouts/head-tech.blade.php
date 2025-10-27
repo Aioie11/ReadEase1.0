@@ -830,6 +830,13 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a href="{{ route('teacher.grade-management') }}"
+                            class="nav-link {{ Route::currentRouteName() == 'teacher.grade-management' ? 'active' : '' }}">
+                            <i class="fas fa-graduation-cap"></i>
+                            Grade Management
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="{{ route('teacher.viewreports') }}"
                             class="nav-link {{ Route::currentRouteName() == 'teacher.viewreports' ? 'active' : '' }}">
                             <i class="fas fa-chart-line"></i>

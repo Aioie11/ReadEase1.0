@@ -1297,13 +1297,93 @@
             .searchable-dropdown::-webkit-scrollbar-thumb:hover {
                 background: #A0AEC0;
             }
+
+            /* Miscues Increment Button */
+            .miscue-controls {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .miscue-btn {
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                background: #dc2626;
+                color: #fff;
+                border: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 700;
+                font-size: 14px;
+                cursor: pointer;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .miscue-btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .miscue-btn:hover {
+                background: #b91c1c;
+                transform: translateY(-2px) scale(1.05);
+                box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
+            }
+
+            .miscue-btn:hover::before {
+                opacity: 1;
+            }
+
+            .miscue-btn:active {
+                transform: translateY(-1px) scale(1.02);
+                box-shadow: 0 3px 10px rgba(220, 38, 38, 0.3);
+                background: #991b1b;
+            }
+
+            .miscue-btn:focus {
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2), 0 2px 8px rgba(220, 38, 38, 0.25);
+            }
+
+            /* Hide number input spinners */
+            .miscues-input::-webkit-outer-spin-button,
+            .miscues-input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            .miscues-input {
+                -moz-appearance: textfield;
+            }
+
+            /* Organized layout for miscues block */
+            .miscues-group {
+                align-items: center;
+            }
+            .miscues-group label {
+                text-align: center;
+            }
+            .miscue-controls {
+                justify-content: center;
+            }
         </style>
 
         <div class="dashboard-wrapper">
             <div class="main">
                 <!-- Dashboard Header -->
                 <div class="dashboard-header">
-                    <div class="header-content">
+                    <div class="header-content">  
                         <h1>Reading Assessment</h1>
                         <p>Conduct comprehensive reading assessments with timer controls and feedback system</p>
                     </div>
@@ -1345,11 +1425,14 @@
                     </div>
                     <div class="timer-controls floating-controls">
                         <!-- Reading Miscues -->
-                        <div class="control-group">
-                            <label for="miscues">Miscues</label>
-                            <input type="number" id="miscues" class="miscues-input" min="0" value="0"
-                                style="text-align: center;">
-                        </div>
+                                                    <div class="control-group miscues-group">
+                                <label for="miscues">Miscues</label>
+                                <div class="miscue-controls">
+                                    <input type="number" id="miscues" class="miscues-input" min="0" value="0"
+                                        style="text-align: center;">
+                                    <button type="button" class="miscue-btn" onclick="incrementMiscues()" aria-label="Add miscue">+</button>
+                                </div>
+                            </div>
                         <!-- Total Words -->
                         <div class="control-group">
                             <label for="totalWords">Total Words</label>
@@ -1610,6 +1693,19 @@
 
             // Initialize searchable dropdown
             initializeSearchableDropdown();
+
+            // Enable manual edit and sanitize for miscues
+            const miscueInput = document.getElementById('miscues');
+            if (miscueInput) {
+                miscueInput.removeAttribute('readonly');
+                const sanitizeMiscues = () => {
+                    let val = parseInt(miscueInput.value, 10);
+                    if (isNaN(val) || val < 0) val = 0;
+                    miscueInput.value = val;
+                };
+                miscueInput.addEventListener('input', sanitizeMiscues);
+                miscueInput.addEventListener('blur', sanitizeMiscues);
+            }
 
             // Add event listener for student selection change to load feedback history
             const studentSelect = document.getElementById('studentSelect');
@@ -1877,10 +1973,13 @@
 
         // Word counting functionality
         function countWords(text) {
-            // Remove extra whitespace and split by spaces
-            // Also remove common punctuation and normalize text
-            const cleanText = text.replace(/[^\w\s]/g, ' ').replace(/\s+/g, ' ').trim();
-            return cleanText.split(/\s+/).filter(word => word.length > 0).length;
+            if (!text) return 0;
+
+            // Count only actual words: sequences of letters (incl. diacritics)
+            // allowing internal apostrophes or hyphens. Excludes punctuation tokens.
+            const wordPattern = /(?:\p{L}[\p{L}\p{M}]*(?:['’-]\p{L}[\p{L}\p{M}]*)*)/gu;
+            const matches = text.match(wordPattern);
+            return matches ? matches.length : 0;
         }
 
         function updateWordCount() {
@@ -1918,6 +2017,13 @@
 
             // Log for debugging
             console.log('Word count updated:', wordCount, 'from text:', passageText.substring(0, 50) + '...');
+        }
+
+        // Increment Miscues (only increase)
+        function incrementMiscues() {
+            const miscueInput = document.getElementById('miscues');
+            const current = parseInt(miscueInput.value, 10) || 0;
+            miscueInput.value = current + 1;
         }
 
         // Feedback Form Functionality

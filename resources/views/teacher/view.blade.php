@@ -16,304 +16,62 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :where([class^="ri-"])::before {
-            content: "\f3c2";
-        }
+        :where([class^="ri-"])::before { content: "\f3c2"; }
 
         input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
-        /* Uniform Color Scheme - All #00B8A9 */
+        /* Professional subtle palette */
         :root {
-            --primary-teal: #00B8A9;
-            --primary-light: #00B8A9;
-            --accent-orange: #00B8A9;
-            --success-green: #00B8A9;
-            --warning-yellow: #00B8A9;
-            --danger-red: #00B8A9;
+            --accent: #2563eb;        /* blue-600 */
+            --accent-700: #1d4ed8;    /* blue-700 */
+            --accent-50: #eef2ff;     /* indigo-50 for softer tint */
+            --ink: #0f172a;           /* slate-900 */
+            --muted: #6b7280;         /* gray-500 */
+            --border: #e5e7eb;        /* gray-200 */
+            --surface: #ffffff;
+            --surface-alt: #f3f4f6;   /* gray-100 */
         }
 
-        /* Enhanced Styling for Uniform Look */
-        body {
-            background: linear-gradient(135deg, #F7FAFC 0%, #EDF2F7 100%);
-        }
+        body { background: linear-gradient(180deg, #f8fafc 0%, var(--accent-50) 100%); }
+        .container { background: transparent; }
 
-        .container {
-            background: transparent;
-        }
+        /* Cards */
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
+        .card-accent { position: relative; }
+        .card-accent::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--accent); border-top-left-radius: 12px; border-top-right-radius: 12px; }
 
-        /* Back Navigation Enhancement */
-        .mb-6 a {
-            background: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-        }
+        /* Table */
+        .table-wrap { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+        .table-head { background: var(--accent-50) !important; color: var(--ink) !important; }
+        .table-row:nth-child(even) { background: #f6f7fb; }
+        .table-row:hover { background: #eef2ff !important; }
 
-        .mb-6 a:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-            color: var(--primary-teal) !important;
-        }
+        /* Badges */
+        .language-badge { border-radius: 9999px; padding: 0.25rem 0.6rem; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center; }
+        .language-badge[data-lang="english"] { background: #e0ecff; color: #1e40af; }
+        .language-badge[data-lang="filipino"] { background: #e6f4ea; color: #166534; }
 
-        /* Student Profile Card Enhancement */
-        .bg-white.rounded-lg.shadow-sm.p-6.mb-6 {
-            background: linear-gradient(135deg, white 0%, #F7FAFC 100%);
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            border: 1px solid #E2E8F0;
-            transition: transform 0.3s ease;
-        }
+        /* Icons and avatar */
+        .avatar { background: #e8eefc !important; color: #1e3a8a !important; }
+        .icon-dot { background: var(--accent-50); color: var(--accent); }
 
-        .bg-white.rounded-lg.shadow-sm.p-6.mb-6:hover {
-            transform: translateY(-2px);
-        }
+        /* Buttons */
+        .btn { display: inline-flex; align-items: center; gap: 0.25rem; border-radius: 8px; padding: 0.5rem 0.75rem; border: 1px solid var(--border); transition: background .2s ease, color .2s ease, border-color .2s ease; }
+        .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .btn-primary:hover { background: var(--accent-700); border-color: var(--accent-700); }
+        .btn-secondary { background: #fff; color: var(--ink); }
+        .btn-secondary:hover { background: #f3f4f6; }
 
-        /* Avatar Enhancement */
-        .w-24.h-24.bg-blue-100 {
-            background: linear-gradient(135deg, var(--primary-teal) 0%, var(--primary-light) 100%) !important;
-            color: white !important;
-            box-shadow: 0 4px 16px rgba(0, 184, 169, 0.3);
-            transition: transform 0.3s ease;
-        }
+        /* Progress bars (accent) */
+        .bar-accent { background: var(--accent) !important; }
 
-        .w-24.h-24.bg-blue-100:hover {
-            transform: scale(1.05);
-        }
+        /* Typography */
+        h1,h2 { color: var(--ink) !important; }
+        .muted { color: var(--muted) !important; }
 
-        /* Student Name Enhancement */
-        h1.text-2xl.font-bold.mb-4 {
-            color: #000000 !important;
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        /* Student Info Text */
-        .text-sm.text-gray-500 {
-            color: #000000 !important;
-            font-weight: 600;
-        }
-
-        /* Student Info Values */
-        p:not(.text-sm) {
-            color: #000000 !important;
-            font-weight: 500;
-        }
-
-        /* Performance Metrics Enhancement */
-        .grid.grid-cols-1.sm\\:grid-cols-3.gap-4.mb-6>div {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border: 1px solid #E2E8F0;
-            transition: all 0.3s ease;
-        }
-
-        .grid.grid-cols-1.sm\\:grid-cols-3.gap-4.mb-6>div:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-        }
-
-        /* Icons Enhancement */
-        .w-5.h-5.flex.items-center.justify-center {
-            color: var(--primary-teal) !important;
-        }
-
-        /* Values Enhancement */
-        h3.text-2xl.font-bold.mb-2 {
-            color: #000000 !important;
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        /* Status Badges Enhancement */
-        .bg-green-100.text-green-700 {
-            background: #10B981 !important;
-            color: white !important;
-            font-weight: 600;
-        }
-
-        .border-primary {
-            border-color: var(--primary-teal) !important;
-            color: var(--primary-teal) !important;
-        }
-
-        .text-primary {
-            color: var(--primary-teal) !important;
-        }
-
-        /* Main Content Enhancement */
-        .bg-white.rounded-lg.shadow-sm.p-6.mb-6:last-of-type {
-            background: linear-gradient(135deg, white 0%, #F7FAFC 100%);
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            border: 1px solid #E2E8F0;
-        }
-
-        /* Table Enhancement */
-        .min-w-full.divide-y.divide-gray-200 {
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .bg-gray-50 {
-            background: linear-gradient(135deg, var(--primary-teal) 0%, var(--primary-light) 100%) !important;
-            color: white !important;
-        }
-
-        .hover\\:bg-gray-50:hover {
-            background: linear-gradient(135deg, #F7FAFC 0%, #EDF2F7 100%) !important;
-        }
-
-        /* Book Icons Enhancement */
-        .w-8.h-8.bg-blue-100 {
-            background: linear-gradient(135deg, var(--primary-teal) 0%, var(--primary-light) 100%) !important;
-            color: white !important;
-        }
-
-        /* Progress Bars Enhancement */
-        .bg-green-500 {
-            background: linear-gradient(135deg, var(--success-green) 0%, #4FD1C7 100%) !important;
-        }
-
-        /* Level Badges Enhancement */
-        .bg-blue-100.text-blue-800 {
-            background: linear-gradient(135deg, var(--primary-teal) 0%, var(--primary-light) 100%) !important;
-            color: white !important;
-            font-weight: 600;
-        }
-
-        /* Chart Cards Enhancement */
-        .hover-card {
-            background: linear-gradient(135deg, white 0%, #F7FAFC 100%);
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            border: 1px solid #E2E8F0;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hover-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(135deg, var(--primary-teal) 0%, var(--primary-light) 100%);
-        }
-
-        .hover-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        /* Chart Icons Enhancement */
-        .w-8.h-8.bg-blue-100.rounded-full,
-        .w-8.h-8.bg-green-100.rounded-full,
-        .w-8.h-8.bg-red-100.rounded-full,
-        .w-8.h-8.bg-purple-100.rounded-full {
-            background: linear-gradient(135deg, var(--primary-teal) 0%, var(--primary-light) 100%) !important;
-            color: white !important;
-            transition: transform 0.3s ease;
-        }
-
-        .w-8.h-8.bg-blue-100.rounded-full:hover,
-        .w-8.h-8.bg-green-100.rounded-full:hover,
-        .w-8.h-8.bg-red-100.rounded-full:hover,
-        .w-8.h-8.bg-purple-100.rounded-full:hover {
-            transform: scale(1.1);
-        }
-
-        /* Section Titles Enhancement */
-        h2.text-3xl.font-bold.text-gray-800 {
-            color: #000000 !important;
-            font-size: 1.875rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Chart Values Enhancement */
-        .text-primary {
-            color: #000000 !important;
-        }
-
-        .text-xl.font-bold.text-primary {
-            color: #000000 !important;
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-
-        /* Table Text Enhancement */
-        .text-gray-600,
-        .text-gray-700,
-        .text-gray-800 {
-            color: #000000 !important;
-        }
-
-        /* Chart Text Enhancement */
-        .text-lg.font-medium.text-gray-700 {
-            color: #000000 !important;
-            font-weight: 600;
-        }
-
-        /* All Text Elements */
-        span,
-        p,
-        td,
-        th {
-            color: #000000 !important;
-        }
-
-        /* Specific Text Classes */
-        .text-sm {
-            color: #000000 !important;
-        }
-
-        /* Responsive Enhancements */
         @media (max-width: 768px) {
-            h1.text-2xl.font-bold.mb-4 {
-                font-size: 2rem;
-            }
-
-            h2.text-3xl.font-bold.text-gray-800 {
-                font-size: 1.8rem;
-            }
-
-            .container {
-                padding: 1rem;
-            }
-        }
-
-        .back-btn {
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0, 184, 169, 0.08);
-            background: white;
-            border: 1px solid #e2e8f0;
-        }
-
-        .back-btn:hover {
-            background: #00B8A9 !important;
-            color: #fff !important;
-            box-shadow: 0 4px 16px rgba(0, 184, 169, 0.25);
-            transform: translateY(-2px);
-            border-color: #00B8A9;
-        }
-
-        .back-btn:hover i {
-            color: #fff !important;
-        }
-
-        .back-btn:hover span {
-            color: #fff !important;
+            .container { padding: 1rem; }
         }
     </style>
 </head>
@@ -325,20 +83,19 @@
     <div class="container mx-auto p-4 max-w-7xl" style="margin-top: 30px;">
         <!-- Back Navigation -->
         <div class="mb-6">
-            <a href="{{ route('teacher.student-management') }}"
-                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white shadow-md border border-gray-200 text-primary font-semibold text-base transition-all duration-200 hover:bg-primary hover:text-white hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 back-btn">
+            <a href="{{ route('teacher.student-management') }}" class="btn btn-secondary">
                 <i class="ri-arrow-left-line text-lg"></i>
                 <span>Back</span>
             </a>
         </div>
 
         <!-- Student Profile Card -->
-        <div class="bg-white rounded-xl shadow-sm p-10 mb-6">
+        <div class="bg-white rounded-xl shadow-sm p-10 mb-6 card">
             <div class="flex flex-wrap items-center">
                 <!-- Avatar -->
                 <div class="mr-6">
                     <div
-                        class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-3xl">
+                        class="w-24 h-24 avatar rounded-full flex items-center justify-center text-3xl">
                         <i class="fas fa-user"></i>
                     </div>
                 </div>
@@ -398,57 +155,61 @@
 
 
         <!-- Main Content -->
-        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-6 card">
             <!-- Reading Records -->
             <div id="reading-assessments">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-3xl font-bold text-gray-800">Reading Records</h2>
 
                 </div>
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto table-wrap">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead>
                             <tr>
-                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Assessment
+                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 table-head">Assessment
                                     Date</th>
-                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Language
+                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 table-head">Language
                                 </th>
-                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Title
+                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 table-head">Grade Level
                                 </th>
-                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Reading
+                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 table-head">Title
+                                </th>
+                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 table-head">Reading
                                     Speed</th>
-                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">
+                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 table-head">
                                     Comprehension</th>
-                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Correct
+                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 table-head">Correct
                                     Reading</th>
-                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 bg-gray-50">Actions
+                                <th class="text-left py-3 px-4 text-sm font-medium text-gray-500 table-head">Actions
                                 </th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
                             @if(isset($student) && isset($student->allReadingAssessments) && $student->allReadingAssessments->count() > 0)
                                 @foreach($student->allReadingAssessments->sortByDesc('assessment_date') as $assessment)
-                                    <tr class="hover:bg-gray-50 transition-colors">
+                                    <tr class="hover:bg-gray-50 transition-colors table-row">
                                         <td class="py-4 px-4">
                                             <div class="flex items-center">
                                                 <div
-                                                    class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mr-3">
+                                                    class="w-8 h-8 icon-dot rounded-full flex items-center justify-center mr-3">
                                                     <i class="ri-calendar-line"></i>
                                                 </div>
                                                 <span>{{ $assessment->assessment_date->format('M d, Y') }}</span>
                                             </div>
                                         </td>
                                         <td class="py-4 px-4">
-                                            <span
-                                                class="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-medium
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             {{ $assessment->language == 'english' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
-                                                {{ ucfirst($assessment->language) }}
-                                            </span>
+                                            <span class="language-badge" data-lang="{{ strtolower($assessment->language) }}">{{ ucfirst($assessment->language) }}</span>
+                                        </td>
+                                        <td class="py-4 px-4">
+                                            @php
+                                                $recordGrade = $assessment->grade ?? optional($assessment->readingMaterial)->grade_level;
+                                            @endphp
+                                            <span class="text-sm font-medium">{{ $recordGrade ?? 'N/A' }}</span>
                                         </td>
                                         <td class="py-4 px-4">
                                             <div class="flex items-center">
                                                 <div
-                                                    class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 mr-3">
+                                                    class="w-8 h-8 icon-dot rounded-full flex items-center justify-center mr-3">
                                                     <i class="ri-bookmark-line"></i>
                                                 </div>
                                                 <span class="text-sm font-medium">
@@ -462,7 +223,7 @@
                                                     @php
                                                         $speedPercentage = min(100, ($assessment->reading_speed / 150) * 100);
                                                     @endphp
-                                                    <div class="bg-red-500 h-2 rounded-full"
+                                                    <div class="bar-accent h-2 rounded-full"
                                                         style="width: {{ $speedPercentage }}%"></div>
                                                 </div>
                                                 <span>{{ $assessment->reading_speed }} wpm</span>
@@ -471,7 +232,7 @@
                                         <td class="py-4 px-4">
                                             <div class="flex items-center">
                                                 <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                                                    <div class="bg-green-400 h-2 rounded-full"
+                                                    <div class="bar-accent h-2 rounded-full"
                                                         style="width: {{ $assessment->comprehension }}%"></div>
                                                 </div>
                                                 <span>{{ $assessment->comprehension }}%</span>
@@ -480,7 +241,7 @@
                                         <td class="py-4 px-4">
                                             <div class="flex items-center">
                                                 <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                                                    <div class="bg-purple-500 h-2 rounded-full"
+                                                    <div class="bar-accent h-2 rounded-full"
                                                         style="width: {{ $assessment->correct_reading }}%"></div>
                                                 </div>
                                                 <span>{{ round($assessment->correct_reading) }}%</span>
@@ -490,7 +251,7 @@
                                         <td class="py-4 px-4">
                                             <button
                                                 onclick="showComprehensionDetails('{{ $student->student_number ?? '' }}', '{{ $assessment->language }}', '{{ $assessment->reading_material_id ?? '' }}')"
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-400 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                                                class="btn btn-primary"
                                                 title="View comprehension details">
                                                 <i class="ri-eye-line mr-1"></i>
                                                 View Details
@@ -500,7 +261,7 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="7" class="py-8 px-4 text-center text-gray-500">
+                                    <td colspan="8" class="py-8 px-4 text-center text-gray-500">
                                         <div class="flex flex-col items-center">
                                             <i class="ri-book-open-line text-4xl mb-2"></i>
                                             <p>No reading assessments found for this student.</p>
@@ -519,8 +280,8 @@
         </div>
 
         <!-- English Language Test Results -->
-        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-            <div class="flex justify-between items-center mb-6">
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-6 card card-accent">
+             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-3xl font-bold text-gray-800">English Language Test Results</h2>
             </div>
             <div class="charts-container">
@@ -661,7 +422,7 @@
         </div>
 
         <!-- Filipino Language Test Results -->
-        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-6 card card-accent">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-3xl font-bold text-gray-800">Filipino Language Test Results</h2>
             </div>

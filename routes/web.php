@@ -126,6 +126,11 @@ Route::middleware(['web', 'auth', 'password.change'])->group(function () {
         Route::get('/feedback-history', [TeacherController::class, 'getFeedbackHistory'])->name('teacher.feedback.history');
 
         Route::get('/reading-assessment-controls', [App\Http\Controllers\TeacherController::class, 'readingAssessmentControls'])->name('teacher.reading-assessment-controls');
+ 
+        // Grade Management routes
+        Route::get('/grade-management', [TeacherController::class, 'gradeManagement'])->name('teacher.grade-management');
+        Route::post('/promote-student', [TeacherController::class, 'promoteStudent'])->name('teacher.promote-student');
+        Route::post('/update-student', [TeacherController::class, 'updateStudent'])->name('teacher.update-student');
     });
 
     // Admin Routes

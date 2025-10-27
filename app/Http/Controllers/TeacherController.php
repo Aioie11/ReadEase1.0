@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Student;
+use App\Models\User;
 use App\Models\ReadingMaterial;
 use App\Models\ReadingAssessment;
 use App\Models\TeacherFeedback;
@@ -153,6 +154,15 @@ class TeacherController extends Controller
             ->orderBy('last_name')
             ->get()
             ->map(function ($student) {
+                // Only consider assessments taken for the student's CURRENT grade and section
+                $currentGrade = $student->grade_level;
+                $currentSection = $student->section;
+                $gradeConstraint = function ($query) use ($currentGrade) {
+                    $query->where(function ($q) use ($currentGrade) {
+                        $q->where('grade', $currentGrade)
+                          ->orWhere('grade', 'grade' . $currentGrade);
+                    });
+                };
                 $latestAssessment = $student->readingAssessments()->latest('assessment_date')->first();
                 $avgScore = $student->readingAssessments()->count() > 0
                     ? round((($student->readingAssessments()->avg('comprehension') ?: 0) + ($student->readingAssessments()->avg('correct_reading') ?: 0)) / 2, 1)
@@ -162,6 +172,8 @@ class TeacherController extends Controller
                 // A complete assessment must have reading data (reading_speed, correct_reading)
                 // and comprehension data (comprehension > 0, correct_answers > 0)
                 $completeEnglishAssessment = $student->readingAssessments()
+                    ->where($gradeConstraint)
+                    ->where('section', $currentSection)
                     ->where('language', 'english')
                     ->where('reading_speed', '>', 0)
                     ->where('correct_reading', '>', 0)
@@ -170,6 +182,8 @@ class TeacherController extends Controller
                     ->exists();
 
                 $completeFilipinoAssessment = $student->readingAssessments()
+                    ->where($gradeConstraint)
+                    ->where('section', $currentSection)
                     ->where('language', 'filipino')
                     ->where('reading_speed', '>', 0)
                     ->where('correct_reading', '>', 0)
@@ -179,6 +193,8 @@ class TeacherController extends Controller
 
                 // Check for incomplete assessments (has some data but not complete)
                 $incompleteEnglishAssessment = $student->readingAssessments()
+                    ->where($gradeConstraint)
+                    ->where('section', $currentSection)
                     ->where('language', 'english')
                     ->where(function ($query) {
                     $query->where('reading_speed', '>', 0)
@@ -189,6 +205,8 @@ class TeacherController extends Controller
                     ->exists();
 
                 $incompleteFilipinoAssessment = $student->readingAssessments()
+                    ->where($gradeConstraint)
+                    ->where('section', $currentSection)
                     ->where('language', 'filipino')
                     ->where(function ($query) {
                         $query->where('reading_speed', '>', 0)
@@ -634,5 +652,194 @@ class TeacherController extends Controller
     public function readingAssessmentControls()
     {
         return view('teacher.reading-assessment-controls');
+    }
+
+    public function gradeManagement()
+    {
+        // Get all students grouped by grade level
+        $studentsByGrade = Student::orderBy('grade_level')
+            ->orderBy('section')
+            ->orderBy('last_name')
+            ->orderBy('first_name')
+            ->get()
+            ->groupBy('grade_level');
+
+        // Define grade-section mapping for validation
+        $gradeSectionMapping = [
+            7 => ['Narra', 'Lawaan', 'Dao', 'Mahugani'],
+            8 => ['Avocado', 'Duhat', 'Mango', 'Guava'],
+            9 => ['Gold', 'Zinc', 'Silver'],
+            10 => ['Galileo', 'Newton', 'Edison']
+        ];
+
+        return view('teacher.gradeManagement', compact('studentsByGrade', 'gradeSectionMapping'));
+    }
+
+    public function promoteStudent(Request $request)
+    {
+        try {
+            $request->validate([
+                'student_id' => 'required|integer|exists:students,id',
+                'new_grade' => 'required|integer|between:7,10',
+                'new_section' => 'required|string'
+            ]);
+
+            $student = Student::findOrFail($request->student_id);
+            $oldGrade = $student->grade_level;
+            $oldSection = $student->section;
+
+            // Define grade-section mapping for validation
+            $gradeSectionMapping = [
+                7 => ['Narra', 'Lawaan', 'Dao', 'Mahugani'],
+                8 => ['Avocado', 'Duhat', 'Mango', 'Guava'],
+                9 => ['Gold', 'Zinc', 'Silver'],
+                10 => ['Galileo', 'Newton', 'Edison']
+            ];
+
+            // Validate that the new section belongs to the new grade
+            if (!in_array($request->new_section, $gradeSectionMapping[$request->new_grade])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid section for the selected grade level.'
+                ], 400);
+            }
+
+            // Prevent promoting Grade 10 students (they should graduate)
+            if ($request->new_grade > 10) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot promote Grade 10 students beyond Grade 10. They should graduate.'
+                ], 400);
+            }
+
+            // Update student's grade and section in students table
+            $student->update([
+                'grade_level' => $request->new_grade,
+                'section' => $request->new_section
+            ]);
+
+            // Also update the corresponding user record if it exists
+            $user = User::where('userId', $student->student_number)->first();
+            if ($user && $user->role === 'student') {
+                $user->update([
+                    'grade' => $request->new_grade,
+                    'section' => $request->new_section
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => "Successfully promoted {$student->first_name} {$student->last_name} from Grade {$oldGrade} ({$oldSection}) to Grade {$request->new_grade} ({$request->new_section})",
+                'student' => [
+                    'id' => $student->id,
+                    'name' => $student->last_name . ', ' . $student->first_name . ' ' . ($student->middle_name ? $student->middle_name : ''),
+                    'old_grade' => $oldGrade,
+                    'old_section' => $oldSection,
+                    'new_grade' => $student->grade_level,
+                    'new_section' => $student->section
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error promoting student: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateStudent(Request $request)
+    {
+        try {
+            $request->validate([
+                'student_id' => 'required|integer|exists:students,id',
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'middle_name' => 'nullable|string|max:255',
+                'gender' => 'required|string|in:Male,Female,Other',
+                'grade_level' => 'required|integer|between:7,10',
+                'section' => 'required|string'
+            ]);
+
+            $student = Student::findOrFail($request->student_id);
+            $oldData = [
+                'name' => $student->first_name . ' ' . $student->last_name,
+                'grade' => $student->grade_level,
+                'section' => $student->section
+            ];
+
+            // Define grade-section mapping for validation
+            $gradeSectionMapping = [
+                7 => ['Narra', 'Lawaan', 'Dao', 'Mahugani'],
+                8 => ['Avocado', 'Duhat', 'Mango', 'Guava'],
+                9 => ['Gold', 'Zinc', 'Silver'],
+                10 => ['Galileo', 'Newton', 'Edison']
+            ];
+
+            // Validate that the section belongs to the grade
+            if (!in_array($request->section, $gradeSectionMapping[$request->grade_level])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid section for the selected grade level.'
+                ], 400);
+            }
+
+            // Update student record
+            $student->update([
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'middle_name' => $request->middle_name,
+                'gender' => $request->gender,
+                'grade_level' => $request->grade_level,
+                'section' => $request->section
+            ]);
+
+            // Update corresponding user record if it exists
+            $user = User::where('userId', $student->student_number)->first();
+            if ($user && $user->role === 'student') {
+                // Construct full name in "LastName, FirstName MiddleName" format for users table
+                $fullName = $request->last_name . ', ' . $request->first_name;
+                if ($request->middle_name) {
+                    $fullName .= ' ' . $request->middle_name;
+                }
+
+                $user->update([
+                    'name' => $fullName,
+                    'grade' => $request->grade_level,
+                    'section' => $request->section,
+                    'gender' => $request->gender
+                ]);
+            }
+
+            $newData = [
+                'name' => $request->first_name . ' ' . $request->last_name,
+                'grade' => $request->grade_level,
+                'section' => $request->section
+            ];
+
+            return response()->json([
+                'success' => true,
+                'message' => "Successfully updated {$newData['name']}'s information",
+                'student' => [
+                    'id' => $student->id,
+                    'student_number' => $student->student_number,
+                    'name' => $student->last_name . ', ' . $student->first_name . ' ' . ($student->middle_name ? $student->middle_name : ''),
+                    'first_name' => $student->first_name,
+                    'last_name' => $student->last_name,
+                    'middle_name' => $student->middle_name,
+                    'gender' => $student->gender,
+                    'grade_level' => $student->grade_level,
+                    'section' => $student->section,
+                    'old_data' => $oldData,
+                    'new_data' => $newData
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating student: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

@@ -43,6 +43,11 @@ class Student extends Model
         return $this->hasMany(TeacherFeedback::class, 'student_id', 'student_number');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'student_number', 'userId');
+    }
+
     public function getUnreadFeedbackCount()
     {
         return $this->teacherFeedback()->where('is_sent', true)->where('is_read', false)->count();
